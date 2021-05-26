@@ -1,9 +1,18 @@
 import { Request, Response, Headers, URL, Fastly } from "@fastly/as-compute";
 import  { Date, Console } from "as-wasi";
+import { JSON } from "assemblyscript-json";
+import { CoralogixLogger } from "./coralogix-logger";
 
 function main(req: Request): Response {
   Console.log("request received");
-  Console.log(req.text());
+
+  let body = <JSON.Value>JSON.parse(req.text());
+  if (body != null && body.isObj) {
+    let obj = body as JSON.Obj;
+
+    const c = new CoralogixLogger(req);
+    c.logRUM(obj);
+  }
 
   return new Response(String.UTF8.encode("rum collected."), {
     status: 201,
