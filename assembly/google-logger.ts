@@ -30,9 +30,6 @@ export class GoogleLogger {
     encoder.setInteger("time", now);
     encoder.setString("host", this.subsystemName);
 
-
-    encoder.setString("url", this.req.url);
-
     // json.cdn
     if (this.req.headers.has("referer")) {
       encoder.setString("url", this.req.headers.get("referer") as string);
