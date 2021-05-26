@@ -31,7 +31,7 @@
     "assemblyscript-json": "1.0.0"
   },
   "devDependencies": {
-    "@adobe/eslint-config-helix": "1.1.4",
+    "@adobe/eslint-config-helix": "1.1.5",
     "@as-pect/cli": "5.0.1",
     "@semantic-release/changelog": "5.0.1",
     "@semantic-release/exec": "5.0.0",
