@@ -1,0 +1,13 @@
+.vscode/*
+logs/*
+demos/*
+test/integration
+test/integration-with-cgi-bin
+test/tmp/*
+test/loadtests/*
+tmp/*
+coverage/*
+google/*
+dist/*
+htdocs/scrani.js
+universal/*
