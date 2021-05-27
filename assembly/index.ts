@@ -7,7 +7,16 @@ import { GoogleLogger } from "./google-logger";
 function main(req: Request): Response {
   Console.log("request received");
 
-  let body = <JSON.Value>JSON.parse(req.text());
+  const text = req.text();
+  if (text.length<=0) {
+    return new Response(String.UTF8.encode("RUM collection expects a JSON POST or PUT body."), {
+      status: 400,
+      headers: null,
+      url: null,
+    });
+  }
+
+  let body = <JSON.Value>JSON.parse(text);
   if (body != null && body.isObj) {
     let obj = body as JSON.Obj;
 
@@ -22,7 +31,7 @@ function main(req: Request): Response {
     status: 201,
     headers: null,
     url: null,
-  })
+  });
 }
 
 // Get the request from the client.
