@@ -20,11 +20,16 @@ function main(req: Request): Response {
   if (body != null && body.isObj) {
     let obj = body as JSON.Obj;
 
-    const c = new CoralogixLogger(req);
-    c.logRUM(obj);
+    let cwv = obj.getObj("cwv");
+    if (cwv != null) {
+      Console.log("\nBody: " + cwv.toString() + "\n");
 
-    const g = new GoogleLogger(req);
-    g.logRUM(obj);
+      const c = new CoralogixLogger(req);
+      c.logRUM(cwv);
+
+      const g = new GoogleLogger(req);
+      g.logRUM(cwv);
+    }
   }
 
   return new Response(String.UTF8.encode("rum collected."), {
