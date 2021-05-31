@@ -1,5 +1,5 @@
 import { JSON, JSONEncoder } from "assemblyscript-json";
-import  { Date } from "as-wasi";
+import  { Date, Console } from "as-wasi";
 import  { Request, Fastly } from "@fastly/as-compute";
 
 export class CoralogixLogger {
@@ -10,19 +10,26 @@ export class CoralogixLogger {
 
   constructor(req: Request) {
 
+    Console.log("Building Coralogix Logger\n");
     this.subsystemName = "undefined";
-    if (req.headers.get("host") != null) {
-      this.subsystemName = req.headers.get("host") as string;
-    }
+    
+    Console.log("Getting forwarded host\n");
     if (req.headers.get("x-forwarded-host") != null) {
-      this.subsystemName = (req.headers.get("x-forwarded-host") as string).split(",").pop().trim();
+      Console.log("Loading xfh header\n");
+      this.subsystemName = (req.headers.get("x-forwarded-host") as string).split(",")[0].trim();
+    } else if (req.headers.get("host") != null) {
+      Console.log("Loading host header instead\n");
+      this.subsystemName = req.headers.get("host") as string;
     }
     this.start = Math.floor(Date.now()) as i64;
     this.req = req;
+    Console.log("Getting log endpoint\n");
     this.logger = Fastly.getLogEndpoint("Coralogix");
+    Console.log("Ready\n");
   }
 
   public logRUM(json: JSON.Obj): void {
+    Console.log("Encoding JSON log statement\n");
     let encoder = new JSONEncoder();
     let now: i64 = Math.floor(Date.now()) as i64;
 
@@ -81,7 +88,11 @@ export class CoralogixLogger {
     encoder.popObject(); // .json
     encoder.popObject(); // .
 
+    Console.log("Logging now\n");
+
     this.logger.log(encoder.toString());
+
+    Console.log("Done.\n");
   }
 
 }

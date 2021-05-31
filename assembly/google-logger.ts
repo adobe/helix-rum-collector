@@ -15,7 +15,7 @@ export class GoogleLogger {
       this.subsystemName = req.headers.get("host") as string;
     }
     if (req.headers.get("x-forwarded-host") != null) {
-      this.subsystemName = (req.headers.get("x-forwarded-host") as string).split(",").pop().trim();
+      this.subsystemName = (req.headers.get("x-forwarded-host") as string).split(",")[0].trim();
     }
     this.start = Math.floor(Date.now()) as i64;
     this.req = req;
