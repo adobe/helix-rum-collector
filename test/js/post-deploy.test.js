@@ -30,7 +30,7 @@ describe('Helix RUM Collector Post-Deploy Tests', () => {
     const response = await chai.request(`https://${domain}`)
       .post('/')
       .send({"cwv":{
-        "CLS": 1.0, "LCP": 1.0, "FID": 4 }, "id": "blablub", "weight": 0})
+        "CLS": 1.0, "LCP": 1.0, "FID": 4 }, "id": "blablub", "weight": 0});
     expect(response).to.have.status(201);
   });
 });
