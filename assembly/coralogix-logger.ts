@@ -10,26 +10,19 @@ export class CoralogixLogger {
 
   constructor(req: Request) {
 
-    Console.log("Building Coralogix Logger\n");
     this.subsystemName = "undefined";
     
-    Console.log("Getting forwarded host\n");
     if (req.headers.get("x-forwarded-host") != null) {
-      Console.log("Loading xfh header\n");
       this.subsystemName = (req.headers.get("x-forwarded-host") as string).split(",")[0].trim();
     } else if (req.headers.get("host") != null) {
-      Console.log("Loading host header instead\n");
       this.subsystemName = req.headers.get("host") as string;
     }
     this.start = Math.floor(Date.now()) as i64;
     this.req = req;
-    Console.log("Getting log endpoint\n");
     this.logger = Fastly.getLogEndpoint("Coralogix");
-    Console.log("Ready\n");
   }
 
-  public logRUM(json: JSON.Obj): void {
-    Console.log("Encoding JSON log statement\n");
+  public logRUM(json: JSON.Obj, id: string, weight: i64): void {
     let encoder = new JSONEncoder();
     let now: i64 = Math.floor(Date.now()) as i64;
 
@@ -63,6 +56,10 @@ export class CoralogixLogger {
 
     // json.cdn.request
     encoder.pushObject("request");
+
+    Console.log("Logging Request ID: " + id + "\n");
+    encoder.setString("id", id);
+
     encoder.setString("method", this.req.method);
     if (this.req.headers.has("User-Agent")) {
       encoder.setString("user_agent", this.req.headers.get("User-Agent") as string);
@@ -73,6 +70,8 @@ export class CoralogixLogger {
     encoder.popObject(); // .json.cdn
 
     encoder.pushObject("rum");
+
+    encoder.setInteger("weight", weight);
     
     const keys = json.keys;
     for (let i = 0; i< keys.length; i++) {
@@ -88,11 +87,7 @@ export class CoralogixLogger {
     encoder.popObject(); // .json
     encoder.popObject(); // .
 
-    Console.log("Logging now\n");
-
     this.logger.log(encoder.toString());
-
-    Console.log("Done.\n");
   }
 
 }

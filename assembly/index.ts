@@ -21,14 +21,17 @@ function main(req: Request): Response {
     let obj = body as JSON.Obj;
 
     let cwv = obj.getObj("cwv");
-    if (cwv != null) {
+    const weight = obj.getInteger("weight");
+    const id = obj.getString("id");
+
+    if (cwv != null && weight != null && id != null) {
       Console.log("\nBody: " + cwv.toString() + "\n");
 
       const c = new CoralogixLogger(req);
-      c.logRUM(cwv);
+      c.logRUM(cwv, id.toString(), weight.valueOf());
 
       const g = new GoogleLogger(req);
-      g.logRUM(cwv);
+      g.logRUM(cwv, id.toString(), weight.valueOf());
     }
   }
 

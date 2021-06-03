@@ -22,7 +22,7 @@ export class GoogleLogger {
     this.logger = Fastly.getLogEndpoint("BigQuery");
   }
 
-  public logRUM(json: JSON.Obj): void {
+  public logRUM(json: JSON.Obj, id: string, weight: i64): void {
     let encoder = new JSONEncoder();
     let now: i64 = Math.floor(Date.now()) as i64;
 
@@ -50,6 +50,9 @@ export class GoogleLogger {
         encoder.setFloat(name, value.valueOf());
       }
     }
+
+    encoder.setInteger("weight", weight);
+    encoder.setString("id", id);
 
     encoder.popObject(); // .
 
