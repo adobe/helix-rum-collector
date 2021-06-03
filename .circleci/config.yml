@@ -99,6 +99,18 @@ jobs:
         command: npm run test-postdeploy
     - store_test_results:
         path: junit
+  semantic-release:
+    executor: node10
+
+    steps:
+    - setup
+    - run:
+        name: revert changes to package-lock.json
+        command: git checkout -- package-lock.json
+
+    - run:
+        name: Semantic Release
+        command: npm run semantic-release
 
 workflows:
   version: 2
@@ -112,9 +124,9 @@ workflows:
         filters:
           branches:
             ignore: main
-#    - semantic-release:
-#        requires:
-#        - build
-#        filters:
-#          branches:
-#            only: main
+    - semantic-release:
+        requires:
+        - build
+        filters:
+          branches:
+            only: main
