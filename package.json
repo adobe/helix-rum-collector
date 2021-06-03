@@ -11,7 +11,7 @@
     "asbuild:optimized": "asc assembly/index.ts --target release",
     "astest": "asp",
     "asbuild": "npm run asbuild:untouched && npm run asbuild:optimized",
-    "cross-platform-bundle": "tar --version | grep bsdtar && tar  zcvf pkg/helix3.tar.gz -s ';^;helix3/;' bin fastly.toml package.json || tar  zcvf pkg/helix3.tar.gz --transform 's,^,helix3/,' --show-transformed-names  bin fastly.toml package.json",
+    "cross-platform-bundle": "mkdir -p pkg;tar --version | grep bsdtar && tar  zcvf pkg/helix3.tar.gz -s ';^;helix3/;' bin fastly.toml package.json || tar  zcvf pkg/helix3.tar.gz --transform 's,^,helix3/,' --show-transformed-names  bin fastly.toml package.json",
     "bundle": "npm run asbuild:optimized && npm run cross-platform-bundle",
     "fastly-deploy": "fastly compute deploy",
     "monkeypatch": "echo '' >> node_modules/@fastly/as-compute/assembly/index.ts && echo '// monkey patch' >> node_modules/@fastly/as-compute/assembly/index.ts && echo 'import { FastlyPendingUpstreamRequest } from \"./fastly/fastly-upstream/fastly-pending-upstream-request\";' >> node_modules/@fastly/as-compute/assembly/index.ts && echo 'export { FastlyPendingUpstreamRequest };' >> node_modules/@fastly/as-compute/assembly/index.ts"
