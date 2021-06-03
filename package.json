@@ -11,8 +11,10 @@
     "asbuild:optimized": "asc assembly/index.ts --target release",
     "astest": "asp",
     "asbuild": "npm run asbuild:untouched && npm run asbuild:optimized",
-    "bundle": "npm run asbuild:optimized && mkdir -p pkg && tar  zcvf pkg/helix3.tar.gz -s ';^;helix3/;'   bin fastly.toml package.json",
+    "cross-platform-bundle": "mkdir -p pkg;tar --version | grep bsdtar && tar  zcvf pkg/helix3.tar.gz -s ';^;helix3/;' bin fastly.toml package.json || tar  zcvf pkg/helix3.tar.gz --transform 's,^,helix3/,' --show-transformed-names  bin fastly.toml package.json",
+    "bundle": "npm run asbuild:optimized && npm run cross-platform-bundle",
     "fastly-deploy": "fastly compute deploy",
+    "test-postdeploy": "mocha test/js --reporter xunit --reporter-options output=./junit/test-results.xml -g 'Post-Deploy'",
     "monkeypatch": "echo '' >> node_modules/@fastly/as-compute/assembly/index.ts && echo '// monkey patch' >> node_modules/@fastly/as-compute/assembly/index.ts && echo 'import { FastlyPendingUpstreamRequest } from \"./fastly/fastly-upstream/fastly-pending-upstream-request\";' >> node_modules/@fastly/as-compute/assembly/index.ts && echo 'export { FastlyPendingUpstreamRequest };' >> node_modules/@fastly/as-compute/assembly/index.ts"
   },
   "repository": {
@@ -36,6 +38,7 @@
     "@semantic-release/changelog": "5.0.1",
     "@semantic-release/exec": "5.0.0",
     "@semantic-release/git": "9.0.0",
+    "@typescript-eslint/eslint-plugin": "4.26.0",
     "assemblyscript": "0.17.14",
     "chai": "4.3.4",
     "chai-http": "4.3.0",

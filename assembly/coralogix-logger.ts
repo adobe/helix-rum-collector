@@ -82,7 +82,7 @@ export class CoralogixLogger {
       }
     }
 
-    encoder.popObject() // .json.rum
+    encoder.popObject(); // .json.rum
 
     encoder.popObject(); // .json
     encoder.popObject(); // .
