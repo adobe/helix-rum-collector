@@ -99,8 +99,10 @@ jobs:
         command: npm run test-postdeploy
     - store_test_results:
         path: junit
+
+        
   semantic-release:
-    executor: node10
+    executor: node
 
     steps:
     - setup
