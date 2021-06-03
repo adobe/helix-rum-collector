@@ -1,5 +1,5 @@
-import { Request, Response, Headers, URL, Fastly } from "@fastly/as-compute";
-import  { Date, Console } from "as-wasi";
+import { Request, Response, Fastly } from "@fastly/as-compute";
+import  { Console } from "as-wasi";
 import { JSON } from "assemblyscript-json";
 import { CoralogixLogger } from "./coralogix-logger";
 import { GoogleLogger } from "./google-logger";

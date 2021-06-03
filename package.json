@@ -37,6 +37,7 @@
     "@semantic-release/changelog": "5.0.1",
     "@semantic-release/exec": "5.0.0",
     "@semantic-release/git": "9.0.0",
+    "@typescript-eslint/eslint-plugin": "4.26.0",
     "assemblyscript": "0.17.14",
     "chai": "4.3.4",
     "chai-http": "4.3.0",
