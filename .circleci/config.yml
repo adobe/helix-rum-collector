@@ -68,17 +68,17 @@ jobs:
     - run:
         name: Init Fastly Service
         command: |
-          echo $(fastly service search --name=${CIRCLE_PROJECT_REPONAME}-${CIRCLE_BRANCH} || echo "ID: null") | head -n 1 | sed -e 's/ID: /ID=/' | sed -e 's/ .*//' >> $BASH_ENV
+          echo $(fastly service search -t $HLX_FASTLY_AUTH --name=${CIRCLE_PROJECT_REPONAME}-${CIRCLE_BRANCH} || echo "ID: null") | head -n 1 | sed -e 's/ID: /ID=/' | sed -e 's/ .*//' >> $BASH_ENV
           source $BASH_ENV
           echo $ID
           if [ "$ID" = "null" ]; then
             echo "ID is unset";
-            fastly service create --name=${CIRCLE_PROJECT_REPONAME}-${CIRCLE_BRANCH} | sed -e "s/SUCCESS: Created service /ID=/" >> $BASH_ENV;
+            fastly service create -t $HLX_FASTLY_AUTH --name=${CIRCLE_PROJECT_REPONAME}-${CIRCLE_BRANCH} | sed -e "s/SUCCESS: Created service /ID=/" >> $BASH_ENV;
             source $BASH_ENV;
             echo New Service $ID;
-            fastly domain  add          -s $ID --version=1 --name=${CIRCLE_PROJECT_REPONAME}-${CIRCLE_BRANCH}.hlx3.one
-            fastly backend add          -s $ID --version=1 --name=unpkg.com --address=unpkg.com --use-ssl --override-host=unpkg.com --port=443
-            fastly logging https create -s $ID --version=1 --name=Coralogix --content-type=application/json --header-name=private_key --header-value=$CORALOGIX_KEY --url=https://api.coralogix.com/logs/rest/singles --json-format=1 --message-type=blank --placement=none
+            fastly domain  add          -t $HLX_FASTLY_AUTH -s $ID --version=1 --name=${CIRCLE_PROJECT_REPONAME}-${CIRCLE_BRANCH}.hlx3.one
+            fastly backend add          -t $HLX_FASTLY_AUTH -s $ID --version=1 --name=unpkg.com --address=unpkg.com --use-ssl --override-host=unpkg.com --port=443
+            fastly logging https create -t $HLX_FASTLY_AUTH -s $ID --version=1 --name=Coralogix --content-type=application/json --header-name=private_key --header-value=$CORALOGIX_KEY --url=https://api.coralogix.com/logs/rest/singles --json-format=1 --message-type=blank --placement=none
           else
             echo "ID is set to '$ID'";
           fi
