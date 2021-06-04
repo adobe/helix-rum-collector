@@ -1,3 +1,10 @@
+# [1.1.0](https://github.com/adobe/helix-rum-collector/compare/v1.0.1...v1.1.0) (2021-06-04)
+
+
+### Features
+
+* **index:** more detailed error reporting using x-error ([ece542b](https://github.com/adobe/helix-rum-collector/commit/ece542bf63a9592c80e592ee757db3f66a692390))
+
 ## [1.0.1](https://github.com/adobe/helix-rum-collector/compare/v1.0.0...v1.0.1) (2021-06-04)
 
 
