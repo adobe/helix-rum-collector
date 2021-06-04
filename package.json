@@ -28,19 +28,19 @@
   },
   "homepage": "https://github.com/adobe/helix-rum-collector#readme",
   "dependencies": {
-    "@fastly/as-compute": "0.2.1",
+    "@fastly/as-compute": "0.3.0",
     "as-date": "0.1.2",
-    "as-wasi": "0.4.4",
+    "as-wasi": "0.4.5",
     "assemblyscript-json": "1.0.0"
   },
   "devDependencies": {
     "@adobe/eslint-config-helix": "1.1.5",
-    "@as-pect/cli": "5.0.1",
+    "@as-pect/cli": "6.1.1",
     "@semantic-release/changelog": "5.0.1",
     "@semantic-release/exec": "5.0.0",
     "@semantic-release/git": "9.0.0",
     "@typescript-eslint/eslint-plugin": "4.26.0",
-    "assemblyscript": "0.17.14",
+    "assemblyscript": "0.18.32",
     "chai": "4.3.4",
     "chai-http": "4.3.0",
     "eslint": "7.27.0",
