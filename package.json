@@ -49,7 +49,6 @@
     "fs-extra": "9.1.0",
     "jquery": "3.6.0",
     "jsdoc-to-markdown": "7.0.1",
-    "jsdom": "16.5.3",
     "mocha": "8.3.2",
     "mocha-junit-reporter": "2.0.0",
     "nyc": "15.1.0",
