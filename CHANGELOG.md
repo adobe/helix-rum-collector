@@ -1,3 +1,10 @@
+## [1.0.1](https://github.com/adobe/helix-rum-collector/compare/v1.0.0...v1.0.1) (2021-06-04)
+
+
+### Bug Fixes
+
+* **deps:** bump assembly-script-related dependencies ([fe9e18f](https://github.com/adobe/helix-rum-collector/commit/fe9e18f6792c0f84a5dfb31f0d7adf3cc2f3ee47))
+
 # 1.0.0 (2021-06-03)
 
 
