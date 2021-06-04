@@ -8,7 +8,7 @@ executors:
     working_directory: ~/repo
 
 orbs:
-  helix-post-deploy: adobe/helix-post-deploy@1.10.0
+  helix-post-deploy: adobe/helix-post-deploy@3.0.0
   fastly: adobe/fastly-cli@1.0.0
 
 commands:
