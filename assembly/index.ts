@@ -3,17 +3,14 @@ import  { Console } from "as-wasi";
 import { JSON } from "assemblyscript-json";
 import { CoralogixLogger } from "./coralogix-logger";
 import { GoogleLogger } from "./google-logger";
+import { error } from "./utils";
 
 function main(req: Request): Response {
   Console.log("request received");
 
   const text = req.text();
   if (text.length<=0) {
-    return new Response(String.UTF8.encode("RUM collection expects a JSON POST or PUT body."), {
-      status: 400,
-      headers: null,
-      url: null,
-    });
+    return error(400, "RUM collection expects a JSON POST or PUT body.");
   }
 
   let body = <JSON.Value>JSON.parse(text);
@@ -32,14 +29,17 @@ function main(req: Request): Response {
 
       const g = new GoogleLogger(req);
       g.logRUM(cwv, id.toString(), weight.valueOf());
+      
+      return new Response(String.UTF8.encode("rum collected."), {
+        status: 201,
+        headers: null,
+        url: null,
+      });
     }
-  }
 
-  return new Response(String.UTF8.encode("rum collected."), {
-    status: 201,
-    headers: null,
-    url: null,
-  });
+    return error(400, "Body is missing cwv, weight, or id");
+  }
+  return error(400, "Body is not a JSON object");
 }
 
 // Get the request from the client.
