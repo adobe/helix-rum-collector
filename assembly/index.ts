@@ -17,7 +17,10 @@ function main(req: Request): Response {
   if (body != null && body.isObj) {
     let obj = body as JSON.Obj;
 
-    let cwv = obj.getObj("cwv") || new JSON.Obj();
+    let cwv = obj.getObj("cwv");
+    if (!cwv) {
+      cwv = new JSON.Obj();
+    }
     const weight = obj.getInteger("weight");
     const id = obj.getString("id");
 
