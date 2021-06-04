@@ -1,3 +1,10 @@
+# [1.2.0](https://github.com/adobe/helix-rum-collector/compare/v1.1.0...v1.2.0) (2021-06-04)
+
+
+### Features
+
+* allow cwv to be omitted ([#15](https://github.com/adobe/helix-rum-collector/issues/15)) ([b24db7f](https://github.com/adobe/helix-rum-collector/commit/b24db7f8917aa85844469efb3809a5edcc8e1569))
+
 # [1.1.0](https://github.com/adobe/helix-rum-collector/compare/v1.0.1...v1.1.0) (2021-06-04)
 
 
