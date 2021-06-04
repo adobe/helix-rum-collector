@@ -17,11 +17,11 @@ function main(req: Request): Response {
   if (body != null && body.isObj) {
     let obj = body as JSON.Obj;
 
-    let cwv = obj.getObj("cwv");
+    let cwv = obj.getObj("cwv") || new JSON.Obj();
     const weight = obj.getInteger("weight");
     const id = obj.getString("id");
 
-    if (cwv != null && weight != null && id != null) {
+    if (weight != null && id != null) {
       Console.log("\nBody: " + cwv.toString() + "\n");
 
       const c = new CoralogixLogger(req);
