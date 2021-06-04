@@ -79,17 +79,6 @@ describe('Helix RUM Collector Post-Deploy Tests', () => {
     expect(response).to.have.status(201);
   });
 
-  it('Non-object cwv returns 400', async () => {
-    const response = await chai.request(`https://${domain}`)
-      .post('/')
-      .send({
-        cwv: "1",
-        id: 'blablub', 
-        weight: 0
-      });
-    expect(response).to.have.status(400);
-  });
-
   it('Non-object root returns 400', async () => {
     const response = await chai.request(`https://${domain}`)
       .post('/')

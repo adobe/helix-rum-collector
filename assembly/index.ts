@@ -17,7 +17,7 @@ function main(req: Request): Response {
   if (body != null && body.isObj) {
     let obj = body as JSON.Obj;
 
-    let cwv : JSON.Obj | null = obj.getObj("cwv");
+    let cwv = obj.getObj("cwv");
 
     if (!cwv) {
       cwv = new JSON.Obj();
