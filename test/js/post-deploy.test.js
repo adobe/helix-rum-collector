@@ -29,8 +29,71 @@ describe('Helix RUM Collector Post-Deploy Tests', () => {
   it('RUM collection returns 201', async () => {
     const response = await chai.request(`https://${domain}`)
       .post('/')
-      .send({"cwv":{
-        "CLS": 1.0, "LCP": 1.0, "FID": 4 }, "id": "blablub", "weight": 0});
+      .send({
+        cwv: {
+          CLS: 1.0, 
+          LCP: 1.0, 
+          FID: 4 
+        },
+        id: 'blablub', 
+        weight: 0
+      });
     expect(response).to.have.status(201);
+  });
+
+  it('Missing id returns 400', async () => {
+    const response = await chai.request(`https://${domain}`)
+      .post('/')
+      .send({
+        cwv: {
+          CLS: 1.0, 
+          LCP: 1.0, 
+          FID: 4 
+        },
+        weight: 0
+      });
+    expect(response).to.have.status(400);
+  });
+
+  it('Missing weight returns 400', async () => {
+    const response = await chai.request(`https://${domain}`)
+      .post('/')
+      .send({
+        cwv: {
+          CLS: 1.0, 
+          LCP: 1.0, 
+          FID: 4 
+        },
+        id: 'blablub', 
+      });
+    expect(response).to.have.status(400);
+  });
+
+  it('Missing cwv returns 400', async () => {
+    const response = await chai.request(`https://${domain}`)
+      .post('/')
+      .send({
+        id: 'blablub', 
+        weight: 0
+      });
+    expect(response).to.have.status(400);
+  });
+
+  it('Non-object cwv returns 400', async () => {
+    const response = await chai.request(`https://${domain}`)
+      .post('/')
+      .send({
+        cwv: "1",
+        id: 'blablub', 
+        weight: 0
+      });
+    expect(response).to.have.status(400);
+  });
+
+  it('Non-object root returns 400', async () => {
+    const response = await chai.request(`https://${domain}`)
+      .post('/')
+      .send([]);
+    expect(response).to.have.status(400);
   });
 });
