@@ -1,3 +1,10 @@
+## [1.2.1](https://github.com/adobe/helix-rum-collector/compare/v1.2.0...v1.2.1) (2021-06-22)
+
+
+### Bug Fixes
+
+* **deps:** bumped as-compute version to 0.4.0 ([3cc19a1](https://github.com/adobe/helix-rum-collector/commit/3cc19a1ec5b72d44a90ba9d1674da52065a13b16))
+
 # [1.2.0](https://github.com/adobe/helix-rum-collector/compare/v1.1.0...v1.2.0) (2021-06-04)
 
 

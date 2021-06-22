@@ -1,6 +1,6 @@
 {
   "name": "@adobe/helix-rum-collector",
-  "version": "1.2.0",
+  "version": "1.2.1",
   "private": true,
   "description": "Collect Real User Monitoring Data for Helix",
   "scripts": {
