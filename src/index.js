@@ -9,7 +9,46 @@
  * OF ANY KIND, either express or implied. See the License for the specific language
  * governing permissions and limitations under the License.
  */
+
 /* eslint-env serviceworker */
+
+const CoralogixLogger = require('./coralogix-logger');
+
+async function main(req) {
+  console.log('request received');
+
+  try {
+    const body = await req.json();
+
+    const headers = new Headers();
+    headers.set('Content-Type', 'text/plain; charset=utf-8');
+
+    const { weight = 1, id, cwv = {} } = body;
+
+    const c = new CoralogixLogger(req);
+    c.logRUM(cwv, id, weight);
+
+    const response = new Response('rum collected.', {
+      status: 201,
+      headers,
+    });
+
+    return response;
+  } catch {
+    const headers = new Headers();
+    headers.set('Content-Type', 'text/plain; charset=utf-8');
+    headers.set('X-Error', 'RUM collection expects a JSON POST or PUT body.');
+
+    const response = new Response('RUM collection expects a JSON POST or PUT body.\n', {
+      status: 400,
+      headers,
+    });
+    console.error('RUM collection expects a JSON POST or PUT body.');
+
+    return response;
+  }
+}
+
 addEventListener('fetch', async (event) => {
   // NOTE: By default, console messages are sent to stdout (and stderr for `console.error`).
   // To send them to a logging endpoint instead, use `console.setEndpoint:
@@ -17,6 +56,10 @@ addEventListener('fetch', async (event) => {
 
   // Get the client reqest from the event
   const req = event.request;
+
+  event.respondWith(await main(req, {}));
+
+  /*
 
   // Make any desired changes to the client request.
   req.headers.set('Host', 'example.com');
@@ -54,5 +97,5 @@ addEventListener('fetch', async (event) => {
     status: 404,
   });
   // Send the response back to the client.
-  event.respondWith(response);
+  event.respondWith(response); */
 });
