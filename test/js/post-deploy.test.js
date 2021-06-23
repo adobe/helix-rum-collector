@@ -31,12 +31,12 @@ describe('Helix RUM Collector Post-Deploy Tests', () => {
       .post('/')
       .send({
         cwv: {
-          CLS: 1.0, 
-          LCP: 1.0, 
-          FID: 4 
+          CLS: 1.0,
+          LCP: 1.0,
+          FID: 4,
         },
-        id: 'blablub', 
-        weight: 0
+        id: 'blablub',
+        weight: 0,
       });
     expect(response).to.have.status(201);
   });
@@ -46,11 +46,11 @@ describe('Helix RUM Collector Post-Deploy Tests', () => {
       .post('/')
       .send({
         cwv: {
-          CLS: 1.0, 
-          LCP: 1.0, 
-          FID: 4 
+          CLS: 1.0,
+          LCP: 1.0,
+          FID: 4,
         },
-        weight: 0
+        weight: 0,
       });
     expect(response).to.have.status(400);
   });
@@ -60,11 +60,11 @@ describe('Helix RUM Collector Post-Deploy Tests', () => {
       .post('/')
       .send({
         cwv: {
-          CLS: 1.0, 
-          LCP: 1.0, 
-          FID: 4 
+          CLS: 1.0,
+          LCP: 1.0,
+          FID: 4,
         },
-        id: 'blablub', 
+        id: 'blablub',
       });
     expect(response).to.have.status(400);
   });
@@ -73,8 +73,8 @@ describe('Helix RUM Collector Post-Deploy Tests', () => {
     const response = await chai.request(`https://${domain}`)
       .post('/')
       .send({
-        id: 'blablub', 
-        weight: 0
+        id: 'blablub',
+        weight: 0,
       });
     expect(response).to.have.status(201);
   });
