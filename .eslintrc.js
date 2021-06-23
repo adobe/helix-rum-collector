@@ -9,8 +9,16 @@
  * OF ANY KIND, either express or implied. See the License for the specific language
  * governing permissions and limitations under the License.
  */
+// eslint-disable-next-line import/no-extraneous-dependencies
+const parentconfig = require('eslint-config-airbnb-base/rules/variables.js');
 
 module.exports = {
   root: true,
   extends: '@adobe/helix',
+  rules: {
+    // addEventListener is seen as a "confusing" global by AirBnb, but essential for the
+    // service workers API
+    'no-restricted-globals': parentconfig.rules['no-restricted-globals']
+      .filter((e) => e !== 'addEventListener'),
+  },
 };

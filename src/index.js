@@ -9,6 +9,7 @@
  * OF ANY KIND, either express or implied. See the License for the specific language
  * governing permissions and limitations under the License.
  */
+/* eslint-env serviceworker */
 addEventListener('fetch', async (event) => {
   // NOTE: By default, console messages are sent to stdout (and stderr for `console.error`).
   // To send them to a logging endpoint instead, use `console.setEndpoint:
@@ -33,11 +34,10 @@ addEventListener('fetch', async (event) => {
 
   const { method } = req;
   const urlParts = req.url.split('//').pop().split('/');
-  const host = urlParts.shift();
   const path = `/${urlParts.join('/')}`;
 
   // If request is a `GET` to the `/` path, send a default response.
-  if (method == 'GET' && path == '/') {
+  if (method === 'GET' && path === '/') {
     const headers = new Headers();
     headers.set('Content-Type', 'text/plain; charset=utf-8');
     const response = new Response('Hallo Stefan\n', {
