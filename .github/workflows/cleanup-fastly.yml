@@ -1,5 +1,5 @@
 name: Cleanup Fastly
-on: [push,delete]
+on: [delete]
 jobs:
   Cleanup-Fastly-Service:
     runs-on: ubuntu-latest
