@@ -16,14 +16,14 @@ export class CoralogixLogger {
     } else if (req.headers.get("host") != null) {
       this.subsystemName = req.headers.get("host") as string;
     }
-    this.start = Math.floor(Date.now()) as i64;
+    this.start = Date.now();
     this.req = req;
     this.logger = Fastly.getLogEndpoint("Coralogix");
   }
 
   public logRUM(json: JSON.Obj, id: string, weight: i64): void {
     let encoder = new JSONEncoder();
-    let now: i64 = Math.floor(Date.now()) as i64;
+    let now = Date.now();
 
     encoder.pushObject("");
     encoder.setInteger("timestamp", now);

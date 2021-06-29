@@ -16,14 +16,14 @@ export class GoogleLogger {
     if (req.headers.get("x-forwarded-host") != null) {
       this.subsystemName = (req.headers.get("x-forwarded-host") as string).split(",")[0].trim();
     }
-    this.start = Math.floor(Date.now()) as i64;
+    this.start = Date.now();
     this.req = req;
     this.logger = Fastly.getLogEndpoint("BigQuery");
   }
 
   public logRUM(json: JSON.Obj, id: string, weight: i64): void {
     let encoder = new JSONEncoder();
-    let now: i64 = Math.floor(Date.now()) as i64;
+    let now = Date.now();
 
     encoder.pushObject("");
     encoder.setInteger("time", now);

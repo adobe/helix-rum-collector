@@ -5,7 +5,7 @@ import { GoogleLogger } from "./google-logger";
 import { error } from "./utils";
 
 function main(req: Request): Response {
-  Console.log("request received");
+  console.log("request received");
 
   const text = req.text();
   if (text.length<=0) {
