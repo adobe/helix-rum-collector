@@ -15,5 +15,5 @@ jobs:
         run: |
           ls ${{ github.workspace }}
       - run: echo "🍏 This job's status is ${{ job.status }}."
-      - run: mkdir ~/.bin && curl -L https://github.com/fastly/cli/releases/download/v0.31.0/fastly_v0.31.0_linux-386.tar.gz | tar zxv && mv fastly ~/.bin/ && echo '$PWD/.bin' >> $GITHUB_PATH
-      - run: fastly version
+      - run: mkdir ~/.bin && curl -L https://github.com/fastly/cli/releases/download/v0.31.0/fastly_v0.31.0_linux-386.tar.gz | tar zxv
+      - run: ./fastly version
