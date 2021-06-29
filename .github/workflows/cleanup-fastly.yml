@@ -17,3 +17,5 @@ jobs:
       - run: echo "🍏 This job's status is ${{ job.status }}."
       - run: mkdir ~/.bin && curl -L https://github.com/fastly/cli/releases/download/v0.31.0/fastly_v0.31.0_linux-386.tar.gz | tar zxv
       - run: ./fastly version
+      - run: echo ${{ secrets.FASTLY_AUTH }}
+      - run: ./fastly service list | grep ${{ github.repository }}-${{ github.ref }}
