@@ -38,6 +38,7 @@
     "@semantic-release/exec": "5.0.0",
     "@semantic-release/git": "9.0.0",
     "@typescript-eslint/eslint-plugin": "4.28.0",
+    "@typescript-eslint/parser": "4.28.1",
     "assemblyscript": "0.19.4",
     "chai": "4.3.4",
     "chai-http": "4.3.0",
@@ -49,6 +50,7 @@
     "mocha": "9.0.1",
     "mocha-junit-reporter": "2.0.0",
     "nyc": "15.1.0",
-    "semantic-release": "17.4.4"
+    "semantic-release": "17.4.4",
+    "typescript": "4.3.4"
   }
 }
