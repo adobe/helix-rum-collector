@@ -19,4 +19,4 @@ jobs:
       - run: ./fastly version
       - run: |
           ./fastly service search -t ${{ secrets.FASTLY_AUTH }} --name $(echo "${{ github.repository }}" | sed -e "s;.*/;;")-$(echo "${{ github.ref }}" | sed -e "s;.*/;;")  | head -n 1 | sed -e 's/ID: /ID=/' | sed -e 's/ .*//' >> $GITHUB_ENV
-      - run: ./fastly service-version deactivate -s $ID --version active
+      - run: ./fastly service-version deactivate -t ${{ secrets.FASTLY_AUTH }} -s $ID --version active
