@@ -1,7 +1,7 @@
 name: Cleanup Fastly
 on: [push,delete]
 jobs:
-  Explore-GitHub-Actions:
+  Cleanup-Fastly-Service:
     runs-on: ubuntu-latest
     steps:
       - run: echo "🎉 The job was automatically triggered by a ${{ github.event_name }} event."
@@ -17,5 +17,4 @@ jobs:
       - run: echo "🍏 This job's status is ${{ job.status }}."
       - run: mkdir ~/.bin && curl -L https://github.com/fastly/cli/releases/download/v0.31.0/fastly_v0.31.0_linux-386.tar.gz | tar zxv
       - run: ./fastly version
-      - run: echo ${{ secrets.FASTLY_AUTH }}
-      - run: ./fastly service list | grep ${{ github.repository }}-${{ github.ref }}
+      - run: ./fastly service list -t ${{ secrets.FASTLY_AUTH }} | grep ${{ github.repository }}-${{ github.ref }}
