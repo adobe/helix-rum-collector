@@ -29,6 +29,7 @@
   "homepage": "https://github.com/adobe/helix-rum-collector#readme",
   "dependencies": {
     "@fastly/as-compute": "0.4.0",
+    "as-wasi": "0.4.5",
     "assemblyscript-json": "1.0.0"
   },
   "devDependencies": {
