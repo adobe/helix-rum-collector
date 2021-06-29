@@ -1,5 +1,4 @@
 import { Request, Response, Fastly } from "@fastly/as-compute";
-import  { Console } from "as-wasi";
 import { JSON } from "assemblyscript-json";
 import { CoralogixLogger } from "./coralogix-logger";
 import { GoogleLogger } from "./google-logger";
@@ -26,7 +25,7 @@ function main(req: Request): Response {
     const id = obj.getString("id");
 
     if (weight != null && id != null) {
-      Console.log("\nBody: " + cwv.toString() + "\n");
+      console.log("\nBody: " + cwv.toString() + "\n");
 
       const c = new CoralogixLogger(req);
       c.logRUM(cwv, id.toString(), weight.valueOf());
