@@ -1,6 +1,6 @@
 import { JSON, JSONEncoder } from "assemblyscript-json";
-import  { Date, Console } from "as-wasi";
 import  { Request, Fastly } from "@fastly/as-compute";
+import { Date } from "as-wasi";
 
 export class GoogleLogger {
   private subsystemName: string;
@@ -57,7 +57,7 @@ export class GoogleLogger {
     encoder.popObject(); // .
 
 
-    Console.log(encoder.toString());
+    console.log(encoder.toString());
     this.logger.log(encoder.toString());
   }
 

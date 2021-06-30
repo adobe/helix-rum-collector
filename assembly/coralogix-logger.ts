@@ -1,6 +1,6 @@
 import { JSON, JSONEncoder } from "assemblyscript-json";
-import  { Date, Console } from "as-wasi";
 import  { Request, Fastly } from "@fastly/as-compute";
+import { Date } from "as-wasi";
 
 export class CoralogixLogger {
   private subsystemName: string;
@@ -57,7 +57,7 @@ export class CoralogixLogger {
     // json.cdn.request
     encoder.pushObject("request");
 
-    Console.log("Logging Request ID: " + id + "\n");
+    console.log("Logging Request ID: " + id + "\n");
     encoder.setString("id", id);
 
     encoder.setString("method", this.req.method);
