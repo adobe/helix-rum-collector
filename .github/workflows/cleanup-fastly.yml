@@ -13,7 +13,7 @@ jobs:
       - name: Delete Stale Services
         run: |
           repo=$(echo "${{ github.repository }}" | sed -e "s;.*/;;")
-          ./fastly service list | grep -E "^$repo"- | while read -r line
+          ./fastly service list -t ${{ secrets.FASTLY_AUTH }} | grep -E "^$repo"- | while read -r line
           do
               read -ra parts <<< "$line"
               name=${parts[0]}
@@ -23,6 +23,6 @@ jobs:
               if ! gh api repos/{owner}/{repo}/branches/$branch --silent; then
                   echo "no matching branch for $name – '$id' should be deleted";
                   ./fastly service-version deactivate -t ${{ secrets.FASTLY_AUTH }} -s $id --version active
-                  ./fastly service delete  -t ${{ secrets.FASTLY_AUTH }} -s $id
+                  ./fastly service delete -t ${{ secrets.FASTLY_AUTH }} -s $id
               fi
           done
