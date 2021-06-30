@@ -8,9 +8,19 @@ jobs:
     steps:
       - name: Check out repository code
         uses: actions/checkout@v2
-      - run: mkdir ~/.bin && curl -L https://github.com/fastly/cli/releases/download/v0.31.0/fastly_v0.31.0_linux-386.tar.gz | tar zxv
-      - run: ./fastly version
-      - run: |
-          ./fastly service search -t ${{ secrets.FASTLY_AUTH }} --name $(echo "${{ github.repository }}" | sed -e "s;.*/;;")-$(echo "${{ github.ref }}" | sed -e "s;.*/;;")  | head -n 1 | sed -e 's/ID: /ID=/' | sed -e 's/ .*//' >> $GITHUB_ENV
-      - run: ./fastly service-version deactivate -t ${{ secrets.FASTLY_AUTH }} -s $ID --version active
-      - run: ./fastly service delete  -t ${{ secrets.FASTLY_AUTH }} -s $ID
+      - name: Download Fastly CLI
+        run: mkdir ~/.bin && curl -L https://github.com/fastly/cli/releases/download/v0.31.0/fastly_v0.31.0_linux-386.tar.gz | tar zxv
+      - name: Delete Stale Services
+        run: |
+          for branch in `git branch -a -l | grep -v remotes/origin/HEAD | grep remotes/origin | sed -e "s;.*/;;" | grep -v -E "^main$"`; do
+            ./fastly service search -t ${{ secrets.FASTLY_AUTH }} --name $(echo "${{ github.repository }}" | sed -e "s;.*/;;")-$branch || echo "ID: null" | head -n 1 | sed -e 's/ID: /ID=/' | sed -e 's/ .*//' >> $GITHUB_ENV
+            source $GITHUB_ENV
+            echo $ID
+            if [ "$ID" = "null" ]; then
+              echo "No matching service for branch $branch"
+            else
+              echo "ID is set to '$ID', service should be deleted";
+              ./fastly service-version deactivate -t ${{ secrets.FASTLY_AUTH }} -s $ID --version active
+              ./fastly service delete  -t ${{ secrets.FASTLY_AUTH }} -s $ID
+            fi
+          done
