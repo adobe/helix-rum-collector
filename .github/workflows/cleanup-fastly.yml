@@ -9,7 +9,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Set up GitHub CLI
-        run: gh auth login --with-token < echo $GITHUB_TOKEN
+        run: echo ${{ secrets.GITHUB_TOKEN }} | gh auth login --with-token
       - name: Download Fastly CLI
         run: mkdir ~/.bin && curl -L https://github.com/fastly/cli/releases/download/v0.31.0/fastly_v0.31.0_linux-386.tar.gz | tar zxv
       - name: Delete Stale Services
