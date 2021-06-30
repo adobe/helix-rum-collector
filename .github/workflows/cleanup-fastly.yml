@@ -1,7 +1,9 @@
 name: Cleanup Fastly
 on:
-  pull_request:
-    types: [closed]
+  - push
+#  
+#  pull_request:
+#    types: [closed]
 jobs:
   Cleanup-Fastly-Service:
     runs-on: ubuntu-latest
@@ -12,15 +14,17 @@ jobs:
         run: mkdir ~/.bin && curl -L https://github.com/fastly/cli/releases/download/v0.31.0/fastly_v0.31.0_linux-386.tar.gz | tar zxv
       - name: Delete Stale Services
         run: |
-          for branch in `git branch -a -l | grep -v remotes/origin/HEAD | grep remotes/origin | sed -e "s;.*/;;" | grep -v -E "^main$"`; do
-            ./fastly service search -t ${{ secrets.FASTLY_AUTH }} --name $(echo "${{ github.repository }}" | sed -e "s;.*/;;")-$branch || echo "ID: null" | head -n 1 | sed -e 's/ID: /ID=/' | sed -e 's/ .*//' >> $GITHUB_ENV
-            source $GITHUB_ENV
-            echo $ID
-            if [ "$ID" = "null" ]; then
-              echo "No matching service for branch $branch"
-            else
-              echo "ID is set to '$ID', service should be deleted";
-              ./fastly service-version deactivate -t ${{ secrets.FASTLY_AUTH }} -s $ID --version active
-              ./fastly service delete  -t ${{ secrets.FASTLY_AUTH }} -s $ID
-            fi
+          repo=$(echo "${{ github.repository }}" | sed -e "s;.*/;;")
+          fastly service list | grep -E "^$repo"- | while read -r line
+          do
+              read -ra parts <<< "$line"
+              name=${parts[0]}
+              id=${parts[1]}
+              version=${parts[3]}
+              branch=$(echo ${name} | sed -e s/^$repo-//)
+              if ! gh api repos/{owner}/{repo}/branches/$branch --silent; then
+                  echo "no matching branch for $name – '$id' should be deleted";
+                  ./fastly service-version deactivate -t ${{ secrets.FASTLY_AUTH }} -s $id --version active
+                  ./fastly service delete  -t ${{ secrets.FASTLY_AUTH }} -s $id
+              fi
           done
