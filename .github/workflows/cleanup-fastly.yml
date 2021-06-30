@@ -8,14 +8,12 @@ jobs:
   Cleanup-Fastly-Service:
     runs-on: ubuntu-latest
     steps:
-      - name: Check out repository code
-        uses: actions/checkout@v2
       - name: Download Fastly CLI
         run: mkdir ~/.bin && curl -L https://github.com/fastly/cli/releases/download/v0.31.0/fastly_v0.31.0_linux-386.tar.gz | tar zxv
       - name: Delete Stale Services
         run: |
           repo=$(echo "${{ github.repository }}" | sed -e "s;.*/;;")
-          fastly service list | grep -E "^$repo"- | while read -r line
+          ./fastly service list | grep -E "^$repo"- | while read -r line
           do
               read -ra parts <<< "$line"
               name=${parts[0]}
