@@ -1,3 +1,10 @@
+## [1.2.2](https://github.com/adobe/helix-rum-collector/compare/v1.2.1...v1.2.2) (2021-07-02)
+
+
+### Bug Fixes
+
+* **assembly:** the earlier refactoring merged from [#9](https://github.com/adobe/helix-rum-collector/issues/9) is also a fix for a 500 from C@E ([e61aa0f](https://github.com/adobe/helix-rum-collector/commit/e61aa0fdb8cfd76d364d69609de7509580d5da1d))
+
 ## [1.2.1](https://github.com/adobe/helix-rum-collector/compare/v1.2.0...v1.2.1) (2021-06-22)
 
 
