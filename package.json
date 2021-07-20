@@ -30,7 +30,7 @@
   },
   "homepage": "https://github.com/adobe/helix-rum-collector#readme",
   "dependencies": {
-    "@fastly/js-compute": "file:vendor/fastly-js-compute-0.0.1.tgz"
+    "@fastly/js-compute": "file:vendor/fastly-js-compute-0.0.2-pre.tgz"
   },
   "devDependencies": {
     "@adobe/eslint-config-helix": "1.1.5",
