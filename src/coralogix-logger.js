@@ -23,7 +23,7 @@ module.exports = class CoralogixLogger {
     this.req = req;
     // eslint-disable-next-line: no-console
     // console.setEndpoint('Coralogix');
-    this.logger = console;
+    this.logger = fastly.getLogger('Coralogix');
   }
 
   logRUM(json, id, weight) {
@@ -56,8 +56,7 @@ module.exports = class CoralogixLogger {
         },
       },
     };
-    this.logger.log(JSON.stringify(data));
-    console.setEndpoint('Coralogix');
+    console.log(JSON.stringify(data));
     this.logger.log(JSON.stringify(data));
   }
 };
