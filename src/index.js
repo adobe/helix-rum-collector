@@ -12,10 +12,11 @@
 
 /* eslint-env serviceworker */
 
+const GoogleLogger = require('./google-logger');
 const CoralogixLogger = require('./coralogix-logger');
 
 async function main(req) {
-  console.log('request received');
+  console.log('request received (JS)');
 
   try {
     const body = await req.json();
@@ -28,18 +29,26 @@ async function main(req) {
     const c = new CoralogixLogger(req);
     c.logRUM(cwv, id, weight);
 
+    const g = new GoogleLogger(req);
+    g.logRUM(cwv, id, weight);
+
     const response = new Response('rum collected.', {
       status: 201,
       headers,
     });
 
     return response;
-  } catch {
+  } catch (e) {
     const headers = new Headers();
-    headers.set('Content-Type', 'text/plain; charset=utf-8');
-    headers.set('X-Error', 'RUM collection expects a JSON POST or PUT body.');
 
-    const response = new Response('RUM collection expects a JSON POST or PUT body.\n', {
+    console.error(e);
+
+    const message = `RUM collection expects a JSON POST or PUT body: ${e.message}`;
+
+    headers.set('Content-Type', 'text/plain; charset=utf-8');
+    headers.set('X-Error', message);
+
+    const response = new Response(`${message}\n`, {
       status: 400,
       headers,
     });
