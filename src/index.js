@@ -12,8 +12,11 @@
 
 /* eslint-env serviceworker */
 
-const GoogleLogger = require('./google-logger');
-const CoralogixLogger = require('./coralogix-logger');
+import GoogleLogger from './google-logger';
+import CoralogixLogger from './coralogix-logger';
+
+// const GoogleLogger = require('./google-logger');
+// const CoralogixLogger = require('./coralogix-logger');
 
 async function main(req) {
   console.log('request received (JS)');
