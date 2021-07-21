@@ -9,6 +9,7 @@
  * OF ANY KIND, either express or implied. See the License for the specific language
  * governing permissions and limitations under the License.
  */
+/* global fastly */
 module.exports = class CoralogixLogger {
   constructor(req) {
     this.subsystemName = 'undefined';
@@ -27,6 +28,7 @@ module.exports = class CoralogixLogger {
   }
 
   logRUM(json, id, weight) {
+    console.log(`logging to Coralogix: ${typeof this.logger}`);
     const now = Math.floor(Date.now());
 
     const data = {
