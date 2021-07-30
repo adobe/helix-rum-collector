@@ -61,4 +61,4 @@ export class CoralogixLogger {
     console.log(JSON.stringify(data));
     this.logger.log(JSON.stringify(data));
   }
-};
+}

@@ -15,10 +15,19 @@ const parentconfig = require('eslint-config-airbnb-base/rules/variables.js');
 module.exports = {
   root: true,
   extends: '@adobe/helix',
+  parserOptions: {
+    ecmaVersion: '2020',
+    sourceType: 'module',
+  },
+  env: {
+    es2020: true,
+  },
   rules: {
     // addEventListener is seen as a "confusing" global by AirBnb, but essential for the
     // service workers API
     'no-restricted-globals': parentconfig.rules['no-restricted-globals']
       .filter((e) => e !== 'addEventListener'),
+    // keep named exports over default exports for classes
+    'import/prefer-default-export': [0],
   },
 };
