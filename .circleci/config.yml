@@ -43,18 +43,17 @@ jobs:
         name: Lint
         command: npm run lint
     - run:
-        name: Build
-        command: npm run asbuild:untouched
-
-    - run:
         name: Run Tests
-        command: npm run astest
+        command: npm run test-ci
+    - run:
+        name: Run Build
+        command: npm run build
 
-    # - store_test_results:
-    #     path: junit
+    - store_test_results:
+        path: junit
 
-    # - store_artifacts:
-    #     path: junit
+    - store_artifacts:
+        path: junit
 
   branch-deploy:
     executor: node
@@ -84,7 +83,7 @@ jobs:
           fi
     - run:
         name: Package
-        command: npm run bundle
+        command: npm run build
 
     - run:
         name: Branch Deployment

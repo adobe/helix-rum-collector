@@ -8,11 +8,12 @@
     "prebuild": "webpack",
     "build": "js-compute-runtime",
     "deploy": "npm run build && fastly compute deploy -t $HLX_FASTLY_AUTH",
-    "test": "mocha test/unit/*.test.js",
+    "test": "nyc --reporter=text --reporter=lcov -i -g 'Post-Deploy' --check-coverage --branches 95 --statements 100 --lines 100 mocha -i -g 'Post-Deploy'",
+    "test-ci": "nyc --reporter=text --reporter=lcov -i -g 'Post-Deploy' --check-coverage --branches 95 --statements 100 --lines 100 mocha -i -g 'Post-Deploy' --reporter xunit --reporter-options output=./junit/test-results.xml --exit && codecov",
+    "test-postdeploy": "mocha --reporter xunit --reporter-options output=./junit/test-results.xml -g 'Post-Deploy'",
     "lint": "./node_modules/.bin/eslint .",
     "semantic-release": "semantic-release",
-    "fastly-deploy": "fastly compute deploy",
-    "test-postdeploy": "mocha test/js --reporter xunit --reporter-options output=./junit/test-results.xml -g 'Post-Deploy'"
+    "fastly-deploy": "fastly compute deploy"
   },
   "repository": {
     "type": "git",
