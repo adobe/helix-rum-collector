@@ -10,7 +10,7 @@
  * governing permissions and limitations under the License.
  */
 /* global fastly */
-module.exports = class GoogleLogger {
+export class GoogleLogger {
   constructor(req) {
     this.subsystemName = 'undefined';
     this.req = req;

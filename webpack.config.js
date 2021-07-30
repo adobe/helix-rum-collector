@@ -14,9 +14,9 @@ const path = require('path');
 module.exports = {
   entry: './src/index.js',
   optimization: {
-    minimize: true,
+    minimize: false,
   },
-  target: false,
+  target: 'es2020',
   output: {
     filename: 'index.js',
     path: path.resolve(__dirname, 'bin'),

@@ -10,7 +10,7 @@
  * governing permissions and limitations under the License.
  */
 /* global fastly */
-module.exports = class CoralogixLogger {
+export class CoralogixLogger {
   constructor(req) {
     this.subsystemName = 'undefined';
     this.req = req;
@@ -33,7 +33,7 @@ module.exports = class CoralogixLogger {
 
     const data = {
       timestamp: now,
-      applicationName: 'helix-rum-collector-js',
+      applicationName: 'helix-rum-collector',
       subsystemName: this.subsystemName,
       severity: 3,
       json: {
