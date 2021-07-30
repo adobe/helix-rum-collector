@@ -1,3 +1,16 @@
+# [1.3.0](https://github.com/adobe/helix-rum-collector/compare/v1.2.3...v1.3.0) (2021-07-30)
+
+
+### Bug Fixes
+
+* **index:** use correct imports ([b930918](https://github.com/adobe/helix-rum-collector/commit/b930918b65da2ca2f7d67172e40abf08e3666035))
+
+
+### Features
+
+* **google:** log to bigquery ([8bca8f1](https://github.com/adobe/helix-rum-collector/commit/8bca8f1ded8f09491641b53bfe78e8b9b6f54d01))
+* **logging:** log to coralogix ([01f5216](https://github.com/adobe/helix-rum-collector/commit/01f52160d4a6445b5a71a551e592d58c07893e30))
+
 ## [1.2.3](https://github.com/adobe/helix-rum-collector/compare/v1.2.2...v1.2.3) (2021-07-11)
 
 
