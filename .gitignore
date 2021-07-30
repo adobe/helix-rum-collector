@@ -16,3 +16,4 @@ bin
 pkg
 *.wat
 *.map
+vendor/package
