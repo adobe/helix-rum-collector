@@ -33,7 +33,7 @@ export class CoralogixLogger {
 
     const data = {
       timestamp: now,
-      applicationName: 'helix-rum-collector-js',
+      applicationName: 'helix-rum-collector',
       subsystemName: this.subsystemName,
       severity: 3,
       json: {

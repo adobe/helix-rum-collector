@@ -19,8 +19,6 @@ import { CoralogixLogger } from './coralogix-logger';
 // const CoralogixLogger = require('./coralogix-logger');
 
 async function main(req) {
-  console.log('request received (JS)');
-
   try {
     const body = await req.json();
 
