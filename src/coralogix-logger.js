@@ -27,7 +27,7 @@ export class CoralogixLogger {
     this.logger = fastly.getLogger('Coralogix');
   }
 
-  logRUM(json, id, weight) {
+  logRUM(json, id, weight, referer) {
     console.log(`logging to Coralogix: ${typeof this.logger}`);
     const now = Math.floor(Date.now());
     console.log('at least I know the time');
@@ -42,7 +42,7 @@ export class CoralogixLogger {
           url: this.req.url,
         },
         cdn: {
-          url: this.req.headers.has('referer') ? this.req.headers.get('referer') : this.req.url,
+          url: referer || (this.req.headers.has('referer') ? this.req.headers.get('referer') : this.req.url),
         },
         time: {
           start_msec: this.start,
