@@ -70,16 +70,6 @@ describe('Helix RUM Collector Post-Deploy Tests', () => {
     expect(response).to.have.status(400);
   });
 
-  it('Omitted cwv still returns 201', async () => {
-    const response = await chai.request(`https://${domain}`)
-      .post('/')
-      .send({
-        id: 'blablub',
-        weight: 0,
-      });
-    expect(response).to.have.status(201);
-  });
-
   it('Non-object root returns 400', async () => {
     const response = await chai.request(`https://${domain}`)
       .post('/')
