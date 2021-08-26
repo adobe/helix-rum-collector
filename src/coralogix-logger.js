@@ -44,7 +44,7 @@ export class CoralogixLogger {
           url: this.req.url,
         },
         cdn: {
-          url: this.referer,
+          // url: this.referer,
         },
         time: {
           start_msec: this.start,
@@ -57,7 +57,7 @@ export class CoralogixLogger {
         },
         rum: {
           weight,
-          generation: this.generation,
+          // generation: this.generation,
           ...json,
         },
       },
