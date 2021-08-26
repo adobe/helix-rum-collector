@@ -15,8 +15,20 @@
 import { GoogleLogger } from './google-logger';
 import { CoralogixLogger } from './coralogix-logger';
 
-// const GoogleLogger = require('./google-logger');
-// const CoralogixLogger = require('./coralogix-logger');
+function respondError(message, status, e) {
+  const headers = new Headers();
+  const msg = e && e.message ? `${message}: ${e.message}` : message;
+
+  headers.set('Content-Type', 'text/plain; charset=utf-8');
+  headers.set('X-Error', msg);
+
+  const response = new Response(`${msg}\n`, {
+    status,
+    headers,
+  });
+  console.error(msg);
+  return response;
+}
 
 async function main(req) {
   try {
@@ -28,6 +40,13 @@ async function main(req) {
     const {
       weight = 1, id, cwv = {}, referer, generation,
     } = body;
+
+    if (!id) {
+      return respondError('id field is required', 400);
+    }
+    if (typeof cwv !== 'object') {
+      return respondError('cwv must be an object', 400);
+    }
 
     const c = new CoralogixLogger(req);
     c.logRUM(cwv, id, weight, referer, generation);
@@ -42,22 +61,7 @@ async function main(req) {
 
     return response;
   } catch (e) {
-    const headers = new Headers();
-
-    console.error(e);
-
-    const message = `RUM collection expects a JSON POST or PUT body: ${e.message}`;
-
-    headers.set('Content-Type', 'text/plain; charset=utf-8');
-    headers.set('X-Error', message);
-
-    const response = new Response(`${message}\n`, {
-      status: 400,
-      headers,
-    });
-    console.error('RUM collection expects a JSON POST or PUT body.');
-
-    return response;
+    return respondError('RUM Collector expects POST body as JSON', 400, e);
   }
 }
 
@@ -70,44 +74,4 @@ addEventListener('fetch', async (event) => {
   const req = event.request;
 
   event.respondWith(await main(req, {}));
-
-  /*
-
-  // Make any desired changes to the client request.
-  req.headers.set('Host', 'example.com');
-
-  // We can filter requests that have unexpected methods.
-  const VALID_METHODS = ['GET'];
-  if (!VALID_METHODS.includes(req.method)) {
-    const response = new Response('This method is not allowed', {
-      status: 405,
-    });
-    // Send the response back to the client.
-    event.respondWith(response);
-    return;
-  }
-
-  const { method } = req;
-  const urlParts = req.url.split('//').pop().split('/');
-  const path = `/${urlParts.join('/')}`;
-
-  // If request is a `GET` to the `/` path, send a default response.
-  if (method === 'GET' && path === '/') {
-    const headers = new Headers();
-    headers.set('Content-Type', 'text/plain; charset=utf-8');
-    const response = new Response('Hallo Stefan\n', {
-      status: 200,
-      headers,
-    });
-    // Send the response back to the client.
-    event.respondWith(response);
-    return;
-  }
-
-  // Catch all other requests and return a 404.
-  const response = new Response('The page you requested could not be found', {
-    status: 404,
-  });
-  // Send the response back to the client.
-  event.respondWith(response); */
 });
