@@ -27,6 +27,7 @@ export class CoralogixLogger {
     this.generation = generation || `${new Date().getFullYear()}-${new Date().getUTCMonth()}`;
 
     this.logger = fastly.getLogger('Coralogix');
+    console.log(this.generation, this.referer);
   }
 
   logRUM(json, id, weight) {
