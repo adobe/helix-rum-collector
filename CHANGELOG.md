@@ -1,3 +1,19 @@
+# [1.4.0](https://github.com/adobe/helix-rum-collector/compare/v1.3.0...v1.4.0) (2021-08-26)
+
+
+### Bug Fixes
+
+* **index:** additional request type checking ([b1ca9f6](https://github.com/adobe/helix-rum-collector/commit/b1ca9f68c6d404ab4451a03d1b87b1d6fc2d9210))
+* **index:** additional request type checking ([d769a1d](https://github.com/adobe/helix-rum-collector/commit/d769a1d941fce5e373b7809eec05cbc193e8ff14))
+* **index:** additional request type checking ([9d5799f](https://github.com/adobe/helix-rum-collector/commit/9d5799f5c2c3a104e21c7ac53bbeb40b5a4376a5))
+
+
+### Features
+
+* **google:** track generation ([4d54392](https://github.com/adobe/helix-rum-collector/commit/4d54392d67ed5faafafdc9bc53d1ebd6cea9c2e1))
+* **index:** additional request type checking ([1f7d102](https://github.com/adobe/helix-rum-collector/commit/1f7d102e601d9b9689532075675478e61e0a1005))
+* **rum:** add `generation` field for detailed change tracking (defaults to current month and year) and `referer` (one `r`, just like the HTTP spec says) for more accurate referrer tracking when using third-party mode ([a8b3747](https://github.com/adobe/helix-rum-collector/commit/a8b3747a548183dd9e271c3ab480e9f913a24b46))
+
 # [1.3.0](https://github.com/adobe/helix-rum-collector/compare/v1.2.3...v1.3.0) (2021-07-30)
 
 
