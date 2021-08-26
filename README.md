@@ -12,6 +12,29 @@ $ curl -X POST https://rum.hlx3.page/.rum/1  -d '{"cwv":{ "CLS": 1.0, "LCP": 1.0
 
 ## API
 
+The payload of a typical request looks like this:
+
+```jsonc
+{
+  "id": "-1617507985-1629963441842-d6998c875b962",
+  "weight": 100,
+  "generation": "test-optimize-fonts",
+  "cwv": {
+    "CLS": 0.0097652112,
+    "LCP": 800.7,
+    "FID": 10.8999999762,
+  }
+}
+```
+
+- `id`: this is a generated request ID. Format does not matter, but it is important that this ID stays the same for a given page view.
+- `weight`: the inverse of the sampling frequency used when tracking RUM data. In a typical site, only every `100`th request will be sampled, so the weight is `100`.
+- `generation`: (optional) if you are trying different variants of the same website and want to evaluate the impact of code changes, add a `generation` field which could be the name of the feature branch or feature flag or just a description of the significant change
+- `cwv`: contains the Core Web Vitals data payload. Typically these measurements trickle in over the course of the page rendering, and are posted as soon as they are available, so a given request will have only one data point. Thanks to the stable `id` they can be merged for analysis.
+- `cwv/CLS`: Cumulative Layout Shift
+- `cwv/LCP`: Largest Contentful Paint in milliseconds
+- `cwv/FID`: First Input Delay in milliseconds
+
 ### Supported Methods
 
 - `POST`
