@@ -33,6 +33,7 @@ export class CoralogixLogger {
   logRUM(json, id, weight) {
     console.log(`logging to Coralogix: ${typeof this.logger}`);
     const now = Math.floor(Date.now());
+    console.log('at least I know the time');
 
     const data = {
       timestamp: now,
