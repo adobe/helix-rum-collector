@@ -44,6 +44,9 @@ async function main(req) {
     if (!id) {
       return respondError('id field is required', 400);
     }
+    if (!weight && typeof weight !== 'number') {
+      return respondError('weight must be a number', 400);
+    }
     if (typeof cwv !== 'object') {
       return respondError('cwv must be an object', 400);
     }
