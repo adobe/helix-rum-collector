@@ -62,7 +62,9 @@ export class CoralogixLogger {
         },
       },
     };
-    console.log(JSON.stringify(data));
+    console.log('ready to log (coralogix)');
+    // console.log(JSON.stringify(data));
     this.logger.log(JSON.stringify(data));
+    console.log('done');
   }
 }
