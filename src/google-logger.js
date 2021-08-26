@@ -11,7 +11,7 @@
  */
 /* global fastly */
 export class GoogleLogger {
-  constructor(req, referer, generation) {
+  constructor(req) {
     this.subsystemName = 'undefined';
     this.req = req;
 
@@ -22,10 +22,6 @@ export class GoogleLogger {
     }
     this.start = Math.floor(Date.now());
     this.req = req;
-
-    this.referer = referer || this.req.headers.has('referer') ? this.req.headers.get('referer') : this.req.url;
-    this.generation = generation || `${new Date().getFullYear()}-${new Date().getUTCMonth()}`;
-
     // eslint-disable-next-line: no-console
     // console.setEndpoint('Coralogix');
     this.logger = fastly.getLogger('BigQuery');
@@ -38,10 +34,9 @@ export class GoogleLogger {
     const data = {
       time: now,
       host: this.subsystemName,
-      url: this.referer,
+      url: this.req.headers.has('referer') ? this.req.headers.get('referer') : this.req.url,
       user_agent: this.req.headers.get('user-agent'),
       referer: this.req.headers.get('referer'),
-      generation: this.generation,
       weight,
       id,
       ...json,
