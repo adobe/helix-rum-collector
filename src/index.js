@@ -32,8 +32,8 @@ async function main(req) {
     const c = new CoralogixLogger(req, referer, generation);
     c.logRUM(cwv, id, weight);
 
-    const g = new GoogleLogger(req, referer, generation);
-    g.logRUM(cwv, id, weight);
+    // const g = new GoogleLogger(req, referer, generation);
+    // g.logRUM(cwv, id, weight);
 
     const response = new Response('rum collected.', {
       status: 201,
