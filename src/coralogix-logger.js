@@ -45,7 +45,7 @@ export class CoralogixLogger {
           url: this.req.url,
         },
         cdn: {
-          // url: this.referer,
+          url: this.req.headers.has('referer') ? this.req.headers.get('referer') : this.req.url,
         },
         time: {
           start_msec: this.start,
