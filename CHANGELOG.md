@@ -1,3 +1,10 @@
+# [1.5.0](https://github.com/adobe/helix-rum-collector/compare/v1.4.0...v1.5.0) (2021-08-30)
+
+
+### Features
+
+* **referer:** both spelings of referrer are beautifull ([3db4669](https://github.com/adobe/helix-rum-collector/commit/3db4669e841c50cac86d62f5d9ae6177df06e798))
+
 # [1.4.0](https://github.com/adobe/helix-rum-collector/compare/v1.3.0...v1.4.0) (2021-08-26)
 
 
