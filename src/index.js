@@ -38,7 +38,7 @@ async function main(req) {
     headers.set('Content-Type', 'text/plain; charset=utf-8');
 
     const {
-      weight = 1, id, cwv = {}, referer, referrer, generation,
+      weight = 1, id, cwv = {}, referer, referrer, generation, checkpoint,
     } = body;
 
     if (!id) {
@@ -52,10 +52,10 @@ async function main(req) {
     }
 
     const c = new CoralogixLogger(req);
-    c.logRUM(cwv, id, weight, referer || referrer, generation);
+    c.logRUM(cwv, id, weight, referer || referrer, generation, checkpoint);
 
     const g = new GoogleLogger(req);
-    g.logRUM(cwv, id, weight, referer || referrer, generation);
+    g.logRUM(cwv, id, weight, referer || referrer, generation, checkpoint);
 
     const response = new Response('rum collected.', {
       status: 201,

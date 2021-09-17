@@ -31,6 +31,7 @@ The payload of a typical request looks like this:
 - `id`: this is a generated request ID. Format does not matter, but it is important that this ID stays the same for a given page view.
 - `weight`: the inverse of the sampling frequency used when tracking RUM data. In a typical site, only every `100`th request will be sampled, so the weight is `100`.
 - `generation`: (optional) if you are trying different variants of the same website and want to evaluate the impact of code changes, add a `generation` field which could be the name of the feature branch or feature flag or just a description of the significant change
+- `checkpoint`: (optional) if you want to track the drop-off of traffic as part of the load process, you can send events with an empty `cwv` object and the name of the checkpoint.
 - `referrer`/`referer`: (optional) when using Helix RUM Collector as a third-party service, browsers will truncate the `Referer` HTTP header. This optional field allows to pass it explicitly. Both spellings are allowed.
 - `cwv`: contains the Core Web Vitals data payload. Typically these measurements trickle in over the course of the page rendering, and are posted as soon as they are available, so a given request will have only one data point. Thanks to the stable `id` they can be merged for analysis.
 - `cwv/CLS`: Cumulative Layout Shift
