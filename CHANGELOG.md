@@ -1,3 +1,10 @@
+# [1.6.0](https://github.com/adobe/helix-rum-collector/compare/v1.5.0...v1.6.0) (2021-09-17)
+
+
+### Features
+
+* **checkpoints:** add a new `checkpoint` data point ([30109d0](https://github.com/adobe/helix-rum-collector/commit/30109d06b53da744a2e56af734622898cf6b36c7)), closes [#34](https://github.com/adobe/helix-rum-collector/issues/34)
+
 # [1.5.0](https://github.com/adobe/helix-rum-collector/compare/v1.4.0...v1.5.0) (2021-08-30)
 
 
