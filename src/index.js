@@ -70,13 +70,12 @@ async function main(req) {
   }
 }
 
-addEventListener('fetch', async (event) => {
-  // NOTE: By default, console messages are sent to stdout (and stderr for `console.error`).
-  // To send them to a logging endpoint instead, use `console.setEndpoint:
-  // console.setEndpoint("my-logging-endpoint");
-
+async function handler(event) {
   // Get the client reqest from the event
   const req = event.request;
+  return main(req);
+}
 
-  event.respondWith(await main(req, {}));
+addEventListener('fetch', (event) => {
+  event.respondWith(handler(event));
 });
