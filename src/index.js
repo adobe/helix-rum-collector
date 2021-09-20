@@ -12,6 +12,7 @@
 
 /* eslint-env serviceworker */
 
+import { URL } from '@fastly/js-compute';
 import { GoogleLogger } from './google-logger';
 import { CoralogixLogger } from './coralogix-logger';
 
@@ -32,7 +33,9 @@ function respondError(message, status, e) {
 
 async function main(req) {
   try {
-    const body = await req.json();
+    const body = req.method === 'GET'
+      ? JSON.parse(new URL(req.url).searchParams.get('data'))
+      : await req.json();
 
     const headers = new Headers();
     headers.set('Content-Type', 'text/plain; charset=utf-8');
