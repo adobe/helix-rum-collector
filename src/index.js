@@ -12,7 +12,6 @@
 
 /* eslint-env serviceworker */
 
-import { URL } from '@fastly/js-compute';
 import { GoogleLogger } from './google-logger';
 import { CoralogixLogger } from './coralogix-logger';
 
