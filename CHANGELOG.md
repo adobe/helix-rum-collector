@@ -1,3 +1,15 @@
+# [1.7.0](https://github.com/adobe/helix-rum-collector/compare/v1.6.0...v1.7.0) (2021-09-21)
+
+
+### Bug Fixes
+
+* **index:** do not import from as-compute ([8f842a4](https://github.com/adobe/helix-rum-collector/commit/8f842a4eb078f88535ed2341f3dff611aef0ff71))
+
+
+### Features
+
+* **index:** add ability to collect data via GET request and `data` URL parameter ([fdb3310](https://github.com/adobe/helix-rum-collector/commit/fdb3310ad3e0cfb5c6fa109c4e34de3048f12424))
+
 # [1.6.0](https://github.com/adobe/helix-rum-collector/compare/v1.5.0...v1.6.0) (2021-09-17)
 
 
