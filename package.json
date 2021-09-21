@@ -25,7 +25,7 @@
   },
   "homepage": "https://github.com/adobe/helix-rum-collector#readme",
   "dependencies": {
-    "@fastly/js-compute": "0.1.0"
+    "@fastly/js-compute": "^0.2.0"
   },
   "devDependencies": {
     "@adobe/eslint-config-helix": "1.1.5",

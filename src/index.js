@@ -32,7 +32,9 @@ function respondError(message, status, e) {
 
 async function main(req) {
   try {
-    const body = await req.json();
+    const body = req.method === 'GET'
+      ? JSON.parse(new URL(req.url).searchParams.get('data'))
+      : await req.json();
 
     const headers = new Headers();
     headers.set('Content-Type', 'text/plain; charset=utf-8');
@@ -68,13 +70,12 @@ async function main(req) {
   }
 }
 
-addEventListener('fetch', async (event) => {
-  // NOTE: By default, console messages are sent to stdout (and stderr for `console.error`).
-  // To send them to a logging endpoint instead, use `console.setEndpoint:
-  // console.setEndpoint("my-logging-endpoint");
-
+async function handler(event) {
   // Get the client reqest from the event
   const req = event.request;
+  return main(req);
+}
 
-  event.respondWith(await main(req, {}));
+addEventListener('fetch', (event) => {
+  event.respondWith(handler(event));
 });
