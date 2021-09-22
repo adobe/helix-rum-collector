@@ -27,17 +27,19 @@ export class GoogleLogger {
     this.logger = fastly.getLogger('BigQuery');
   }
 
-  logRUM(json, id, weight) {
+  logRUM(json, id, weight, referer, generation, checkpoint) {
     console.log('logging to Google');
     const now = Math.floor(Date.now());
 
     const data = {
       time: now,
       host: this.subsystemName,
-      url: this.req.headers.has('referer') ? this.req.headers.get('referer') : this.req.url,
+      url: referer || (this.req.headers.has('referer') ? this.req.headers.get('referer') : this.req.url),
       user_agent: this.req.headers.get('user-agent'),
       referer: this.req.headers.get('referer'),
       weight,
+      generation,
+      checkpoint,
       id,
       ...json,
     };
