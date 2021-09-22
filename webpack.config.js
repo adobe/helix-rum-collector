@@ -21,5 +21,6 @@ module.exports = {
     filename: 'index.js',
     path: path.resolve(__dirname, 'bin'),
     libraryTarget: 'this',
+    chunkFormat: 'module',
   },
 };
