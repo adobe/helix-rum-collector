@@ -14,8 +14,9 @@
 
 import { GoogleLogger } from './google-logger';
 import { CoralogixLogger } from './coralogix-logger';
+import { CoralogixErrorLogger } from './coralogix-error-logger';
 
-function respondError(message, status, e) {
+function respondError(message, status, e, req) {
   const headers = new Headers();
   const msg = e && e.message ? `${message}: ${e.message}` : message;
 
@@ -27,6 +28,12 @@ function respondError(message, status, e) {
     headers,
   });
   console.error(msg);
+  try {
+    const c = new CoralogixErrorLogger(req);
+    c.logError(status, message);
+  } catch (err) {
+    console.error(`error logging error: ${err.message}`);
+  }
   return response;
 }
 
@@ -44,20 +51,24 @@ async function main(req) {
     } = body;
 
     if (!id) {
-      return respondError('id field is required', 400);
+      return respondError('id field is required', 400, req);
     }
     if (!weight || typeof weight !== 'number') {
-      return respondError('weight must be a number', 400);
+      return respondError('weight must be a number', 400, req);
     }
     if (typeof cwv !== 'object') {
-      return respondError('cwv must be an object', 400);
+      return respondError('cwv must be an object', 400, req);
     }
 
-    const c = new CoralogixLogger(req);
-    c.logRUM(cwv, id, weight, referer || referrer, generation, checkpoint);
+    try {
+      const c = new CoralogixLogger(req);
+      c.logRUM(cwv, id, weight, referer || referrer, generation, checkpoint);
 
-    const g = new GoogleLogger(req);
-    g.logRUM(cwv, id, weight, referer || referrer, generation, checkpoint);
+      const g = new GoogleLogger(req);
+      g.logRUM(cwv, id, weight, referer || referrer, generation, checkpoint);
+    } catch (err) {
+      return respondError(`Could not collect RUM: ${err.message}`, 500, err, req);
+    }
 
     const response = new Response('rum collected.', {
       status: 201,
@@ -66,7 +77,7 @@ async function main(req) {
 
     return response;
   } catch (e) {
-    return respondError('RUM Collector expects POST body as JSON', 400, e);
+    return respondError('RUM Collector expects POST body as JSON', 400, e, req);
   }
 }
 
