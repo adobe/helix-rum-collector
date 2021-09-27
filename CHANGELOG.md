@@ -1,3 +1,10 @@
+## [1.7.1](https://github.com/adobe/helix-rum-collector/compare/v1.7.0...v1.7.1) (2021-09-27)
+
+
+### Bug Fixes
+
+* **deps:** pin dependencies ([d074611](https://github.com/adobe/helix-rum-collector/commit/d0746111f401262776562e93cd8f5c85d62d3ac6))
+
 # [1.7.0](https://github.com/adobe/helix-rum-collector/compare/v1.6.0...v1.7.0) (2021-09-21)
 
 
