@@ -1,3 +1,10 @@
+# [1.8.0](https://github.com/adobe/helix-rum-collector/compare/v1.7.1...v1.8.0) (2021-09-28)
+
+
+### Features
+
+* **logging:** log all errors to coralogix ([71fc037](https://github.com/adobe/helix-rum-collector/commit/71fc037479b45f405de3f528e69205d824722ae1))
+
 ## [1.7.1](https://github.com/adobe/helix-rum-collector/compare/v1.7.0...v1.7.1) (2021-09-27)
 
 
