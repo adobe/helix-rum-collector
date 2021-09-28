@@ -1,3 +1,10 @@
+# [1.9.0](https://github.com/adobe/helix-rum-collector/compare/v1.8.0...v1.9.0) (2021-09-28)
+
+
+### Features
+
+* **rum:** generate ID for some get requests ([5457472](https://github.com/adobe/helix-rum-collector/commit/5457472b169a15fbd0acd5e6b490c399e44ddca2)), closes [#41](https://github.com/adobe/helix-rum-collector/issues/41)
+
 # [1.8.0](https://github.com/adobe/helix-rum-collector/compare/v1.7.1...v1.8.0) (2021-09-28)
 
 
