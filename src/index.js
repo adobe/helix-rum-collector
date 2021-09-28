@@ -37,6 +37,11 @@ function respondError(message, status, e, req) {
   return response;
 }
 
+function hashCode(s) {
+  // eslint-disable-next-line no-bitwise
+  s.split('').reduce((a, b) => (((a << 5) - a) + b.charCodeAt(0)) | 0, 0);
+}
+
 async function main(req) {
   try {
     const body = req.method === 'GET'
@@ -47,7 +52,11 @@ async function main(req) {
     headers.set('Content-Type', 'text/plain; charset=utf-8');
 
     const {
-      weight = 1, id, cwv = {}, referer, referrer, generation, checkpoint,
+      weight = 1,
+      id = req.method === 'GET' ? `${hashCode(req.url)}-${new Date().getTime()}-${Math.random().toString(16).substr(2, 14)}` : undefined,
+      cwv = {},
+      referer, referrer,
+      generation, checkpoint,
     } = body;
 
     if (!id) {
