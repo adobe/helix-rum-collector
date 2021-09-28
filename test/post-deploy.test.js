@@ -41,6 +41,12 @@ describe('Helix RUM Collector Post-Deploy Tests', () => {
     expect(response).to.have.status(201);
   });
 
+  it('RUM collection via GET returns 201', async () => {
+    const response = await chai.request(`https://${domain}`)
+      .get('/.rum/1?data=%7B%22checkpoint%22%3A%22noscript%22%2C%22weight%22%3A1%7D');
+    expect(response).to.have.status(201);
+  });
+
   it('Missing id returns 400', async () => {
     const response = await chai.request(`https://${domain}`)
       .post('/')
