@@ -21,7 +21,10 @@ export class SplunkLogger {
     this.logger = fastly.getLogger('Splunk');
   }
 
-  logRUM(_json, id, _weight, referer) {
+  logRUM(_json, id, _weight, referer, _generation, checkpoint) {
+    if (checkpoint !== 'noscript' && checkpoint !== 'top' && checkpoint !== 'unsupported') {
+      return;
+    }
     console.log(`logging to Splunk: ${typeof this.logger}`);
 
     const host = new URL(referer || this.req.url).hostname;
