@@ -14,6 +14,7 @@
 
 import { GoogleLogger } from './google-logger';
 import { CoralogixLogger } from './coralogix-logger';
+import { SplunkLogger } from './splunk-logger';
 import { CoralogixErrorLogger } from './coralogix-error-logger';
 
 function respondError(message, status, e, req) {
@@ -75,6 +76,9 @@ async function main(req) {
 
       const g = new GoogleLogger(req);
       g.logRUM(cwv, id, weight, referer || referrer, generation, checkpoint);
+
+      const s = new SplunkLogger(req);
+      s.logRUM(cwv, id, weight, referer || referrer, generation, checkpoint);
     } catch (err) {
       return respondError(`Could not collect RUM: ${err.message}`, 500, err, req);
     }
