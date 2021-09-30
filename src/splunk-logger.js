@@ -99,7 +99,7 @@ export class SplunkLogger {
         request_x_forwarded_for: this.req.headers.get('x-forwarded-for'),
         // status: str(vcl`resp.status`),
         status: '200',
-        // content_type: str(vcl`cstr_escape(resp.http.content-type)`),
+        content_type: 'text/html', // hardcoded, so it will be counted
         // cache_status: str(vcl`regsub(fastly_info.state, "^(HIT-(SYNTH)|(HITPASS|HIT|MISS|PASS|ERROR|PIPE)).*", "\\2\\3")`),
         cache_status: 'PASS',
         // is_cacheable: str(vcl`if(fastly_info.state ~"^(HIT|MISS)$", "true", "false")`),
