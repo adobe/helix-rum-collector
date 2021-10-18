@@ -96,6 +96,7 @@ async function handler(event) {
   return main(req);
 }
 
+// eslint-disable-next-line no-restricted-globals
 addEventListener('fetch', (event) => {
   event.respondWith(handler(event));
 });
