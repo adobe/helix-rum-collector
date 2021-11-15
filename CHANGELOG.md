@@ -1,3 +1,10 @@
+## [1.9.1](https://github.com/adobe/helix-rum-collector/compare/v1.9.0...v1.9.1) (2021-11-15)
+
+
+### Bug Fixes
+
+* **deps:** update external fixes ([#56](https://github.com/adobe/helix-rum-collector/issues/56)) ([0a76aae](https://github.com/adobe/helix-rum-collector/commit/0a76aae5a0e4fcbb63f206c047023f17520e09bc))
+
 # [1.9.0](https://github.com/adobe/helix-rum-collector/compare/v1.8.0...v1.9.0) (2021-09-28)
 
 
