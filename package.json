@@ -43,7 +43,7 @@
     "mocha-junit-reporter": "2.0.2",
     "nyc": "15.1.0",
     "semantic-release": "18.0.0",
-    "webpack": "5.64.0",
+    "webpack": "5.64.1",
     "webpack-cli": "4.9.1"
   }
 }
