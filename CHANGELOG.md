@@ -1,3 +1,10 @@
+# [1.10.0](https://github.com/adobe/helix-rum-collector/compare/v1.9.1...v1.10.0) (2021-11-23)
+
+
+### Features
+
+* **rum:** add target property ([5299e7d](https://github.com/adobe/helix-rum-collector/commit/5299e7de4d717bcd022dd301e0140154be90252d))
+
 ## [1.9.1](https://github.com/adobe/helix-rum-collector/compare/v1.9.0...v1.9.1) (2021-11-15)
 
 
