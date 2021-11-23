@@ -57,6 +57,7 @@ async function main(req) {
       cwv = {},
       referer, referrer,
       generation, checkpoint,
+      target,
     } = body;
 
     if (!id) {
@@ -71,10 +72,10 @@ async function main(req) {
 
     try {
       const c = new CoralogixLogger(req);
-      c.logRUM(cwv, id, weight, referer || referrer, generation, checkpoint);
+      c.logRUM(cwv, id, weight, referer || referrer, generation, checkpoint, target);
 
       const g = new GoogleLogger(req);
-      g.logRUM(cwv, id, weight, referer || referrer, generation, checkpoint);
+      g.logRUM(cwv, id, weight, referer || referrer, generation, checkpoint, target);
     } catch (err) {
       return respondError(`Could not collect RUM: ${err.message}`, 500, err, req);
     }
