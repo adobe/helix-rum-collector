@@ -1,3 +1,10 @@
+# [1.11.0](https://github.com/adobe/helix-rum-collector/compare/v1.10.0...v1.11.0) (2021-12-07)
+
+
+### Features
+
+* **index:** support `source` property ([1b21486](https://github.com/adobe/helix-rum-collector/commit/1b21486f39b874576eabb9f23c1655728eefa02f))
+
 # [1.10.0](https://github.com/adobe/helix-rum-collector/compare/v1.9.1...v1.10.0) (2021-11-23)
 
 
