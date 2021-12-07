@@ -27,7 +27,7 @@ export class GoogleLogger {
     this.logger = fastly.getLogger('BigQuery');
   }
 
-  logRUM(json, id, weight, referer, generation, checkpoint, target) {
+  logRUM(json, id, weight, referer, generation, checkpoint, target, source) {
     console.log('logging to Google');
     const now = Math.floor(Date.now());
 
@@ -41,6 +41,7 @@ export class GoogleLogger {
       generation,
       checkpoint,
       target,
+      source,
       id,
       ...json,
     };
