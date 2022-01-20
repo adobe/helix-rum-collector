@@ -47,6 +47,14 @@ describe('Helix RUM Collector Post-Deploy Tests', () => {
     expect(response).to.have.status(201);
   });
 
+  it('robots.txt denies everything', async () => {
+    const response = await chai.request(`https://${domain}`)
+      .get('/robots.txt');
+    expect(response).to.have.status(200);
+    // eslint-disable-next-line no-unused-expressions
+    expect(response).to.be.text;
+  });
+
   it('Missing id returns 400', async () => {
     const response = await chai.request(`https://${domain}`)
       .post('/')

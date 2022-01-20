@@ -15,6 +15,7 @@
 import { GoogleLogger } from './google-logger';
 import { CoralogixLogger } from './coralogix-logger';
 import { CoralogixErrorLogger } from './coralogix-error-logger';
+import { respondRobots } from './robots.js';
 
 function respondError(message, status, e, req) {
   const headers = new Headers();
@@ -44,6 +45,9 @@ function hashCode(s) {
 
 async function main(req) {
   try {
+    if (req.method === 'GET' && req.url.startsWith('/robots.txt')) {
+      return respondRobots(req);
+    }
     const body = req.method === 'GET'
       ? JSON.parse(new URL(req.url).searchParams.get('data'))
       : await req.json();
