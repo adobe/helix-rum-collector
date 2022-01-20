@@ -45,7 +45,7 @@ function hashCode(s) {
 
 async function main(req) {
   try {
-    if (req.method === 'GET' && req.url.startsWith('/robots.txt')) {
+    if (req.method === 'GET' && new URL(req.url).pathname.startsWith('/robots.txt')) {
       return respondRobots(req);
     }
     const body = req.method === 'GET'
