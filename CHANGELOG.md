@@ -1,3 +1,18 @@
+# [1.12.0](https://github.com/adobe/helix-rum-collector/compare/v1.11.0...v1.12.0) (2022-01-20)
+
+
+### Bug Fixes
+
+* **robots:** use correct pathname for robots.txt ([4a3375c](https://github.com/adobe/helix-rum-collector/commit/4a3375c091f33f7e4cb12c37f65f0d9ee2ae83f9))
+* **web-vitals:** do not cache redirects forever ([0d3c3c7](https://github.com/adobe/helix-rum-collector/commit/0d3c3c727fb1a8813ff5bf822b706d54cfecbc32))
+
+
+### Features
+
+* add robots.txt response ([6cb7668](https://github.com/adobe/helix-rum-collector/commit/6cb766810ec6a5ae0ef7c69534dfab72c1609b4f))
+* **web-vitals:** clean up response headers ([81a51e1](https://github.com/adobe/helix-rum-collector/commit/81a51e183bd2a53f95b08403ac4f94bea913fd59))
+* **web-vitals:** serve web-vitals module from rum collector ([cdb7ea4](https://github.com/adobe/helix-rum-collector/commit/cdb7ea4d1ba9bd79dfe3d8058d8112af6be7d935))
+
 # [1.11.0](https://github.com/adobe/helix-rum-collector/compare/v1.10.0...v1.11.0) (2021-12-07)
 
 
