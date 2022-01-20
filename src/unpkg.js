@@ -10,6 +10,18 @@
  * governing permissions and limitations under the License.
  */
 /* eslint-env serviceworker */
+
+function cleanupHeaders(resp) {
+  ['access-control-allow-origin',
+    'cf-cache-status',
+    'cf-ray',
+    'expect-ct',
+    'fly-request-id',
+    'server',
+  ].forEach((headername) => resp.headers.delete(headername));
+  return resp;
+}
+
 export async function respondUnpkg(req) {
   const url = new URL(req.url);
   const paths = url.pathname.split('/');
@@ -27,7 +39,7 @@ export async function respondUnpkg(req) {
     // override the cache control header
     beresp2.headers.set('cache-control', beresp.headers.get('cache-control'));
 
-    return beresp2;
+    return cleanupHeaders(beresp2);
   }
-  return beresp;
+  return cleanupHeaders(beresp);
 }
