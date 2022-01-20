@@ -47,6 +47,30 @@ describe('Helix RUM Collector Post-Deploy Tests', () => {
     expect(response).to.have.status(201);
   });
 
+  it('robots.txt denies everything', async () => {
+    const response = await chai.request(`https://${domain}`)
+      .get('/robots.txt');
+    expect(response).to.have.status(200);
+    // eslint-disable-next-line no-unused-expressions
+    expect(response).to.be.text;
+  });
+
+  it('web vitals module is being served', async () => {
+    const response = await chai.request(`https://${domain}`)
+      .get('/.rum/web-vitals@2.1.3/dist/web-vitals.base.js');
+    expect(response).to.have.status(200);
+    // eslint-disable-next-line no-unused-expressions
+    expect(response).to.have.header('content-type', /^application\/javascript/);
+  });
+
+  it('web vitals module is being served without redirect', async () => {
+    const response = await chai.request(`https://${domain}`)
+      .get('/.rum/web-vitals/dist/web-vitals.base.js');
+    expect(response).to.have.status(200);
+    // eslint-disable-next-line no-unused-expressions
+    expect(response).to.have.header('content-type', /^application\/javascript/);
+  });
+
   it('Missing id returns 400', async () => {
     const response = await chai.request(`https://${domain}`)
       .post('/')
