@@ -16,6 +16,7 @@ import { GoogleLogger } from './google-logger';
 import { CoralogixLogger } from './coralogix-logger';
 import { CoralogixErrorLogger } from './coralogix-error-logger';
 import { respondRobots } from './robots.js';
+import { respondUnpkg } from './unpkg.js';
 
 function respondError(message, status, e, req) {
   const headers = new Headers();
@@ -47,6 +48,9 @@ async function main(req) {
   try {
     if (req.method === 'GET' && new URL(req.url).pathname.startsWith('/robots.txt')) {
       return respondRobots(req);
+    }
+    if (req.method === 'GET' && new URL(req.url).pathname.startsWith('/.rum/web-vitals')) {
+      return respondUnpkg(req);
     }
     const body = req.method === 'GET'
       ? JSON.parse(new URL(req.url).searchParams.get('data'))
