@@ -12,7 +12,7 @@
 /* eslint-env serviceworker */
 
 function cleanupHeaders(resp) {
-  ['access-control-allow-origin',
+  [
     'cf-cache-status',
     'cf-ray',
     'expect-ct',
