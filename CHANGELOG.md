@@ -1,3 +1,10 @@
+## [1.12.1](https://github.com/adobe/helix-rum-collector/compare/v1.12.0...v1.12.1) (2022-01-21)
+
+
+### Bug Fixes
+
+* **web-vitals:** allow loading from anywhere ([a219853](https://github.com/adobe/helix-rum-collector/commit/a2198531c0aedf070fdb5d3c754d0d227a108269))
+
 # [1.12.0](https://github.com/adobe/helix-rum-collector/compare/v1.11.0...v1.12.0) (2022-01-20)
 
 
