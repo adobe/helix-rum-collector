@@ -35,9 +35,9 @@ async function transformBody(resp, req) {
   return resp;
 }
 
-async function cleanupResponse(resp) {
+async function cleanupResponse(resp, req) {
   try {
-    return transformBody(cleanupHeaders(resp));
+    return transformBody(cleanupHeaders(resp), req);
   } catch (e) {
     console.error(e.message);
   }
