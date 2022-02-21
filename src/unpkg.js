@@ -29,14 +29,19 @@ async function transformBody(resp, req) {
     && url.searchParams.has('generation')
     && url.pathname.contains('@adobe/helix-rum-js')) {
     const text = await resp.text();
-    const body = text.replace(/__HELIX_RUM_JS_VERSION__/, url.searchParams.get('generation'));
+    const body = text.replace(/__HELIX_RUM_JS_VERSION__/, url.searchParams.get('generation').replace(/[^a-z0-9_-]/ig, ''));
     return new Response(body, { headers: resp.headers });
   }
   return resp;
 }
 
-function cleanupResponse(resp) {
-  return transformBody(cleanupHeaders(resp));
+async function cleanupResponse(resp) {
+  try {
+    return transformBody(cleanupHeaders(resp));
+  } catch (e) {
+    console.error(e.message);
+  }
+  return cleanupHeaders(resp);
 }
 
 export async function respondUnpkg(req) {
