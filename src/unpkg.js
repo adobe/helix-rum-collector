@@ -27,7 +27,7 @@ async function transformBody(resp, req) {
   if (resp.ok
     && resp.status === 200
     && url.searchParams.has('generation')
-    && url.pathname.contains('@adobe/helix-rum-js')) {
+    && url.pathname.indexOf('@adobe/helix-rum-js')) {
     const text = await resp.text();
     const body = text.replace(/__HELIX_RUM_JS_VERSION__/, url.searchParams.get('generation').replace(/[^a-z0-9_-]/ig, ''));
     return new Response(body, { headers: resp.headers });
