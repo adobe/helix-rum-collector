@@ -22,6 +22,29 @@ function cleanupHeaders(resp) {
   return resp;
 }
 
+async function transformBody(resp, req) {
+  const url = new URL(req.url);
+  const respURL = new URL(resp.url);
+  if (resp.ok
+    && resp.status === 200
+    && url.pathname.indexOf('@adobe/helix-rum-js')) {
+    const generation = url.searchParams.get('generation') || respURL.pathname.split(/[@\\/]/).slice(2, 5).join('-');
+    const text = await resp.text();
+    const body = text.replace(/__HELIX_RUM_JS_VERSION__/, generation.replace(/[^a-z0-9_.-]/ig, ''));
+    return new Response(body, { headers: resp.headers });
+  }
+  return resp;
+}
+
+async function cleanupResponse(resp, req) {
+  try {
+    return transformBody(cleanupHeaders(resp), req);
+  } catch (e) {
+    console.error(e.message);
+  }
+  return cleanupHeaders(resp);
+}
+
 export async function respondUnpkg(req) {
   const url = new URL(req.url);
   const paths = url.pathname.split('/');
@@ -39,7 +62,18 @@ export async function respondUnpkg(req) {
     // override the cache control header
     beresp2.headers.set('cache-control', beresp.headers.get('cache-control'));
 
-    return cleanupHeaders(beresp2);
+    if (beresp2.status === 302) {
+      const bereq3 = new Request(new URL(beresp2.headers.get('location'), 'https://unpkg.com'));
+      const beresp3 = await fetch(bereq3, {
+        backend: 'unpkg.com',
+      });
+
+      // override the cache control header
+      beresp3.headers.set('cache-control', beresp.headers.get('cache-control'));
+
+      return cleanupResponse(beresp3, req);
+    }
+    return cleanupResponse(beresp2, req);
   }
-  return cleanupHeaders(beresp);
+  return cleanupResponse(beresp, req);
 }

@@ -52,6 +52,9 @@ async function main(req) {
     if (req.method === 'GET' && new URL(req.url).pathname.startsWith('/.rum/web-vitals')) {
       return respondUnpkg(req);
     }
+    if (req.method === 'GET' && new URL(req.url).pathname.startsWith('/.rum/@adobe/helix-rum-js')) {
+      return respondUnpkg(req);
+    }
     const body = req.method === 'GET'
       ? JSON.parse(new URL(req.url).searchParams.get('data'))
       : await req.json();
@@ -70,13 +73,13 @@ async function main(req) {
     } = body;
 
     if (!id) {
-      return respondError('id field is required', 400, req);
+      return respondError('id field is required', 400, undefined, req);
     }
     if (!weight || typeof weight !== 'number') {
-      return respondError('weight must be a number', 400, req);
+      return respondError('weight must be a number', 400, undefined, req);
     }
     if (typeof cwv !== 'object') {
-      return respondError('cwv must be an object', 400, req);
+      return respondError('cwv must be an object', 400, undefined, req);
     }
 
     try {
