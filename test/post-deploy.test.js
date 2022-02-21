@@ -81,7 +81,7 @@ describe('Helix RUM Collector Post-Deploy Tests', () => {
 
   it('rum js module is being served with replacements', async () => {
     const response = await chai.request(`https://${domain}`)
-      .get('/.rum/@adobe/helix-rum-js^1/src/index.js?generation=people_try_to_put_us_d-down');
+      .get('/.rum/@adobe/helix-rum-js@^1/src/index.js?generation=people_try_to_put_us_d-down');
     expect(response).to.have.status(200);
     // eslint-disable-next-line no-unused-expressions
     expect(response).to.have.header('content-type', /^application\/javascript/);
