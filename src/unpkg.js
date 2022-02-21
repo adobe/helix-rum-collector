@@ -39,6 +39,17 @@ export async function respondUnpkg(req) {
     // override the cache control header
     beresp2.headers.set('cache-control', beresp.headers.get('cache-control'));
 
+    if (beresp2.status === 302) {
+      const bereq3 = new Request(new URL(beresp2.headers.get('location'), 'https://unpkg.com'));
+      const beresp3 = await fetch(bereq3, {
+        backend: 'unpkg.com',
+      });
+
+      // override the cache control header
+      beresp3.headers.set('cache-control', beresp.headers.get('cache-control'));
+
+      return cleanupHeaders(beresp3);
+    }
     return cleanupHeaders(beresp2);
   }
   return cleanupHeaders(beresp);
