@@ -73,13 +73,13 @@ async function main(req) {
     } = body;
 
     if (!id) {
-      return respondError('id field is required', 400, req);
+      return respondError('id field is required', 400, undefined, req);
     }
     if (!weight || typeof weight !== 'number') {
-      return respondError('weight must be a number', 400, req);
+      return respondError('weight must be a number', 400, undefined, req);
     }
     if (typeof cwv !== 'object') {
-      return respondError('cwv must be an object', 400, req);
+      return respondError('cwv must be an object', 400, undefined, req);
     }
 
     try {
