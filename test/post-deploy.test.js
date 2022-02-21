@@ -77,7 +77,7 @@ describe('Helix RUM Collector Post-Deploy Tests', () => {
     expect(response).to.have.status(200);
     // eslint-disable-next-line no-unused-expressions
     expect(response).to.have.header('content-type', /^application\/javascript/);
-  });
+  }).timeout(3000);
 
   it('Missing id returns 400', async () => {
     const response = await chai.request(`https://${domain}`)
