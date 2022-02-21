@@ -22,6 +22,23 @@ function cleanupHeaders(resp) {
   return resp;
 }
 
+async function transformBody(resp, req) {
+  const url = new URL(req.url);
+  if (resp.ok
+    && resp.status === 200
+    && url.searchParams.has('generation')
+    && url.pathname.contains('@adobe/helix-rum-js')) {
+    const text = await resp.text();
+    const body = text.replace(/__HELIX_RUM_JS_VERSION__/, url.searchParams.get('generation'));
+    return new Response(body, { headers: resp.headers });
+  }
+  return resp;
+}
+
+function cleanupResponse(resp) {
+  return transformBody(cleanupHeaders(resp));
+}
+
 export async function respondUnpkg(req) {
   const url = new URL(req.url);
   const paths = url.pathname.split('/');
@@ -48,9 +65,9 @@ export async function respondUnpkg(req) {
       // override the cache control header
       beresp3.headers.set('cache-control', beresp.headers.get('cache-control'));
 
-      return cleanupHeaders(beresp3);
+      return cleanupResponse(beresp3, req);
     }
-    return cleanupHeaders(beresp2);
+    return cleanupResponse(beresp2, req);
   }
-  return cleanupHeaders(beresp);
+  return cleanupResponse(beresp, req);
 }
