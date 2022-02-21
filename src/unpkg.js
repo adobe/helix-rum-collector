@@ -24,12 +24,14 @@ function cleanupHeaders(resp) {
 
 async function transformBody(resp, req) {
   const url = new URL(req.url);
+  const respURL = new URL(resp.url);
   if (resp.ok
     && resp.status === 200
     && url.searchParams.has('generation')
     && url.pathname.indexOf('@adobe/helix-rum-js')) {
+    const generation = url.searchParams.get('generation') || respURL.pathname.pathname.split(/[@\\/]/).slice(2, 5).join('-');
     const text = await resp.text();
-    const body = text.replace(/__HELIX_RUM_JS_VERSION__/, url.searchParams.get('generation').replace(/[^a-z0-9_-]/ig, ''));
+    const body = text.replace(/__HELIX_RUM_JS_VERSION__/, generation.replace(/[^a-z0-9_.-]/ig, ''));
     return new Response(body, { headers: resp.headers });
   }
   return resp;
