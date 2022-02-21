@@ -27,7 +27,6 @@ async function transformBody(resp, req) {
   const respURL = new URL(resp.url);
   if (resp.ok
     && resp.status === 200
-    && url.searchParams.has('generation')
     && url.pathname.indexOf('@adobe/helix-rum-js')) {
     const generation = url.searchParams.get('generation') || respURL.pathname.pathname.split(/[@\\/]/).slice(2, 5).join('-');
     const text = await resp.text();
