@@ -1,3 +1,22 @@
+# [1.13.0](https://github.com/adobe/helix-rum-collector/compare/v1.12.1...v1.13.0) (2022-02-27)
+
+
+### Bug Fixes
+
+* **deps:** update external fixes ([#73](https://github.com/adobe/helix-rum-collector/issues/73)) ([354d5db](https://github.com/adobe/helix-rum-collector/commit/354d5db1fba57be6257b6bbaac40b7caa91fb121))
+* **deps:** update external fixes ([#74](https://github.com/adobe/helix-rum-collector/issues/74)) ([de74d29](https://github.com/adobe/helix-rum-collector/commit/de74d294cdba007101409daa364dc812b4bf33d6))
+* **index:** fix error logging ([963cdc7](https://github.com/adobe/helix-rum-collector/commit/963cdc74d7690c5a007a773b26729ee21f1e4909))
+* **unpkg:** avoid avoidable errors ([74e4fb1](https://github.com/adobe/helix-rum-collector/commit/74e4fb1c5c1d775fc0c94916f93dd5633b07d986))
+* **unpkg:** make generation parameter optional for version string injection ([0d76197](https://github.com/adobe/helix-rum-collector/commit/0d761973e42c1d1514a90010de9ce9eac8f63f93))
+
+
+### Features
+
+* **delivery:** serve helix-rum-js if requested ([55ceedc](https://github.com/adobe/helix-rum-collector/commit/55ceedc5d657278a8f79f2bd0dd324f3167f1b49))
+* **unpkg:** add default generation based on version number ([b20c057](https://github.com/adobe/helix-rum-collector/commit/b20c057f4f02ece952fbc0408032b5505adf0b6e))
+* **unpkg:** add string replacement feature ([07bc6ba](https://github.com/adobe/helix-rum-collector/commit/07bc6ba54ea63ced9d391a89e4c426f5ea1be8a5))
+* **unpkg:** allow second-order redirects ([5497366](https://github.com/adobe/helix-rum-collector/commit/549736624bdf3af00a76d5498bde62b8b42bce46))
+
 ## [1.12.1](https://github.com/adobe/helix-rum-collector/compare/v1.12.0...v1.12.1) (2022-01-21)
 
 
