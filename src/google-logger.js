@@ -25,6 +25,7 @@ export class GoogleLogger {
     // eslint-disable-next-line: no-console
     // console.setEndpoint('Coralogix');
     this.logger = fastly.getLogger('BigQuery');
+    this.clusterlogger = fastly.getLogger('BigQuery-Clustered');
   }
 
   logRUM(json, id, weight, referer, generation, checkpoint, target, source) {
@@ -46,7 +47,7 @@ export class GoogleLogger {
       ...json,
     };
 
-    console.log(JSON.stringify(data));
     this.logger.log(JSON.stringify(data));
+    this.clusterlogger.log(JSON.stringify(data));
   }
 }
