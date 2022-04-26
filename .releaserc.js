@@ -33,7 +33,7 @@ module.exports = {
       "name": $name,
       "application": $applications | split(","),
       "subsystem": $subsystems | split(",")
-    } ' | curl -X POST -H "Authorization: Bearer ${process.env.CORALOGIX_KEY}" -H "Content-Type: application/json" -d @- -sSL 'https://webapi.coralogix.com/api/v1/external/tags'`
+    } ' | curl -X POST -H "Authorization: Bearer ${process.env.CORALOGIX_API_KEY}" -H "Content-Type: application/json" -d @- -sSL 'https://webapi.coralogix.com/api/v1/external/tags'`
     }],
     '@semantic-release/github',
   ],
