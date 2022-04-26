@@ -1,3 +1,11 @@
+# [1.14.0](https://github.com/adobe/helix-rum-collector/compare/v1.13.0...v1.14.0) (2022-04-26)
+
+
+### Features
+
+* **google:** log to clustered table ([fefb3d5](https://github.com/adobe/helix-rum-collector/commit/fefb3d545be338c80e6d89f5dcb9a1bdea738f48))
+* **google:** partition and cluster data by hostname and timestamp ([3d77c9e](https://github.com/adobe/helix-rum-collector/commit/3d77c9eb2f117e0e36f8a8258738d3daf74b0583))
+
 # [1.13.0](https://github.com/adobe/helix-rum-collector/compare/v1.12.1...v1.13.0) (2022-02-27)
 
 
