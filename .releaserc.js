@@ -25,7 +25,15 @@ module.exports = {
       message: 'chore(release): ${nextRelease.version} [skip ci]\n\n${nextRelease.notes}'
     }],
     ['@semantic-release/exec', {
-      publishCmd: 'npm run deploy'
+      publishCmd: `npm run deploy && jq -nMc \
+      --arg name "helix-rum-collector@v\${nextRelease.version}" \
+      --arg applications "helix-rum-collector" \
+      --arg subsystems "" '{
+      "timestamp": (now * 1000),
+      "name": $name,
+      "application": $applications | split(","),
+      "subsystem": $subsystems | split(",")
+    } ' | curl -X POST -H "Authorization: Bearer ${process.env.CORALOGIX_KEY}" -H "Content-Type: application/json" -d @- -sSL 'https://webapi.coralogix.com/api/v1/external/tags'`
     }],
     '@semantic-release/github',
   ],
