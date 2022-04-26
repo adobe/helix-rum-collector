@@ -31,6 +31,7 @@ module.exports = {
       --arg subsystems "" '{
       "timestamp": (now * 1000),
       "name": $name,
+      "iconUrl": "https://emojipedia-us.s3.dualstack.us-west-1.amazonaws.com/thumbs/240/apple/325/ship_1f6a2.png",
       "application": $applications | split(","),
       "subsystem": $subsystems | split(",")
     } ' | curl -X POST -H "Authorization: Bearer ${process.env.CORALOGIX_API_KEY}" -H "Content-Type: application/json" -d @- -sSL 'https://webapi.coralogix.com/api/v1/external/tags'`
