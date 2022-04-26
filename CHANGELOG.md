@@ -1,3 +1,10 @@
+## [1.14.1](https://github.com/adobe/helix-rum-collector/compare/v1.14.0...v1.14.1) (2022-04-26)
+
+
+### Bug Fixes
+
+* **release:** tag releases in coralogix ([b159022](https://github.com/adobe/helix-rum-collector/commit/b159022b2cf9aef204ef11a5ded8416f9f3b0125))
+
 # [1.14.0](https://github.com/adobe/helix-rum-collector/compare/v1.13.0...v1.14.0) (2022-04-26)
 
 
