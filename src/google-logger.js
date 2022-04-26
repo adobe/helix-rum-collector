@@ -25,6 +25,7 @@ export class GoogleLogger {
     // eslint-disable-next-line: no-console
     // console.setEndpoint('Coralogix');
     this.logger = fastly.getLogger('BigQuery');
+    this.clusterlogger = fastly.getLogger('BigQuery-Clustered');
   }
 
   logRUM(json, id, weight, referer, generation, checkpoint, target, source) {
@@ -46,7 +47,13 @@ export class GoogleLogger {
       ...json,
     };
 
-    console.log(JSON.stringify(data));
+    const clusterdata = {
+      ...data,
+      time: now / 1000, // the cluster table uses TIMESTAMP for time, so that it can be partitioned
+      hostname: (new URL(data.url)).hostname, // the cluster table uses hostname for clustering
+    };
+
     this.logger.log(JSON.stringify(data));
+    this.clusterlogger.log(JSON.stringify(clusterdata));
   }
 }
