@@ -1,3 +1,10 @@
+## [1.14.3](https://github.com/adobe/helix-rum-collector/compare/v1.14.2...v1.14.3) (2022-04-26)
+
+
+### Bug Fixes
+
+* **release:** add icon to release tag ([37414c6](https://github.com/adobe/helix-rum-collector/commit/37414c6f01e828709776b7acf8a180bb6a27aa31))
+
 ## [1.14.2](https://github.com/adobe/helix-rum-collector/compare/v1.14.1...v1.14.2) (2022-04-26)
 
 
