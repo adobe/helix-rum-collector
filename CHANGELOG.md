@@ -1,3 +1,10 @@
+## [1.14.2](https://github.com/adobe/helix-rum-collector/compare/v1.14.1...v1.14.2) (2022-04-26)
+
+
+### Bug Fixes
+
+* **release:** use separate api key for tagging ([b320c05](https://github.com/adobe/helix-rum-collector/commit/b320c059fce77fe8a87165fb436fb21364c1693c))
+
 ## [1.14.1](https://github.com/adobe/helix-rum-collector/compare/v1.14.0...v1.14.1) (2022-04-26)
 
 
