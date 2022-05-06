@@ -1,3 +1,11 @@
+## [1.14.7](https://github.com/adobe/helix-rum-collector/compare/v1.14.6...v1.14.7) (2022-05-06)
+
+
+### Bug Fixes
+
+* **release:** change release plugin order ([1e06bca](https://github.com/adobe/helix-rum-collector/commit/1e06bcad6da22c70b6479690bf76643be4e52195))
+* **release:** use newer plugin version ([cc7f9aa](https://github.com/adobe/helix-rum-collector/commit/cc7f9aa316d1dfb986b567f958e2f7cc8890bc31))
+
 ## [1.14.6](https://github.com/adobe/helix-rum-collector/compare/v1.14.5...v1.14.6) (2022-05-06)
 
 
