@@ -25,18 +25,13 @@ module.exports = {
       message: 'chore(release): ${nextRelease.version} [skip ci]\n\n${nextRelease.notes}'
     }],
     ['@semantic-release/exec', {
-      publishCmd: `npm run deploy && jq -nMc \
-      --arg name "helix-rum-collector@v\${nextRelease.version}" \
-      --arg applications "helix-rum-collector" \
-      --arg subsystems "" '{
-      "timestamp": (now * 1000),
-      "name": $name,
-      "iconUrl": "https://emojipedia-us.s3.dualstack.us-west-1.amazonaws.com/thumbs/240/apple/325/ship_1f6a2.png",
-      "application": $applications | split(","),
-      "subsystem": $subsystems | split(",")
-    } ' | curl -X POST -H "Authorization: Bearer ${process.env.CORALOGIX_API_KEY}" -H "Content-Type: application/json" -d @- -sSL 'https://webapi.coralogix.com/api/v1/external/tags'`
+      publishCmd: `npm run deploy`
     }],
     '@semantic-release/github',
+    ['@adobe/semantic-release-coralogix', {
+      iconUrl: 'https://emojipedia-us.s3.dualstack.us-west-1.amazonaws.com/thumbs/240/apple/325/ship_1f6a2.png',
+      applications: ['helix-rum-collector']
+    }]
   ],
   branches: ['main']
 };
