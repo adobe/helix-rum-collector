@@ -1,3 +1,11 @@
+## [1.14.6](https://github.com/adobe/helix-rum-collector/compare/v1.14.5...v1.14.6) (2022-05-06)
+
+
+### Bug Fixes
+
+* **deps:** bump semantic-release-coralogix plugin version ([97a37d6](https://github.com/adobe/helix-rum-collector/commit/97a37d6d896dc5947df767fb1fc23abd96a33272))
+* force release ([c8e8731](https://github.com/adobe/helix-rum-collector/commit/c8e8731e2d935f3df583028fa3f872e08f8446de))
+
 ## [1.14.5](https://github.com/adobe/helix-rum-collector/compare/v1.14.4...v1.14.5) (2022-05-06)
 
 
