@@ -27,11 +27,11 @@ module.exports = {
     ['@semantic-release/exec', {
       publishCmd: `npm run deploy`
     }],
-    '@semantic-release/github',
     ['@adobe/semantic-release-coralogix', {
       iconUrl: 'https://emojipedia-us.s3.dualstack.us-west-1.amazonaws.com/thumbs/240/apple/325/ship_1f6a2.png',
       applications: ['helix-rum-collector']
-    }]
+    }],
+    '@semantic-release/github',
   ],
   branches: ['main']
 };
