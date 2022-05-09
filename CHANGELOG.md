@@ -1,3 +1,10 @@
+## [1.14.8](https://github.com/adobe/helix-rum-collector/compare/v1.14.7...v1.14.8) (2022-05-09)
+
+
+### Bug Fixes
+
+* **release:** notify slack upon release ([2f9e6e2](https://github.com/adobe/helix-rum-collector/commit/2f9e6e2df7baeedde397b5fb3541a75698039e00))
+
 ## [1.14.7](https://github.com/adobe/helix-rum-collector/compare/v1.14.6...v1.14.7) (2022-05-06)
 
 
