@@ -32,6 +32,14 @@ module.exports = {
       applications: ['helix-rum-collector']
     }],
     '@semantic-release/github',
+    [
+      "semantic-release-slack-bot",
+      {
+        notifyOnSuccess: true,
+        notifyOnFail: false,
+        markdownReleaseNotes: true,
+      }
+    ]
   ],
   branches: ['main']
 };
