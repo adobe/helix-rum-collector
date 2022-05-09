@@ -35,10 +35,9 @@ module.exports = {
     [
       "semantic-release-slack-bot",
       {
-        notifyOnSuccess: true,
+        notifyOnSuccess: false,
         notifyOnFail: false,
         markdownReleaseNotes: true,
-        slackChannel: "#helix-noisy",
       }
     ]
   ],
