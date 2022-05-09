@@ -38,6 +38,7 @@ module.exports = {
         notifyOnSuccess: true,
         notifyOnFail: false,
         markdownReleaseNotes: true,
+        slackChannel: "#helix-noisy",
       }
     ]
   ],
