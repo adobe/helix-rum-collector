@@ -1,3 +1,10 @@
+## [1.14.9](https://github.com/adobe/helix-rum-collector/compare/v1.14.8...v1.14.9) (2022-05-09)
+
+
+### Bug Fixes
+
+* **release:** send release notifications to helix-noisy ([1c9cce6](https://github.com/adobe/helix-rum-collector/commit/1c9cce6357d3fdcb3983ba9748916291871c6c6b))
+
 ## [1.14.8](https://github.com/adobe/helix-rum-collector/compare/v1.14.7...v1.14.8) (2022-05-09)
 
 
