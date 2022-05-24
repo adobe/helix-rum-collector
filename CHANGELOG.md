@@ -1,3 +1,10 @@
+# [1.15.0](https://github.com/adobe/helix-rum-collector/compare/v1.14.9...v1.15.0) (2022-05-24)
+
+
+### Features
+
+* **coralogix:** raise the severity of `checkpoint: error` to `error` ([dfec958](https://github.com/adobe/helix-rum-collector/commit/dfec958d26e6027de2343712e9ab107cd6beaeb1))
+
 ## [1.14.9](https://github.com/adobe/helix-rum-collector/compare/v1.14.8...v1.14.9) (2022-05-09)
 
 
