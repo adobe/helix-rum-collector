@@ -36,7 +36,7 @@ export class CoralogixLogger {
       timestamp: now,
       applicationName: 'helix-rum-collector',
       subsystemName: this.subsystemName,
-      severity: 3,
+      severity: checkpoint === 'error' ? 5 : 3,
       json: {
         edgecompute: {
           url: this.req.url,
