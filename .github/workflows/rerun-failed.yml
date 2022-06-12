@@ -1,5 +1,5 @@
 on:
-  check_run:
+  check_suite:
     types: [ completed ]
     branches-ignore:
       - 'main'
