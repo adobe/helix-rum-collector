@@ -1,3 +1,10 @@
+# [1.16.0](https://github.com/adobe/helix-rum-collector/compare/v1.15.1...v1.16.0) (2022-07-08)
+
+
+### Features
+
+* **unpkg:** serve any helix-rum packages ([e43daab](https://github.com/adobe/helix-rum-collector/commit/e43daab94af6dab86159ba6cf95031cdd03e8704))
+
 ## [1.15.1](https://github.com/adobe/helix-rum-collector/compare/v1.15.0...v1.15.1) (2022-06-27)
 
 
