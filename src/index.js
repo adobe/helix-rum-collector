@@ -52,7 +52,7 @@ async function main(req) {
     if (req.method === 'GET' && new URL(req.url).pathname.startsWith('/.rum/web-vitals')) {
       return respondUnpkg(req);
     }
-    if (req.method === 'GET' && new URL(req.url).pathname.startsWith('/.rum/@adobe/helix-rum-js')) {
+    if (req.method === 'GET' && new URL(req.url).pathname.startsWith('/.rum/@adobe/helix-rum')) {
       return respondUnpkg(req);
     }
     const body = req.method === 'GET'
