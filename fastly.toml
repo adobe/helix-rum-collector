@@ -3,7 +3,7 @@
 
 authors = ["lars@trieloff.net"]
 description = "helix - helix3 rum collector (js) - *.hlx3.page"
-language = "assemblyscript"
+language = "javascript"
 manifest_version = 1
 name = "helix3"
 service_id = "5Qir8H8bLeaRuldIp9TWq4"
