@@ -12,121 +12,121 @@ orbs:
 commands:
   setup:
     steps:
-    - fastly/install
+      - fastly/install:
+          version: "3.1.1"
 
-    - checkout
-    # - restore_cache:
-    #     keys:
-    #     - v1-dependencies-{{ arch }}-{{ checksum "package-lock.json" }}
-    - run:
-        name: Installing Dependencies
-        command: npm ci
+      - checkout
+      # - restore_cache:
+      #     keys:
+      #     - v1-dependencies-{{ arch }}-{{ checksum "package-lock.json" }}
+      - run:
+          name: Installing Dependencies
+          command: npm ci
 
-    # - save_cache:
-    #     paths:
-    #     - node_modules
-    #     key: v1-dependencies-{{ arch }}-{{ checksum "package-lock.json" }}
-    - run:
-        name: prepare test git user
-        command: git config --global user.email "circleci@example.com" && git config --global user.name "CircleCi Build"
+      # - save_cache:
+      #     paths:
+      #     - node_modules
+      #     key: v1-dependencies-{{ arch }}-{{ checksum "package-lock.json" }}
+      - run:
+          name: prepare test git user
+          command: git config --global user.email "circleci@example.com" && git config --global user.name "CircleCi Build"
 
 jobs:
   build:
     executor: node
 
     steps:
-    - setup
-    - run: mkdir junit
-    - run:
-        name: Lint
-        command: npm run lint
-    - run:
-        name: Run Tests
-        command: npm run test-ci
-    - run:
-        name: Run Build
-        command: npm run build
+      - setup
+      - run: mkdir junit
+      - run:
+          name: Lint
+          command: npm run lint
+      - run:
+          name: Run Tests
+          command: npm run test-ci
+      - run:
+          name: Run Build
+          command: npm run build
 
-    - store_test_results:
-        path: junit
+      - store_test_results:
+          path: junit
 
-    - store_artifacts:
-        path: junit
+      - store_artifacts:
+          path: junit
 
   branch-deploy:
     executor: node
 
     steps:
-    - setup
-    - run:
-        name: revert changes to package-lock.json
-        command: git checkout -- package-lock.json
+      - setup
+      - run:
+          name: revert changes to package-lock.json
+          command: git checkout -- package-lock.json
 
-    - run:
-        name: Init Fastly Service
-        command: |
-          echo $(fastly service search -t $HLX_FASTLY_AUTH --name=${CIRCLE_PROJECT_REPONAME}-${CIRCLE_BRANCH} || echo "ID: null") | head -n 1 | sed -e 's/ID: /ID=/' | sed -e 's/ .*//' >> $BASH_ENV
-          source $BASH_ENV
-          echo $ID
-          if [ "$ID" = "null" ]; then
-            echo "ID is unset";
-            fastly service create -t $HLX_FASTLY_AUTH --name=${CIRCLE_PROJECT_REPONAME}-${CIRCLE_BRANCH} | sed -e "s/SUCCESS: Created service /ID=/" >> $BASH_ENV;
-            source $BASH_ENV;
-            echo New Service $ID;
-            fastly domain  add          -t $HLX_FASTLY_AUTH -s $ID --version=1 --name=${CIRCLE_PROJECT_REPONAME}-${CIRCLE_BRANCH}.hlx3.one
-            fastly backend add          -t $HLX_FASTLY_AUTH -s $ID --version=1 --name=unpkg.com --address=unpkg.com --use-ssl --override-host=unpkg.com --port=443
-            fastly logging https create -t $HLX_FASTLY_AUTH -s $ID --version=1 --name=Coralogix --content-type=application/json --header-name=private_key --header-value=$CORALOGIX_KEY --url=https://api.coralogix.com/logs/rest/singles --json-format=1 --message-type=blank --placement=none
-          else
-            echo "ID is set to '$ID'";
-          fi
-    - run:
-        name: Package
-        command: npm run build
+      - run:
+          name: Init Fastly Service
+          command: |
+            echo $(fastly service search -t $HLX_FASTLY_AUTH --name=${CIRCLE_PROJECT_REPONAME}-${CIRCLE_BRANCH} || echo "ID: null") | head -n 1 | sed -e 's/ID: /ID=/' | sed -e 's/ .*//' >> $BASH_ENV
+            source $BASH_ENV
+            echo $ID
+            if [ "$ID" = "null" ]; then
+              echo "ID is unset";
+              fastly service create -t $HLX_FASTLY_AUTH --name=${CIRCLE_PROJECT_REPONAME}-${CIRCLE_BRANCH} | sed -e "s/SUCCESS: Created service /ID=/" >> $BASH_ENV;
+              source $BASH_ENV;
+              echo New Service $ID;
+              fastly domain  add          -t $HLX_FASTLY_AUTH -s $ID --version=1 --name=${CIRCLE_PROJECT_REPONAME}-${CIRCLE_BRANCH}.hlx3.one
+              fastly backend add          -t $HLX_FASTLY_AUTH -s $ID --version=1 --name=unpkg.com --address=unpkg.com --use-ssl --override-host=unpkg.com --port=443
+              fastly logging https create -t $HLX_FASTLY_AUTH -s $ID --version=1 --name=Coralogix --content-type=application/json --header-name=private_key --header-value=$CORALOGIX_KEY --url=https://api.coralogix.com/logs/rest/singles --json-format=1 --message-type=blank --placement=none
+            else
+              echo "ID is set to '$ID'";
+            fi
+      - run:
+          name: Package
+          command: npm run build
 
-    - run:
-        name: Branch Deployment
-        command: fastly compute deploy -t $HLX_FASTLY_AUTH -s $ID
+      - run:
+          name: Branch Deployment
+          command: fastly compute deploy -t $HLX_FASTLY_AUTH -s $ID
 
-    - run:
-        name: Wait for service to be updated
-        command: sleep 60
+      - run:
+          name: Wait for service to be updated
+          command: sleep 60
 
-    - run:
-        name: Post-Deployment Integration Test
-        command: npm run test-postdeploy
-    - store_test_results:
-        path: junit
-
+      - run:
+          name: Post-Deployment Integration Test
+          command: npm run test-postdeploy
+      - store_test_results:
+          path: junit
 
   semantic-release:
     executor: node
 
     steps:
-    - setup
-    - run:
-        name: revert changes to package-lock.json
-        command: git checkout -- package-lock.json
+      - setup
+      - run:
+          name: revert changes to package-lock.json
+          command: git checkout -- package-lock.json
 
-    - run:
-        name: Semantic Release
-        command: npm run semantic-release
+      - run:
+          name: Semantic Release
+          command: npm run semantic-release
 
 workflows:
   version: 2
   build:
     jobs:
-    - build
-    - branch-deploy:
-        context: Project Helix
-        requires:
-          - build
-        filters:
-          branches:
-            ignore: main
-    - semantic-release:
-        context: Project Helix
-        requires:
-        - build
-        filters:
-          branches:
-            only: main
+      - build
+      - branch-deploy:
+          context: Project Helix
+          requires:
+            - build
+          filters:
+            branches:
+              ignore: main
+      - semantic-release:
+          context: Project Helix
+          requires:
+            - build
+          filters:
+            branches:
+              only: main
