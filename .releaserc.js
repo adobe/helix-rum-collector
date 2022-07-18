@@ -25,9 +25,21 @@ module.exports = {
       message: 'chore(release): ${nextRelease.version} [skip ci]\n\n${nextRelease.notes}'
     }],
     ['@semantic-release/exec', {
-      publishCmd: 'npm run deploy'
+      publishCmd: `npm run deploy`
+    }],
+    ['@adobe/semantic-release-coralogix', {
+      iconUrl: 'https://emojipedia-us.s3.dualstack.us-west-1.amazonaws.com/thumbs/240/apple/325/ship_1f6a2.png',
+      applications: ['helix-rum-collector']
     }],
     '@semantic-release/github',
+    [
+      "semantic-release-slack-bot",
+      {
+        notifyOnSuccess: false,
+        notifyOnFail: false,
+        markdownReleaseNotes: true,
+      }
+    ]
   ],
   branches: ['main']
 };

@@ -2,9 +2,7 @@ version: 2.1
 executors:
   node:
     docker:
-    - image: circleci/node:15-stretch
-      environment:
-        NPM_CONFIG_PREFIX: "~/.npm-global"
+      - image: cimg/node:14.19
     working_directory: ~/repo
 
 orbs:
@@ -99,7 +97,7 @@ jobs:
     - store_test_results:
         path: junit
 
-        
+
   semantic-release:
     executor: node
 

@@ -1,3 +1,222 @@
+# [1.16.0](https://github.com/adobe/helix-rum-collector/compare/v1.15.1...v1.16.0) (2022-07-08)
+
+
+### Features
+
+* **unpkg:** serve any helix-rum packages ([e43daab](https://github.com/adobe/helix-rum-collector/commit/e43daab94af6dab86159ba6cf95031cdd03e8704))
+
+## [1.15.1](https://github.com/adobe/helix-rum-collector/compare/v1.15.0...v1.15.1) (2022-06-27)
+
+
+### Bug Fixes
+
+* **deps:** update external fixes ([f75f9f3](https://github.com/adobe/helix-rum-collector/commit/f75f9f3078ee4ac88cff2d6b895a2ba9eb37231e))
+
+# [1.15.0](https://github.com/adobe/helix-rum-collector/compare/v1.14.9...v1.15.0) (2022-05-24)
+
+
+### Features
+
+* **coralogix:** raise the severity of `checkpoint: error` to `error` ([dfec958](https://github.com/adobe/helix-rum-collector/commit/dfec958d26e6027de2343712e9ab107cd6beaeb1))
+
+## [1.14.9](https://github.com/adobe/helix-rum-collector/compare/v1.14.8...v1.14.9) (2022-05-09)
+
+
+### Bug Fixes
+
+* **release:** send release notifications to helix-noisy ([1c9cce6](https://github.com/adobe/helix-rum-collector/commit/1c9cce6357d3fdcb3983ba9748916291871c6c6b))
+
+## [1.14.8](https://github.com/adobe/helix-rum-collector/compare/v1.14.7...v1.14.8) (2022-05-09)
+
+
+### Bug Fixes
+
+* **release:** notify slack upon release ([2f9e6e2](https://github.com/adobe/helix-rum-collector/commit/2f9e6e2df7baeedde397b5fb3541a75698039e00))
+
+## [1.14.7](https://github.com/adobe/helix-rum-collector/compare/v1.14.6...v1.14.7) (2022-05-06)
+
+
+### Bug Fixes
+
+* **release:** change release plugin order ([1e06bca](https://github.com/adobe/helix-rum-collector/commit/1e06bcad6da22c70b6479690bf76643be4e52195))
+* **release:** use newer plugin version ([cc7f9aa](https://github.com/adobe/helix-rum-collector/commit/cc7f9aa316d1dfb986b567f958e2f7cc8890bc31))
+
+## [1.14.6](https://github.com/adobe/helix-rum-collector/compare/v1.14.5...v1.14.6) (2022-05-06)
+
+
+### Bug Fixes
+
+* **deps:** bump semantic-release-coralogix plugin version ([97a37d6](https://github.com/adobe/helix-rum-collector/commit/97a37d6d896dc5947df767fb1fc23abd96a33272))
+* force release ([c8e8731](https://github.com/adobe/helix-rum-collector/commit/c8e8731e2d935f3df583028fa3f872e08f8446de))
+
+## [1.14.5](https://github.com/adobe/helix-rum-collector/compare/v1.14.4...v1.14.5) (2022-05-06)
+
+
+### Bug Fixes
+
+* force release ([23a0f19](https://github.com/adobe/helix-rum-collector/commit/23a0f19b3230361adb0c12527eb0a6cea18bc1de))
+
+## [1.14.4](https://github.com/adobe/helix-rum-collector/compare/v1.14.3...v1.14.4) (2022-05-06)
+
+
+### Bug Fixes
+
+* force release ([a9062e7](https://github.com/adobe/helix-rum-collector/commit/a9062e7d2d3dc4b3441c765067213c5f4c4f680c))
+
+## [1.14.3](https://github.com/adobe/helix-rum-collector/compare/v1.14.2...v1.14.3) (2022-04-26)
+
+
+### Bug Fixes
+
+* **release:** add icon to release tag ([37414c6](https://github.com/adobe/helix-rum-collector/commit/37414c6f01e828709776b7acf8a180bb6a27aa31))
+
+## [1.14.2](https://github.com/adobe/helix-rum-collector/compare/v1.14.1...v1.14.2) (2022-04-26)
+
+
+### Bug Fixes
+
+* **release:** use separate api key for tagging ([b320c05](https://github.com/adobe/helix-rum-collector/commit/b320c059fce77fe8a87165fb436fb21364c1693c))
+
+## [1.14.1](https://github.com/adobe/helix-rum-collector/compare/v1.14.0...v1.14.1) (2022-04-26)
+
+
+### Bug Fixes
+
+* **release:** tag releases in coralogix ([b159022](https://github.com/adobe/helix-rum-collector/commit/b159022b2cf9aef204ef11a5ded8416f9f3b0125))
+
+# [1.14.0](https://github.com/adobe/helix-rum-collector/compare/v1.13.0...v1.14.0) (2022-04-26)
+
+
+### Features
+
+* **google:** log to clustered table ([fefb3d5](https://github.com/adobe/helix-rum-collector/commit/fefb3d545be338c80e6d89f5dcb9a1bdea738f48))
+* **google:** partition and cluster data by hostname and timestamp ([3d77c9e](https://github.com/adobe/helix-rum-collector/commit/3d77c9eb2f117e0e36f8a8258738d3daf74b0583))
+
+# [1.13.0](https://github.com/adobe/helix-rum-collector/compare/v1.12.1...v1.13.0) (2022-02-27)
+
+
+### Bug Fixes
+
+* **deps:** update external fixes ([#73](https://github.com/adobe/helix-rum-collector/issues/73)) ([354d5db](https://github.com/adobe/helix-rum-collector/commit/354d5db1fba57be6257b6bbaac40b7caa91fb121))
+* **deps:** update external fixes ([#74](https://github.com/adobe/helix-rum-collector/issues/74)) ([de74d29](https://github.com/adobe/helix-rum-collector/commit/de74d294cdba007101409daa364dc812b4bf33d6))
+* **index:** fix error logging ([963cdc7](https://github.com/adobe/helix-rum-collector/commit/963cdc74d7690c5a007a773b26729ee21f1e4909))
+* **unpkg:** avoid avoidable errors ([74e4fb1](https://github.com/adobe/helix-rum-collector/commit/74e4fb1c5c1d775fc0c94916f93dd5633b07d986))
+* **unpkg:** make generation parameter optional for version string injection ([0d76197](https://github.com/adobe/helix-rum-collector/commit/0d761973e42c1d1514a90010de9ce9eac8f63f93))
+
+
+### Features
+
+* **delivery:** serve helix-rum-js if requested ([55ceedc](https://github.com/adobe/helix-rum-collector/commit/55ceedc5d657278a8f79f2bd0dd324f3167f1b49))
+* **unpkg:** add default generation based on version number ([b20c057](https://github.com/adobe/helix-rum-collector/commit/b20c057f4f02ece952fbc0408032b5505adf0b6e))
+* **unpkg:** add string replacement feature ([07bc6ba](https://github.com/adobe/helix-rum-collector/commit/07bc6ba54ea63ced9d391a89e4c426f5ea1be8a5))
+* **unpkg:** allow second-order redirects ([5497366](https://github.com/adobe/helix-rum-collector/commit/549736624bdf3af00a76d5498bde62b8b42bce46))
+
+## [1.12.1](https://github.com/adobe/helix-rum-collector/compare/v1.12.0...v1.12.1) (2022-01-21)
+
+
+### Bug Fixes
+
+* **web-vitals:** allow loading from anywhere ([a219853](https://github.com/adobe/helix-rum-collector/commit/a2198531c0aedf070fdb5d3c754d0d227a108269))
+
+# [1.12.0](https://github.com/adobe/helix-rum-collector/compare/v1.11.0...v1.12.0) (2022-01-20)
+
+
+### Bug Fixes
+
+* **robots:** use correct pathname for robots.txt ([4a3375c](https://github.com/adobe/helix-rum-collector/commit/4a3375c091f33f7e4cb12c37f65f0d9ee2ae83f9))
+* **web-vitals:** do not cache redirects forever ([0d3c3c7](https://github.com/adobe/helix-rum-collector/commit/0d3c3c727fb1a8813ff5bf822b706d54cfecbc32))
+
+
+### Features
+
+* add robots.txt response ([6cb7668](https://github.com/adobe/helix-rum-collector/commit/6cb766810ec6a5ae0ef7c69534dfab72c1609b4f))
+* **web-vitals:** clean up response headers ([81a51e1](https://github.com/adobe/helix-rum-collector/commit/81a51e183bd2a53f95b08403ac4f94bea913fd59))
+* **web-vitals:** serve web-vitals module from rum collector ([cdb7ea4](https://github.com/adobe/helix-rum-collector/commit/cdb7ea4d1ba9bd79dfe3d8058d8112af6be7d935))
+
+# [1.11.0](https://github.com/adobe/helix-rum-collector/compare/v1.10.0...v1.11.0) (2021-12-07)
+
+
+### Features
+
+* **index:** support `source` property ([1b21486](https://github.com/adobe/helix-rum-collector/commit/1b21486f39b874576eabb9f23c1655728eefa02f))
+
+# [1.10.0](https://github.com/adobe/helix-rum-collector/compare/v1.9.1...v1.10.0) (2021-11-23)
+
+
+### Features
+
+* **rum:** add target property ([5299e7d](https://github.com/adobe/helix-rum-collector/commit/5299e7de4d717bcd022dd301e0140154be90252d))
+
+## [1.9.1](https://github.com/adobe/helix-rum-collector/compare/v1.9.0...v1.9.1) (2021-11-15)
+
+
+### Bug Fixes
+
+* **deps:** update external fixes ([#56](https://github.com/adobe/helix-rum-collector/issues/56)) ([0a76aae](https://github.com/adobe/helix-rum-collector/commit/0a76aae5a0e4fcbb63f206c047023f17520e09bc))
+
+# [1.9.0](https://github.com/adobe/helix-rum-collector/compare/v1.8.0...v1.9.0) (2021-09-28)
+
+
+### Features
+
+* **rum:** generate ID for some get requests ([5457472](https://github.com/adobe/helix-rum-collector/commit/5457472b169a15fbd0acd5e6b490c399e44ddca2)), closes [#41](https://github.com/adobe/helix-rum-collector/issues/41)
+
+# [1.8.0](https://github.com/adobe/helix-rum-collector/compare/v1.7.1...v1.8.0) (2021-09-28)
+
+
+### Features
+
+* **logging:** log all errors to coralogix ([71fc037](https://github.com/adobe/helix-rum-collector/commit/71fc037479b45f405de3f528e69205d824722ae1))
+
+## [1.7.1](https://github.com/adobe/helix-rum-collector/compare/v1.7.0...v1.7.1) (2021-09-27)
+
+
+### Bug Fixes
+
+* **deps:** pin dependencies ([d074611](https://github.com/adobe/helix-rum-collector/commit/d0746111f401262776562e93cd8f5c85d62d3ac6))
+
+# [1.7.0](https://github.com/adobe/helix-rum-collector/compare/v1.6.0...v1.7.0) (2021-09-21)
+
+
+### Bug Fixes
+
+* **index:** do not import from as-compute ([8f842a4](https://github.com/adobe/helix-rum-collector/commit/8f842a4eb078f88535ed2341f3dff611aef0ff71))
+
+
+### Features
+
+* **index:** add ability to collect data via GET request and `data` URL parameter ([fdb3310](https://github.com/adobe/helix-rum-collector/commit/fdb3310ad3e0cfb5c6fa109c4e34de3048f12424))
+
+# [1.6.0](https://github.com/adobe/helix-rum-collector/compare/v1.5.0...v1.6.0) (2021-09-17)
+
+
+### Features
+
+* **checkpoints:** add a new `checkpoint` data point ([30109d0](https://github.com/adobe/helix-rum-collector/commit/30109d06b53da744a2e56af734622898cf6b36c7)), closes [#34](https://github.com/adobe/helix-rum-collector/issues/34)
+
+# [1.5.0](https://github.com/adobe/helix-rum-collector/compare/v1.4.0...v1.5.0) (2021-08-30)
+
+
+### Features
+
+* **referer:** both spelings of referrer are beautifull ([3db4669](https://github.com/adobe/helix-rum-collector/commit/3db4669e841c50cac86d62f5d9ae6177df06e798))
+
+# [1.4.0](https://github.com/adobe/helix-rum-collector/compare/v1.3.0...v1.4.0) (2021-08-26)
+
+
+### Bug Fixes
+
+* **index:** additional request type checking ([b1ca9f6](https://github.com/adobe/helix-rum-collector/commit/b1ca9f68c6d404ab4451a03d1b87b1d6fc2d9210))
+* **index:** additional request type checking ([d769a1d](https://github.com/adobe/helix-rum-collector/commit/d769a1d941fce5e373b7809eec05cbc193e8ff14))
+* **index:** additional request type checking ([9d5799f](https://github.com/adobe/helix-rum-collector/commit/9d5799f5c2c3a104e21c7ac53bbeb40b5a4376a5))
+
+
+### Features
+
+* **google:** track generation ([4d54392](https://github.com/adobe/helix-rum-collector/commit/4d54392d67ed5faafafdc9bc53d1ebd6cea9c2e1))
+* **index:** additional request type checking ([1f7d102](https://github.com/adobe/helix-rum-collector/commit/1f7d102e601d9b9689532075675478e61e0a1005))
+* **rum:** add `generation` field for detailed change tracking (defaults to current month and year) and `referer` (one `r`, just like the HTTP spec says) for more accurate referrer tracking when using third-party mode ([a8b3747](https://github.com/adobe/helix-rum-collector/commit/a8b3747a548183dd9e271c3ab480e9f913a24b46))
+
 # [1.3.0](https://github.com/adobe/helix-rum-collector/compare/v1.2.3...v1.3.0) (2021-07-30)
 
 

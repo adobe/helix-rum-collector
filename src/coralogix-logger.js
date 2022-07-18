@@ -27,21 +27,22 @@ export class CoralogixLogger {
     this.logger = fastly.getLogger('Coralogix');
   }
 
-  logRUM(json, id, weight) {
+  logRUM(json, id, weight, referer, generation, checkpoint, target, source) {
     console.log(`logging to Coralogix: ${typeof this.logger}`);
     const now = Math.floor(Date.now());
+    console.log('at least I know the time');
 
     const data = {
       timestamp: now,
       applicationName: 'helix-rum-collector',
       subsystemName: this.subsystemName,
-      severity: 3,
+      severity: checkpoint === 'error' ? 5 : 3,
       json: {
         edgecompute: {
           url: this.req.url,
         },
         cdn: {
-          url: this.req.headers.has('referer') ? this.req.headers.get('referer') : this.req.url,
+          url: referer || (this.req.headers.has('referer') ? this.req.headers.get('referer') : this.req.url),
         },
         time: {
           start_msec: this.start,
@@ -53,12 +54,18 @@ export class CoralogixLogger {
           user_agent: this.req.headers.get('user-agent'),
         },
         rum: {
+          generation,
+          checkpoint,
+          target,
+          source,
           weight,
           ...json,
         },
       },
     };
-    console.log(JSON.stringify(data));
+    console.log('ready to log (coralogix)');
+    // console.log(JSON.stringify(data));
     this.logger.log(JSON.stringify(data));
+    console.log('done');
   }
 }

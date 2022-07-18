@@ -36,10 +36,68 @@ describe('Helix RUM Collector Post-Deploy Tests', () => {
           FID: 4,
         },
         id: 'blablub',
-        weight: 0,
+        weight: 1,
       });
     expect(response).to.have.status(201);
   });
+
+  it('RUM collection via GET returns 201', async () => {
+    const response = await chai.request(`https://${domain}`)
+      .get('/.rum/1?data=%7B%22checkpoint%22%3A%22noscript%22%2C%22weight%22%3A1%7D');
+    expect(response).to.have.status(201);
+  });
+
+  it('robots.txt denies everything', async () => {
+    const response = await chai.request(`https://${domain}`)
+      .get('/robots.txt');
+    expect(response).to.have.status(200);
+    // eslint-disable-next-line no-unused-expressions
+    expect(response).to.be.text;
+  });
+
+  it('web vitals module is being served', async () => {
+    const response = await chai.request(`https://${domain}`)
+      .get('/.rum/web-vitals@2.1.3/dist/web-vitals.base.js');
+    expect(response).to.have.status(200);
+    // eslint-disable-next-line no-unused-expressions
+    expect(response).to.have.header('content-type', /^application\/javascript/);
+  });
+
+  it('web vitals module is being served without redirect', async () => {
+    const response = await chai.request(`https://${domain}`)
+      .get('/.rum/web-vitals/dist/web-vitals.base.js');
+    expect(response).to.have.status(200);
+    // eslint-disable-next-line no-unused-expressions
+    expect(response).to.have.header('content-type', /^application\/javascript/);
+  });
+
+  it('rum js module is being served without redirect', async () => {
+    const response = await chai.request(`https://${domain}`)
+      .get('/.rum/@adobe/helix-rum-js');
+    expect(response).to.have.status(200);
+    // eslint-disable-next-line no-unused-expressions
+    expect(response).to.have.header('content-type', /^application\/javascript/);
+  }).timeout(5000);
+
+  it('rum js module is being served with replacements', async () => {
+    const response = await chai.request(`https://${domain}`)
+      .get('/.rum/@adobe/helix-rum-js@^1/src/index.js?generation=people_try_to_put_us_d-down')
+      .buffer(true);
+    expect(response).to.have.status(200);
+    // eslint-disable-next-line no-unused-expressions
+    expect(response).to.have.header('content-type', /^application\/javascript/);
+    expect(response.text).to.contain('people_try_to_put_us_d-down');
+  }).timeout(5000);
+
+  it('rum js module is being served with default replacements', async () => {
+    const response = await chai.request(`https://${domain}`)
+      .get('/.rum/@adobe/helix-rum-js@1.0.0/src/index.js')
+      .buffer(true);
+    expect(response).to.have.status(200);
+    // eslint-disable-next-line no-unused-expressions
+    expect(response).to.have.header('content-type', /^application\/javascript/);
+    expect(response.text).to.contain('adobe-helix-rum-js-1.0.0');
+  }).timeout(5000);
 
   it('Missing id returns 400', async () => {
     const response = await chai.request(`https://${domain}`)
@@ -50,12 +108,12 @@ describe('Helix RUM Collector Post-Deploy Tests', () => {
           LCP: 1.0,
           FID: 4,
         },
-        weight: 0,
+        weight: 1,
       });
     expect(response).to.have.status(400);
   });
 
-  it('Missing weight returns 400', async () => {
+  it('Non-numeric weight returns 400', async () => {
     const response = await chai.request(`https://${domain}`)
       .post('/')
       .send({
@@ -65,18 +123,9 @@ describe('Helix RUM Collector Post-Deploy Tests', () => {
           FID: 4,
         },
         id: 'blablub',
+        weight: 'one',
       });
     expect(response).to.have.status(400);
-  });
-
-  it('Omitted cwv still returns 201', async () => {
-    const response = await chai.request(`https://${domain}`)
-      .post('/')
-      .send({
-        id: 'blablub',
-        weight: 0,
-      });
-    expect(response).to.have.status(201);
   });
 
   it('Non-object root returns 400', async () => {

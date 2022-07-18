@@ -10,7 +10,7 @@
  * governing permissions and limitations under the License.
  */
 /* global fastly */
-export class GoogleLogger {
+export class CoralogixErrorLogger {
   constructor(req) {
     this.subsystemName = 'undefined';
     this.req = req;
@@ -24,36 +24,40 @@ export class GoogleLogger {
     this.req = req;
     // eslint-disable-next-line: no-console
     // console.setEndpoint('Coralogix');
-    this.logger = fastly.getLogger('BigQuery');
-    this.clusterlogger = fastly.getLogger('BigQuery-Clustered');
+    this.logger = fastly.getLogger('Coralogix');
   }
 
-  logRUM(json, id, weight, referer, generation, checkpoint, target, source) {
-    console.log('logging to Google');
+  logError(status, message) {
+    console.log(`logging to Coralogix: ${typeof this.logger}`);
     const now = Math.floor(Date.now());
+    console.log('at least I know the time');
 
     const data = {
-      time: now,
-      host: this.subsystemName,
-      url: referer || (this.req.headers.has('referer') ? this.req.headers.get('referer') : this.req.url),
-      user_agent: this.req.headers.get('user-agent'),
-      referer: this.req.headers.get('referer'),
-      weight,
-      generation,
-      checkpoint,
-      target,
-      source,
-      id,
-      ...json,
+      timestamp: now,
+      applicationName: 'helix-rum-collector',
+      subsystemName: this.subsystemName,
+      severity: Math.floor(status / 100),
+      json: {
+        edgecompute: {
+          url: this.req.url,
+        },
+        cdn: {
+          url: this.req.headers.has('referer') ? this.req.headers.get('referer') : this.req.url,
+        },
+        time: {
+          start_msec: this.start,
+          elapsed: now - this.start,
+        },
+        request: {
+          method: this.req.method,
+          user_agent: this.req.headers.get('user-agent'),
+        },
+        message,
+      },
     };
-
-    const clusterdata = {
-      ...data,
-      time: now / 1000, // the cluster table uses TIMESTAMP for time, so that it can be partitioned
-      hostname: (new URL(data.url)).hostname, // the cluster table uses hostname for clustering
-    };
-
+    console.log('ready to log (coralogix)');
+    // console.log(JSON.stringify(data));
     this.logger.log(JSON.stringify(data));
-    this.clusterlogger.log(JSON.stringify(clusterdata));
+    console.log('done');
   }
 }
