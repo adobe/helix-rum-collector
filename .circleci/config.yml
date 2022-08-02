@@ -13,7 +13,7 @@ commands:
   setup:
     steps:
       - fastly/install:
-          version: "3.1.1"
+          version: "3.2.4"
 
       - checkout
       # - restore_cache:
