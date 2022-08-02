@@ -46,7 +46,7 @@ jobs:
           command: npm run test-ci
       - run:
           name: Run Build
-          command: npm run build
+          command: npm run fastly-build
 
       - store_test_results:
           path: junit
@@ -82,7 +82,7 @@ jobs:
             fi
       - run:
           name: Package
-          command: npm run build
+          command: npm run fastly-build
 
       - run:
           name: Branch Deployment
