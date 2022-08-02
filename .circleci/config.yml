@@ -85,6 +85,10 @@ jobs:
           command: npm run fastly-build
 
       - run:
+          name: List Package Contents
+          command: tar -tvf pkg/helix3.tar.gz
+
+      - run:
           name: Branch Deployment
           command: fastly compute deploy -t $HLX_FASTLY_AUTH -s $ID
 
