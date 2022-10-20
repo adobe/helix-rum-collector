@@ -87,7 +87,7 @@ jobs:
 
       - run:
           name: List Package Contents
-          command: tar -tvf pkg/helix3.tar.gz
+          command: tar -tvf pkg/package.tar.gz
 
       - run:
           name: Branch Deployment
