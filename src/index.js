@@ -17,6 +17,7 @@ import { CoralogixLogger } from './coralogix-logger';
 import { CoralogixErrorLogger } from './coralogix-error-logger';
 import { respondRobots } from './robots.js';
 import { respondUnpkg } from './unpkg.js';
+import { ExperienceEdgeLogger } from './experience-edge-logger.js';
 
 function respondError(message, status, e, req) {
   const headers = new Headers();
@@ -88,6 +89,9 @@ async function main(req) {
 
       const g = new GoogleLogger(req);
       g.logRUM(cwv, id, weight, referer || referrer, generation, checkpoint, target, source);
+
+      const e = new ExperienceEdgeLogger(req);
+      e.logRUM(cwv, id, weight, referer || referrer, generation, checkpoint, target, source);
     } catch (err) {
       return respondError(`Could not collect RUM: ${err.message}`, 500, err, req);
     }
