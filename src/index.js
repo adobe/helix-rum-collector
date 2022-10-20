@@ -91,7 +91,7 @@ async function main(req) {
       g.logRUM(cwv, id, weight, referer || referrer, generation, checkpoint, target, source);
 
       const e = new ExperienceEdgeLogger(req);
-      e.logRUM(cwv, id, weight, referer || referrer, generation, checkpoint, target, source);
+      await e.logRUM(cwv, id, weight, referer || referrer, generation, checkpoint, target, source);
     } catch (err) {
       return respondError(`Could not collect RUM: ${err.message}`, 500, err, req);
     }
