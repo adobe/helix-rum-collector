@@ -10,7 +10,7 @@
  * governing permissions and limitations under the License.
  */
 /* eslint-env serviceworker */
-
+/* global ConfigStore */
 export class ExperienceEdgeLogger {
   constructor(req) {
     this.req = req;
@@ -21,10 +21,19 @@ export class ExperienceEdgeLogger {
     } else if (req.headers.get('host')) {
       this.hostname = req.headers.get('host');
     }
+    try {
+      this.configs = new ConfigStore('CONFIG_IDS');
+    } catch (e) {
+      console.error('Unable to create config store', e);
+    }
   }
 
   // eslint-disable-next-line no-unused-vars
   async logRUM(json, id, weight, referer, generation, checkpoint, target, source) {
+    if (!this.configs) {
+      console.error('Unable to log RUM data to Experience Edge without a config store');
+      return;
+    }
     console.log('logging to experience edge');
 
     // most of this is copied from the example, but it's a start
@@ -91,7 +100,7 @@ export class ExperienceEdgeLogger {
       },
       meta: {
         state: {
-          domain: 'example.com',
+          domain: this.hostname,
           cookiesEnabled: true,
           entries: [
             {
@@ -107,7 +116,9 @@ export class ExperienceEdgeLogger {
       },
     };
 
-    const endpoint = new URL('https://edge.adobedc.net/ee/v1/collect?configId=7cca5ac0-0a9e-4caa-98f8-e0cae555b171:prod');
+    const STAGE = 'prod';
+    const endpoint = new URL('https://edge.adobedc.net/ee/v1/collect');
+    endpoint.searchParams.append('configId', `${this.configs.get(STAGE)}:${STAGE}`);
     endpoint.searchParams.append('requestId', id);
     // headers from curl:
     // -H 'Connection: keep-alive'
