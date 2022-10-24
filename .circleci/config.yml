@@ -78,6 +78,7 @@ jobs:
               fastly backend add          -t $HLX_FASTLY_AUTH -s $ID --version=1 --name=unpkg.com --address=unpkg.com --use-ssl --override-host=unpkg.com --port=443
               fastly backend add          -t $HLX_FASTLY_AUTH -s $ID --version=1 --name=experience-edge --address=edge.adobedc.net --use-ssl --override-host=edge.adobedc.net --port=443
               fastly logging https create -t $HLX_FASTLY_AUTH -s $ID --version=1 --name=Coralogix --content-type=application/json --header-name=private_key --header-value=$CORALOGIX_KEY --url=https://api.coralogix.com/logs/rest/singles --json-format=1 --message-type=blank --placement=none
+              fastly dictionary create    -t $HLX_FASTLY_AUTH -s $ID --version=1 --name=CONFIG_IDS --write-only
             else
               echo "ID is set to '$ID'";
             fi
