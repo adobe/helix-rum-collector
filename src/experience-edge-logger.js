@@ -41,67 +41,95 @@ export class ExperienceEdgeLogger {
       events: [
         {
           xdm: {
+            // TODO: what constitutes a "page view"?
+            // we have a number of checkpoints that could be used, including
+            // top - some JS is being loaded
+            // lcp - the largest contentful paint has been reached
+            // load - the page has been loaded
+            // cwv - the page has been loaded and the web vitals have been collected
+            // lazy - the page has been loaded and the lazy scripts have been loaded
+            // unsupported - the page has been loaded by an old browser
+            // noscript - the page has been loaded without JS
             eventType: 'web.webpagedetails.pageViews',
+            // there are other frequent checkpoint values, that somewhat map to XDM
+            // built-in event types, in particular:
+            // click - web.webinteraction.linkClicks (but we fire for all clicks)
+            // viewmedia - media.ping (maybe?)
+            // experiment - decisioning.propositionDisplay (maybe?)
+            //
+            // finally, we have the `viewblock` checkpoint, which is used to track
+            // impressions of blocks. There seems to be no XDM event type that maps
             web: {
               webPageDetails: {
                 URL: referer || (this.req.headers.has('referer') ? this.req.headers.get('referer') : this.req.url),
+                isErrorPage: checkpoint === '404',
+                pageViews: {
+                  'xdm:value': weight,
+                },
               },
               webReferrer: {
                 URL: '',
               },
             },
-            device: {
-              screenHeight: 2160,
-              screenWidth: 3840,
-              screenOrientation: 'landscape',
-            },
+            // this information is not available in the request
+            // device: {
+            //   screenHeight: 2160,
+            //   screenWidth: 3840,
+            //   screenOrientation: 'landscape',
+            // },
             environment: {
               type: 'browser',
               browserDetails: {
-                viewportWidth: 1578,
-                viewportHeight: 226,
+                // TODO: this does not account for multiple languages like 'en-US,en;q=0.5'. XDM
+                // accepts only a single language tag
+                'xdm:acceptLanguage': this.req.headers.get('accept-language'),
+                'xdm:userAgent': this.req.headers.get('user-agent'),
               },
             },
-            placeContext: {
-              localTime: '2021-12-08T14:11:55.763-07:00',
-              localTimezoneOffset: 420,
-            },
+            // this information is not available in the request
+            // placeContext: {
+            //   localTime: '2021-12-08T14:11:55.763-07:00',
+            //   localTimezoneOffset: 420,
+            // },
             timestamp: new Date().toISOString(),
             implementationDetails: {
-              name: 'https://ns.adobe.com/experience/alloy/reactor',
+              name: 'https://ns.adobe.com/experience/aem/rum', // TODO: I just made this up
               version: generation,
               environment: 'browser',
             },
           },
-          query: {
-            personalization: {
-              schemas: [
-                'https://ns.adobe.com/personalization/html-content-item',
-                'https://ns.adobe.com/personalization/json-content-item',
-                'https://ns.adobe.com/personalization/redirect-item',
-                'https://ns.adobe.com/personalization/dom-action',
-              ],
-              decisionScopes: [
-                '__view__',
-              ],
-            },
-          },
-          data: {
-            test: 'pass',
-          },
+          // TODO: I don't think we have this
+          // query: {
+          //   personalization: {
+          //     schemas: [
+          //       'https://ns.adobe.com/personalization/html-content-item',
+          //       'https://ns.adobe.com/personalization/json-content-item',
+          //       'https://ns.adobe.com/personalization/redirect-item',
+          //       'https://ns.adobe.com/personalization/dom-action',
+          //     ],
+          //     decisionScopes: [
+          //       '__view__',
+          //     ],
+          //   },
+          // },
+          // data: {
+          //   test: 'pass',
+          // },
         },
       ],
-      query: {
-        identity: {
-          fetch: [
-            'ECID',
-          ],
-        },
-      },
+      // TODO: I don't think we have this
+      // query: {
+      //   identity: {
+      //     fetch: [
+      //       'ECID',
+      //     ],
+      //   },
+      // },
       meta: {
         state: {
           domain: this.hostname,
-          cookiesEnabled: true,
+          // TODO: I don't think we have this
+          // cookiesEnabled: true,
           entries: [
             {
               key: 'kndctr_97D1F3F459CE0AD80A495CBE_AdobeOrg_identity',
@@ -138,12 +166,12 @@ export class ExperienceEdgeLogger {
       headers: {
         'Content-Type': 'text/plain; charset=UTF-8',
         Accept: '*/*',
-        Origin: 'http://localhost:8080',
+        Origin: 'http://localhost:8080', // TODO: can we drop this?
         'Sec-Fetch-Site': 'cross-site',
         'Sec-Fetch-Mode': 'cors',
         'Sec-Fetch-Dest': 'empty',
         Referer: referer || (this.req.headers.has('referer') ? this.req.headers.get('referer') : this.req.url),
-        'Accept-Language': 'en,ro;q=0.9',
+        'Accept-Language': this.req.headers.get('accept-language'),
         'User-Agent': this.req.headers.get('User-Agent'),
       },
       body: JSON.stringify(data),
@@ -151,6 +179,6 @@ export class ExperienceEdgeLogger {
     // make a fetch request to the experience edge using the data above
 
     const response = await fetch(endpoint, options);
-    console.log('response from experience edge', response.status, response.statusText);
+    console.log('response from experience edge', response.status, response.statusText, endpoint.href);
   }
 }
