@@ -14,6 +14,13 @@
 export class ExperienceEdgeLogger {
   constructor(req) {
     this.req = req;
+    this.hostname = 'undefined';
+
+    if (req.headers.get('x-forwarded-host')) {
+      this.hostname = (req.headers.get('x-forwarded-host') || '').split(',')[0].trim();
+    } else if (req.headers.get('host')) {
+      this.hostname = req.headers.get('host');
+    }
   }
 
   // eslint-disable-next-line no-unused-vars
