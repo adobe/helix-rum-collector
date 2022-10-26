@@ -40,6 +40,7 @@ export class ExperienceEdgeLogger {
     const data = {
       events: [
         {
+          data: json,
           xdm: {
             // TODO: what constitutes a "page view"?
             // we have a number of checkpoints that could be used, including
