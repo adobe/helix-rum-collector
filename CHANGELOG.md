@@ -1,3 +1,10 @@
+## [1.16.2](https://github.com/adobe/helix-rum-collector/compare/v1.16.1...v1.16.2) (2023-05-02)
+
+
+### Bug Fixes
+
+* use node 18 ([c459a66](https://github.com/adobe/helix-rum-collector/commit/c459a66b837b64bdbef3169855413edb169cbcca))
+
 ## [1.16.1](https://github.com/adobe/helix-rum-collector/compare/v1.16.0...v1.16.1) (2022-08-02)
 
 
