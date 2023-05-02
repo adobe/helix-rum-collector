@@ -12,9 +12,9 @@
 
 /* eslint-env serviceworker */
 
-import { GoogleLogger } from './google-logger';
-import { CoralogixLogger } from './coralogix-logger';
-import { CoralogixErrorLogger } from './coralogix-error-logger';
+import { GoogleLogger } from './google-logger.js';
+import { CoralogixLogger } from './coralogix-logger.js';
+import { CoralogixErrorLogger } from './coralogix-error-logger.js';
 import { respondRobots } from './robots.js';
 import { respondUnpkg } from './unpkg.js';
 
