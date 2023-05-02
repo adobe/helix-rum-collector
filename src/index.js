@@ -58,6 +58,26 @@ async function main(req) {
     const body = req.method === 'GET'
       ? JSON.parse(new URL(req.url).searchParams.get('data'))
       : await req.json();
+    if (req.method === 'POST' && req.headers.get('content-type') === 'application/csp-report') {
+      // we need to re-jiggle the body a bit to make the CSP report look like a RUM report
+      body.weight = 0; // CSP reports have no weight
+      // const example = {
+      //   'document-uri': 'https://amazing-water-observation.glitch.me/',
+      //   referrer: 'https://amazing-water-observation.glitch.me/',
+      //   'violated-directive': 'img-src',
+      //   'effective-directive': 'img-src',
+      //   'original-policy': "default-src 'self'; report-uri https://eoa72g1w0a4rmwt.m.pipedream.net",
+      //   disposition: 'report',
+      //   'blocked-uri': 'https://cdn.glitch.com/605e2a51-d45f-4d87-a285-9410ad350515%2FLogo_Color.svg?v=1618199565140',
+      //   'status-code': 200,
+      //   'script-sample': '',
+      // };
+      body.id = `${hashCode(body['document-uri'] || req.url)}-${new Date().getTime()}-${Math.random().toString(16).substr(2, 14)}`;
+      body.checkpoint = 'csp';
+      body.target = body['blocked-uri'];
+      body.source = body['violated-directive'];
+      body.referer = body.referrer;
+    }
 
     const headers = new Headers();
     headers.set('Content-Type', 'text/plain; charset=utf-8');
