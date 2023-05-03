@@ -59,6 +59,7 @@ async function main(req) {
       ? JSON.parse(new URL(req.url).searchParams.get('data'))
       : await req.json();
     if (req.method === 'POST' && req.headers.get('content-type') === 'application/csp-report') {
+      const report = body['csp-report'];
       // we need to re-jiggle the body a bit to make the CSP report look like a RUM report
       body.weight = 0; // CSP reports have no weight
       // const example = {
@@ -72,11 +73,11 @@ async function main(req) {
       //   'status-code': 200,
       //   'script-sample': '',
       // };
-      body.id = `${hashCode(body['document-uri'] || req.url)}-${new Date().getTime()}-${Math.random().toString(16).substr(2, 14)}`;
+      body.id = `${hashCode(report['document-uri'] || req.url)}-${new Date().getTime()}-${Math.random().toString(16).substr(2, 14)}`;
       body.checkpoint = 'csp';
-      body.target = body['blocked-uri'];
-      body.source = body['violated-directive'];
-      body.referer = body.referrer;
+      body.target = report['blocked-uri'];
+      body.source = report['violated-directive'];
+      body.referer = report.referrer;
     }
 
     const headers = new Headers();
