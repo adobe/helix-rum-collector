@@ -22,9 +22,6 @@ export class GoogleLogger {
     }
     this.start = Math.floor(Date.now());
     this.req = req;
-    // eslint-disable-next-line: no-console
-    // console.setEndpoint('Coralogix');
-    this.logger = fastly.getLogger('BigQuery');
     this.clusterlogger = fastly.getLogger('BigQuery-Clustered');
   }
 
@@ -53,7 +50,6 @@ export class GoogleLogger {
       hostname: (new URL(data.url)).hostname, // the cluster table uses hostname for clustering
     };
 
-    this.logger.log(JSON.stringify(data));
     this.clusterlogger.log(JSON.stringify(clusterdata));
   }
 }
