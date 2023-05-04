@@ -9,7 +9,9 @@
  * OF ANY KIND, either express or implied. See the License for the specific language
  * governing permissions and limitations under the License.
  */
-/* global fastly */
+/// <reference types="@fastly/js-compute" />
+import { Logger } from 'fastly:logger';
+
 export class CoralogixErrorLogger {
   constructor(req) {
     this.subsystemName = 'undefined';
@@ -24,7 +26,7 @@ export class CoralogixErrorLogger {
     this.req = req;
     // eslint-disable-next-line: no-console
     // console.setEndpoint('Coralogix');
-    this.logger = fastly.getLogger('Coralogix');
+    this.logger = new Logger('Coralogix');
   }
 
   logError(status, message) {
