@@ -23,4 +23,8 @@ module.exports = {
     libraryTarget: 'this',
     chunkFormat: 'module',
   },
+  // exclude fastly: using externals
+  externals: [
+    /^fastly:/,
+  ],
 };
