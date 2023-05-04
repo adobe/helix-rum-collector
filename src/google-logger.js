@@ -29,7 +29,7 @@ export class GoogleLogger {
   }
 
   logRUM(json, id, weight, referer, generation, checkpoint, target, source) {
-    console.log('logging to Google');
+    console.log('logging to Google, checkpoint: ', checkpoint);
     const now = Math.floor(Date.now());
 
     const data = {
