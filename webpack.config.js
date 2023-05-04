@@ -16,15 +16,27 @@ module.exports = {
   optimization: {
     minimize: false,
   },
-  target: 'es2020',
+  target: 'webworker',
   output: {
     filename: 'index.js',
     path: path.resolve(__dirname, 'bin'),
     libraryTarget: 'this',
-    chunkFormat: 'module',
   },
-  // exclude fastly: using externals
+  plugins: [
+    // Polyfills go here.
+    // Used for, e.g., any cross-platform WHATWG,
+    // or core nodejs modules needed for your application.
+    // new webpack.ProvidePlugin({
+    // }),
+  ],
   externals: [
-    /^fastly:/,
+    ({ request }, callback) => {
+      // Allow Webpack to handle fastly:* namespaced module imports by treating
+      // them as modules rather than try to process them as URLs
+      if (/^fastly:.*$/.test(request)) {
+        return callback(null, `commonjs ${request}`);
+      }
+      return callback();
+    },
   ],
 };
