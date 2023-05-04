@@ -53,7 +53,9 @@ export class GoogleLogger {
       hostname: (new URL(data.url)).hostname, // the cluster table uses hostname for clustering
     };
 
+    console.log('ready to log (Google)');
     this.logger.log(JSON.stringify(data));
     this.clusterlogger.log(JSON.stringify(clusterdata));
+    console.log('logged (Google)');
   }
 }
