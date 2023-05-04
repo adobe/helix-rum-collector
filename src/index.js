@@ -77,7 +77,7 @@ async function main(req) {
       body.checkpoint = 'csp';
       body.target = report['blocked-uri'];
       body.source = report['violated-directive'];
-      body.referer = report.referrer;
+      body.referer = report['document-uri'];
     }
 
     const headers = new Headers();
