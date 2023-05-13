@@ -27,7 +27,7 @@
   "devDependencies": {
     "@adobe/eslint-config-helix": "2.0.2",
     "@adobe/semantic-release-coralogix": "1.1.24",
-    "@fastly/js-compute": "1.11.2",
+    "@fastly/js-compute": "1.13.0",
     "@semantic-release/changelog": "6.0.3",
     "@semantic-release/exec": "6.0.3",
     "@semantic-release/git": "10.0.1",
@@ -43,7 +43,7 @@
     "nyc": "15.1.0",
     "semantic-release": "21.0.2",
     "semantic-release-slack-bot": "4.0.1",
-    "webpack": "5.82.0",
-    "webpack-cli": "5.0.2"
+    "webpack": "5.82.1",
+    "webpack-cli": "5.1.1"
   }
 }
