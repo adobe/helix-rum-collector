@@ -47,10 +47,21 @@ export class GoogleLogger {
       ...json,
     };
 
+    const hn = () => {
+      try {
+        return (new URL(hn)).hostname;
+      } catch (e) {
+        if (this.req.headers.has('referer')) {
+          return new URL(this.req.headers.get('referer')).hostname;
+        }
+        return new URL(this.req.url).hostname;
+      }
+    };
+
     const clusterdata = {
       ...data,
       time: now / 1000, // the cluster table uses TIMESTAMP for time, so that it can be partitioned
-      hostname: (new URL(data.url)).hostname, // the cluster table uses hostname for clustering
+      hostname: hn(), // the cluster table uses hostname for clustering
     };
 
     this.logger.log(JSON.stringify(data));
