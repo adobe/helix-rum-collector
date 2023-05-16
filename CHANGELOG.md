@@ -1,3 +1,10 @@
+## [1.16.3](https://github.com/adobe/helix-rum-collector/compare/v1.16.2...v1.16.3) (2023-05-16)
+
+
+### Bug Fixes
+
+* **google:** allow dealing with incomplete referrer URLs ([c0c3a77](https://github.com/adobe/helix-rum-collector/commit/c0c3a77cae3d8a6e13547e8964141ac979f0fa07))
+
 ## [1.16.2](https://github.com/adobe/helix-rum-collector/compare/v1.16.1...v1.16.2) (2023-05-02)
 
 
