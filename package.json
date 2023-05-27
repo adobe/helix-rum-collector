@@ -42,8 +42,8 @@
     "mocha-junit-reporter": "2.2.0",
     "nyc": "15.1.0",
     "semantic-release": "21.0.2",
-    "semantic-release-slack-bot": "4.0.1",
-    "webpack": "5.83.1",
+    "semantic-release-slack-bot": "4.0.2",
+    "webpack": "5.84.1",
     "webpack-cli": "5.1.1"
   }
 }
