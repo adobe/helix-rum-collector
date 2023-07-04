@@ -9,7 +9,9 @@
  * OF ANY KIND, either express or implied. See the License for the specific language
  * governing permissions and limitations under the License.
  */
-/* global fastly */
+/// <reference types="@fastly/js-compute" />
+import { Logger } from 'fastly:logger';
+
 export class GoogleLogger {
   constructor(req) {
     this.subsystemName = 'undefined';
@@ -22,10 +24,7 @@ export class GoogleLogger {
     }
     this.start = Math.floor(Date.now());
     this.req = req;
-    // eslint-disable-next-line: no-console
-    // console.setEndpoint('Coralogix');
-    this.logger = fastly.getLogger('BigQuery');
-    this.clusterlogger = fastly.getLogger('BigQuery-Clustered');
+    this.clusterlogger = new Logger('BigQuery-Clustered');
   }
 
   logRUM(json, id, weight, referer, generation, checkpoint, target, source) {
@@ -64,7 +63,6 @@ export class GoogleLogger {
       hostname: hn(), // the cluster table uses hostname for clustering
     };
 
-    this.logger.log(JSON.stringify(data));
     this.clusterlogger.log(JSON.stringify(clusterdata));
   }
 }

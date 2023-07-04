@@ -23,5 +23,6 @@ module.exports = {
     // keep named exports over default exports for classes
     'import/prefer-default-export': [0],
     'no-console': 0,
+    'import/no-unresolved': [2, { ignore: ['^fastly:'] }],
   },
 };
