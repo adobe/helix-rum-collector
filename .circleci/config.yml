@@ -66,7 +66,8 @@ jobs:
           name: Init Fastly Service
           command: |
             echo searching service
-            fastly service search -t $HLX_FASTLY_AUTH --name="trieloff - ${CIRCLE_PROJECT_REPONAME}-${CIRCLE_BRANCH}" 2>/dev/null | head -n 1 | sed -e 's/ID: /export ID=/' >> tee $BASH_ENV
+            fastly service search -t $HLX_FASTLY_AUTH --name="trieloff - ${CIRCLE_PROJECT_REPONAME}-${CIRCLE_BRANCH}" 2>/dev/null
+            fastly service search -t $HLX_FASTLY_AUTH --name="trieloff - ${CIRCLE_PROJECT_REPONAME}-${CIRCLE_BRANCH}" 2>/dev/null | head -n 1 | sed -e 's/ID: /export ID=/' >> $BASH_ENV
             echo done searching service
             source $BASH_ENV
             echo Fastly Service ID $ID
