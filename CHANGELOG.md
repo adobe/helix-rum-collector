@@ -1,3 +1,11 @@
+## [1.16.4](https://github.com/adobe/helix-rum-collector/compare/v1.16.3...v1.16.4) (2023-07-05)
+
+
+### Bug Fixes
+
+* **google:** pass url into hostname detection ([2248da1](https://github.com/adobe/helix-rum-collector/commit/2248da10a8ba6a16f03da7b8372595f5e19736f6))
+* **google:** use correct url value ([2221166](https://github.com/adobe/helix-rum-collector/commit/2221166baf976b267deb2ab1bd6d8208de952763))
+
 ## [1.16.3](https://github.com/adobe/helix-rum-collector/compare/v1.16.2...v1.16.3) (2023-05-16)
 
 
