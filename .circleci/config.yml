@@ -12,7 +12,7 @@ commands:
   setup:
     steps:
       - fastly/install:
-          version: "9.0.3"
+          version: "10.2.2"
 
       - checkout
       # - restore_cache:
