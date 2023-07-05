@@ -65,8 +65,8 @@ jobs:
       - run:
           name: Init Fastly Service
           command: |
-            fastly service search -t $HLX_FASTLY_AUTH --name="trieloff - ${CIRCLE_PROJECT_REPONAME}-${CIRCLE_BRANCH}" 2&>/dev/null | head -n 1 | sed -e 's/: /=/'
-            echo $(fastly service search -t $HLX_FASTLY_AUTH --name="trieloff - ${CIRCLE_PROJECT_REPONAME}-${CIRCLE_BRANCH}" 2&>/dev/null | head -n 1 | sed -e 's/: /=/') >> $BASH_ENV
+            fastly service search -t $HLX_FASTLY_AUTH --name="trieloff - ${CIRCLE_PROJECT_REPONAME}-${CIRCLE_BRANCH}" 2>/dev/null | head -n 1 | sed -e 's/: /=/'
+            echo $(fastly service search -t $HLX_FASTLY_AUTH --name="trieloff - ${CIRCLE_PROJECT_REPONAME}-${CIRCLE_BRANCH}" 2>/dev/null | head -n 1 | sed -e 's/: /=/') >> $BASH_ENV
             source $BASH_ENV
             if [ -z "$ID" ]; then
               echo "ID is unset, creating new service trieloff - ${CIRCLE_PROJECT_REPONAME}-${CIRCLE_BRANCH}";
