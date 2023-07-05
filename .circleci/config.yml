@@ -65,11 +65,7 @@ jobs:
       - run:
           name: Init Fastly Service
           command: |
-            echo searching service
-            fastly service search -t $HLX_FASTLY_AUTH --name="trieloff - ${CIRCLE_PROJECT_REPONAME}-${CIRCLE_BRANCH}" 2>/dev/null | head -n 1 | sed -e 's/ID: /export ID=/' || echo "no service found"
-            echo again
             fastly service search -t $HLX_FASTLY_AUTH --name="trieloff - ${CIRCLE_PROJECT_REPONAME}-${CIRCLE_BRANCH}" 2>/dev/null | head -n 1 | sed -e 's/ID: /export ID=/' >> $BASH_ENV || echo "no service found"
-            echo done searching service
             source $BASH_ENV
             echo Fastly Service ID $ID
             if [ -z "$ID" ]; then
@@ -81,7 +77,7 @@ jobs:
               fastly backend add          -t $HLX_FASTLY_AUTH -s $ID --version=1 --name=unpkg.com --address=unpkg.com --use-ssl --override-host=unpkg.com --port=443
               fastly logging https create -t $HLX_FASTLY_AUTH -s $ID --version=1 --name=Coralogix --content-type=application/json --header-name=private_key --header-value=$CORALOGIX_KEY --url=https://api.coralogix.com/logs/rest/singles --json-format=1 --message-type=blank --placement=none
             else
-              echo "ID is set to '$ID'";
+              echo "Fastly service ID is set to '$ID'";
             fi
       - run:
           name: Package
