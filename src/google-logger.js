@@ -46,9 +46,9 @@ export class GoogleLogger {
       ...json,
     };
 
-    const hn = () => {
+    const hn = (url) => {
       try {
-        return (new URL(hn)).hostname;
+        return (new URL(url)).hostname;
       } catch (e) {
         if (this.req.headers.has('referer')) {
           return new URL(this.req.headers.get('referer')).hostname;
