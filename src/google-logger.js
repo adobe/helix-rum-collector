@@ -60,7 +60,7 @@ export class GoogleLogger {
     const clusterdata = {
       ...data,
       time: now / 1000, // the cluster table uses TIMESTAMP for time, so that it can be partitioned
-      hostname: hn(), // the cluster table uses hostname for clustering
+      hostname: hn(data.url), // the cluster table uses hostname for clustering
     };
 
     this.clusterlogger.log(JSON.stringify(clusterdata));
