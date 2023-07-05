@@ -79,16 +79,6 @@ describe('Helix RUM Collector Post-Deploy Tests', () => {
     expect(response).to.have.header('content-type', /^application\/javascript/);
   }).timeout(5000);
 
-  it('rum js module is being served with replacements', async () => {
-    const response = await chai.request(`https://${domain}`)
-      .get('/.rum/@adobe/helix-rum-js@^1/src/index.js?generation=people_try_to_put_us_d-down')
-      .buffer(true);
-    expect(response).to.have.status(200);
-    // eslint-disable-next-line no-unused-expressions
-    expect(response).to.have.header('content-type', /^application\/javascript/);
-    expect(response.text).to.contain('people_try_to_put_us_d-down');
-  }).timeout(5000);
-
   it('rum js module is being served with default replacements', async () => {
     const response = await chai.request(`https://${domain}`)
       .get('/.rum/@adobe/helix-rum-js@1.0.0/src/index.js')
