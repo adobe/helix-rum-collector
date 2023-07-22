@@ -43,7 +43,7 @@
     "nyc": "15.1.0",
     "semantic-release": "21.0.7",
     "semantic-release-slack-bot": "4.0.2",
-    "webpack": "5.88.1",
+    "webpack": "5.88.2",
     "webpack-cli": "5.1.4"
   }
 }
