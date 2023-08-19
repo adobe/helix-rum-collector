@@ -25,7 +25,7 @@
   },
   "homepage": "https://github.com/adobe/helix-rum-collector#readme",
   "devDependencies": {
-    "@adobe/eslint-config-helix": "2.0.2",
+    "@adobe/eslint-config-helix": "2.0.3",
     "@adobe/semantic-release-coralogix": "1.1.25",
     "@fastly/js-compute": "2.5.0",
     "@semantic-release/changelog": "6.0.3",
