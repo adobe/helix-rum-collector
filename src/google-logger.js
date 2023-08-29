@@ -11,6 +11,7 @@
  */
 /// <reference types="@fastly/js-compute" />
 import { Logger } from 'fastly:logger';
+import { cleanurl } from './utils.js';
 
 export class GoogleLogger {
   constructor(req) {
@@ -61,6 +62,7 @@ export class GoogleLogger {
       ...data,
       time: now / 1000, // the cluster table uses TIMESTAMP for time, so that it can be partitioned
       hostname: hn(data.url), // the cluster table uses hostname for clustering
+      url: cleanurl(data.url),
     };
 
     this.clusterlogger.log(JSON.stringify(clusterdata));
