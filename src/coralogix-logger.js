@@ -59,8 +59,8 @@ export class CoralogixLogger {
         rum: {
           generation,
           checkpoint,
-          target,
-          source,
+          target: cleanurl(target),
+          source: cleanurl(source),
           weight,
           ...json,
         },
