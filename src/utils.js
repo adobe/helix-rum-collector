@@ -10,11 +10,16 @@
  * governing permissions and limitations under the License.
  */
 export function cleanurl(url) {
-  const u = new URL(url);
-  // potential PII
-  u.search = '';
-  u.username = '';
-  u.password = '';
-  u.hash = '';
-  return u.toString();
+  // if URL does not parse, return it as is
+  try {
+    const u = new URL(url);
+    // potential PII
+    u.search = '';
+    u.username = '';
+    u.password = '';
+    u.hash = '';
+    return u.toString();
+  } catch (e) {
+    return url;
+  }
 }
