@@ -1,3 +1,21 @@
+# [2.0.0](https://github.com/adobe/helix-rum-collector/compare/v1.16.4...v2.0.0) (2023-09-05)
+
+
+### Bug Fixes
+
+* **logger:** clean URLs from request parameters no matter where they are found ([7904b38](https://github.com/adobe/helix-rum-collector/commit/7904b38eff46564184b93945b1dfd774144e6288))
+
+
+### Features
+
+* **logger:** do not log url params by default ([53307f5](https://github.com/adobe/helix-rum-collector/commit/53307f5f6d6e79dfd09a9b168ce30ea7f973a37a))
+* **utils:** if url is not valid, return it unchanged ([b2dadcf](https://github.com/adobe/helix-rum-collector/commit/b2dadcf3f119405f271243d031c87bd33416d709))
+
+
+### BREAKING CHANGES
+
+* **logger:** This is a breaking change because it changes the default behavior of the logger and drops URL params
+
 ## [1.16.4](https://github.com/adobe/helix-rum-collector/compare/v1.16.3...v1.16.4) (2023-07-05)
 
 
