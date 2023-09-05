@@ -61,24 +61,6 @@ jobs:
       - run:
           name: revert changes to package-lock.json
           command: git checkout -- package-lock.json
-
-      - run:
-          name: Init Fastly Service
-          command: |
-            fastly service search -t $HLX_FASTLY_AUTH --name="trieloff - ${CIRCLE_PROJECT_REPONAME}-${CIRCLE_BRANCH}" 2>/dev/null | head -n 1 | sed -e 's/ID: /export ID=/' >> $BASH_ENV || echo "no service found"
-            source $BASH_ENV
-            echo Fastly Service ID $ID
-            if [ -z "$ID" ]; then
-              echo "ID is unset, creating new service trieloff - ${CIRCLE_PROJECT_REPONAME}-${CIRCLE_BRANCH}";
-              fastly service create -t $HLX_FASTLY_AUTH --name="trieloff - ${CIRCLE_PROJECT_REPONAME}-${CIRCLE_BRANCH}" --type=wasm | sed -e "s/SUCCESS: Created service /ID=/" >> $BASH_ENV;
-              source $BASH_ENV;
-              echo New Service $ID;
-              fastly domain  add          -t $HLX_FASTLY_AUTH -s $ID --version=1 --name=${CIRCLE_PROJECT_REPONAME}-${CIRCLE_BRANCH}.hlx3.one
-              fastly backend add          -t $HLX_FASTLY_AUTH -s $ID --version=1 --name=unpkg.com --address=unpkg.com --use-ssl --override-host=unpkg.com --port=443
-              fastly logging https create -t $HLX_FASTLY_AUTH -s $ID --version=1 --name=Coralogix --content-type=application/json --header-name=private_key --header-value=$CORALOGIX_KEY --url=https://api.coralogix.com/logs/rest/singles --json-format=1 --message-type=blank --placement=none
-            else
-              echo "Fastly service ID is set to '$ID'";
-            fi
       - run:
           name: Package
           command: npm run fastly-build
@@ -89,7 +71,7 @@ jobs:
 
       - run:
           name: Branch Deployment
-          command: fastly compute deploy -t $HLX_FASTLY_AUTH -s $ID
+          command: fastly compute deploy -t $HLX_FASTLY_CI_AUTH -s $HLX_FASTLY_CI_ID
 
       - run:
           name: Wait for service to be updated
