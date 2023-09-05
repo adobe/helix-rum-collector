@@ -15,7 +15,7 @@ const chai = require('chai');
 const chaiHttp = require('chai-http');
 
 chai.use(chaiHttp);
-const domain = !process.env.CI ? 'rum.hlx3.page' : `${process.env.CIRCLE_PROJECT_REPONAME}-${process.env.CIRCLE_BRANCH}.hlx3.one`;
+const domain = !process.env.CI ? 'rum.hlx3.page' : 'helix-rum-collector-ci.edgecompute.app';
 
 console.log(`Using ${domain}`);
 
