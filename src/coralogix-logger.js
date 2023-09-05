@@ -11,6 +11,7 @@
  */
 /// <reference types="@fastly/js-compute" />
 import { Logger } from 'fastly:logger';
+import { cleanurl } from './utils.js';
 
 export class CoralogixLogger {
   constructor(req) {
@@ -44,7 +45,7 @@ export class CoralogixLogger {
           url: this.req.url,
         },
         cdn: {
-          url: referer || (this.req.headers.has('referer') ? this.req.headers.get('referer') : this.req.url),
+          url: cleanurl(referer || (this.req.headers.has('referer') ? this.req.headers.get('referer') : this.req.url)),
         },
         time: {
           start_msec: this.start,
@@ -58,8 +59,8 @@ export class CoralogixLogger {
         rum: {
           generation,
           checkpoint,
-          target,
-          source,
+          target: cleanurl(target),
+          source: cleanurl(source),
           weight,
           ...json,
         },

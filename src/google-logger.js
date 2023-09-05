@@ -11,6 +11,7 @@
  */
 /// <reference types="@fastly/js-compute" />
 import { Logger } from 'fastly:logger';
+import { cleanurl } from './utils.js';
 
 export class GoogleLogger {
   constructor(req) {
@@ -36,12 +37,12 @@ export class GoogleLogger {
       host: this.subsystemName,
       url: referer || (this.req.headers.has('referer') ? this.req.headers.get('referer') : this.req.url),
       user_agent: this.req.headers.get('user-agent'),
-      referer: this.req.headers.get('referer'),
+      referer: cleanurl(this.req.headers.get('referer')),
       weight,
       generation,
       checkpoint,
-      target,
-      source,
+      target: cleanurl(target),
+      source: cleanurl(source),
       id,
       ...json,
     };
@@ -61,6 +62,7 @@ export class GoogleLogger {
       ...data,
       time: now / 1000, // the cluster table uses TIMESTAMP for time, so that it can be partitioned
       hostname: hn(data.url), // the cluster table uses hostname for clustering
+      url: cleanurl(data.url),
     };
 
     this.clusterlogger.log(JSON.stringify(clusterdata));
