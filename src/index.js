@@ -15,92 +15,10 @@
 import { GoogleLogger } from './google-logger.js';
 import { CoralogixLogger } from './coralogix-logger.js';
 import { CoralogixErrorLogger } from './coralogix-error-logger.js';
-import { respondRobots } from './robots.js';
-import { respondUnpkg } from './unpkg.js';
-
-function respondError(message, status, e, req) {
-  const headers = new Headers();
-  const msg = e && e.message ? `${message}: ${e.message}` : message;
-
-  headers.set('Content-Type', 'text/plain; charset=utf-8');
-  headers.set('X-Error', msg);
-
-  const response = new Response(`${msg}\n`, {
-    status,
-    headers,
-  });
-  console.error(msg);
-  try {
-    const c = new CoralogixErrorLogger(req);
-    c.logError(status, message);
-  } catch (err) {
-    console.error(`error logging error: ${err.message}`);
-  }
-  return response;
-}
-
-function hashCode(s) {
-  // eslint-disable-next-line no-bitwise
-  s.split('').reduce((a, b) => (((a << 5) - a) + b.charCodeAt(0)) | 0, 0);
-}
+import { handleRequest } from './request-handler.js';
 
 async function main(req) {
-  try {
-    if (req.method === 'GET' && new URL(req.url).pathname.startsWith('/robots.txt')) {
-      return respondRobots(req);
-    }
-    if (req.method === 'GET' && new URL(req.url).pathname.startsWith('/.rum/web-vitals')) {
-      return respondUnpkg(req);
-    }
-    if (req.method === 'GET' && new URL(req.url).pathname.startsWith('/.rum/@adobe/helix-rum')) {
-      return respondUnpkg(req);
-    }
-    const body = req.method === 'GET'
-      ? JSON.parse(new URL(req.url).searchParams.get('data'))
-      : await req.json();
-
-    const headers = new Headers();
-    headers.set('Content-Type', 'text/plain; charset=utf-8');
-
-    const {
-      weight = 1,
-      id = req.method === 'GET' ? `${hashCode(req.url)}-${new Date().getTime()}-${Math.random().toString(16).substr(2, 14)}` : undefined,
-      cwv = {},
-      referer, referrer,
-      generation, checkpoint,
-      target,
-      source,
-    } = body;
-
-    if (!id) {
-      return respondError('id field is required', 400, undefined, req);
-    }
-    if (!weight || typeof weight !== 'number') {
-      return respondError('weight must be a number', 400, undefined, req);
-    }
-    if (typeof cwv !== 'object') {
-      return respondError('cwv must be an object', 400, undefined, req);
-    }
-
-    try {
-      const c = new CoralogixLogger(req);
-      c.logRUM(cwv, id, weight, referer || referrer, generation, checkpoint, target, source);
-
-      const g = new GoogleLogger(req);
-      g.logRUM(cwv, id, weight, referer || referrer, generation, checkpoint, target, source);
-    } catch (err) {
-      return respondError(`Could not collect RUM: ${err.message}`, 500, err, req);
-    }
-
-    const response = new Response('rum collected.', {
-      status: 201,
-      headers,
-    });
-
-    return response;
-  } catch (e) {
-    return respondError('RUM Collector expects POST body as JSON', 400, e, req);
-  }
+  handleRequest(req, new CoralogixLogger(req), CoralogixErrorLogger(req), GoogleLogger(req));
 }
 
 async function handler(event) {

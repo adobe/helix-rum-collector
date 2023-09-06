@@ -4,10 +4,12 @@
   "private": true,
   "description": "Collect Real User Monitoring Data for Helix",
   "main": "src/index.js",
+  "type": "module",
   "scripts": {
     "build": "webpack && js-compute-runtime bin/index.js bin/main.wasm",
     "fastly-build": "fastly compute build --verbose",
     "deploy": "npm run fastly-build && fastly compute deploy -t $HLX_FASTLY_AUTH",
+    "junit": "mocha ./test/unit.test.js",
     "test": "nyc --reporter=text --reporter=lcov -i -g 'Post-Deploy' --check-coverage --branches 95 --statements 100 --lines 100 mocha -i -g 'Post-Deploy'",
     "test-ci": "nyc --reporter=text --reporter=lcov -i -g 'Post-Deploy' --check-coverage --branches 95 --statements 100 --lines 100 mocha -i -g 'Post-Deploy' --reporter xunit --reporter-options output=./junit/test-results.xml --exit && codecov",
     "test-postdeploy": "mocha --reporter xunit --reporter-options output=./junit/test-results.xml -g 'Post-Deploy'",
@@ -24,10 +26,13 @@
     "url": "https://github.com/adobe/helix-rum-collector/issues"
   },
   "homepage": "https://github.com/adobe/helix-rum-collector#readme",
+  "dependencies": {
+    "@fastly/js-compute": "2.5.0"
+  },
   "devDependencies": {
     "@adobe/eslint-config-helix": "2.0.3",
     "@adobe/semantic-release-coralogix": "1.1.25",
-    "@fastly/js-compute": "2.5.0",
+    "@esm-bundle/chai": "4.3.4-fix.0",
     "@semantic-release/changelog": "6.0.3",
     "@semantic-release/exec": "6.0.3",
     "@semantic-release/git": "10.0.1",
