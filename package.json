@@ -4,6 +4,7 @@
   "private": true,
   "description": "Collect Real User Monitoring Data for Helix",
   "main": "src/index.js",
+  "type": "module",
   "scripts": {
     "build": "webpack && js-compute-runtime bin/index.js bin/main.wasm",
     "fastly-build": "fastly compute build --verbose",

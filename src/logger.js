@@ -12,6 +12,9 @@
 // this thing is only for testing, so we ignore it in code coverage
 /* c8 ignore start */
 export class Logger {
+  // For testing, save the last message logged, only used when running in nodejs
+  static lastMessage;
+
   constructor() {
     // detect if we are running in nodejs
     this.logImpl = typeof process !== 'undefined' ? console : import('fastly:logger');
@@ -23,6 +26,7 @@ export class Logger {
       this.logImpl.then((impl) => impl.log(...args));
       return;
     }
+    Logger.lastMessage = args;
     this.logImpl.log(...args);
   }
 }
