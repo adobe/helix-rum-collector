@@ -14,7 +14,7 @@
 
 import { GoogleLogger } from './google-logger.js';
 import { CoralogixLogger } from './coralogix-logger.js';
-import { CoralogixErrorLogger } from './coralogix-error-logger.js';
+import { CoralogixErrorLogger } from './coralogix-error-logger.mjs';
 import { respondRobots } from './robots.js';
 import { respondUnpkg } from './unpkg.js';
 

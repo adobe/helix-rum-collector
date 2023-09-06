@@ -11,6 +11,8 @@
  */
 // this thing is only for testing, so we ignore it in code coverage
 /* c8 ignore start */
+export let lastLogMessage = [];
+
 export class Logger {
   constructor() {
     // detect if we are running in nodejs
@@ -23,6 +25,7 @@ export class Logger {
       this.logImpl.then((impl) => impl.log(...args));
       return;
     }
+    lastLogMessage = args;
     this.logImpl.log(...args);
   }
 }

@@ -10,7 +10,7 @@
  * governing permissions and limitations under the License.
  */
 /// <reference types="@fastly/js-compute" />
-import { Logger } from './logger.js';
+import { Logger } from './logger.mjs';
 
 export class CoralogixErrorLogger {
   constructor(req) {
