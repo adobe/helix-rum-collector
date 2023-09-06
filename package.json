@@ -6,7 +6,7 @@
   "main": "src/index.js",
   "type": "module",
   "scripts": {
-    "build": "webpack && js-compute-runtime bin/index.js bin/main.wasm",
+    "build": "webpack --config webpack.config.cjs && js-compute-runtime bin/index.js bin/main.wasm",
     "fastly-build": "fastly compute build --verbose",
     "deploy": "npm run fastly-build && fastly compute deploy -t $HLX_FASTLY_AUTH",
     "test": "nyc --reporter=text --reporter=lcov -i -g 'Post-Deploy' --check-coverage --branches 95 --statements 100 --lines 100 mocha -i -g 'Post-Deploy'",
