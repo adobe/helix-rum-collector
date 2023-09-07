@@ -10,9 +10,10 @@
  * governing permissions and limitations under the License.
  */
 /// <reference types="@fastly/js-compute" />
-import { Logger } from 'fastly:logger';
+import { Logger } from './logger.mjs';
+import { cleanurl } from './utils.mjs';
 
-export class CoralogixErrorLogger {
+export class CoralogixLogger {
   constructor(req) {
     this.subsystemName = 'undefined';
     this.req = req;
@@ -29,7 +30,7 @@ export class CoralogixErrorLogger {
     this.logger = new Logger('Coralogix');
   }
 
-  logError(status, message) {
+  logRUM(json, id, weight, referer, generation, checkpoint, target, source) {
     console.log(`logging to Coralogix: ${typeof this.logger}`);
     const now = Math.floor(Date.now());
     console.log('at least I know the time');
@@ -38,23 +39,31 @@ export class CoralogixErrorLogger {
       timestamp: now,
       applicationName: 'helix-rum-collector',
       subsystemName: this.subsystemName,
-      severity: Math.floor(status / 100),
+      severity: checkpoint === 'error' ? 5 : 3,
       json: {
         edgecompute: {
           url: this.req.url,
         },
         cdn: {
-          url: this.req.headers.has('referer') ? this.req.headers.get('referer') : this.req.url,
+          url: cleanurl(referer || (this.req.headers.has('referer') ? this.req.headers.get('referer') : this.req.url)),
         },
         time: {
           start_msec: this.start,
           elapsed: now - this.start,
         },
         request: {
+          id,
           method: this.req.method,
           user_agent: this.req.headers.get('user-agent'),
         },
-        message,
+        rum: {
+          generation,
+          checkpoint,
+          target: cleanurl(target),
+          source: cleanurl(source),
+          weight,
+          ...json,
+        },
       },
     };
     console.log('ready to log (coralogix)');

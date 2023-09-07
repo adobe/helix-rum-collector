@@ -12,7 +12,7 @@
 const path = require('path');
 
 module.exports = {
-  entry: './src/index.js',
+  entry: './src/index.mjs',
   optimization: {
     minimize: false,
   },
