@@ -11,7 +11,7 @@
  */
 /// <reference types="@fastly/js-compute" />
 import { Logger } from './logger.mjs';
-import { cleanurl } from './utils.js';
+import { cleanurl } from './utils.mjs';
 
 export class CoralogixLogger {
   constructor(req) {

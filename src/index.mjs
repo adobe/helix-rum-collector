@@ -12,11 +12,11 @@
 
 /* eslint-env serviceworker */
 
-import { GoogleLogger } from './google-logger.js';
-import { CoralogixLogger } from './coralogix-logger.js';
+import { GoogleLogger } from './google-logger.mjs';
+import { CoralogixLogger } from './coralogix-logger.mjs';
 import { CoralogixErrorLogger } from './coralogix-error-logger.mjs';
-import { respondRobots } from './robots.js';
-import { respondUnpkg } from './unpkg.js';
+import { respondRobots } from './robots.mjs';
+import { respondUnpkg } from './unpkg.mjs';
 
 function respondError(message, status, e, req) {
   const headers = new Headers();
