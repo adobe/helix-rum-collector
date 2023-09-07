@@ -9,7 +9,7 @@
     "fastly-build": "fastly compute build --verbose",
     "deploy": "npm run fastly-build && fastly compute deploy -t $HLX_FASTLY_AUTH",
     "test": "c8 mocha -i -g 'Post-Deploy'",
-    "test-postdeploy": "c8 mocha -g 'Post-Deploy'",
+    "test-postdeploy": "mocha -g 'Post-Deploy'",
     "lint": "./node_modules/.bin/eslint .",
     "semantic-release": "semantic-release",
     "fastly-deploy": "fastly compute deploy"
