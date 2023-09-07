@@ -42,7 +42,7 @@ jobs:
           command: npm run lint
       - run:
           name: Run Tests
-          command: npm run test-ci
+          command: npm run test
       - run:
           name: Run Build
           command: npm run fastly-build
