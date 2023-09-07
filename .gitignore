@@ -17,3 +17,5 @@ pkg
 *.wat
 *.map
 vendor/package
+junit
+
