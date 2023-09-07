@@ -18,7 +18,7 @@ module.exports = {
   },
   target: 'webworker',
   output: {
-    filename: 'index.mjs',
+    filename: 'index.js',
     path: path.resolve(__dirname, 'bin'),
     libraryTarget: 'this',
   },
