@@ -25,4 +25,9 @@ module.exports = {
     'no-console': 0,
     'import/no-unresolved': [2, { ignore: ['^fastly:'] }],
   },
+  overrides: [
+    {
+      files: ['src/**/*.mjs', 'test/**/*.mjs'],
+    },
+  ],
 };

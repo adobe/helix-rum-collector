@@ -9,24 +9,17 @@
  * OF ANY KIND, either express or implied. See the License for the specific language
  * governing permissions and limitations under the License.
  */
-// this thing is only for testing, so we ignore it in code coverage
-/* c8 ignore start */
-// eslint-disable-next-line import/no-mutable-exports
-export let lastLogMessage = [];
+/* eslint-env mocha */
+import assert from 'assert';
+import { maskTime } from '../src/utils.mjs';
 
-export class Logger {
-  constructor() {
-    // detect if we are running in nodejs
-    this.logImpl = typeof process !== 'undefined' ? console : import('fastly:logger');
-  }
+describe('Test Utils', () => {
+  it('Mask the time', () => {
+    const now = Date.now();
+    const nearestHour = Math.floor(now / 3600000) * 3600000;
+    const timePadding = 12345;
 
-  log(...args) {
-    // check if this.logImpl is a promise
-    if (typeof this.logImpl.then === 'function') {
-      this.logImpl.then((impl) => impl.log(...args));
-      return;
-    }
-    lastLogMessage = args;
-    this.logImpl.log(...args);
-  }
-}
+    assert.equal(nearestHour + timePadding, maskTime(now, timePadding));
+    assert.equal(nearestHour, maskTime(now));
+  });
+});

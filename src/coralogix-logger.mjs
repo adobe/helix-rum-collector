@@ -11,7 +11,7 @@
  */
 /// <reference types="@fastly/js-compute" />
 import { Logger } from './logger.mjs';
-import { cleanurl } from './utils.mjs';
+import { cleanurl, getMaskedTime } from './utils.mjs';
 
 export class CoralogixLogger {
   constructor(req) {
@@ -30,13 +30,13 @@ export class CoralogixLogger {
     this.logger = new Logger('Coralogix');
   }
 
-  logRUM(json, id, weight, referer, generation, checkpoint, target, source) {
+  logRUM(json, id, weight, referer, generation, checkpoint, target, source, timePadding) {
     console.log(`logging to Coralogix: ${typeof this.logger}`);
-    const now = Math.floor(Date.now());
+    const maskedNow = getMaskedTime(timePadding);
     console.log('at least I know the time');
 
     const data = {
-      timestamp: now,
+      timestamp: maskedNow,
       applicationName: 'helix-rum-collector',
       subsystemName: this.subsystemName,
       severity: checkpoint === 'error' ? 5 : 3,
@@ -48,8 +48,8 @@ export class CoralogixLogger {
           url: cleanurl(referer || (this.req.headers.has('referer') ? this.req.headers.get('referer') : this.req.url)),
         },
         time: {
-          start_msec: this.start,
-          elapsed: now - this.start,
+          start_msec: maskedNow,
+          elapsed: Math.floor(Date.now()) - this.start,
         },
         request: {
           id,

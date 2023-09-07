@@ -11,6 +11,7 @@
  */
 /// <reference types="@fastly/js-compute" />
 import { Logger } from './logger.mjs';
+import { getMaskedTime } from './utils.mjs';
 
 export class CoralogixErrorLogger {
   constructor(req) {
@@ -29,13 +30,13 @@ export class CoralogixErrorLogger {
     this.logger = new Logger('Coralogix');
   }
 
-  logError(status, message) {
+  logError(status, message, timePadding) {
     console.log(`logging to Coralogix: ${typeof this.logger}`);
     const now = Math.floor(Date.now());
     console.log('at least I know the time');
 
     const data = {
-      timestamp: now,
+      timestamp: getMaskedTime(timePadding),
       applicationName: 'helix-rum-collector',
       subsystemName: this.subsystemName,
       severity: Math.floor(status / 100),
