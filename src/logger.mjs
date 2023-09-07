@@ -11,6 +11,7 @@
  */
 // this thing is only for testing, so we ignore it in code coverage
 /* c8 ignore start */
+/// <reference types="@fastly/js-compute" />
 export let lastLogMessage = [];
 
 export class Logger {
