@@ -1,3 +1,10 @@
+## [2.1.2](https://github.com/adobe/helix-rum-collector/compare/v2.1.1...v2.1.2) (2023-09-08)
+
+
+### Reverts
+
+* Revert "Revert "Merge pull request #195 from adobe/mask-timestamps"" ([fc7d36c](https://github.com/adobe/helix-rum-collector/commit/fc7d36c512f04f7eb1636e05c6817af3a8a7ac5a)), closes [#195](https://github.com/adobe/helix-rum-collector/issues/195)
+
 ## [2.1.1](https://github.com/adobe/helix-rum-collector/compare/v2.1.0...v2.1.1) (2023-09-08)
 
 
