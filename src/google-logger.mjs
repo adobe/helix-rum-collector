@@ -10,7 +10,7 @@
  * governing permissions and limitations under the License.
  */
 import { Logger } from './logger.mjs';
-import { cleanurl } from './utils.mjs';
+import { cleanurl, getMaskedTime } from './utils.mjs';
 
 export class GoogleLogger {
   constructor(req) {
@@ -27,9 +27,9 @@ export class GoogleLogger {
     this.clusterlogger = new Logger('BigQuery-Clustered');
   }
 
-  logRUM(json, id, weight, referer, generation, checkpoint, target, source) {
+  logRUM(json, id, weight, referer, generation, checkpoint, target, source, timePadding) {
     console.log('logging to Google');
-    const now = Math.floor(Date.now());
+    const now = getMaskedTime(timePadding);
 
     const data = {
       time: now,

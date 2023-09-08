@@ -12,6 +12,7 @@
 // this thing is only for testing, so we ignore it in code coverage
 /* c8 ignore start */
 /// <reference types="@fastly/js-compute" />
+// eslint-disable-next-line import/no-mutable-exports
 export let lastLogMessage = [];
 
 export class Logger {
