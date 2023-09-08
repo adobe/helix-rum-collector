@@ -24,7 +24,10 @@ export class Logger {
   log(...args) {
     // check if this.logImpl is a promise
     if (typeof this.logImpl.then === 'function') {
-      this.logImpl.then((impl) => impl.log(...args));
+      this.logImpl.then((impl) => {
+        console.log('logging to', impl);
+        impl.log(...args);
+      });
       return;
     }
     lastLogMessage = args;
