@@ -76,7 +76,7 @@ jobs:
 
       - run:
           name: Wait for service to be updated
-          command: sleep 60
+          command: sleep 30
 
       - run:
           name: Post-Deployment Integration Test

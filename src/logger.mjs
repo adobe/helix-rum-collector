@@ -16,18 +16,32 @@
 export let lastLogMessage = [];
 
 export class Logger {
-  constructor() {
-    // detect if we are running in nodejs
-    this.logImpl = typeof process !== 'undefined' ? console : import('fastly:logger');
+  constructor(name) {
+    console.log('creating logger', typeof process);
+    this.logImpl = console;
+    if (typeof process === 'undefined') {
+      // fastly.
+      this.logPromise = import('fastly:logger');
+      this.logPromise.then((module) => {
+        this.logImpl = new module.Logger(name);
+        console.log('logger created', name, this.logImpl);
+        this.logPromise = null;
+      });
+    }
   }
 
   log(...args) {
     // check if this.logImpl is a promise
-    if (typeof this.logImpl.then === 'function') {
-      this.logImpl.then((impl) => impl.log(...args));
-      return;
+    const p = this.logPromise;
+    if (p) {
+      p.then(() => {
+        console.log('this.logImpl should be a thing now', this.logImpl);
+        this.logImpl.log(...args);
+        console.log('logged', args);
+      });
+    } else {
+      lastLogMessage = args;
+      this.logImpl.log(...args);
     }
-    lastLogMessage = args;
-    this.logImpl.log(...args);
   }
 }

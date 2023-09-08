@@ -73,7 +73,7 @@ async function main(req) {
       t,
     } = body;
 
-    if (!id) {
+    if (!id && id !== '') {
       return respondError('id field is required', 400, undefined, req);
     }
     if (!weight || typeof weight !== 'number') {
