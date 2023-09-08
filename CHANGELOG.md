@@ -1,3 +1,10 @@
+## [2.1.3](https://github.com/adobe/helix-rum-collector/compare/v2.1.2...v2.1.3) (2023-09-08)
+
+
+### Bug Fixes
+
+* **logger:** spread the timestamps a little when time padding is missing ([aa58aa5](https://github.com/adobe/helix-rum-collector/commit/aa58aa58aba6d631006a64a651d569849161e137))
+
 ## [2.1.2](https://github.com/adobe/helix-rum-collector/compare/v2.1.1...v2.1.2) (2023-09-08)
 
 
