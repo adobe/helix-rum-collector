@@ -1,3 +1,18 @@
+# [2.1.0](https://github.com/adobe/helix-rum-collector/compare/v2.0.0...v2.1.0) (2023-09-08)
+
+
+### Bug Fixes
+
+* **logger:** move triple slash reference types to correct source file ([e384814](https://github.com/adobe/helix-rum-collector/commit/e384814d60c536eae97d9b54398427f573ccfcf2))
+* **test:** fix test coverage tool ([de41c4a](https://github.com/adobe/helix-rum-collector/commit/de41c4a3ee72712e18350dc73c6ac6aa31b3d07e))
+* **test:** fix test coverage tool ([fd23ab4](https://github.com/adobe/helix-rum-collector/commit/fd23ab4c95441229213a68c88b144633560fbb6c))
+* **test:** fix test coverage tool ([f900111](https://github.com/adobe/helix-rum-collector/commit/f900111fdf8f8c4890e96804ed8bea193d8ca194))
+
+
+### Features
+
+* **logger:** protect privacy by masking timestamps ([cd5c97c](https://github.com/adobe/helix-rum-collector/commit/cd5c97c45c7e15606f078058f2010fee0e2d1654)), closes [#192](https://github.com/adobe/helix-rum-collector/issues/192)
+
 # [2.0.0](https://github.com/adobe/helix-rum-collector/compare/v1.16.4...v2.0.0) (2023-09-05)
 
 
