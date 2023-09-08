@@ -9,6 +9,21 @@
  * OF ANY KIND, either express or implied. See the License for the specific language
  * governing permissions and limitations under the License.
  */
+// Pass the current time to facilitate unit testing
+export function maskTime(time, timePadding) {
+  const nearestHour = Math.floor(time / 3600000) * 3600000;
+
+  if (timePadding) {
+    return nearestHour + timePadding;
+  } else {
+    return nearestHour;
+  }
+}
+
+export function getMaskedTime(timePadding) {
+  return maskTime(Date.now(), timePadding);
+}
+
 export function cleanurl(url) {
   // if URL does not parse, return it as is
   try {

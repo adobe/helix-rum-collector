@@ -26,6 +26,22 @@ describe('Helix RUM Collector Post-Deploy Tests', () => {
     expect(response).to.have.status(400);
   });
 
+  it('RUM collection with masked timestamp (t) returns 201', async () => {
+    const response = await chai.request(`https://${domain}`)
+      .post('/')
+      .send({
+        t: 1234,
+        cwv: {
+          CLS: 1.0,
+          LCP: 1.0,
+          FID: 4,
+        },
+        id: 'truncaty-me-timestampy-please',
+        weight: 1,
+      });
+    expect(response).to.have.status(201);
+  });
+
   it('RUM collection returns 201', async () => {
     const response = await chai.request(`https://${domain}`)
       .post('/')
