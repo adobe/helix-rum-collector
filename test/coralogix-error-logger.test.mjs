@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 Adobe. All rights reserved.
+ * Copyright 2021 Adobe. All rights reserved.
  * This file is licensed to you under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License. You may obtain a copy
  * of the License at http://www.apache.org/licenses/LICENSE-2.0
@@ -11,7 +11,7 @@
  */
 /* eslint-env mocha */
 import assert from 'assert';
-import { lastLogMessage } from '../src/logger.mjs';
+import { Logger, lastLogMessage } from '../src/logger.mjs';
 import { CoralogixErrorLogger } from '../src/coralogix-error-logger.mjs';
 
 describe('Test Coralogix Error Logger', () => {
@@ -24,7 +24,7 @@ describe('Test Coralogix Error Logger', () => {
     const req = { method, headers, url };
     const cel = new CoralogixErrorLogger(req);
 
-    cel.logError(456, 'You cant do that', 123);
+    cel.logError(456, 'You cant do that');
 
     const logged = JSON.parse(lastLogMessage);
     assert.equal('helix-rum-collector', logged.applicationName);
@@ -35,9 +35,5 @@ describe('Test Coralogix Error Logger', () => {
     assert.equal('http://www.foo.com/blah', logged.json.cdn.url);
     assert.equal('POST', logged.json.request.method);
     assert.equal('lynx', logged.json.request.user_agent);
-    assert(
-      logged.timestamp.toString().endsWith('00123'),
-      'Timestamp should be rounded and contain padding',
-    );
   });
 });

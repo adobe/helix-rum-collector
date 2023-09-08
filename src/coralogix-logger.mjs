@@ -10,7 +10,7 @@
  * governing permissions and limitations under the License.
  */
 import { Logger } from './logger.mjs';
-import { cleanurl, getMaskedTime } from './utils.mjs';
+import { cleanurl } from './utils.mjs';
 
 export class CoralogixLogger {
   constructor(req) {
@@ -29,13 +29,13 @@ export class CoralogixLogger {
     this.logger = new Logger('Coralogix');
   }
 
-  logRUM(json, id, weight, referer, generation, checkpoint, target, source, timePadding) {
+  logRUM(json, id, weight, referer, generation, checkpoint, target, source) {
     console.log(`logging to Coralogix: ${typeof this.logger}`);
-    const maskedNow = getMaskedTime(timePadding);
+    const now = Math.floor(Date.now());
     console.log('at least I know the time');
 
     const data = {
-      timestamp: maskedNow,
+      timestamp: now,
       applicationName: 'helix-rum-collector',
       subsystemName: this.subsystemName,
       severity: checkpoint === 'error' ? 5 : 3,
@@ -47,8 +47,8 @@ export class CoralogixLogger {
           url: cleanurl(referer || (this.req.headers.has('referer') ? this.req.headers.get('referer') : this.req.url)),
         },
         time: {
-          start_msec: maskedNow,
-          elapsed: Math.floor(Date.now()) - this.start,
+          start_msec: this.start,
+          elapsed: now - this.start,
         },
         request: {
           id,

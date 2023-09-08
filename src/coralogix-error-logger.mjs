@@ -10,7 +10,6 @@
  * governing permissions and limitations under the License.
  */
 import { Logger } from './logger.mjs';
-import { getMaskedTime } from './utils.mjs';
 
 export class CoralogixErrorLogger {
   constructor(req) {
@@ -29,13 +28,13 @@ export class CoralogixErrorLogger {
     this.logger = new Logger('Coralogix');
   }
 
-  logError(status, message, timePadding) {
+  logError(status, message) {
     console.log(`logging to Coralogix: ${typeof this.logger}`);
     const now = Math.floor(Date.now());
     console.log('at least I know the time');
 
     const data = {
-      timestamp: getMaskedTime(timePadding),
+      timestamp: now,
       applicationName: 'helix-rum-collector',
       subsystemName: this.subsystemName,
       severity: Math.floor(status / 100),
