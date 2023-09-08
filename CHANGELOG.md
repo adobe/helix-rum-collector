@@ -1,3 +1,10 @@
+## [2.1.1](https://github.com/adobe/helix-rum-collector/compare/v2.1.0...v2.1.1) (2023-09-08)
+
+
+### Bug Fixes
+
+* **index:** allow empty string as id ([c81b27c](https://github.com/adobe/helix-rum-collector/commit/c81b27ce1d0c1ef4d9611b93ade02bf787211786))
+
 # [2.1.0](https://github.com/adobe/helix-rum-collector/compare/v2.0.0...v2.1.0) (2023-09-08)
 
 
