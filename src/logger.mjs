@@ -16,6 +16,7 @@ export let lastLogMessage = [];
 
 export class Logger {
   constructor() {
+    console.log('creating logger', typeof process);
     // detect if we are running in nodejs
     this.logImpl = typeof process !== 'undefined' ? console : import('fastly:logger');
   }
