@@ -20,6 +20,13 @@ describe('Test Utils', () => {
     const timePadding = 12345;
 
     assert.equal(nearestHour + timePadding, maskTime(now, timePadding));
-    assert.equal(nearestHour, maskTime(now));
+  });
+
+  it('Use current second if padding is missing', () => {
+    const sometime = new Date(2023, 8, 6, 15, 45, 27, 999);
+
+    const expectedTime = new Date(2023, 8, 6, 15, 0, 27).getTime();
+    const masked = maskTime(sometime);
+    assert.equal(expectedTime, masked);
   });
 });

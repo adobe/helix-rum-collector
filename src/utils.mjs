@@ -16,10 +16,23 @@ export function maskTime(time, timePadding) {
   if (timePadding) {
     return nearestHour + timePadding;
   } else {
-    return nearestHour;
+    // If the padding is missing we use the current second to spread
+    // the result a little bit. We drop the current minute and the
+    // current milliseconds
+    const numSeconds = Math.floor((time - nearestHour) / 1000);
+    const currentSecondAsMS = (numSeconds % 60) * 1000;
+
+    return nearestHour + currentSecondAsMS;
   }
 }
 
+/**
+ * Mask the current time by truncating it to the current hour and
+ * adding the padding provided.
+ *
+ * @param {number} timePadding the padding to be added.
+ * @returns the masked time.
+ */
 export function getMaskedTime(timePadding) {
   return maskTime(Date.now(), timePadding);
 }
