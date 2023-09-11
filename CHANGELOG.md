@@ -1,3 +1,10 @@
+# [2.2.0](https://github.com/adobe/helix-rum-collector/compare/v2.1.3...v2.2.0) (2023-09-11)
+
+
+### Features
+
+* **logger:** protect privacy by masking user agents ([3b77a96](https://github.com/adobe/helix-rum-collector/commit/3b77a96ff2b57b734fd8da927217e0f7dfb93287)), closes [#193](https://github.com/adobe/helix-rum-collector/issues/193)
+
 ## [2.1.3](https://github.com/adobe/helix-rum-collector/compare/v2.1.2...v2.1.3) (2023-09-08)
 
 
