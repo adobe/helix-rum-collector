@@ -37,6 +37,26 @@ export function getMaskedTime(timePadding) {
   return maskTime(Date.now(), timePadding);
 }
 
+export function getMaskedUserAgent(userAgent) {
+  if (!userAgent) {
+    return 'undefined';
+  }
+  const lcUA = userAgent.toLowerCase();
+
+  if (lcUA.includes('mobile')
+    || lcUA.includes('opera mini')) {
+    return 'mobile';
+  }
+  if (lcUA.includes('bot')
+    || lcUA.includes('spider')
+    || lcUA.includes('crawler')
+    || lcUA.includes('ahc/')) {
+    return 'bot';
+  }
+
+  return 'desktop';
+}
+
 export function cleanurl(url) {
   // if URL does not parse, return it as is
   try {

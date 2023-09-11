@@ -18,6 +18,7 @@ describe('Test Google Logger', () => {
   it('Test log RUM', () => {
     const headers = new Map();
     headers.set('x-forwarded-host', 'www.foo.com');
+    headers.set('user-agent', 'Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/115.0.0.0 Mobile Safari/537.36');
     const url = new URL('http://www.foo.com/testing123');
 
     const req = { headers, url };
@@ -41,6 +42,7 @@ describe('Test Google Logger', () => {
     assert(logged.time.toString().endsWith('00.011'), logged.time.toString());
     assert.equal('www.foo.com', logged.host);
     assert.equal('http://www.foo.com/referer', logged.url);
+    assert.equal('mobile', logged.user_agent);
     assert.equal(5, logged.weight);
     assert.equal(67, logged.generation);
     assert.equal(9999999999999, logged.checkpoint);

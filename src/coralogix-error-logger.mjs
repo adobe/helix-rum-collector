@@ -10,7 +10,7 @@
  * governing permissions and limitations under the License.
  */
 import { Logger } from './logger.mjs';
-import { getMaskedTime } from './utils.mjs';
+import { getMaskedTime, getMaskedUserAgent } from './utils.mjs';
 
 export class CoralogixErrorLogger {
   constructor(req) {
@@ -52,7 +52,7 @@ export class CoralogixErrorLogger {
         },
         request: {
           method: this.req.method,
-          user_agent: this.req.headers.get('user-agent'),
+          user_agent: getMaskedUserAgent(this.req.headers.get('user-agent')),
         },
         message,
       },
