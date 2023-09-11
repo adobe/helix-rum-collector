@@ -18,9 +18,11 @@ describe('Test Coralogix Logger', () => {
   it('Test log RUM', () => {
     const headers = new Map();
     headers.set('x-forwarded-host', 'www.foo.com');
+    headers.set('user-agent', 'Mozilla/5.0 (compatible; HubSpot Crawler; +https://www.hubspot.com)');
+    const method = 'GET';
     const url = new URL('http://www.foo.com/testing123');
 
-    const req = { headers, url };
+    const req = { headers, method, url };
 
     const cl = new CoralogixLogger(req);
 
@@ -47,6 +49,8 @@ describe('Test Coralogix Logger', () => {
     assert.equal(logged.timestamp, logged.json.time.start_msec);
     assert(logged.json.time.elapsed < 100);
     assert.equal('123', logged.json.request.id);
+    assert.equal('GET', logged.json.request.method);
+    assert.equal('bot', logged.json.request.user_agent);
     assert.equal(42, logged.json.rum.generation);
     assert.equal(12345, logged.json.rum.checkpoint);
     assert.equal('http://www.foo.com/testing123', logged.json.rum.target);

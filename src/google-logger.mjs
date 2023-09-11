@@ -10,7 +10,7 @@
  * governing permissions and limitations under the License.
  */
 import { Logger } from './logger.mjs';
-import { cleanurl, getMaskedTime } from './utils.mjs';
+import { cleanurl, getMaskedTime, getMaskedUserAgent } from './utils.mjs';
 
 export class GoogleLogger {
   constructor(req) {
@@ -35,7 +35,7 @@ export class GoogleLogger {
       time: now,
       host: this.subsystemName,
       url: referer || (this.req.headers.has('referer') ? this.req.headers.get('referer') : this.req.url),
-      user_agent: this.req.headers.get('user-agent'),
+      user_agent: getMaskedUserAgent(this.req.headers.get('user-agent')),
       referer: cleanurl(this.req.headers.get('referer')),
       weight,
       generation,
