@@ -44,7 +44,7 @@ function hashCode(s) {
   s.split('').reduce((a, b) => (((a << 5) - a) + b.charCodeAt(0)) | 0, 0);
 }
 
-async function main(req) {
+export async function main(req) {
   try {
     if (req.method === 'GET' && new URL(req.url).pathname.startsWith('/robots.txt')) {
       return respondRobots(req);
@@ -104,7 +104,7 @@ async function main(req) {
   }
 }
 
-async function handler(event) {
+export async function handler(event) {
   // Get the client reqest from the event
   const req = event.request;
   return main(req);

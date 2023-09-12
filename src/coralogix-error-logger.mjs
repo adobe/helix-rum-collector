@@ -32,10 +32,10 @@ export class CoralogixErrorLogger {
   logError(status, message, timePadding) {
     console.log(`logging to Coralogix: ${typeof this.logger}`);
     const now = Math.floor(Date.now());
-    console.log('at least I know the time');
+    const ts = getMaskedTime(timePadding);
 
     const data = {
-      timestamp: getMaskedTime(timePadding),
+      timestamp: ts,
       applicationName: 'helix-rum-collector',
       subsystemName: this.subsystemName,
       severity: Math.floor(status / 100),
@@ -47,7 +47,7 @@ export class CoralogixErrorLogger {
           url: this.req.headers.has('referer') ? this.req.headers.get('referer') : this.req.url,
         },
         time: {
-          start_msec: this.start,
+          start_msec: ts,
           elapsed: now - this.start,
         },
         request: {
