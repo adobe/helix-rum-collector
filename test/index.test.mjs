@@ -11,7 +11,7 @@
  */
 /* eslint-env mocha */
 import assert from 'assert';
-import { lastLogMessage  } from '../src/logger.mjs';
+import { lastLogMessage } from '../src/logger.mjs';
 
 const methods = {};
 
@@ -170,4 +170,3 @@ describe('Test index', () => {
   //   // never get here, ther previous line always fails
   // });
 });
-
