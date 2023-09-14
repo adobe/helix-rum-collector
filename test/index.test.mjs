@@ -49,6 +49,29 @@ describe('Test index', () => {
     assert.equal('blahblah', logged.hostname);
   });
 
+  it('main GET generates ID', async () => {
+    const headers = new Map();
+    const req = { headers };
+    req.method = 'GET';
+    req.url = 'http://foo.bar.org?data={}';
+
+    const resp = await methods.main(req);
+    assert.equal(201, resp.status);
+
+    const logged = JSON.parse(lastLogMessage);
+    const id1 = logged.id;
+    assert(id1.length > 0);
+
+    // Make another identical request
+    const resp2 = await methods.main(req);
+    assert.equal(201, resp2.status);
+
+    const logged2 = JSON.parse(lastLogMessage);
+    assert(logged2.id.length > 0);
+
+    assert(id1 !== logged2.id, 'The generated IDs should be different for 2 identical GET requests');
+  });
+
   it('main POST via handler', async () => {
     const headers = new Map();
     headers.set('user-agent', 'Opera/9.80 (MAUI Runtime; Opera Mini/4.4.39030/191.315; U; en) Presto/2.12.423 Version/12.16');

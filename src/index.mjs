@@ -39,9 +39,8 @@ function respondError(message, status, e, req) {
   return response;
 }
 
-function hashCode(s) {
-  // eslint-disable-next-line no-bitwise
-  s.split('').reduce((a, b) => (((a << 5) - a) + b.charCodeAt(0)) | 0, 0);
+function getRandomID() {
+  return Array.from({ length: 75 }, (_, i) => String.fromCharCode(48 + i)).filter((a) => /\d|[A-Z]/i.test(a)).filter(() => Math.random() * 75 > 70).join('');
 }
 
 export async function main(req) {
@@ -64,7 +63,7 @@ export async function main(req) {
 
     const {
       weight = 1,
-      id = req.method === 'GET' ? `${hashCode(req.url)}-${new Date().getTime()}-${Math.random().toString(16).substr(2, 14)}` : undefined,
+      id = req.method === 'GET' ? `${getRandomID()}` : undefined,
       cwv = {},
       referer, referrer,
       generation, checkpoint,
