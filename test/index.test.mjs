@@ -181,15 +181,4 @@ describe('Test index', () => {
     await verifyInput('{"weight": "hello"}', 'weight must be a number');
     await verifyInput('{"cwv": 123}', 'cwv must be an object');
   });
-
-  // it('responds to rum internal requests', async () => {
-  //   const headers = new Map();
-
-  //   const req = { headers };
-  //   req.method = 'GET';
-  //   req.url = 'http://x.y/.rum/web-vitals.html';
-
-  //   await methods.main(req);
-  //   // never get here, ther previous line always fails
-  // });
 });
