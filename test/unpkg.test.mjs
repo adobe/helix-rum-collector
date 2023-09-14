@@ -126,4 +126,52 @@ describe('Test unpkg handler', () => {
       global.fetch = storedFetch;
     }
   });
+
+  it('cleans up response if transform causes errors', async () => {
+    const req = {};
+    req.url = 'http://foo.bar.org/.rum/@adobe/helix-rum-js?generation=42';
+
+    const storedFetch = global.fetch;
+
+    try {
+      // Mock the global fetch function
+      global.fetch = (v, opts) => {
+        assert.equal('unpkg.com', opts.backend);
+        if (v.url === 'https://unpkg.com/@adobe/helix-rum-js') {
+          const headers = new Map();
+          headers.set('foo', 'bar');
+          headers.set('cf-cache-status', 'eek');
+          headers.set('cf-ray', 'eek');
+          headers.set('expect-ct', 'eek');
+          headers.set('fly-request-id', 'eek');
+          headers.set('server', 'eek');
+
+          const resp = {
+            headers,
+            ok: true,
+            url: v.url,
+            status: 200,
+          };
+          resp.test = () => undefined; // will trigger an error in transformBody
+          return resp;
+        }
+        return undefined;
+      };
+
+      const resp = await respondUnpkg(req);
+
+      assert.equal(200, resp.status);
+      assert.equal('bar', resp.headers.get('foo'));
+
+      // Should clear these headers in the cleanupHeaders() even though
+      // the transformBody throws an exception.
+      assert(resp.headers.get('cf-cache-status') === undefined);
+      assert(resp.headers.get('cf-ray') === undefined);
+      assert(resp.headers.get('expect-ct') === undefined);
+      assert(resp.headers.get('fly-request-id') === undefined);
+      assert(resp.headers.get('server') === undefined);
+    } finally {
+      global.fetch = storedFetch;
+    }
+  });
 });
