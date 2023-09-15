@@ -1,3 +1,10 @@
+## [2.2.1](https://github.com/adobe/helix-rum-collector/compare/v2.2.0...v2.2.1) (2023-09-15)
+
+
+### Bug Fixes
+
+* **log:** reduce entropy on generated IDs for GET requests ([0f61f37](https://github.com/adobe/helix-rum-collector/commit/0f61f37213e4d0f4eba2a9b87825c9c0fde20ba6))
+
 # [2.2.0](https://github.com/adobe/helix-rum-collector/compare/v2.1.3...v2.2.0) (2023-09-11)
 
 
