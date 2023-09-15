@@ -10,6 +10,7 @@
  * governing permissions and limitations under the License.
  */
 /* eslint-env mocha */
+/* eslint-env serviceworker */
 import assert from 'assert';
 import { respondUnpkg } from '../src/unpkg.mjs';
 
@@ -28,9 +29,9 @@ describe('Test unpkg handler', () => {
           const resp = {
             url: v.url,
             status: 200,
-            type: 'test-response',
           };
-          resp.headers = new Map();
+          resp.headers = new Headers();
+          resp.headers.append('xyz', 'abc');
           return resp;
         }
         return undefined;
@@ -39,7 +40,7 @@ describe('Test unpkg handler', () => {
       const resp = await respondUnpkg(req);
 
       assert.equal(200, resp.status);
-      assert.equal('test-response', resp.type);
+      assert.equal('abc', resp.headers.get('xyz'));
     } finally {
       global.fetch = storedFetch;
     }
@@ -61,9 +62,9 @@ describe('Test unpkg handler', () => {
             url: v.url,
             status: 200,
           };
-          resp.headers = new Map();
-          resp.headers.set('foo-header', 'bar');
-          resp.text = () => '//__HELIX_RUM_JS_VERSION__ some text';
+          resp.headers = new Headers();
+          resp.headers.append('foo-header', 'bar');
+          resp.body = '//__HELIX_RUM_JS_VERSION__ some text';
           return resp;
         }
         return undefined;
@@ -80,7 +81,49 @@ describe('Test unpkg handler', () => {
     }
   });
 
-  it('handles redirects', async () => {
+  it('handles redirect', async () => {
+    const req = {};
+    req.url = 'http://foo.bar.org/.rum/web-vitals';
+
+    const storedFetch = global.fetch;
+
+    try {
+      // Mock the global fetch function
+      global.fetch = (v, opts) => {
+        assert.equal('unpkg.com', opts.backend);
+        if (v.url === 'https://unpkg.com/web-vitals') {
+          const resp = { status: 302 };
+          resp.headers = new Map();
+          resp.headers.set('location', 'relocated/web-vitals');
+          resp.headers.set('cache-control', 'forget-it');
+          return resp;
+        }
+        if (v.url === 'https://unpkg.com/relocated/web-vitals') {
+          const resp = {
+            url: v.url,
+            status: 200,
+          };
+          resp.headers = new Headers();
+          resp.headers.append('server', 'hidden');
+          resp.headers.append('etag', '123');
+          return resp;
+        }
+
+        return undefined;
+      };
+
+      const resp = await respondUnpkg(req);
+
+      assert.equal(200, resp.status);
+      assert.equal('forget-it', resp.headers.get('cache-control'));
+      assert.equal('123', resp.headers.get('etag'));
+      assert(!resp.headers.has('server'));
+    } finally {
+      global.fetch = storedFetch;
+    }
+  });
+
+  it('handles double redirects', async () => {
     const req = {};
     req.url = 'http://foo.bar.org/.rum/web-vitals';
 
@@ -109,7 +152,7 @@ describe('Test unpkg handler', () => {
             status: 200,
           };
           resp.headers = new Map();
-          resp.text = () => '//got-there-in-the-end';
+          resp.body = '//got-there-in-the-end';
           return resp;
         }
 
@@ -119,7 +162,6 @@ describe('Test unpkg handler', () => {
       const resp = await respondUnpkg(req);
 
       assert.equal(200, resp.status);
-      assert.equal('https://foo.bar.web.vitals/', resp.url);
       assert.equal('//got-there-in-the-end', await resp.text());
       assert.equal('forget-it', resp.headers.get('cache-control'));
     } finally {
@@ -138,21 +180,20 @@ describe('Test unpkg handler', () => {
       global.fetch = (v, opts) => {
         assert.equal('unpkg.com', opts.backend);
         if (v.url === 'https://unpkg.com/@adobe/helix-rum-js') {
-          const headers = new Map();
-          headers.set('foo', 'bar');
-          headers.set('cf-cache-status', 'eek');
-          headers.set('cf-ray', 'eek');
-          headers.set('expect-ct', 'eek');
-          headers.set('fly-request-id', 'eek');
-          headers.set('server', 'eek');
+          const headers = new Headers();
+          headers.append('foo', 'bar');
+          headers.append('cf-cache-status', 'eek');
+          headers.append('cf-ray', 'eek');
+          headers.append('expect-ct', 'eek');
+          headers.append('fly-request-id', 'eek');
+          headers.append('server', 'eek');
 
           const resp = {
             headers,
             ok: true,
-            url: v.url,
+            url: 'bheuaark!', // will trigger an error in transformBody
             status: 200,
           };
-          resp.test = () => undefined; // will trigger an error in transformBody
           return resp;
         }
         return undefined;
@@ -165,11 +206,11 @@ describe('Test unpkg handler', () => {
 
       // Should clear these headers in the cleanupHeaders() even though
       // the transformBody throws an exception.
-      assert(resp.headers.get('cf-cache-status') === undefined);
-      assert(resp.headers.get('cf-ray') === undefined);
-      assert(resp.headers.get('expect-ct') === undefined);
-      assert(resp.headers.get('fly-request-id') === undefined);
-      assert(resp.headers.get('server') === undefined);
+      assert(!resp.headers.has('cf-cache-status'));
+      assert(!resp.headers.has('cf-ray'));
+      assert(!resp.headers.has('expect-ct'));
+      assert(!resp.headers.has('fly-request-id'));
+      assert(!resp.headers.has('server'));
     } finally {
       global.fetch = storedFetch;
     }
