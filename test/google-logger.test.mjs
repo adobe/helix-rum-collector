@@ -15,7 +15,7 @@ import { lastLogMessage } from '../src/logger.mjs';
 import { GoogleLogger } from '../src/google-logger.mjs';
 
 describe('Test Google Logger', () => {
-  it('Test log RUM', () => {
+  it('log to RUM', () => {
     const headers = new Map();
     headers.set('x-forwarded-host', 'www.foo.com');
     headers.set('user-agent', 'Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/115.0.0.0 Mobile Safari/537.36');
@@ -51,5 +51,56 @@ describe('Test Google Logger', () => {
     assert.equal('someid', logged.id);
     assert.deepEqual(['b', 'ar'], logged.foo);
     assert.equal('www.foo.com', logged.hostname);
+  });
+
+  it('hostname handling', () => {
+    const headers = new Map();
+    headers.set('host', 'a_host');
+    headers.set('referer', 'http://somehost.com/somepage.html');
+    headers.set('user-agent', 'Joppie');
+
+    const req = { headers };
+
+    const gl = new GoogleLogger(req);
+    gl.logRUM(
+      {},
+      '1234',
+      3,
+      'not_a_url',
+      49,
+      61,
+      'sometarget',
+      'somesource',
+      undefined,
+    );
+
+    const logged = JSON.parse(lastLogMessage);
+    assert.equal('a_host', logged.host);
+    assert.equal('not_a_url', logged.url);
+    assert.equal('desktop', logged.user_agent);
+    assert.equal('http://somehost.com/somepage.html', logged.referer);
+    assert.equal(3, logged.weight);
+    assert.equal(49, logged.generation);
+    assert.equal(61, logged.checkpoint);
+    assert.equal('sometarget', logged.target);
+    assert.equal('somesource', logged.source);
+    assert.equal('1234', logged.id);
+    assert.equal('somehost.com', logged.hostname);
+  });
+
+  it('hostname handling 2', () => {
+    const headers = new Map();
+    const url = 'https://www.blahblah.com/hihaho';
+
+    const req = { headers, url };
+
+    const gl = new GoogleLogger(req);
+    gl.logRUM({}, 'x', 1, '?');
+
+    const logged = JSON.parse(lastLogMessage);
+    assert.equal('?', logged.url);
+    assert.equal('www.blahblah.com', logged.hostname);
+    assert.equal('x', logged.id);
+    assert.equal(1, logged.weight);
   });
 });

@@ -12,8 +12,7 @@
 // this thing is only for testing, so we ignore it in code coverage
 /* c8 ignore start */
 /// <reference types="@fastly/js-compute" />
-// eslint-disable-next-line import/no-mutable-exports
-export let lastLogMessage = [];
+export const lastLogMessage = [];
 
 export class Logger {
   constructor(name) {
@@ -40,7 +39,10 @@ export class Logger {
         console.log('logged', args);
       });
     } else {
-      lastLogMessage = args;
+      // Reinitialize lastLogMessage
+      lastLogMessage.length = 0;
+      args.forEach((e) => lastLogMessage.push(e));
+
       this.logImpl.log(...args);
     }
   }

@@ -27,7 +27,7 @@ async function transformBody(resp, req) {
   const respURL = new URL(resp.url);
   if (resp.ok
     && resp.status === 200
-    && url.pathname.indexOf('@adobe/helix-rum-js')) {
+    && url.pathname.indexOf('@adobe/helix-rum-js') > 0) {
     const generation = url.searchParams.get('generation') || respURL.pathname.split(/[@\\/]/).slice(2, 5).join('-');
     const text = await resp.text();
     const body = text.replace(/__HELIX_RUM_JS_VERSION__/, generation.replace(/[^a-z0-9_.-]/ig, ''));
@@ -38,7 +38,7 @@ async function transformBody(resp, req) {
 
 async function cleanupResponse(resp, req) {
   try {
-    return transformBody(cleanupHeaders(resp), req);
+    return await transformBody(cleanupHeaders(resp), req);
   } catch (e) {
     console.error(e.message);
   }
