@@ -30,7 +30,7 @@
   "devDependencies": {
     "@adobe/eslint-config-helix": "2.0.3",
     "@adobe/semantic-release-coralogix": "1.1.26",
-    "@fastly/js-compute": "3.3.4",
+    "@fastly/js-compute": "3.4.0",
     "@semantic-release/changelog": "6.0.3",
     "@semantic-release/exec": "6.0.3",
     "@semantic-release/git": "10.0.1",
