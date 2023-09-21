@@ -11,23 +11,47 @@
  */
 /* eslint-env serviceworker */
 
+// Headers removed by cleanupHeaders()
+const removedHeaders = [
+  'cf-cache-status',
+  'cf-ray',
+  'expect-ct',
+  'fly-request-id',
+  'server',
+];
+
+/**
+ * Removes the headers listed in removeHeaders from the Response.
+ * It does this by creating a new Response which is a copy of the
+ * original with the headers removed.
+ *
+ * @param {Response} resp the response to clean
+ * @returns the recreated, cleaned response
+ */
 function cleanupHeaders(resp) {
-  [
-    'cf-cache-status',
-    'cf-ray',
-    'expect-ct',
-    'fly-request-id',
-    'server',
-  ].forEach((headername) => resp.headers.delete(headername));
-  return resp;
+  // Can't modify the response headers, so recreate a new one with the headers removed
+  const newHeaders = new Headers();
+
+  for (const kv of resp.headers.entries()) {
+    if (!removedHeaders.includes(kv[0])) {
+      newHeaders.append(kv[0], kv[1]);
+    }
+  }
+
+  const result = new Response(resp.body, {
+    headers: newHeaders,
+    status: resp.status,
+    statusText: resp.statusText,
+  });
+  return result;
 }
 
-async function transformBody(resp, req) {
+async function transformBody(resp, responseUrl, req) {
   const url = new URL(req.url);
-  const respURL = new URL(resp.url);
+  const respURL = new URL(responseUrl);
   if (resp.ok
     && resp.status === 200
-    && url.pathname.indexOf('@adobe/helix-rum-js') > 0) {
+    && url.pathname.indexOf('@adobe/helix-rum-js') >= 0) {
     const generation = url.searchParams.get('generation') || respURL.pathname.split(/[@\\/]/).slice(2, 5).join('-');
     const text = await resp.text();
     const body = text.replace(/__HELIX_RUM_JS_VERSION__/, generation.replace(/[^a-z0-9_.-]/ig, ''));
@@ -37,12 +61,13 @@ async function transformBody(resp, req) {
 }
 
 async function cleanupResponse(resp, req) {
+  const cleanedResponse = cleanupHeaders(resp);
   try {
-    return await transformBody(cleanupHeaders(resp), req);
+    return await transformBody(cleanedResponse, resp.url, req);
   } catch (e) {
     console.error(e.message);
   }
-  return cleanupHeaders(resp);
+  return cleanedResponse;
 }
 
 export async function respondUnpkg(req) {
