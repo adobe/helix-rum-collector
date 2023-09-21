@@ -1,3 +1,10 @@
+## [2.2.2](https://github.com/adobe/helix-rum-collector/compare/v2.2.1...v2.2.2) (2023-09-21)
+
+
+### Bug Fixes
+
+* **unpkg:** fix the cleaning of response headers ([4ce0035](https://github.com/adobe/helix-rum-collector/commit/4ce00359d2fa803b14e3770e46243a3bb7fe7871))
+
 ## [2.2.1](https://github.com/adobe/helix-rum-collector/compare/v2.2.0...v2.2.1) (2023-09-15)
 
 
