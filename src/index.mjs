@@ -93,7 +93,7 @@ export async function main(req) {
     }
 
     const response = new Response('rum collected.', {
-      status: 201,
+      status: 204,
       headers,
     });
 
