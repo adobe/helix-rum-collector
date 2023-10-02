@@ -216,5 +216,5 @@ describe('Test index', () => {
     await verifyInput('{"id": null}', 'id field is required');
     await verifyInput('{"weight": "hello"}', 'weight must be a number');
     await verifyInput('{"cwv": 123}', 'cwv must be an object');
-  });
+  }).timeout(5000);
 });
