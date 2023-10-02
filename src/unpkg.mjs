@@ -56,7 +56,7 @@ async function transformBody(resp, responseUrl, req) {
     const text = await resp.text();
     console.log('response length', text.length);
     if (text.length === 0) {
-      return new Response('', { status: 204 });
+      return new Response(undefined, { status: 204 });
     }
     const body = text.replace(/__HELIX_RUM_JS_VERSION__/, generation.replace(/[^a-z0-9_.-]/ig, ''));
     return new Response(body, { headers: resp.headers });
