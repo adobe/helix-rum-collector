@@ -83,6 +83,15 @@ export async function respondUnpkg(req) {
   const beresp = await fetch(bereq, {
     backend: 'jsdelivr',
   });
-  console.log('fetched [1]', bereq.url, beresp.status, beresp.headers.get('ETag'));
+  console.log('fetched [1] ', bereq.url, beresp.status, beresp.headers.get('ETag'), beresp.headers.get('Age'));
+
+  const beurl2 = new URL(paths.slice(2).join('/'), 'https://cdn.jsdelivr.net/npm/');
+  const bereq2 = new Request(beurl2.href);
+  console.log('fetching [2]', bereq2.url);
+  const beresp2 = await fetch(bereq2, {
+    backend: 'jsdelivr',
+  });
+  console.log('fetched [2] ', bereq2.url, beresp2.status, beresp2.headers.get('ETag'), beresp2.headers.get('Server'));
+
   return cleanupResponse(beresp, req);
 }
