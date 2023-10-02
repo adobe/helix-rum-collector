@@ -35,6 +35,7 @@ function cleanupHeaders(resp) {
   for (const kv of resp.headers.entries()) {
     if (!removedHeaders.includes(kv[0])) {
       newHeaders.append(kv[0], kv[1]);
+      console.log('keeping header', kv[0], kv[1]);
     }
   }
 
@@ -54,6 +55,7 @@ async function transformBody(resp, responseUrl, req) {
     && url.pathname.indexOf('@adobe/helix-rum-js') >= 0) {
     const generation = url.searchParams.get('generation') || respURL.pathname.split(/[@\\/]/).slice(2, 5).join('-');
     const text = await resp.text();
+    console.log('response length', text.length);
     const body = text.replace(/__HELIX_RUM_JS_VERSION__/, generation.replace(/[^a-z0-9_.-]/ig, ''));
     return new Response(body, { headers: resp.headers });
   }
