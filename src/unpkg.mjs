@@ -75,7 +75,7 @@ async function cleanupResponse(resp, req) {
 export async function respondUnpkg(req) {
   const url = new URL(req.url);
   const paths = url.pathname.split('/');
-  const beurl = new URL(paths.slice(2).join('/'), 'https://cdn.jsdelivr.net/npm/');
+  const beurl = new URL(paths.slice(2).join('/'), 'https://fastly.jsdelivr.net/npm/');
   const bereq = new Request(beurl.href);
   console.log('fetching [1]', bereq.url);
   const beresp = await fetch(bereq, {
