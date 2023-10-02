@@ -55,7 +55,7 @@ async function transformBody(resp, responseUrl, req) {
     const generation = url.searchParams.get('generation') || respURL.pathname.split(/[@\\/]/).slice(2, 5).join('-');
     const text = await resp.text();
     console.log('response content-length', resp.headers.get('content-length'));
-    console.leg('response content-encoding', resp.headers.get('content-encoding'));
+    console.log('response content-encoding', resp.headers.get('content-encoding'));
     console.log('response length', text.length);
     if (text.length === 0) {
       return new Response(undefined, { status: 204 });
