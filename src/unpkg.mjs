@@ -52,10 +52,14 @@ async function transformBody(resp, responseUrl, req) {
   if (resp.ok
     && resp.status === 200
     && url.pathname.indexOf('@adobe/helix-rum-js') >= 0) {
-    const generation = url.searchParams.get('generation') || respURL.pathname.split(/[@\\/]/).slice(2, 5).join('-');
-    const text = await resp.text();
-    const body = text.replace(/__HELIX_RUM_JS_VERSION__/, generation.replace(/[^a-z0-9_.-]/ig, ''));
-    return new Response(body, { headers: resp.headers });
+    const urlversion = respURL.pathname.split(/[@\\/]/).slice(2, 5).pop();
+    if (urlversion === '1.0.0' || urlversion === '1.0.1') {
+    // only rewrite for 1.0.0 and 1.0.1 – newer versions don't need this
+      const generation = url.searchParams.get('generation') || respURL.pathname.split(/[@\\/]/).slice(2, 5).join('-');
+      const text = await resp.text();
+      const body = text.replace(/__HELIX_RUM_JS_VERSION__/, generation.replace(/[^a-z0-9_.-]/ig, ''));
+      return new Response(body, { headers: resp.headers });
+    }
   }
   return resp;
 }
