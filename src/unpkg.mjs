@@ -83,6 +83,6 @@ export async function respondUnpkg(req) {
   const beresp = await fetch(bereq, {
     backend: 'jsdelivr',
   });
-  console.log('fetched [1]', bereq.url, beresp.status, beresp.headers.get('content-length'));
+  console.log('fetched [1]', bereq.url, beresp.status, beresp.headers.get('ETag'));
   return cleanupResponse(beresp, req);
 }
