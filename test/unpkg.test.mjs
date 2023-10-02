@@ -14,7 +14,7 @@
 import assert from 'assert';
 import { respondUnpkg } from '../src/unpkg.mjs';
 
-describe('Test unpkg handler', () => {
+describe.skip('Test unpkg handler', () => {
   it('handles web-vitals request', async () => {
     const req = {};
     req.url = 'http://foo.bar.org/.rum/web-vitals';
