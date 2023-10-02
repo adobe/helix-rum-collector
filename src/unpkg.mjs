@@ -54,6 +54,8 @@ async function transformBody(resp, responseUrl, req) {
     && url.pathname.indexOf('@adobe/helix-rum-js') >= 0) {
     const generation = url.searchParams.get('generation') || respURL.pathname.split(/[@\\/]/).slice(2, 5).join('-');
     const text = await resp.text();
+    console.log('response content-length', resp.headers.get('content-length'));
+    console.leg('response content-encoding', resp.headers.get('content-encoding'));
     console.log('response length', text.length);
     if (text.length === 0) {
       return new Response(undefined, { status: 204 });
@@ -82,8 +84,11 @@ export async function respondUnpkg(req) {
   console.log('fetching [1]', bereq.url);
   const beresp = await fetch(bereq, {
     backend: 'jsdelivr',
+    headers: {
+      'Accept-Encoding': 'identity',
+    },
   });
-  console.log('fetched [1] ', bereq.url, beresp.status, beresp.headers.get('ETag'), beresp.headers.get('Age'));
+  console.log('fetched  [1] ', bereq.url, beresp.status, beresp.headers.get('ETag'), beresp.headers.get('Age'));
 
   const beurl2 = new URL(paths.slice(2).join('/'), 'https://cdn.jsdelivr.net/npm/');
   const bereq2 = new Request(beurl2.href);
@@ -91,7 +96,7 @@ export async function respondUnpkg(req) {
   const beresp2 = await fetch(bereq2, {
     backend: 'jsdelivr',
   });
-  console.log('fetched [2] ', bereq2.url, beresp2.status, beresp2.headers.get('ETag'), beresp2.headers.get('Server'));
+  console.log('fetched [2] ', bereq2.url, beresp2.status, beresp2.headers.get('ETag'), beresp2.headers.get('Content-Length'));
 
   return cleanupResponse(beresp, req);
 }
