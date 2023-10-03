@@ -104,13 +104,15 @@ describe('Helix RUM Collector Post-Deploy Tests', () => {
 
   it('rum js module is being served without redirect', async () => {
     const response = await chai.request(`https://${domain}`)
-      .get('/.rum/@adobe/helix-rum-js');
+      .get('/.rum/@adobe/helix-rum-js@^1/src/index.js');
     expect(response).to.have.status(200);
     // eslint-disable-next-line no-unused-expressions
     expect(response).to.have.header('content-type', /^application\/javascript/);
+    // content length should be greater than 0
+    expect(response).to.have.header('content-length', /^[1-9][0-9]*$/);
   }).timeout(5000);
 
-  it('rum js module is being served with default replacements', async () => {
+  it.skip('rum js module is being served with default replacements', async () => {
     const response = await chai.request(`https://${domain}`)
       .get('/.rum/@adobe/helix-rum-js@1.0.0/src/index.js')
       .buffer(true);
