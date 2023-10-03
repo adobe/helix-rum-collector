@@ -1,3 +1,10 @@
+## [2.2.3](https://github.com/adobe/helix-rum-collector/compare/v2.2.2...v2.2.3) (2023-10-03)
+
+
+### Bug Fixes
+
+* **unpkg:** only perform GENERATION rewriting for old versions that still have generation support ([fea4cab](https://github.com/adobe/helix-rum-collector/commit/fea4cabded35ac89a334fde26c7b4e48e9d9c912))
+
 ## [2.2.2](https://github.com/adobe/helix-rum-collector/compare/v2.2.1...v2.2.2) (2023-09-21)
 
 
