@@ -11,7 +11,7 @@
  */
 /* eslint-env mocha */
 import assert from 'assert';
-import { getMaskedUserAgent, maskTime } from '../src/utils.mjs';
+import { cleanurl, getMaskedUserAgent, maskTime } from '../src/utils.mjs';
 
 describe('Test Utils', () => {
   it('Mask the time', () => {
@@ -46,5 +46,12 @@ describe('Test Utils', () => {
     assert.equal('desktop', getMaskedUserAgent('foobar'));
 
     assert.equal('undefined', getMaskedUserAgent());
+  });
+
+  it('Cleaning of URLs', () => {
+    assert.equal('http://foo.bar.com/test', cleanurl('http://foo.bar.com/test#my-fragment'));
+    assert.equal('http://foo.bar.com/test', cleanurl('http://foo.bar.com/test?foo=bar'));
+    assert.equal('http://foo.bar.com/test', cleanurl('http://foo.bar.com/test?foo=bar#with-fragment'));
+    assert.equal('http://foo.bar.com:9091/test', cleanurl('http://someone:something@foo.bar.com:9091/test'));
   });
 });

@@ -103,4 +103,16 @@ describe('Test Google Logger', () => {
     assert.equal('x', logged.id);
     assert.equal(1, logged.weight);
   });
+
+  it('Clean the fragment from the reported URL', () => {
+    const headers = new Map();
+    const url = 'https://www.blahblah.com/hihaho#with-a-fragment';
+
+    const req = { headers, url };
+    const gl = new GoogleLogger(req);
+    gl.logRUM({}, 'q123', 5);
+
+    const logged = JSON.parse(lastLogMessage);
+    assert.equal('https://www.blahblah.com/hihaho', logged.url);
+  });
 });

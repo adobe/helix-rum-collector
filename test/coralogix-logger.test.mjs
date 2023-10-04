@@ -59,4 +59,29 @@ describe('Test Coralogix Logger', () => {
     assert.equal('bar', logged.json.rum.foo);
     assert.equal(777, logged.json.rum.zoo);
   });
+
+  it('Test log RUM clean URLs', () => {
+    const headers = new Map();
+    const url = new URL('http://www.foo.com/testing123#with-a-fragment');
+
+    const req = { headers, url };
+    const cl = new CoralogixLogger(req);
+    cl.logRUM(
+      {},
+      'x-123',
+      4,
+      'http://www.foo.com/testing123#with-a-fragment',
+      8,
+      'error',
+      'http://www.foo.com/sometarget?foo=bar#somehash',
+      'http://www.foo.com/somesource#my-fragment',
+    );
+
+    const logged = JSON.parse(lastLogMessage);
+    assert.equal('http://www.foo.com/testing123', logged.json.edgecompute.url);
+    assert.equal('http://www.foo.com/testing123', logged.json.cdn.url);
+    assert.equal(5, logged.severity);
+    assert.equal('http://www.foo.com/sometarget', logged.json.rum.target);
+    assert.equal('http://www.foo.com/somesource', logged.json.rum.source);
+  });
 });

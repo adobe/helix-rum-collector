@@ -40,4 +40,18 @@ describe('Test Coralogix Error Logger', () => {
       'Timestamp should be rounded and contain padding',
     );
   });
+
+  it('Test logRUM cleans URLs', () => {
+    const headers = new Map();
+    const url = new URL('https://www.foo.com#with-fragment');
+    const req = { headers, url };
+    const cel = new CoralogixErrorLogger(req);
+
+    cel.logError(500, 'oh no!');
+
+    const logged = JSON.parse(lastLogMessage);
+    assert.equal(5, logged.severity);
+    assert.equal('https://www.foo.com/', logged.json.edgecompute.url);
+    assert.equal('https://www.foo.com/', logged.json.cdn.url);
+  });
 });
