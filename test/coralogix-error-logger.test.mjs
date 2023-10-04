@@ -43,6 +43,7 @@ describe('Test Coralogix Error Logger', () => {
 
   it('Test logRUM cleans URLs', () => {
     const headers = new Map();
+    headers.set('referer', 'https://www.acme.com?foo=bar#somewhere');
     const url = new URL('https://www.foo.com#with-fragment');
     const req = { headers, url };
     const cel = new CoralogixErrorLogger(req);
@@ -52,6 +53,6 @@ describe('Test Coralogix Error Logger', () => {
     const logged = JSON.parse(lastLogMessage);
     assert.equal(5, logged.severity);
     assert.equal('https://www.foo.com/', logged.json.edgecompute.url);
-    assert.equal('https://www.foo.com/', logged.json.cdn.url);
+    assert.equal('https://www.acme.com/', logged.json.cdn.url);
   });
 });
