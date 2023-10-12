@@ -137,8 +137,8 @@ describe('Test index', () => {
     const logged = JSON.parse(lastLogMessage);
     assert.equal(4, logged.severity);
     assert.equal('some.host', logged.subsystemName);
-    assert.equal('http://foo.bar.org/', logged.json.edgecompute.url);
-    assert.equal('http://foo.bar.org/', logged.json.cdn.url);
+    assert.equal('http://foo.bar.org', logged.json.edgecompute.url);
+    assert.equal('http://foo.bar.org', logged.json.cdn.url);
     assert.equal('POST', logged.json.request.method);
     assert.equal('desktop', logged.json.request.user_agent);
     assert(logged.timestamp.toString().endsWith('000'));

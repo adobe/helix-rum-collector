@@ -10,7 +10,7 @@
  * governing permissions and limitations under the License.
  */
 import { Logger } from './logger.mjs';
-import { cleanurl, getMaskedTime, getMaskedUserAgent } from './utils.mjs';
+import { getMaskedTime, getMaskedUserAgent } from './utils.mjs';
 
 export class CoralogixErrorLogger {
   constructor(req) {
@@ -41,10 +41,10 @@ export class CoralogixErrorLogger {
       severity: Math.floor(status / 100),
       json: {
         edgecompute: {
-          url: cleanurl(this.req.url),
+          url: this.req.url,
         },
         cdn: {
-          url: cleanurl(this.req.headers.has('referer') ? this.req.headers.get('referer') : this.req.url),
+          url: this.req.headers.has('referer') ? this.req.headers.get('referer') : this.req.url,
         },
         time: {
           start_msec: ts,
@@ -58,7 +58,7 @@ export class CoralogixErrorLogger {
       },
     };
     console.log('ready to log (coralogix)');
-
+    // console.log(JSON.stringify(data));
     this.logger.log(JSON.stringify(data));
     console.log('done');
   }

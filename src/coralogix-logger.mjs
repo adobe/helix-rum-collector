@@ -41,7 +41,7 @@ export class CoralogixLogger {
       severity: checkpoint === 'error' ? 5 : 3,
       json: {
         edgecompute: {
-          url: cleanurl(this.req.url),
+          url: this.req.url,
         },
         cdn: {
           url: cleanurl(referer || (this.req.headers.has('referer') ? this.req.headers.get('referer') : this.req.url)),
