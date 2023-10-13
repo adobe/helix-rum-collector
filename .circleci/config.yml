@@ -68,11 +68,11 @@ jobs:
 
       - run:
           name: List Package Contents
-          command: tar -tvf pkg/helix3.tar.gz
+          command: tar -tvf bin/dist/default/fastly-bundle.tar.gz
 
       - run:
           name: Branch Deployment
-          command: fastly compute deploy -t $HLX_FASTLY_CI_AUTH -s $HLX_FASTLY_CI_ID
+          command: HLX_FASTLY_AUTH=$HLX_FASTLY_CI_AUTH HLX_FASTLY_SVC=$HLX_FASTLY_CI_ID npm run deploy
 
       - run:
           name: Wait for service to be updated
