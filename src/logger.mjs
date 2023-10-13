@@ -39,9 +39,13 @@ export class Logger {
         console.log('logged', args);
       });
     } else {
-      // Reinitialize lastLogMessage
-      lastLogMessage.length = 0;
-      args.forEach((e) => lastLogMessage.push(e));
+      if (typeof process !== 'undefined') {
+        // Only record the last log message in node, i.e. during testing
+
+        // Reinitialize lastLogMessage
+        lastLogMessage.length = 0;
+        args.forEach((e) => lastLogMessage.push(e));
+      }
 
       this.logImpl.log(...args);
     }
