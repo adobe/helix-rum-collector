@@ -3,16 +3,14 @@
   "version": "2.2.3",
   "private": true,
   "description": "Collect Real User Monitoring Data for Helix",
-  "main": "src/index.js",
+  "main": "src/index.mjs",
   "scripts": {
-    "build": "webpack && js-compute-runtime bin/index.js bin/main.wasm",
-    "fastly-build": "fastly compute build --verbose",
-    "deploy": "npm run fastly-build && fastly compute deploy -t $HLX_FASTLY_AUTH",
+    "fastly-build": "hedy --build --verbose --directory $INIT_CWD/bin --entryFile $INIT_CWD/src/index.mjs --target c@e --arch node --arch edge --externals fastly:logger",
+    "deploy": "hedy --build --verbose --directory $INIT_CWD/bin --entryFile $INIT_CWD/src/index.mjs --deploy --fastly-auth $HLX_FASTLY_AUTH --compute-service-id ${HLX_FASTLY_SVC:-5Qir8H8bLeaRuldIp9TWq4} --target c@e --arch node --arch edge --fastly-gateway deploy-test.anywhere.run --externals fastly:logger",
     "test": "c8 mocha -i -g 'Post-Deploy'",
     "test-postdeploy": "mocha -g 'Post-Deploy'",
     "lint": "./node_modules/.bin/eslint .",
-    "semantic-release": "semantic-release",
-    "fastly-deploy": "fastly compute deploy"
+    "semantic-release": "semantic-release"
   },
   "mocha": {
     "reporter": "mocha-multi-reporters",
@@ -29,8 +27,8 @@
   "homepage": "https://github.com/adobe/helix-rum-collector#readme",
   "devDependencies": {
     "@adobe/eslint-config-helix": "2.0.3",
+    "@adobe/helix-deploy": "9.3.8",
     "@adobe/semantic-release-coralogix": "1.1.26",
-    "@fastly/js-compute": "3.6.2",
     "@semantic-release/changelog": "6.0.3",
     "@semantic-release/exec": "6.0.3",
     "@semantic-release/git": "10.0.1",
@@ -46,8 +44,6 @@
     "mocha-multi-reporters": "1.5.1",
     "mocha-junit-reporter": "2.2.1",
     "semantic-release": "22.0.5",
-    "semantic-release-slack-bot": "4.0.2",
-    "webpack": "5.88.2",
-    "webpack-cli": "5.1.4"
+    "semantic-release-slack-bot": "4.0.2"
   }
 }
