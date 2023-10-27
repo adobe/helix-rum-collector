@@ -216,5 +216,35 @@ describe('Test index', () => {
     await verifyInput('{"id": null}', 'id field is required');
     await verifyInput('{"weight": "hello"}', 'weight must be a number');
     await verifyInput('{"cwv": 123}', 'cwv must be an object');
+  }).timeout(5000);
+
+  it('Core Web Vitals', async () => {
+    const headers = new Map();
+
+    const json = () => JSON.parse(`{
+      "id": "myid1",
+      "cwv": {
+        "CLS": 0.06,
+        "LCP": 1.1,
+        "FCP": 0.9,
+        "TTFB": 800
+      },
+      "target": "https://t",
+      "source": "1.2.3.4",
+      "t": "3"
+    }`);
+
+    const req = { headers, json };
+    req.method = 'POST';
+    req.url = 'http://foo.bar.org';
+
+    const resp = await methods.main(req);
+    assert.equal(201, resp.status);
+
+    const logged = JSON.parse(lastLogMessage);
+    assert.equal(0.06, logged.CLS);
+    assert.equal(1.1, logged.LCP);
+    assert.equal(0.9, logged.FCP);
+    assert.equal(800, logged.TTFB);
   });
 });
