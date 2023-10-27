@@ -37,7 +37,7 @@ describe('Test index', () => {
     req.url = 'http://foo.bar.org?data={"referer":"http://blahblah", "checkpoint": 1234567}';
 
     const resp = await methods.main(req);
-    assert.equal(201, resp.status);
+    assert.equal(204, resp.status);
     assert.equal('text/plain; charset=utf-8', resp.headers.get('Content-Type'));
 
     const logged = JSON.parse(lastLogMessage);
@@ -56,7 +56,7 @@ describe('Test index', () => {
     req.url = 'http://foo.bar.org?data={}';
 
     const resp = await methods.main(req);
-    assert.equal(201, resp.status);
+    assert.equal(204, resp.status);
 
     const logged = JSON.parse(lastLogMessage);
     const id1 = logged.id;
@@ -64,7 +64,7 @@ describe('Test index', () => {
 
     // Make another identical request
     const resp2 = await methods.main(req);
-    assert.equal(201, resp2.status);
+    assert.equal(204, resp2.status);
 
     const logged2 = JSON.parse(lastLogMessage);
     assert(logged2.id.length > 0);
@@ -100,7 +100,7 @@ describe('Test index', () => {
 
     const resp = await methods.handler(event);
 
-    assert.equal(201, resp.status);
+    assert.equal(204, resp.status);
     assert.equal('text/plain; charset=utf-8', resp.headers.get('Content-Type'));
 
     const logged = JSON.parse(lastLogMessage);
@@ -239,7 +239,7 @@ describe('Test index', () => {
     req.url = 'http://foo.bar.org';
 
     const resp = await methods.main(req);
-    assert.equal(201, resp.status);
+    assert.equal(204, resp.status);
 
     const logged = JSON.parse(lastLogMessage);
     assert.equal(0.06, logged.CLS);

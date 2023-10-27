@@ -92,7 +92,7 @@ export async function main(req) {
       return respondError(`Could not collect RUM: ${err.message}`, 500, err, req);
     }
 
-    const response = new Response('rum collected.', {
+    const response = new Response(null, {
       status: 204,
       headers,
     });
