@@ -6,7 +6,7 @@
   "main": "src/index.mjs",
   "scripts": {
     "fastly-build": "hedy --build --verbose --directory $INIT_CWD/bin --entryFile $INIT_CWD/src/index.mjs --target c@e --arch node --arch edge --externals fastly:logger",
-    "deploy": "hedy --build --verbose --directory $INIT_CWD/bin --entryFile $INIT_CWD/src/index.mjs --deploy --fastly-auth $HLX_FASTLY_AUTH --compute-service-id ${HLX_FASTLY_SVC:-5Qir8H8bLeaRuldIp9TWq4} --target c@e --arch node --arch edge --fastly-gateway deploy-test.anywhere.run --externals fastly:logger",
+    "deploy": "hedy --build --verbose --directory $INIT_CWD/bin --entryFile $INIT_CWD/src/index.mjs --deploy --fastly-auth $HLX_FASTLY_AUTH --compute-service-id ${HLX_FASTLY_SVC:-5Qir8H8bLeaRuldIp9TWq4} --target c@e --arch node --arch edge --fastly-gateway deploy-test.anywhere.run --externals fastly:logger --package.name helix3",
     "test": "c8 mocha -i -g 'Post-Deploy'",
     "test-postdeploy": "mocha -g 'Post-Deploy'",
     "lint": "./node_modules/.bin/eslint .",
@@ -27,7 +27,7 @@
   "homepage": "https://github.com/adobe/helix-rum-collector#readme",
   "devDependencies": {
     "@adobe/eslint-config-helix": "2.0.3",
-    "@adobe/helix-deploy": "9.3.8",
+    "@adobe/helix-deploy": "9.3.14",
     "@adobe/semantic-release-coralogix": "1.1.26",
     "@semantic-release/changelog": "6.0.3",
     "@semantic-release/exec": "6.0.3",
