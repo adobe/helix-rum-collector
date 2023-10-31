@@ -68,7 +68,7 @@ jobs:
 
       - run:
           name: List Package Contents
-          command: tar -tvf bin/dist/helix3/fastly-bundle.tar.gz
+          command: find bin && tar -tvf bin/dist/helix3/fastly-bundle.tar.gz
 
       - run:
           name: Branch Deployment
