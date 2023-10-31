@@ -62,17 +62,14 @@ jobs:
       - run:
           name: revert changes to package-lock.json
           command: git checkout -- package-lock.json
+
       - run:
-          name: Package
-          command: npm run fastly-build
+          name: Package and Branch Deployment
+          command: HLX_FASTLY_AUTH=$HLX_FASTLY_CI_AUTH HLX_FASTLY_SVC=$HLX_FASTLY_CI_ID npm run deploy
 
       - run:
           name: List Package Contents
-          command: tar -tvf pkg/helix3.tar.gz
-
-      - run:
-          name: Branch Deployment
-          command: fastly compute deploy -t $HLX_FASTLY_CI_AUTH -s $HLX_FASTLY_CI_ID
+          command: find bin && tar -tvf bin/dist/helix3/fastly-bundle.tar.gz
 
       - run:
           name: Wait for service to be updated
