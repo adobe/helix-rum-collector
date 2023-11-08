@@ -22,6 +22,14 @@ describe('Test Utils', () => {
     assert.equal(nearestHour + timePadding, maskTime(now, timePadding));
   });
 
+  it('Limit the masked time', () => {
+    const now = Date.now();
+    const nearestHour = Math.floor(now / 3600000) * 3600000;
+    const timePadding = 9999999;
+
+    assert.equal(nearestHour + 3600000, maskTime(now, timePadding));
+  });
+
   it('Use current second if padding is missing', () => {
     const sometime = new Date(2023, 8, 6, 15, 45, 27, 999);
 

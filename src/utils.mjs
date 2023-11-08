@@ -11,10 +11,15 @@
  */
 // Pass the current time to facilitate unit testing
 export function maskTime(time, timePadding) {
-  const nearestHour = Math.floor(time / 3600000) * 3600000;
+  const msPerHour = 3600000;
+
+  const nearestHour = Math.floor(time / msPerHour) * msPerHour;
 
   if (timePadding) {
-    return nearestHour + timePadding;
+    // Limit the padding to an hour
+    const padding = Math.min(timePadding, msPerHour);
+
+    return nearestHour + padding;
   } else {
     // If the padding is missing we use the current second to spread
     // the result a little bit. We drop the current minute and the
