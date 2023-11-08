@@ -13,21 +13,28 @@
 export function maskTime(time, timePadding) {
   const msPerHour = 3600000;
 
-  const nearestHour = Math.floor(time / msPerHour) * msPerHour;
+  const baseHour = Math.floor(time / msPerHour) * msPerHour;
 
-  if (timePadding) {
-    // Limit the padding to an hour
-    const padding = Math.min(timePadding, msPerHour);
+  let numPadding;
+  if (typeof timePadding === 'string') {
+    numPadding = Number(timePadding);
+  } else {
+    numPadding = timePadding;
+  }
 
-    return nearestHour + padding;
+  if (typeof numPadding === 'number' && !Number.isNaN(numPadding)) {
+    // Limit the padding to a day
+    const padding = numPadding % (24 * msPerHour);
+
+    return baseHour + padding;
   } else {
     // If the padding is missing we use the current second to spread
     // the result a little bit. We drop the current minute and the
     // current milliseconds
-    const numSeconds = Math.floor((time - nearestHour) / 1000);
+    const numSeconds = Math.floor((time - baseHour) / 1000);
     const currentSecondAsMS = (numSeconds % 60) * 1000;
 
-    return nearestHour + currentSecondAsMS;
+    return baseHour + currentSecondAsMS;
   }
 }
 

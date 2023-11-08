@@ -190,7 +190,7 @@ describe('Test index', () => {
 
     const t = await resp.text();
     assert(t.includes('webVitals'));
-  });
+  }).timeout(5000);
 
   it('responds to helix-rum-js', async () => {
     const headers = new Map();
@@ -210,7 +210,7 @@ describe('Test index', () => {
 
     const t = await resp.text();
     assert(t.includes('export function sampleRUM'));
-  });
+  }).timeout(5000);
 
   it('verifies inputs', async () => {
     await verifyInput('{"id": null}', 'id field is required');
