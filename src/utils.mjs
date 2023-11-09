@@ -24,7 +24,7 @@ export function maskTime(time, timePadding) {
 
   if (typeof numPadding === 'number' && !Number.isNaN(numPadding)) {
     // Limit the padding to a day
-    const padding = numPadding % (24 * msPerHour);
+    const padding = Math.min(numPadding, 24 * msPerHour);
 
     return baseHour + padding;
   } else {

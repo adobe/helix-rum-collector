@@ -35,7 +35,7 @@ describe('Test Utils', () => {
     const nearestHour = Math.floor(now / 3600000) * 3600000;
     const timePadding = (24 * 3600000) + 789;
 
-    assert.equal(nearestHour + 789, maskTime(now, timePadding));
+    assert.equal(nearestHour + (24 * 3600000), maskTime(now, timePadding));
   });
 
   it('Use current second if padding is missing', () => {
