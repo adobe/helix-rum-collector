@@ -1,3 +1,10 @@
+## [2.2.4](https://github.com/adobe/helix-rum-collector/compare/v2.2.3...v2.2.4) (2023-11-09)
+
+
+### Bug Fixes
+
+* **log:** Limit time-padding value to 1 day ([#226](https://github.com/adobe/helix-rum-collector/issues/226)) ([2827c08](https://github.com/adobe/helix-rum-collector/commit/2827c0838ad0fc7e65e75a61e9591126e7250c8a)), closes [#225](https://github.com/adobe/helix-rum-collector/issues/225)
+
 ## [2.2.3](https://github.com/adobe/helix-rum-collector/compare/v2.2.2...v2.2.3) (2023-10-03)
 
 
