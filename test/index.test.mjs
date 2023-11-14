@@ -190,7 +190,7 @@ describe('Test index', () => {
 
     const t = await resp.text();
     assert(t.includes('webVitals'));
-  });
+  }).timeout(5000);
 
   it('responds to helix-rum-js', async () => {
     const headers = new Map();

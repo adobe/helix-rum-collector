@@ -22,11 +22,35 @@ describe('Test Utils', () => {
     assert.equal(nearestHour + timePadding, maskTime(now, timePadding));
   });
 
+  it('Mask the time if timepadding is a string', () => {
+    const now = Date.now();
+    const nearestHour = Math.floor(now / 3600000) * 3600000;
+    const timePadding = '12345';
+
+    assert.equal(nearestHour + 12345, maskTime(now, timePadding));
+  });
+
+  it('Limit the masked time', () => {
+    const now = Date.now();
+    const nearestHour = Math.floor(now / 3600000) * 3600000;
+    const timePadding = (24 * 3600000) + 789;
+
+    assert.equal(nearestHour + (24 * 3600000), maskTime(now, timePadding));
+  });
+
   it('Use current second if padding is missing', () => {
     const sometime = new Date(2023, 8, 6, 15, 45, 27, 999);
 
     const expectedTime = new Date(2023, 8, 6, 15, 0, 27).getTime();
     const masked = maskTime(sometime);
+    assert.equal(expectedTime, masked);
+  });
+
+  it('Use current second if padding is not a number', () => {
+    const sometime = new Date(2023, 8, 6, 15, 45, 27, 999);
+
+    const expectedTime = new Date(2023, 8, 6, 15, 0, 27).getTime();
+    const masked = maskTime(sometime, 'hello');
     assert.equal(expectedTime, masked);
   });
 
