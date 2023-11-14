@@ -66,7 +66,7 @@ jobs:
 
       - run:
           name: Package and Branch Deployment
-          command: npm i @rollup/rollup-linux-x64-gnu && HLX_FASTLY_AUTH=$HLX_FASTLY_CI_AUTH HLX_FASTLY_SVC=$HLX_FASTLY_CI_ID npm run deploy
+          command: npm i @rollup/rollup-linux-x64-gnu && npm i @bytecodealliance/wizer && HLX_FASTLY_AUTH=$HLX_FASTLY_CI_AUTH HLX_FASTLY_SVC=$HLX_FASTLY_CI_ID npm run deploy
           # Temporarily install install rollup binaries until https://github.com/rollup/rollup/issues/5170 is available
 
       - run:
