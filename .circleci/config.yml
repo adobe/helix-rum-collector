@@ -23,6 +23,11 @@ commands:
           name: Installing Dependencies
           command: npm ci
 
+      # Temporarily install install rollup binaries until https://github.com/rollup/rollup/issues/5170 is available
+      - run:
+          name: Apply Rollup Workaround
+          command: npm i @rollup/rollup-linux-x64-gnu
+
       # - save_cache:
       #     paths:
       #     - node_modules
@@ -46,8 +51,7 @@ jobs:
           command: npm run test
       - run:
           name: Run Build
-          command: npm i @rollup/rollup-linux-x64-gnu && npm run fastly-build
-          # Temporarily install install rollup binaries until https://github.com/rollup/rollup/issues/5170 is available
+          command: npm run fastly-build
       - codecov/upload
       - store_test_results:
           path: junit
@@ -66,8 +70,7 @@ jobs:
 
       - run:
           name: Package and Branch Deployment
-          command: npm i @rollup/rollup-linux-x64-gnu && npm i @bytecodealliance/wizer && HLX_FASTLY_AUTH=$HLX_FASTLY_CI_AUTH HLX_FASTLY_SVC=$HLX_FASTLY_CI_ID npm run deploy
-          # Temporarily install install rollup binaries until https://github.com/rollup/rollup/issues/5170 is available
+          command: HLX_FASTLY_AUTH=$HLX_FASTLY_CI_AUTH HLX_FASTLY_SVC=$HLX_FASTLY_CI_ID npm run deploy
 
       - run:
           name: List Package Contents
