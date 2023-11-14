@@ -25,9 +25,6 @@
     "url": "https://github.com/adobe/helix-rum-collector/issues"
   },
   "homepage": "https://github.com/adobe/helix-rum-collector#readme",
-  "dependencies": {
-    "@bytecodealliance/wizer": "3.0.1"
-  },
   "devDependencies": {
     "@adobe/eslint-config-helix": "2.0.4",
     "@adobe/helix-deploy": "9.3.14",
