@@ -46,7 +46,8 @@ jobs:
           command: npm run test
       - run:
           name: Run Build
-          command: npm run fastly-build
+          command: npm i @rollup/rollup-linux-x64-gnu && npm run fastly-build
+          # Temporarily install install rollup binaries until https://github.com/rollup/rollup/issues/5170 is available
       - codecov/upload
       - store_test_results:
           path: junit
