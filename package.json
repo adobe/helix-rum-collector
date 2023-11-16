@@ -1,6 +1,6 @@
 {
   "name": "@adobe/helix-rum-collector",
-  "version": "2.2.4",
+  "version": "2.2.5",
   "private": true,
   "description": "Collect Real User Monitoring Data for Helix",
   "main": "src/index.mjs",
@@ -42,9 +42,13 @@
     "eslint-plugin-import": "2.29.0",
     "jsdoc-to-markdown": "8.0.0",
     "mocha": "10.2.0",
-    "mocha-multi-reporters": "1.5.1",
     "mocha-junit-reporter": "2.2.1",
+    "mocha-multi-reporters": "1.5.1",
     "semantic-release": "22.0.7",
     "semantic-release-slack-bot": "4.0.2"
+  },
+  "dependencies": {
+    "@bytecodealliance/wizer": "^3.0.1",
+    "@rollup/rollup-linux-x64-gnu": "^4.4.1"
   }
 }

@@ -1,3 +1,10 @@
+## [2.2.5](https://github.com/adobe/helix-rum-collector/compare/v2.2.4...v2.2.5) (2023-11-16)
+
+
+### Bug Fixes
+
+* **fastly:** Dummy commit to trigger a release ([#228](https://github.com/adobe/helix-rum-collector/issues/228)) ([59b976e](https://github.com/adobe/helix-rum-collector/commit/59b976edc11cff502540a1e8d4a401924930d706))
+
 ## [2.2.4](https://github.com/adobe/helix-rum-collector/compare/v2.2.3...v2.2.4) (2023-11-09)
 
 
