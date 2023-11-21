@@ -247,4 +247,25 @@ describe('Test index', () => {
     assert.equal(0.9, logged.FCP);
     assert.equal(800, logged.TTFB);
   });
+
+  it('Info request', async () => {
+    const req = {
+      method: 'GET',
+      url: 'http://test.org/info.json?key=val',
+    };
+
+    const ctx = {
+      runtime: {
+        name: 'my-platform',
+      },
+      func: {
+        version: '1.2.ZZ',
+      },
+    };
+
+    const resp = await methods.main(req, ctx);
+    const res = await resp.json();
+    assert.equal('my-platform', res.platform);
+    assert.equal('1.2.ZZ', res.version);
+  });
 });

@@ -43,10 +43,17 @@ function getRandomID() {
   return Array.from({ length: 75 }, (_, i) => String.fromCharCode(48 + i)).filter((a) => /\d|[A-Z]/i.test(a)).filter(() => Math.random() * 75 > 70).join('');
 }
 
-export async function main(req) {
+function respondInfo(ctx) {
+  return new Response(`{"platform": "${ctx.runtime?.name}", "version": "${ctx.func?.version}"}`);
+}
+
+export async function main(req, ctx) {
   try {
     if (req.method === 'GET' && new URL(req.url).pathname.startsWith('/robots.txt')) {
       return respondRobots(req);
+    }
+    if (req.method === 'GET' && new URL(req.url).pathname.startsWith('/info.json')) {
+      return respondInfo(ctx);
     }
     if (req.method === 'GET' && new URL(req.url).pathname.startsWith('/.rum/web-vitals')) {
       return respondUnpkg(req);
