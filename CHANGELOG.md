@@ -1,3 +1,10 @@
+# [2.3.0](https://github.com/adobe/helix-rum-collector/compare/v2.2.5...v2.3.0) (2023-11-23)
+
+
+### Features
+
+* **context:** expose context to main method ([#233](https://github.com/adobe/helix-rum-collector/issues/233)) ([f170ac1](https://github.com/adobe/helix-rum-collector/commit/f170ac14cd2146ea588335fbab84f45e6964790c)), closes [#232](https://github.com/adobe/helix-rum-collector/issues/232)
+
 ## [2.2.5](https://github.com/adobe/helix-rum-collector/compare/v2.2.4...v2.2.5) (2023-11-16)
 
 
