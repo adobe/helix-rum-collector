@@ -10,6 +10,8 @@
  * governing permissions and limitations under the License.
  */
 // Pass the current time to facilitate unit testing
+import { isSpider } from './spiders.mjs';
+
 export function maskTime(time, timePadding) {
   const msPerHour = 3600000;
 
@@ -62,7 +64,8 @@ export function getMaskedUserAgent(userAgent) {
   if (lcUA.includes('bot')
     || lcUA.includes('spider')
     || lcUA.includes('crawler')
-    || lcUA.includes('ahc/')) {
+    || lcUA.includes('ahc/')
+    || isSpider(lcUA)) {
     return 'bot';
   }
 
