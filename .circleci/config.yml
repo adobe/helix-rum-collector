@@ -102,8 +102,10 @@ jobs:
 workflows:
   default:
     jobs:
-      - build
+      - build:
+          context: Project Helix
       - branch-deploy:
+          context: Project Helix
           requires:
             - build
           filters:
