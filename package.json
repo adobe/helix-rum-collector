@@ -11,6 +11,7 @@
     "test": "c8 mocha -i -g 'Post-Deploy'",
     "pretest": "node tools/spider-list.js",
     "test-postdeploy": "mocha -g 'Post-Deploy'",
+    "prelint": "node tools/spider-list.js",
     "lint": "./node_modules/.bin/eslint .",
     "semantic-release": "semantic-release"
   },
