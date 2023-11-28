@@ -36,7 +36,9 @@ describe('Test index', () => {
     req.method = 'GET';
     req.url = 'http://foo.bar.org?data={"referer":"http://blahblah", "checkpoint": 1234567}';
 
-    const resp = await methods.main(req);
+    const ctx = { runtime: { name: 'compute-at-edge' }};
+
+    const resp = await methods.main(req, ctx);
     assert.equal(201, resp.status);
     assert.equal('text/plain; charset=utf-8', resp.headers.get('Content-Type'));
 
@@ -55,7 +57,9 @@ describe('Test index', () => {
     req.method = 'GET';
     req.url = 'http://foo.bar.org?data={}';
 
-    const resp = await methods.main(req);
+    const ctx = { runtime: { name: 'compute-at-edge' }};
+
+    const resp = await methods.main(req, ctx);
     assert.equal(201, resp.status);
 
     const logged = JSON.parse(lastLogMessage);
@@ -63,7 +67,7 @@ describe('Test index', () => {
     assert(id1.length > 0);
 
     // Make another identical request
-    const resp2 = await methods.main(req);
+    const resp2 = await methods.main(req, ctx);
     assert.equal(201, resp2.status);
 
     const logged2 = JSON.parse(lastLogMessage);
@@ -96,7 +100,10 @@ describe('Test index', () => {
     req.method = 'POST';
     req.url = 'http://foo.bar.org';
 
-    const event = { request: req };
+    const event = {
+      request: req,
+      ctx: { runtime: { name: 'compute-at-edge' } },
+    };
 
     const resp = await methods.handler(event);
 
@@ -238,7 +245,7 @@ describe('Test index', () => {
     req.method = 'POST';
     req.url = 'http://foo.bar.org';
 
-    const resp = await methods.main(req);
+    const resp = await methods.main(req, { runtime: { name: 'compute-at-edge' } });
     assert.equal(201, resp.status);
 
     const logged = JSON.parse(lastLogMessage);

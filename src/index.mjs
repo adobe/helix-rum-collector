@@ -15,6 +15,7 @@
 import { GoogleLogger } from './google-logger.mjs';
 import { CoralogixLogger } from './coralogix-logger.mjs';
 import { CoralogixErrorLogger } from './coralogix-error-logger.mjs';
+import { ConsoleLogger } from './console-logger.mjs';
 import { respondRobots } from './robots.mjs';
 import { respondUnpkg } from './unpkg.mjs';
 
@@ -44,7 +45,7 @@ function getRandomID() {
 }
 
 function respondInfo(ctx) {
-  return new Response(`{"platform": "${ctx.runtime?.name}", "version": "${ctx.func?.version}"}`);
+  return new Response(`{"platform": "${ctx?.runtime?.name}", "version": "${ctx?.func?.version}"}`);
 }
 
 export async function main(req, ctx) {
@@ -90,11 +91,16 @@ export async function main(req, ctx) {
     }
 
     try {
-      const c = new CoralogixLogger(req);
-      c.logRUM(cwv, id, weight, referer || referrer, generation, checkpoint, target, source, t);
+      if (ctx?.runtime?.name === 'compute-at-edge') {
+        const c = new CoralogixLogger(req);
+        c.logRUM(cwv, id, weight, referer || referrer, generation, checkpoint, target, source, t);
 
-      const g = new GoogleLogger(req);
-      g.logRUM(cwv, id, weight, referer || referrer, generation, checkpoint, target, source, t);
+        const g = new GoogleLogger(req);
+        g.logRUM(cwv, id, weight, referer || referrer, generation, checkpoint, target, source, t);
+      } else {
+        const l = new ConsoleLogger(req);
+        l.logRUM(cwv, id, weight, referer || referrer, generation, checkpoint, target, source, t);
+      }
     } catch (err) {
       return respondError(`Could not collect RUM: ${err.message}`, 500, err, req);
     }
@@ -112,8 +118,7 @@ export async function main(req, ctx) {
 
 export async function handler(event) {
   // Get the client reqest from the event
-  const req = event.request;
-  return main(req);
+  return main(event.request, event.ctx);
 }
 
 // eslint-disable-next-line no-restricted-globals
