@@ -11,7 +11,7 @@
  */
 /* eslint-env mocha */
 import assert from 'assert';
-import { ConsoleLogger } from "../src/console-logger.mjs";
+import { ConsoleLogger } from '../src/console-logger.mjs';
 
 describe('Test Console Logger', () => {
   it('log to RUM', () => {

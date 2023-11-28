@@ -31,7 +31,7 @@ export class ConsoleLogger {
   }
 
   logRUM(json, id, weight, referer, generation, checkpoint, target, source, timePadding) {
-    console.log(`logging to Console.`);
+    console.log('logging to Console.');
 
     const now = getMaskedTime(timePadding);
     const data = {

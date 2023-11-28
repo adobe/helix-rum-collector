@@ -36,7 +36,7 @@ describe('Test index', () => {
     req.method = 'GET';
     req.url = 'http://foo.bar.org?data={"referer":"http://blahblah", "checkpoint": 1234567}';
 
-    const ctx = { runtime: { name: 'compute-at-edge' }};
+    const ctx = { runtime: { name: 'compute-at-edge' } };
 
     const resp = await methods.main(req, ctx);
     assert.equal(201, resp.status);
@@ -57,7 +57,7 @@ describe('Test index', () => {
     req.method = 'GET';
     req.url = 'http://foo.bar.org?data={}';
 
-    const ctx = { runtime: { name: 'compute-at-edge' }};
+    const ctx = { runtime: { name: 'compute-at-edge' } };
 
     const resp = await methods.main(req, ctx);
     assert.equal(201, resp.status);
