@@ -98,7 +98,7 @@ export async function main(req, ctx) {
         const g = new GoogleLogger(req);
         g.logRUM(cwv, id, weight, referer || referrer, generation, checkpoint, target, source, t);
       } else {
-        const l = new ConsoleLogger(req);
+        const l = new ConsoleLogger(req, ctx?.altConsole);
         l.logRUM(cwv, id, weight, referer || referrer, generation, checkpoint, target, source, t);
       }
     } catch (err) {

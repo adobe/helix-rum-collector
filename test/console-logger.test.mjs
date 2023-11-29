@@ -17,6 +17,7 @@ describe('Test Console Logger', () => {
   it('log to RUM', () => {
     const headers = new Map();
     headers.set('x-forwarded-host', 'www.foo.com');
+    headers.set('host', 'www.acme.com');
     const url = new URL('http://www.foo.com/testing123');
 
     const req = { headers, url };
@@ -25,10 +26,10 @@ describe('Test Console Logger', () => {
     const testLogger = {
       log: (...args) => logged.push(args),
     };
-    const gl = new ConsoleLogger(req, testLogger);
+    const cl = new ConsoleLogger(req, testLogger);
 
     const myJSON = { foo: ['b', 'ar'] };
-    gl.logRUM(
+    cl.logRUM(
       myJSON,
       'someid',
       5,
@@ -52,5 +53,30 @@ describe('Test Console Logger', () => {
     assert.equal(ld.source.toString(), 'http://www.foo.com/source');
     assert.equal(ld.id, 'someid');
     assert.deepEqual(ld.foo, ['b', 'ar']);
+  });
+
+  it('log to RUM 2', () => {
+    const headers = new Map();
+    headers.set('host', 'www.acme.com');
+    const url = new URL('http://www.foo.com/testing123');
+
+    const req = { headers, url };
+
+    const logged = [];
+    const testLogger = {
+      log: (...args) => logged.push(args),
+    };
+    const cl = new ConsoleLogger(req, testLogger);
+
+    cl.logRUM({}, 'id123', 2, undefined, 42, 1);
+    assert.equal(logged.length, 1);
+    const ld = JSON.parse(logged[0]);
+
+    assert.equal(ld.host, 'www.acme.com');
+    assert.equal(ld.url.toString(), 'http://www.foo.com/testing123');
+    assert.equal(ld.weight, 2);
+    assert.equal(ld.generation, 42);
+    assert.equal(ld.checkpoint, 1);
+    assert.equal(ld.id, 'id123');
   });
 });

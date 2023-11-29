@@ -255,7 +255,7 @@ describe('Test index', () => {
     assert.equal(800, logged.TTFB);
   });
 
-  it('Info request', async () => {
+  it('info request', async () => {
     const req = {
       method: 'GET',
       url: 'http://test.org/info.json?key=val',
@@ -274,5 +274,31 @@ describe('Test index', () => {
     const res = await resp.json();
     assert.equal('my-platform', res.platform);
     assert.equal('1.2.ZZ', res.version);
+  });
+
+  it('console logger', async () => {
+    const logged = [];
+    const capturedConsole = {
+      log: (...args) => logged.push(args),
+    };
+
+    const req = {};
+    req.headers = new Map();
+    req.method = 'POST';
+    req.url = 'http://www.acme.org';
+    req.json = () => ({
+      id: 'xyz123',
+    });
+
+    const ctx = { altConsole: capturedConsole };
+    const resp = await methods.main(req, ctx);
+
+    assert.equal(201, resp.status);
+    assert.equal(logged.length, 1);
+
+    const ld = JSON.parse(logged[0]);
+    assert.equal(ld.url, 'http://www.acme.org');
+    assert.equal(ld.weight, 1);
+    assert.equal(ld.id, 'xyz123');
   });
 });
