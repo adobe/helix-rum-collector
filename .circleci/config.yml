@@ -22,12 +22,6 @@ commands:
       - run:
           name: Installing Dependencies
           command: npm ci
-
-      # Temporarily install install rollup binaries until https://github.com/rollup/rollup/issues/5170 is available
-      - run:
-          name: Apply Rollup Workaround
-          command: npm i @rollup/rollup-linux-x64-gnu @bytecodealliance/wizer
-
       # - save_cache:
       #     paths:
       #     - node_modules
