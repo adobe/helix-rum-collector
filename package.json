@@ -32,7 +32,6 @@
     "@adobe/eslint-config-helix": "2.0.5",
     "@adobe/helix-deploy": "9.3.19",
     "@adobe/semantic-release-coralogix": "1.1.27",
-    "@fastly/js-compute": "3.7.3",
     "@semantic-release/changelog": "6.0.3",
     "@semantic-release/exec": "6.0.3",
     "@semantic-release/git": "10.0.1",
