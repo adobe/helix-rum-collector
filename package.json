@@ -7,8 +7,11 @@
   "scripts": {
     "fastly-build": "hedy --build --verbose --directory $INIT_CWD/bin --entryFile $INIT_CWD/src/index.mjs --target c@e --arch node --arch edge --externals fastly:logger --package.name helix3",
     "deploy": "hedy --build --verbose --directory $INIT_CWD/bin --entryFile $INIT_CWD/src/index.mjs --deploy --fastly-auth $HLX_FASTLY_AUTH --compute-service-id ${HLX_FASTLY_SVC:-5Qir8H8bLeaRuldIp9TWq4} --target c@e --arch node --arch edge --fastly-gateway deploy-test.anywhere.run --externals fastly:logger --package.name helix3",
+    "predeploy": "node tools/spider-list.js",
     "test": "c8 mocha -i -g 'Post-Deploy'",
+    "pretest": "node tools/spider-list.js",
     "test-postdeploy": "mocha -g 'Post-Deploy'",
+    "prelint": "node tools/spider-list.js",
     "lint": "./node_modules/.bin/eslint .",
     "semantic-release": "semantic-release"
   },
@@ -46,9 +49,5 @@
     "mocha-multi-reporters": "1.5.1",
     "semantic-release": "22.0.8",
     "semantic-release-slack-bot": "4.0.2"
-  },
-  "dependencies": {
-    "@bytecodealliance/wizer": "^3.0.1",
-    "@rollup/rollup-linux-x64-gnu": "^4.5.1"
   }
 }
