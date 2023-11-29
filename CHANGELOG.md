@@ -1,3 +1,10 @@
+# [2.4.0](https://github.com/adobe/helix-rum-collector/compare/v2.3.0...v2.4.0) (2023-11-29)
+
+
+### Features
+
+* **utils:** detect bots and spiders based on IAB list ([b4a6cfa](https://github.com/adobe/helix-rum-collector/commit/b4a6cfa13313507e7499a4c15f7b441b41b27389))
+
 # [2.3.0](https://github.com/adobe/helix-rum-collector/compare/v2.2.5...v2.3.0) (2023-11-23)
 
 
