@@ -62,6 +62,8 @@ jobs:
           name: revert changes to package-lock.json
           command: git checkout -- package-lock.json
 
+      - run: npm ls @fastly/js-compute
+
       - run:
           name: Package and Branch Deployment
           command: HLX_FASTLY_AUTH=$HLX_FASTLY_CI_AUTH HLX_FASTLY_SVC=$HLX_FASTLY_CI_ID npm run deploy
