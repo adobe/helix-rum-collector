@@ -49,9 +49,5 @@
     "mocha-multi-reporters": "1.5.1",
     "semantic-release": "22.0.8",
     "semantic-release-slack-bot": "4.0.2"
-  },
-  "dependencies": {
-    "@bytecodealliance/wizer": "^3.0.1",
-    "@rollup/rollup-linux-x64-gnu": "^4.6.0"
   }
 }
