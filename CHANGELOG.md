@@ -1,3 +1,10 @@
+# [2.5.0](https://github.com/adobe/helix-rum-collector/compare/v2.4.0...v2.5.0) (2023-11-29)
+
+
+### Features
+
+* **cloudflare:** Support Cloudflare Logging ([#236](https://github.com/adobe/helix-rum-collector/issues/236)) ([310f8ef](https://github.com/adobe/helix-rum-collector/commit/310f8ef7114a0dadd8158e1367e398e72bd91c03)), closes [#230](https://github.com/adobe/helix-rum-collector/issues/230)
+
 # [2.4.0](https://github.com/adobe/helix-rum-collector/compare/v2.3.0...v2.4.0) (2023-11-29)
 
 
