@@ -29,10 +29,9 @@
   },
   "homepage": "https://github.com/adobe/helix-rum-collector#readme",
   "devDependencies": {
-    "@adobe/eslint-config-helix": "2.0.4",
-    "@adobe/helix-deploy": "9.3.14",
+    "@adobe/eslint-config-helix": "2.0.5",
+    "@adobe/helix-deploy": "9.3.20",
     "@adobe/semantic-release-coralogix": "1.1.27",
-    "@fastly/js-compute": "3.7.3",
     "@semantic-release/changelog": "6.0.3",
     "@semantic-release/exec": "6.0.3",
     "@semantic-release/git": "10.0.1",
@@ -49,9 +48,5 @@
     "mocha-multi-reporters": "1.5.1",
     "semantic-release": "22.0.8",
     "semantic-release-slack-bot": "4.0.2"
-  },
-  "dependencies": {
-    "@bytecodealliance/wizer": "^3.0.1",
-    "@rollup/rollup-linux-x64-gnu": "^4.6.0"
   }
 }

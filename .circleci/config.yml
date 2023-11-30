@@ -2,7 +2,7 @@ version: 2.1
 executors:
   node18:
     docker:
-      - image: cimg/node:18.18
+      - image: cimg/node:20.10
     working_directory: ~/repo
 
 orbs:
@@ -22,12 +22,6 @@ commands:
       - run:
           name: Installing Dependencies
           command: npm ci
-
-      # Temporarily install install rollup binaries until https://github.com/rollup/rollup/issues/5170 is available
-      - run:
-          name: Apply Rollup Workaround
-          command: npm i @rollup/rollup-linux-x64-gnu @bytecodealliance/wizer
-
       # - save_cache:
       #     paths:
       #     - node_modules
@@ -67,6 +61,8 @@ jobs:
       - run:
           name: revert changes to package-lock.json
           command: git checkout -- package-lock.json
+
+      - run: npm ls @fastly/js-compute
 
       - run:
           name: Package and Branch Deployment
