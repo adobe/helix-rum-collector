@@ -46,7 +46,7 @@
     "mocha": "10.2.0",
     "mocha-junit-reporter": "2.2.1",
     "mocha-multi-reporters": "1.5.1",
-    "semantic-release": "22.0.8",
+    "semantic-release": "22.0.10",
     "semantic-release-slack-bot": "4.0.2"
   }
 }
