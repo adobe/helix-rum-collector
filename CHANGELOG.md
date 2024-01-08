@@ -1,3 +1,10 @@
+# [2.6.0](https://github.com/adobe/helix-rum-collector/compare/v2.5.0...v2.6.0) (2024-01-08)
+
+
+### Features
+
+* **cloudflare:** rum collector available on cloudflare ([abd87cd](https://github.com/adobe/helix-rum-collector/commit/abd87cd784cdf8836dee140f9fc17f1e36fa9845))
+
 # [2.5.0](https://github.com/adobe/helix-rum-collector/compare/v2.4.0...v2.5.0) (2023-11-29)
 
 
