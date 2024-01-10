@@ -11,9 +11,10 @@
  */
 /* eslint-env mocha */
 import { expect } from 'chai';
-import * as chai from 'chai'
-import chaiHttp from 'chai-http'
-const {request} = chai.use(chaiHttp)
+import * as chai from 'chai';
+import chaiHttp from 'chai-http';
+
+const { request } = chai.use(chaiHttp);
 
 const domain = !process.env.CI ? 'rum.hlx3.page' : 'helix-rum-collector-ci.edgecompute.app';
 
