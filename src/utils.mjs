@@ -86,3 +86,17 @@ export function cleanurl(url) {
     return url;
   }
 }
+
+export function getForwardedHost(fhh) {
+  const hosts = fhh.split(',');
+
+  const match = hosts
+    .map((h) => h.trim())
+    .filter((h) => h.match(/[.](adobeaemcloud|aemcloud|aem|hlx)[.](page|live|net)$/));
+
+  if (match.length > 0) {
+    return match[0];
+  } else {
+    return hosts[0].trim();
+  }
+}

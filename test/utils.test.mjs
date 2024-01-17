@@ -11,7 +11,9 @@
  */
 /* eslint-env mocha */
 import assert from 'assert';
-import { cleanurl, getMaskedUserAgent, maskTime } from '../src/utils.mjs';
+import {
+  cleanurl, getForwardedHost, getMaskedUserAgent, maskTime,
+} from '../src/utils.mjs';
 
 describe('Test Utils', () => {
   it('Mask the time', () => {
@@ -77,5 +79,21 @@ describe('Test Utils', () => {
     assert.equal('http://foo.bar.com/test', cleanurl('http://foo.bar.com/test?foo=bar'));
     assert.equal('http://foo.bar.com/test', cleanurl('http://foo.bar.com/test?foo=bar#with-fragment'));
     assert.equal('http://foo.bar.com:9091/test', cleanurl('http://someone:something@foo.bar.com:9091/test'));
+  });
+
+  it('Get Forwarded Host', () => {
+    assert.equal('test.hlx.live', getForwardedHost('www.blah.blah,test.hlx.live'));
+    assert.equal('test.hlx.live', getForwardedHost('www.blah.blah, test.hlx.live, foo.hlx.live '));
+    assert.equal('www.blah.blah', getForwardedHost('www.blah.blah,test.hlx.co.uk'));
+    assert.equal('www.blah.blah', getForwardedHost(' www.blah.blah '));
+    assert.equal('www.foobar.aemcloud.net', getForwardedHost('www.foobar.aemcloud.net'));
+    assert.equal('www.blah.blah', getForwardedHost('www.blah.blah,test.myaem.net'));
+    assert.equal('www.blah.blah', getForwardedHost('www.blah.blah,test.somehlx.live'));
+    assert.equal('p1234-e5678.aem.net', getForwardedHost('www.blah.blah, p1234-e5678.aem.net , www.hah.hah'));
+    assert.equal(
+      'author-p12334-e56789.adobeaemcloud.net',
+      getForwardedHost('www.foo.net, author-p12334-e56789.adobeaemcloud.net'),
+    );
+    assert.equal('', getForwardedHost(''));
   });
 });

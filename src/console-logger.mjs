@@ -9,7 +9,9 @@
  * OF ANY KIND, either express or implied. See the License for the specific language
  * governing permissions and limitations under the License.
  */
-import { cleanurl, getMaskedTime, getMaskedUserAgent } from './utils.mjs';
+import {
+  cleanurl, getForwardedHost, getMaskedTime, getMaskedUserAgent,
+} from './utils.mjs';
 
 export class ConsoleLogger {
   constructor(req, altLogger) {
@@ -17,7 +19,7 @@ export class ConsoleLogger {
     this.req = req;
 
     if (req.headers.get('x-forwarded-host')) {
-      this.subsystemName = (req.headers.get('x-forwarded-host') || '').split(',')[0].trim();
+      this.subsystemName = getForwardedHost(req.headers.get('x-forwarded-host'));
     } else if (req.headers.get('host')) {
       this.subsystemName = req.headers.get('host');
     }
