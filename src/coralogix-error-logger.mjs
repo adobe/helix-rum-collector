@@ -10,7 +10,7 @@
  * governing permissions and limitations under the License.
  */
 import { Logger } from './logger.mjs';
-import { getMaskedTime, getMaskedUserAgent } from './utils.mjs';
+import { getForwardedHost, getMaskedTime, getMaskedUserAgent } from './utils.mjs';
 
 export class CoralogixErrorLogger {
   constructor(req) {
@@ -18,7 +18,7 @@ export class CoralogixErrorLogger {
     this.req = req;
 
     if (req.headers.get('x-forwarded-host')) {
-      this.subsystemName = (req.headers.get('x-forwarded-host') || '').split(',')[0].trim();
+      this.subsystemName = getForwardedHost(req.headers.get('x-forwarded-host'));
     } else if (req.headers.get('host')) {
       this.subsystemName = req.headers.get('host');
     }
