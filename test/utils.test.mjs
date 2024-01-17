@@ -90,6 +90,10 @@ describe('Test Utils', () => {
     assert.equal('www.blah.blah', getForwardedHost('www.blah.blah,test.myaem.net'));
     assert.equal('www.blah.blah', getForwardedHost('www.blah.blah,test.somehlx.live'));
     assert.equal('p1234-e5678.aem.net', getForwardedHost('www.blah.blah, p1234-e5678.aem.net , www.hah.hah'));
+    assert.equal(
+      'author-p12334-e56789.adobeaemcloud.net',
+      getForwardedHost('www.foo.net, author-p12334-e56789.adobeaemcloud.net'),
+    );
     assert.equal('', getForwardedHost(''));
   });
 });
