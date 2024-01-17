@@ -10,7 +10,9 @@
  * governing permissions and limitations under the License.
  */
 import { Logger } from './logger.mjs';
-import { cleanurl, getForwardedHost, getMaskedTime, getMaskedUserAgent } from './utils.mjs';
+import {
+  cleanurl, getForwardedHost, getMaskedTime, getMaskedUserAgent,
+} from './utils.mjs';
 
 export class CoralogixLogger {
   constructor(req) {

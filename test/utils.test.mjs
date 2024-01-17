@@ -11,7 +11,9 @@
  */
 /* eslint-env mocha */
 import assert from 'assert';
-import { cleanurl, getForwardedHost, getMaskedUserAgent, maskTime } from '../src/utils.mjs';
+import {
+  cleanurl, getForwardedHost, getMaskedUserAgent, maskTime,
+} from '../src/utils.mjs';
 
 describe('Test Utils', () => {
   it('Mask the time', () => {
