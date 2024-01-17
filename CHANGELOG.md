@@ -1,3 +1,10 @@
+# [2.7.0](https://github.com/adobe/helix-rum-collector/compare/v2.6.0...v2.7.0) (2024-01-17)
+
+
+### Features
+
+* **utils:** Update extraction of hostname from X-Forwarded-Host to favour AEM hostname ([#256](https://github.com/adobe/helix-rum-collector/issues/256)) ([b233bdd](https://github.com/adobe/helix-rum-collector/commit/b233bdda3d8a8c3ab39064aca2a922c473b07098)), closes [#255](https://github.com/adobe/helix-rum-collector/issues/255)
+
 # [2.6.0](https://github.com/adobe/helix-rum-collector/compare/v2.5.0...v2.6.0) (2024-01-08)
 
 
