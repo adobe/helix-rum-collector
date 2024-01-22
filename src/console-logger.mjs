@@ -10,19 +10,13 @@
  * governing permissions and limitations under the License.
  */
 import {
-  cleanurl, getForwardedHost, getMaskedTime, getMaskedUserAgent,
+  cleanurl, getMaskedTime, getMaskedUserAgent, getSubsystem,
 } from './utils.mjs';
 
 export class ConsoleLogger {
   constructor(req, altLogger) {
-    this.subsystemName = 'undefined';
+    this.subsystemName = getSubsystem(req);
     this.req = req;
-
-    if (req.headers.get('x-forwarded-host')) {
-      this.subsystemName = getForwardedHost(req.headers.get('x-forwarded-host'));
-    } else if (req.headers.get('host')) {
-      this.subsystemName = req.headers.get('host');
-    }
     this.start = Math.floor(Date.now());
     if (altLogger) {
       // This can be set for testing

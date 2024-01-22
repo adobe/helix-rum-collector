@@ -100,3 +100,28 @@ export function getForwardedHost(fhh) {
     return hosts[0].trim();
   }
 }
+
+export function extractAdobeRoutingInfo(value) {
+  // value is a string with key value pairs, separated by a comma
+  // extract program, environment and tier
+  const pairs = value.split(',');
+  const routingInfo = {};
+  pairs.forEach((pair) => {
+    const keyValue = pair.trim().split('=');
+    const key = keyValue[0].trim();
+    const val = keyValue[1].trim();
+    routingInfo[key] = val;
+  });
+  return `${routingInfo.tier}-p${routingInfo.program}-e${routingInfo.environment}.adobeaemcloud.net`;
+}
+
+export function getSubsystem(req) {
+  if (req.headers.get('x-adobe-routing')) {
+    return extractAdobeRoutingInfo(req.headers.get('x-adobe-routing'));
+  } else if (req.headers.get('x-forwarded-host')) {
+    return getForwardedHost(req.headers.get('x-forwarded-host'));
+  } else if (req.headers.get('host')) {
+    return req.headers.get('host');
+  }
+  return 'undefined';
+}
