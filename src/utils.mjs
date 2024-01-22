@@ -107,9 +107,9 @@ export function extractAdobeRoutingInfo(value) {
   const pairs = value.split(',');
   const routingInfo = {};
   pairs.forEach((pair) => {
-    const keyValue = pair.split('=');
-    const key = keyValue[0];
-    const val = keyValue[1];
+    const keyValue = pair.trim().split('=');
+    const key = keyValue[0].trim();
+    const val = keyValue[1].trim();
     routingInfo[key] = val;
   });
   return `${routingInfo.tier}-p${routingInfo.program}-e${routingInfo.environment}.adobeaemcloud.net`;
