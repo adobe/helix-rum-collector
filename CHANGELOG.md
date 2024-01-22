@@ -1,3 +1,11 @@
+# [2.8.0](https://github.com/adobe/helix-rum-collector/compare/v2.7.0...v2.8.0) (2024-01-22)
+
+
+### Features
+
+* **utils:** Evaluate x-adobe-routing if set ([897875a](https://github.com/adobe/helix-rum-collector/commit/897875abaaf6a7778db4be14bd071fee09d606ac))
+* **utils:** Evaluate x-adobe-routing if set ([f38ad82](https://github.com/adobe/helix-rum-collector/commit/f38ad823aa171f33cdaaeaa9a012dd5198f26868))
+
 # [2.7.0](https://github.com/adobe/helix-rum-collector/compare/v2.6.0...v2.7.0) (2024-01-17)
 
 
