@@ -10,18 +10,12 @@
  * governing permissions and limitations under the License.
  */
 import { Logger } from './logger.mjs';
-import { getForwardedHost, getMaskedTime, getMaskedUserAgent } from './utils.mjs';
+import { getMaskedTime, getMaskedUserAgent, getSubsystem } from './utils.mjs';
 
 export class CoralogixErrorLogger {
   constructor(req) {
-    this.subsystemName = 'undefined';
+    this.subsystemName = getSubsystem(req);
     this.req = req;
-
-    if (req.headers.get('x-forwarded-host')) {
-      this.subsystemName = getForwardedHost(req.headers.get('x-forwarded-host'));
-    } else if (req.headers.get('host')) {
-      this.subsystemName = req.headers.get('host');
-    }
     this.start = Math.floor(Date.now());
     this.req = req;
     // eslint-disable-next-line: no-console

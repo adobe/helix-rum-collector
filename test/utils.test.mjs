@@ -12,7 +12,7 @@
 /* eslint-env mocha */
 import assert from 'assert';
 import {
-  cleanurl, getForwardedHost, getMaskedUserAgent, maskTime,
+  cleanurl, extractAdobeRoutingInfo, getForwardedHost, getMaskedUserAgent, getSubsystem, maskTime,
 } from '../src/utils.mjs';
 
 describe('Test Utils', () => {
@@ -95,5 +95,31 @@ describe('Test Utils', () => {
       getForwardedHost('www.foo.net, author-p12334-e56789.adobeaemcloud.net'),
     );
     assert.equal('', getForwardedHost(''));
+  });
+
+  it('Extract Adobe Routing Info', () => {
+    assert.equal('publish-p12345-e1234.adobeaemcloud.net', extractAdobeRoutingInfo('environment=1234,program=12345,tier=publish,foo=baz'));
+  });
+
+  it('Get Subsystem', () => {
+    const headers = new Map();
+    assert.equal('undefined', getSubsystem({
+      headers,
+    }));
+
+    headers.set('host', 'www.blah.blah');
+    assert.equal('www.blah.blah', getSubsystem({
+      headers,
+    }));
+
+    headers.set('x-forwarded-host', 'www.blah.test');
+    assert.equal('www.blah.test', getSubsystem({
+      headers,
+    }));
+
+    headers.set('x-adobe-routing', 'environment=1234,program=12345,tier=publish,foo=baz');
+    assert.equal('publish-p12345-e1234.adobeaemcloud.net', getSubsystem({
+      headers,
+    }));
   });
 });
