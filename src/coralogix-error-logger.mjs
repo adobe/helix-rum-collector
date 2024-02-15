@@ -33,7 +33,7 @@ export class CoralogixErrorLogger {
       applicationName: 'helix-rum-collector',
       subsystemName: this.subsystemName,
       severity: Math.floor(status / 100),
-      json: {
+      text: JSON.stringify({
         edgecompute: {
           url: this.req.url,
         },
@@ -49,7 +49,7 @@ export class CoralogixErrorLogger {
           user_agent: getMaskedUserAgent(this.req.headers.get('user-agent')),
         },
         message,
-      },
+      }),
     };
     console.log('ready to log (coralogix)');
     // console.log(JSON.stringify(data));

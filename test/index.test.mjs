@@ -144,13 +144,16 @@ describe('Test index', () => {
     const logged = JSON.parse(lastLogMessage);
     assert.equal(4, logged.severity);
     assert.equal('some.host', logged.subsystemName);
-    assert.equal('http://foo.bar.org', logged.json.edgecompute.url);
-    assert.equal('http://foo.bar.org', logged.json.cdn.url);
-    assert.equal('POST', logged.json.request.method);
-    assert.equal('desktop', logged.json.request.user_agent);
+
+    const loggedJSON = JSON.parse(logged.text);
+
+    assert.equal('http://foo.bar.org', loggedJSON.edgecompute.url);
+    assert.equal('http://foo.bar.org', loggedJSON.cdn.url);
+    assert.equal('POST', loggedJSON.request.method);
+    assert.equal('desktop', loggedJSON.request.user_agent);
     assert(logged.timestamp.toString().endsWith('000'));
-    assert.equal(logged.timestamp, logged.json.time.start_msec);
-    assert(logged.json.message.startsWith('RUM Collector expects'));
+    assert.equal(logged.timestamp, loggedJSON.time.start_msec);
+    assert(loggedJSON.message.startsWith('RUM Collector expects'));
   });
 
   it('responds to robots.txt', async () => {
