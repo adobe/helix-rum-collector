@@ -35,7 +35,8 @@ export class CoralogixLogger {
       applicationName: 'helix-rum-collector',
       subsystemName: this.subsystemName,
       severity: checkpoint === 'error' ? 5 : 3,
-      json: {
+      // Coralogix recommends using a string for the text field, even though JSON could be used
+      text: JSON.stringify({
         edgecompute: {
           url: this.req.url,
         },
@@ -59,7 +60,7 @@ export class CoralogixLogger {
           weight,
           ...json,
         },
-      },
+      }),
     };
     console.log('ready to log (coralogix)');
     // console.log(JSON.stringify(data));
