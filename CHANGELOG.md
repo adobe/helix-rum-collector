@@ -1,3 +1,15 @@
+# [2.9.0](https://github.com/adobe/helix-rum-collector/compare/v2.8.0...v2.9.0) (2024-02-15)
+
+
+### Bug Fixes
+
+* **coralogix:** adjust error logger message format, too ([866dfbc](https://github.com/adobe/helix-rum-collector/commit/866dfbc9e65c4965243016099ad43f44bbc5df57))
+
+
+### Features
+
+* **coralogix:** support log format for new ingress endpoint in coralogix ([391b0b2](https://github.com/adobe/helix-rum-collector/commit/391b0b2e2af1d0cc6ce54d285daa6ab6a56e3411))
+
 # [2.8.0](https://github.com/adobe/helix-rum-collector/compare/v2.7.0...v2.8.0) (2024-01-22)
 
 
