@@ -30,11 +30,16 @@ describe('Test Coralogix Error Logger', () => {
     assert.equal('helix-rum-collector', logged.applicationName);
     assert.equal('www.foo.com', logged.subsystemName);
     assert.equal(4, logged.severity);
-    assert.equal('You cant do that', logged.json.message);
-    assert.equal('http://www.foo.com/blah', logged.json.edgecompute.url);
-    assert.equal('http://www.foo.com/blah', logged.json.cdn.url);
-    assert.equal('POST', logged.json.request.method);
-    assert.equal('desktop', logged.json.request.user_agent);
+
+    assert.ok(!logged.json, 'JSON should be empty');
+    assert.ok(logged.text);
+    const loggedJSON = JSON.parse(logged.text);
+
+    assert.equal('You cant do that', loggedJSON.message);
+    assert.equal('http://www.foo.com/blah', loggedJSON.edgecompute.url);
+    assert.equal('http://www.foo.com/blah', loggedJSON.cdn.url);
+    assert.equal('POST', loggedJSON.request.method);
+    assert.equal('desktop', loggedJSON.request.user_agent);
     assert(
       logged.timestamp.toString().endsWith('00123'),
       'Timestamp should be rounded and contain padding',
