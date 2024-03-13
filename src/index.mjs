@@ -16,6 +16,7 @@ import { GoogleLogger } from './google-logger.mjs';
 import { CoralogixLogger } from './coralogix-logger.mjs';
 import { CoralogixErrorLogger } from './coralogix-error-logger.mjs';
 import { ConsoleLogger } from './console-logger.mjs';
+import { S3Logger } from './s3-logger.mjs';
 import { respondRobots } from './robots.mjs';
 import { respondUnpkg } from './unpkg.mjs';
 
@@ -97,6 +98,9 @@ export async function main(req, ctx) {
 
         const g = new GoogleLogger(req);
         g.logRUM(cwv, id, weight, referer || referrer, generation, checkpoint, target, source, t);
+
+        const s = new S3Logger(req);
+        s.logRUM(cwv, id, weight, referer || referrer, generation, checkpoint, target, source, t);
       } else {
         const l = new ConsoleLogger(req, ctx?.altConsole);
         l.logRUM(cwv, id, weight, referer || referrer, generation, checkpoint, target, source, t);
