@@ -96,11 +96,11 @@ export async function main(req, ctx) {
         const c = new CoralogixLogger(req);
         c.logRUM(cwv, id, weight, referer || referrer, generation, checkpoint, target, source, t);
 
-        const g = new GoogleLogger(req);
-        g.logRUM(cwv, id, weight, referer || referrer, generation, checkpoint, target, source, t);
-
         const s = new S3Logger(req);
         s.logRUM(cwv, id, weight, referer || referrer, generation, checkpoint, target, source, t);
+
+        const g = new GoogleLogger(req);
+        g.logRUM(cwv, id, weight, referer || referrer, generation, checkpoint, target, source, t);
       } else {
         const l = new ConsoleLogger(req, ctx?.altConsole);
         l.logRUM(cwv, id, weight, referer || referrer, generation, checkpoint, target, source, t);

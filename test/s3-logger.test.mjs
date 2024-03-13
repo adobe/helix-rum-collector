@@ -9,9 +9,11 @@
  * OF ANY KIND, either express or implied. See the License for the specific language
  * governing permissions and limitations under the License.
  */
+
 /* eslint-env mocha */
 import assert from 'assert';
 import { S3Logger } from '../src/s3-logger.mjs';
+import { lastLogMessage } from '../src/logger.mjs';
 
 describe('Test S3 Logger', () => {
   it('log to RUM', () => {
@@ -22,7 +24,6 @@ describe('Test S3 Logger', () => {
 
     const req = { headers, url };
 
-    const logged = [];
     const cl = new S3Logger(req);
 
     const myJSON = { foo: ['b', 'ar'] };
@@ -38,17 +39,16 @@ describe('Test S3 Logger', () => {
       11,
     );
 
-    assert.equal(logged.length, 1);
-    const ld = JSON.parse(logged[0]);
-    assert(ld.time.toString().endsWith('0011'));
-    assert.equal(ld.host, 'www.foo.com');
-    assert.equal(ld.url.toString(), 'http://www.foo.com/referer');
-    assert.equal(ld.weight, 5);
-    assert.equal(ld.generation, 67);
-    assert.equal(ld.checkpoint, 9999999999999);
-    assert.equal(ld.target.toString(), 'http://www.foo.com/target');
-    assert.equal(ld.source.toString(), 'http://www.foo.com/source');
-    assert.equal(ld.id, 'someid');
-    assert.deepEqual(ld.foo, ['b', 'ar']);
+    const logged = JSON.parse(lastLogMessage);
+    assert(logged.time.toString().endsWith('0011'));
+    assert.equal(logged.host, 'www.foo.com');
+    assert.equal(logged.url.toString(), 'http://www.foo.com/referer');
+    assert.equal(logged.weight, 5);
+    assert.equal(logged.generation, 67);
+    assert.equal(logged.checkpoint, 9999999999999);
+    assert.equal(logged.target.toString(), 'http://www.foo.com/target');
+    assert.equal(logged.source.toString(), 'http://www.foo.com/source');
+    assert.equal(logged.id, 'someid');
+    assert.deepEqual(logged.foo, ['b', 'ar']);
   });
 });
