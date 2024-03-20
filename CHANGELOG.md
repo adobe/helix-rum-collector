@@ -1,3 +1,10 @@
+## [2.9.1](https://github.com/adobe/helix-rum-collector/compare/v2.9.0...v2.9.1) (2024-03-20)
+
+
+### Bug Fixes
+
+* **logger:** support CloudFront-specific user-agent headers ([#288](https://github.com/adobe/helix-rum-collector/issues/288)) ([cdfbbf1](https://github.com/adobe/helix-rum-collector/commit/cdfbbf191c1aca8da34ec0b37135a190cc0e040c))
+
 # [2.9.0](https://github.com/adobe/helix-rum-collector/compare/v2.8.0...v2.9.0) (2024-02-15)
 
 
