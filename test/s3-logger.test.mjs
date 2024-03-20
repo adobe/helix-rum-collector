@@ -20,6 +20,7 @@ describe('Test S3 Logger', () => {
     const headers = new Map();
     headers.set('x-forwarded-host', 'www.foo.com');
     headers.set('host', 'www.acme.com');
+    headers.set('user-agent', 'Opera/12.0(Windows NT 5.2;U;en)Presto/22.9.168 Version/12.00');
     const url = new URL('http://www.foo.com/testing123');
 
     const req = { headers, url };
@@ -49,6 +50,7 @@ describe('Test S3 Logger', () => {
     assert.equal(logged.target.toString(), 'http://www.foo.com/target');
     assert.equal(logged.source.toString(), 'http://www.foo.com/source');
     assert.equal(logged.id, 'someid');
+    assert.equal(logged.user_agent, 'desktop');
     assert.deepEqual(logged.foo, ['b', 'ar']);
   });
 });
