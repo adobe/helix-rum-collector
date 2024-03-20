@@ -31,7 +31,7 @@ export class GoogleLogger {
       time: now,
       host: this.subsystemName,
       url: referer || (this.req.headers.has('referer') ? this.req.headers.get('referer') : this.req.url),
-      user_agent: getMaskedUserAgent(this.req.headers.get('user-agent')),
+      user_agent: getMaskedUserAgent(this.req.headers),
       referer: cleanurl(this.req.headers.get('referer')),
       weight,
       generation,

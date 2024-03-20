@@ -51,7 +51,23 @@ export function getMaskedTime(timePadding) {
   return maskTime(Date.now(), timePadding);
 }
 
-export function getMaskedUserAgent(userAgent) {
+export function getMaskedUserAgent(headers) {
+  if (!headers) {
+    return 'undefined';
+  }
+
+  if (headers.get('CloudFront-Is-Desktop-Viewer') === 'true') {
+    return 'desktop';
+  } else if (headers.get('CloudFront-Is-Mobile-Viewer') === 'true') {
+    return 'mobile';
+  } else if (headers.get('CloudFront-Is-SmartTV-Viewer') === 'true') {
+    return 'desktop';
+  } else if (headers.get('CloudFront-Is-Tablet-Viewer') === 'true') {
+    return 'mobile';
+  }
+
+  const userAgent = headers.get('user-agent');
+
   if (!userAgent) {
     return 'undefined';
   }

@@ -50,7 +50,7 @@ export class CoralogixLogger {
         request: {
           id,
           method: this.req.method,
-          user_agent: getMaskedUserAgent(this.req.headers.get('user-agent')),
+          user_agent: getMaskedUserAgent(this.req.headers),
         },
         rum: {
           generation,
