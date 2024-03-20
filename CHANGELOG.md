@@ -1,3 +1,15 @@
+# [2.10.0](https://github.com/adobe/helix-rum-collector/compare/v2.9.1...v2.10.0) (2024-03-20)
+
+
+### Bug Fixes
+
+* add s3 log endpoint ([4602d7d](https://github.com/adobe/helix-rum-collector/commit/4602d7d8e910dd3037cbc7334946ce741b7414de))
+
+
+### Features
+
+* **logger:** add S3 log target for (experimental) rum-bundler ([7548d43](https://github.com/adobe/helix-rum-collector/commit/7548d43c498aa1f205056ee15dd6744c9c6dc415))
+
 ## [2.9.1](https://github.com/adobe/helix-rum-collector/compare/v2.9.0...v2.9.1) (2024-03-20)
 
 
