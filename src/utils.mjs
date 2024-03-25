@@ -108,7 +108,7 @@ export function getForwardedHost(fhh) {
 
   const match = hosts
     .map((h) => h.trim())
-    .filter((h) => h.match(/[.](adobeaemcloud|aemcloud|aem|hlx)[.](page|live|net)$/));
+    .filter((h) => h.match(/.+-.+[.](adobeaemcloud|aemcloud|aem|hlx)[.](page|live|net)$/));
 
   if (match.length > 0) {
     return match[0];
