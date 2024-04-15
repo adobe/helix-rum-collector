@@ -82,7 +82,7 @@ describe('Helix RUM Collector Post-Deploy Tests', () => {
   it('CORS headers are set', async () => {
     const response = await request(`https://${domain}`)
       .options('/');
-    expect(response).to.have.status(204);
+    expect(response).to.have.status(200);
   });
 
   it('robots.txt denies everything', async () => {

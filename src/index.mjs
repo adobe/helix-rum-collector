@@ -48,17 +48,19 @@ function getRandomID() {
 function respondInfo(ctx) {
   return new Response(`{"platform": "${ctx?.runtime?.name}", "version": "${ctx?.func?.version}"}`);
 }
+export function respondCORS() {
+  return new Response('no data collected', {
+    headers: {
+      'Access-Control-Allow-Origin': '*',
+      'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
+      'Access-Control-Allow-Headers': 'Content-Type',
+    },
+  });
+}
 
 export async function main(req, ctx) {
   if (req.method === 'OPTIONS') {
-    return new Response('no data collected', {
-      status: 200,
-      headers: {
-        'Access-Control-Allow-Origin': '*',
-        'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
-        'Access-Control-Allow-Headers': 'Content-Type',
-      },
-    });
+    return respondCORS();
   }
   try {
     if (req.method === 'GET' && new URL(req.url).pathname.startsWith('/robots.txt')) {
