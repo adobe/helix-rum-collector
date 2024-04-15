@@ -51,6 +51,16 @@ function respondInfo(ctx) {
 
 export async function main(req, ctx) {
   try {
+    if (req.method === 'OPTIONS') {
+      return new Response('ok', {
+        status: 204,
+        headers: {
+          'Access-Control-Allow-Origin': '*',
+          'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
+          'Access-Control-Allow-Headers': 'Content-Type',
+        },
+      });
+    }
     if (req.method === 'GET' && new URL(req.url).pathname.startsWith('/robots.txt')) {
       return respondRobots(req);
     }
