@@ -51,7 +51,7 @@ function respondInfo(ctx) {
 
 export async function main(req, ctx) {
   if (req.method === 'OPTIONS') {
-    return new Response('', {
+    return new Response('null', {
       status: 204,
       headers: {
         'Access-Control-Allow-Origin': '*',
@@ -126,7 +126,7 @@ export async function main(req, ctx) {
 
     return response;
   } catch (e) {
-    return respondError('RUM Collector expects POST body as JSON', 400, e, req);
+    return respondError(`RUM Collector expects POST body as JSON, got ${req.method}`, 400, e, req);
   }
 }
 
