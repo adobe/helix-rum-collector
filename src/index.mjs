@@ -52,7 +52,7 @@ function respondInfo(ctx) {
 export async function main(req, ctx) {
   try {
     if (req.method === 'OPTIONS') {
-      return new Response('ok', {
+      return new Response('', {
         status: 204,
         headers: {
           'Access-Control-Allow-Origin': '*',
