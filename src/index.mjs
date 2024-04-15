@@ -51,8 +51,8 @@ function respondInfo(ctx) {
 
 export async function main(req, ctx) {
   if (req.method === 'OPTIONS') {
-    return new Response('null', {
-      status: 204,
+    return new Response('no data collected', {
+      status: 200,
       headers: {
         'Access-Control-Allow-Origin': '*',
         'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
