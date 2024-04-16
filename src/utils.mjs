@@ -86,11 +86,13 @@ export function getMaskedUserAgent(headers) {
     || lcUA.includes('probe')
     || lcUA.includes('axios')
     || lcUA.includes('curl')
+    || lcUA.includes('+https://')
+    || lcUA.includes('+http://')
     || isSpider(lcUA)) {
     return 'bot';
   }
 
-  return 'desktop';
+  return `desktop${getDesktopOS(lcUA)}`;
 }
 
 export function cleanurl(url) {
