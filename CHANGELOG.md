@@ -1,3 +1,10 @@
+# [2.11.0](https://github.com/adobe/helix-rum-collector/compare/v2.10.1...v2.11.0) (2024-04-16)
+
+
+### Features
+
+* **coralogix:** log full user agent if it is not normalized ([3f08ad5](https://github.com/adobe/helix-rum-collector/commit/3f08ad5e4471b25aa9f46ce3c6a0e4a5ddfbd097))
+
 ## [2.10.1](https://github.com/adobe/helix-rum-collector/compare/v2.10.0...v2.10.1) (2024-04-16)
 
 
