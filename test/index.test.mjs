@@ -127,7 +127,7 @@ describe('Test index', () => {
   it('error handling', async () => {
     const headers = new Map();
     headers.set('host', 'some.host');
-    headers.set('user-agent', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:109.0) Gecko/20100101 Firefox/117.0');
+    headers.set('user-agent', 'Mozilla/5.0 (X11; Linux i686; rv:10.0) Gecko/20100101 Firefox/10.0');
 
     const json = () => JSON.parse('{"malformed"}');
 
@@ -150,7 +150,7 @@ describe('Test index', () => {
     assert.equal('http://foo.bar.org', loggedJSON.edgecompute.url);
     assert.equal('http://foo.bar.org', loggedJSON.cdn.url);
     assert.equal('POST', loggedJSON.request.method);
-    assert.equal('desktop', loggedJSON.request.user_agent);
+    assert.equal('desktop:linux', loggedJSON.request.user_agent);
     assert(logged.timestamp.toString().endsWith('000'));
     assert.equal(logged.timestamp, loggedJSON.time.start_msec);
     assert(loggedJSON.message.startsWith('RUM Collector expects'));
