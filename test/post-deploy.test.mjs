@@ -83,6 +83,7 @@ describe('Helix RUM Collector Post-Deploy Tests', () => {
     const response = await request(`https://${domain}`)
       .options('/');
     expect(response).to.have.status(200);
+    expect(response).to.have.header('access-control-allow-origin', '*');
   });
 
   it('robots.txt denies everything', async () => {
