@@ -48,8 +48,20 @@ function getRandomID() {
 function respondInfo(ctx) {
   return new Response(`{"platform": "${ctx?.runtime?.name}", "version": "${ctx?.func?.version}"}`);
 }
+export function respondCORS() {
+  return new Response('no data collected', {
+    headers: {
+      'Access-Control-Allow-Origin': '*',
+      'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
+      'Access-Control-Allow-Headers': 'Content-Type',
+    },
+  });
+}
 
 export async function main(req, ctx) {
+  if (req.method === 'OPTIONS') {
+    return respondCORS();
+  }
   try {
     if (req.method === 'GET' && new URL(req.url).pathname.startsWith('/robots.txt')) {
       return respondRobots(req);
@@ -116,7 +128,7 @@ export async function main(req, ctx) {
 
     return response;
   } catch (e) {
-    return respondError('RUM Collector expects POST body as JSON', 400, e, req);
+    return respondError(`RUM Collector expects POST body as JSON, got ${req.method}`, 400, e, req);
   }
 }
 
