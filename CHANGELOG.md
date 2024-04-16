@@ -1,3 +1,30 @@
+# [2.12.0](https://github.com/adobe/helix-rum-collector/compare/v2.11.0...v2.12.0) (2024-04-16)
+
+
+### Features
+
+* **utils:** detect mobile and desktop operating system ([5aa21dc](https://github.com/adobe/helix-rum-collector/commit/5aa21dc816bd68eb7264db525e3c2d1ec8330f9e))
+* **utils:** detect more bots ([db59202](https://github.com/adobe/helix-rum-collector/commit/db59202bb4fa9ca8a9be037872c907f2f75d72dd))
+* **utils:** detect more bots ([287edcc](https://github.com/adobe/helix-rum-collector/commit/287edcc34b3284c20fbf603d28a98657fcb506ed))
+
+# [2.11.0](https://github.com/adobe/helix-rum-collector/compare/v2.10.1...v2.11.0) (2024-04-16)
+
+
+### Features
+
+* **coralogix:** log full user agent if it is not normalized ([3f08ad5](https://github.com/adobe/helix-rum-collector/commit/3f08ad5e4471b25aa9f46ce3c6a0e4a5ddfbd097))
+
+## [2.10.1](https://github.com/adobe/helix-rum-collector/compare/v2.10.0...v2.10.1) (2024-04-16)
+
+
+### Bug Fixes
+
+* **index:** return 200 ([21ac92d](https://github.com/adobe/helix-rum-collector/commit/21ac92d66cb6c4654545ac63599c78011f2fa1b8))
+* **index:** run options before everything ([63802d5](https://github.com/adobe/helix-rum-collector/commit/63802d5e4f30880f519dbdc4958d8cd507899725))
+* **index:** run options before everything ([ea4a06c](https://github.com/adobe/helix-rum-collector/commit/ea4a06c40c93e03ff8ed5602b77a6138130ee890))
+* **index:** support OPTIONS requests for CORS ([978fcc3](https://github.com/adobe/helix-rum-collector/commit/978fcc3b3f57282976efe1b996538b48cb5bd25e))
+* **options:** don't return a body ([df5f2c6](https://github.com/adobe/helix-rum-collector/commit/df5f2c680a150562bdb5be4439990708ff5309ee))
+
 # [2.10.0](https://github.com/adobe/helix-rum-collector/compare/v2.9.1...v2.10.0) (2024-03-20)
 
 

@@ -51,6 +51,35 @@ export function getMaskedTime(timePadding) {
   return maskTime(Date.now(), timePadding);
 }
 
+/**
+ * Extract the OS from the user agent string
+ * @returns {Enumerator(':android', ':ios', ':ipados', '')} the OS
+ */
+function getMobileOS(userAgent) {
+  if (userAgent.includes('android')) {
+    return ':android';
+  } else if (userAgent.includes('ipad')) {
+    return ':ipados';
+  } else if (userAgent.includes('like mac os')) {
+    return ':ios';
+  }
+  return '';
+}
+/**
+ * Extract the OS from the user agent string
+ * @returns {Enumerator(':windows', ':mac', ':linux', '')} the OS
+ */
+function getDesktopOS(userAgent) {
+  if (userAgent.includes('windows')) {
+    return ':windows';
+  } else if (userAgent.includes('mac os')) {
+    return ':mac';
+  } else if (userAgent.includes('linux')) {
+    return ':linux';
+  }
+  return '';
+}
+
 export function getMaskedUserAgent(headers) {
   if (!headers) {
     return 'undefined';
@@ -75,17 +104,24 @@ export function getMaskedUserAgent(headers) {
 
   if (lcUA.includes('mobile')
     || lcUA.includes('opera mini')) {
-    return 'mobile';
+    return `mobile${getMobileOS(lcUA)}`;
   }
   if (lcUA.includes('bot')
     || lcUA.includes('spider')
     || lcUA.includes('crawler')
     || lcUA.includes('ahc/')
+    || lcUA.includes('node')
+    || lcUA.includes('python')
+    || lcUA.includes('probe')
+    || lcUA.includes('axios')
+    || lcUA.includes('curl')
+    || lcUA.includes('+https://')
+    || lcUA.includes('+http://')
     || isSpider(lcUA)) {
     return 'bot';
   }
 
-  return 'desktop';
+  return `desktop${getDesktopOS(lcUA)}`;
 }
 
 export function cleanurl(url) {

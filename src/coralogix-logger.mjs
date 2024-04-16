@@ -50,12 +50,14 @@ export class CoralogixLogger {
         request: {
           id,
           method: this.req.method,
-          user_agent: getMaskedUserAgent(this.req.headers),
           headers: {
             x_forwarded_host: this.req.headers.get('x-forwarded-host'),
             // 🤷‍♂️
             x_adobe_routing: this.req.headers.get('x-adobe-routing'),
           },
+          user_agent: getMaskedUserAgent(this.req.headers) === 'undefined'
+            ? this.req.headers.get('user-agent')
+            : getMaskedUserAgent(this.req.headers),
         },
         rum: {
           generation,
