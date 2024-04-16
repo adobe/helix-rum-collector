@@ -81,6 +81,11 @@ export function getMaskedUserAgent(headers) {
     || lcUA.includes('spider')
     || lcUA.includes('crawler')
     || lcUA.includes('ahc/')
+    || lcUA.includes('node')
+    || lcUA.includes('python')
+    || lcUA.includes('probe')
+    || lcUA.includes('axios')
+    || lcUA.includes('curl')
     || isSpider(lcUA)) {
     return 'bot';
   }
