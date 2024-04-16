@@ -1,3 +1,12 @@
+# [2.12.0](https://github.com/adobe/helix-rum-collector/compare/v2.11.0...v2.12.0) (2024-04-16)
+
+
+### Features
+
+* **utils:** detect mobile and desktop operating system ([5aa21dc](https://github.com/adobe/helix-rum-collector/commit/5aa21dc816bd68eb7264db525e3c2d1ec8330f9e))
+* **utils:** detect more bots ([db59202](https://github.com/adobe/helix-rum-collector/commit/db59202bb4fa9ca8a9be037872c907f2f75d72dd))
+* **utils:** detect more bots ([287edcc](https://github.com/adobe/helix-rum-collector/commit/287edcc34b3284c20fbf603d28a98657fcb506ed))
+
 # [2.11.0](https://github.com/adobe/helix-rum-collector/compare/v2.10.1...v2.11.0) (2024-04-16)
 
 
