@@ -1,3 +1,10 @@
+# [2.14.0](https://github.com/adobe/helix-rum-collector/compare/v2.13.0...v2.14.0) (2024-04-18)
+
+
+### Features
+
+* trigger release ([7d8ea1d](https://github.com/adobe/helix-rum-collector/commit/7d8ea1d566d2a908237f910e029e8a09bc22ee89))
+
 # [2.13.0](https://github.com/adobe/helix-rum-collector/compare/v2.12.0...v2.13.0) (2024-04-18)
 
 
