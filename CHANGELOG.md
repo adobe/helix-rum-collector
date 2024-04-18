@@ -1,3 +1,15 @@
+# [2.13.0](https://github.com/adobe/helix-rum-collector/compare/v2.12.0...v2.13.0) (2024-04-18)
+
+
+### Bug Fixes
+
+* adjust test ([1237893](https://github.com/adobe/helix-rum-collector/commit/12378939b8d6c88c1f4e15e1945479ce0aa1d590))
+
+
+### Features
+
+* enhance Coralogix logs ([#304](https://github.com/adobe/helix-rum-collector/issues/304)) ([df7e161](https://github.com/adobe/helix-rum-collector/commit/df7e161a1b1d9d1ca7e3b9f6ffadd3f71e1ea120))
+
 # [2.12.0](https://github.com/adobe/helix-rum-collector/compare/v2.11.0...v2.12.0) (2024-04-16)
 
 
