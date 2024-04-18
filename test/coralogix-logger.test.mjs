@@ -55,8 +55,8 @@ describe('Test Coralogix Logger', () => {
     assert.equal('http://www.foo.com/testing123', loggedJSON.cdn.url);
     assert(loggedJSON.time.start_msec.toString().endsWith('00999'));
     assert.equal(
-      Math.floor(logged.timestamp / 10000000),
-      Math.floor(loggedJSON.time.start_msec / 10000000),
+      Math.floor(logged.timestamp / 100000000),
+      Math.floor(loggedJSON.time.start_msec / 100000000),
     );
     assert(loggedJSON.time.elapsed < 100);
     assert.equal('123', loggedJSON.request.id);
