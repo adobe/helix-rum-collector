@@ -61,6 +61,7 @@ describe('Test Coralogix Logger', () => {
     assert(loggedJSON.time.elapsed < 100);
     assert.equal('123', loggedJSON.request.id);
     assert.equal('GET', loggedJSON.request.method);
+    assert.equal('Mozilla/5.0 (compatible; HubSpot Crawler; +https://www.hubspot.com)', loggedJSON.request.user_agent);
     assert.equal('bot', loggedJSON.rum.user_agent);
     assert.equal(42, loggedJSON.rum.generation);
     assert.equal(12345, loggedJSON.rum.checkpoint);
