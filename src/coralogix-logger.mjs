@@ -25,7 +25,18 @@ export class CoralogixLogger {
     this.logger = new Logger('Coralogix');
   }
 
-  logRUM(json, id, weight, referer, generation, checkpoint, target, source, timePadding, now = Date.now()) {
+  logRUM(
+    json,
+    id,
+    weight,
+    referer,
+    generation,
+    checkpoint,
+    target,
+    source,
+    timePadding,
+    now = Date.now(),
+  ) {
     console.log(`logging to Coralogix: ${typeof this.logger}`);
     const maskedNow = getMaskedTime(timePadding);
 
