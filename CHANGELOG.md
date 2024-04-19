@@ -1,3 +1,10 @@
+## [2.15.1](https://github.com/adobe/helix-rum-collector/compare/v2.15.0...v2.15.1) (2024-04-19)
+
+
+### Bug Fixes
+
+* **utils:** old android is mobile ([7326f1e](https://github.com/adobe/helix-rum-collector/commit/7326f1ed5d05cdd4084e6850733d9d69cb5bde9b))
+
 # [2.15.0](https://github.com/adobe/helix-rum-collector/compare/v2.14.0...v2.15.0) (2024-04-19)
 
 
