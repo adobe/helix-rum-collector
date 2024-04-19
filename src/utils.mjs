@@ -103,6 +103,7 @@ export function getMaskedUserAgent(headers) {
   const lcUA = userAgent.toLowerCase();
 
   if (lcUA.includes('mobile')
+    || lcUA.includes('android')
     || lcUA.includes('opera mini')) {
     return `mobile${getMobileOS(lcUA)}`;
   }
