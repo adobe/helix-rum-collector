@@ -70,8 +70,9 @@ describe('Test Utils', () => {
 
     assert.equal('bot', getMaskedUserAgent(getUserAgentHeaders('Mozilla/5.0 (compatible; Baiduspider/2.0; +http://www.baidu.com/search/spider.html)')));
     assert.equal('bot', getMaskedUserAgent(getUserAgentHeaders('"Mozilla/5.0 (compatible; HubSpot Crawler; +https://www.hubspot.com)"')));
-    assert.equal('bot', getMaskedUserAgent(getUserAgentHeaders('Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/85.0.4183.121 Safari/537.36 PingdomPageSpeed/1.0 (pingbot/2.0; +http://www.pingdom.com/)')));
+    assert.equal('bot:monitoring', getMaskedUserAgent(getUserAgentHeaders('Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/85.0.4183.121 Safari/537.36 PingdomPageSpeed/1.0 (pingbot/2.0; +http://www.pingdom.com/)')));
     assert.equal('bot', getMaskedUserAgent(getUserAgentHeaders('AHC/2.1')));
+    assert.equal('bot:monitoring', getMaskedUserAgent(getUserAgentHeaders('mozilla/5.0 (x11; linux x86_64) applewebkit/537.36 (khtml, like gecko) chrome/123.0.6312.122 safari/537.36 datadogsynthetics')));
 
     assert.equal('desktop:windows', getMaskedUserAgent(getUserAgentHeaders('Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/111.0.5563.64 Safari/537.36')));
     assert.equal('desktop:mac', getMaskedUserAgent(getUserAgentHeaders('Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/116.0.0.0 Safari/537.36 Sidekick/6.30.0')));
