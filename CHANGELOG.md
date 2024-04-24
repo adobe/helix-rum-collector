@@ -1,3 +1,10 @@
+# [2.16.0](https://github.com/adobe/helix-rum-collector/compare/v2.15.1...v2.16.0) (2024-04-24)
+
+
+### Features
+
+* **bots:** add advanced bot detection ([ee67901](https://github.com/adobe/helix-rum-collector/commit/ee67901443480d23a7cc0cad9f86f0d9eae2c03d))
+
 ## [2.15.1](https://github.com/adobe/helix-rum-collector/compare/v2.15.0...v2.15.1) (2024-04-19)
 
 
