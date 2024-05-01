@@ -15,6 +15,8 @@
 import { GoogleLogger } from './google-logger.mjs';
 import { CoralogixLogger } from './coralogix-logger.mjs';
 import { CoralogixErrorLogger } from './coralogix-error-logger.mjs';
+import { ConsoleLogger } from './console-logger.mjs';
+import { S3Logger } from './s3-logger.mjs';
 import { respondRobots } from './robots.mjs';
 import { respondUnpkg } from './unpkg.mjs';
 
@@ -43,10 +45,29 @@ function getRandomID() {
   return Array.from({ length: 75 }, (_, i) => String.fromCharCode(48 + i)).filter((a) => /\d|[A-Z]/i.test(a)).filter(() => Math.random() * 75 > 70).join('');
 }
 
-export async function main(req) {
+function respondInfo(ctx) {
+  return new Response(`{"platform": "${ctx?.runtime?.name}", "version": "${ctx?.func?.version}"}`);
+}
+export function respondCORS() {
+  return new Response('no data collected', {
+    headers: {
+      'Access-Control-Allow-Origin': '*',
+      'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
+      'Access-Control-Allow-Headers': 'Content-Type',
+    },
+  });
+}
+
+export async function main(req, ctx) {
+  if (req.method === 'OPTIONS') {
+    return respondCORS();
+  }
   try {
     if (req.method === 'GET' && new URL(req.url).pathname.startsWith('/robots.txt')) {
       return respondRobots(req);
+    }
+    if (req.method === 'GET' && new URL(req.url).pathname.startsWith('/info.json')) {
+      return respondInfo(ctx);
     }
     if (req.method === 'GET' && new URL(req.url).pathname.startsWith('/.rum/web-vitals')) {
       return respondUnpkg(req);
@@ -83,11 +104,19 @@ export async function main(req) {
     }
 
     try {
-      const c = new CoralogixLogger(req);
-      c.logRUM(cwv, id, weight, referer || referrer, generation, checkpoint, target, source, t);
+      if (ctx?.runtime?.name === 'compute-at-edge') {
+        const c = new CoralogixLogger(req);
+        c.logRUM(cwv, id, weight, referer || referrer, generation, checkpoint, target, source, t);
 
-      const g = new GoogleLogger(req);
-      g.logRUM(cwv, id, weight, referer || referrer, generation, checkpoint, target, source, t);
+        const s = new S3Logger(req);
+        s.logRUM(cwv, id, weight, referer || referrer, generation, checkpoint, target, source, t);
+
+        const g = new GoogleLogger(req);
+        g.logRUM(cwv, id, weight, referer || referrer, generation, checkpoint, target, source, t);
+      } else {
+        const l = new ConsoleLogger(req, ctx?.altConsole);
+        l.logRUM(cwv, id, weight, referer || referrer, generation, checkpoint, target, source, t);
+      }
     } catch (err) {
       return respondError(`Could not collect RUM: ${err.message}`, 500, err, req);
     }
@@ -99,14 +128,13 @@ export async function main(req) {
 
     return response;
   } catch (e) {
-    return respondError('RUM Collector expects POST body as JSON', 400, e, req);
+    return respondError(`RUM Collector expects POST body as JSON, got ${req.method}`, 400, e, req);
   }
 }
 
 export async function handler(event) {
   // Get the client reqest from the event
-  const req = event.request;
-  return main(req);
+  return main(event.request, event.ctx);
 }
 
 // eslint-disable-next-line no-restricted-globals

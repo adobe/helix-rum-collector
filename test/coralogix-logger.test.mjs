@@ -26,6 +26,7 @@ describe('Test Coralogix Logger', () => {
 
     const cl = new CoralogixLogger(req);
 
+    const now = Date.now();
     const myJSON = { foo: 'bar', zoo: 777 };
     cl.logRUM(
       myJSON,
@@ -37,26 +38,37 @@ describe('Test Coralogix Logger', () => {
       'http://www.foo.com/testing123',
       'http://www.foo.com/somesource',
       999,
+      now,
     );
 
     const logged = JSON.parse(lastLogMessage);
-    assert(logged.timestamp.toString().endsWith('00999'));
+    assert.equal(logged.timestamp, now);
     assert.equal('helix-rum-collector', logged.applicationName);
     assert.equal('www.foo.com', logged.subsystemName);
     assert.equal(3, logged.severity);
-    assert.equal('http://www.foo.com/testing123', logged.json.edgecompute.url);
-    assert.equal('http://www.foo.com/testing123', logged.json.cdn.url);
-    assert.equal(logged.timestamp, logged.json.time.start_msec);
-    assert(logged.json.time.elapsed < 100);
-    assert.equal('123', logged.json.request.id);
-    assert.equal('GET', logged.json.request.method);
-    assert.equal('bot', logged.json.request.user_agent);
-    assert.equal(42, logged.json.rum.generation);
-    assert.equal(12345, logged.json.rum.checkpoint);
-    assert.equal('http://www.foo.com/testing123', logged.json.rum.target);
-    assert.equal('http://www.foo.com/somesource', logged.json.rum.source);
-    assert.equal(3, logged.json.rum.weight);
-    assert.equal('bar', logged.json.rum.foo);
-    assert.equal(777, logged.json.rum.zoo);
+
+    assert.ok(!logged.json, 'JSON should be empty');
+    assert.ok(logged.text);
+    const loggedJSON = JSON.parse(logged.text);
+
+    assert.equal('http://www.foo.com/testing123', loggedJSON.edgecompute.url);
+    assert.equal('http://www.foo.com/testing123', loggedJSON.cdn.url);
+    assert(loggedJSON.time.start_msec.toString().endsWith('00999'));
+    assert.equal(
+      Math.floor(logged.timestamp / 100000000),
+      Math.floor(loggedJSON.time.start_msec / 100000000),
+    );
+    assert(loggedJSON.time.elapsed < 100);
+    assert.equal('123', loggedJSON.request.id);
+    assert.equal('GET', loggedJSON.request.method);
+    assert.equal('Mozilla/5.0 (compatible; HubSpot Crawler; +https://www.hubspot.com)', loggedJSON.request.user_agent);
+    assert.equal('bot', loggedJSON.rum.user_agent);
+    assert.equal(42, loggedJSON.rum.generation);
+    assert.equal(12345, loggedJSON.rum.checkpoint);
+    assert.equal('http://www.foo.com/testing123', loggedJSON.rum.target);
+    assert.equal('http://www.foo.com/somesource', loggedJSON.rum.source);
+    assert.equal(3, loggedJSON.rum.weight);
+    assert.equal('bar', loggedJSON.rum.foo);
+    assert.equal(777, loggedJSON.rum.zoo);
   });
 });

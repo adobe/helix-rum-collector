@@ -10,19 +10,34 @@
  * governing permissions and limitations under the License.
  */
 // Pass the current time to facilitate unit testing
-export function maskTime(time, timePadding) {
-  const nearestHour = Math.floor(time / 3600000) * 3600000;
+import { isSpider } from './spiders.mjs';
+import { bots } from './bots.mjs';
 
-  if (timePadding) {
-    return nearestHour + timePadding;
+export function maskTime(time, timePadding) {
+  const msPerHour = 3600000;
+
+  const baseHour = Math.floor(time / msPerHour) * msPerHour;
+
+  let numPadding;
+  if (typeof timePadding === 'string') {
+    numPadding = Number(timePadding);
+  } else {
+    numPadding = timePadding;
+  }
+
+  if (typeof numPadding === 'number' && !Number.isNaN(numPadding)) {
+    // Limit the padding to a day
+    const padding = Math.min(numPadding, 24 * msPerHour);
+
+    return baseHour + padding;
   } else {
     // If the padding is missing we use the current second to spread
     // the result a little bit. We drop the current minute and the
     // current milliseconds
-    const numSeconds = Math.floor((time - nearestHour) / 1000);
+    const numSeconds = Math.floor((time - baseHour) / 1000);
     const currentSecondAsMS = (numSeconds % 60) * 1000;
 
-    return nearestHour + currentSecondAsMS;
+    return baseHour + currentSecondAsMS;
   }
 }
 
@@ -37,24 +52,94 @@ export function getMaskedTime(timePadding) {
   return maskTime(Date.now(), timePadding);
 }
 
-export function getMaskedUserAgent(userAgent) {
+/**
+ * Extract the OS from the user agent string
+ * @returns {Enumerator(':android', ':ios', ':ipados', '')} the OS
+ */
+function getMobileOS(userAgent) {
+  if (userAgent.includes('android')) {
+    return ':android';
+  } else if (userAgent.includes('ipad')) {
+    return ':ipados';
+  } else if (userAgent.includes('like mac os')) {
+    return ':ios';
+  }
+  return '';
+}
+/**
+ * Extract the OS from the user agent string
+ * @returns {Enumerator(':windows', ':mac', ':linux', '')} the OS
+ */
+function getDesktopOS(userAgent) {
+  if (userAgent.includes('windows')) {
+    return ':windows';
+  } else if (userAgent.includes('mac os')) {
+    return ':mac';
+  } else if (userAgent.includes('linux')) {
+    return ':linux';
+  }
+  return '';
+}
+
+/**
+ * Determines the type of bot based on the user agent string. If no bot
+ * type can be determined, the empty string is returned.
+ * @param {string} userAgent the user agent string
+ * @returns {Enumerator('', ':search', ':seo', ':social', ':ai', ':security')} the bot type
+ */
+function getBotType(userAgent) {
+  const type = Object
+    .entries(bots)
+    .find(([, botList]) => (botList
+      .map(({ regex }) => new RegExp(regex, 'i'))
+      .find((re) => re.test(userAgent))));
+  return type ? `:${type[0].toLowerCase()}` : '';
+}
+
+export function getMaskedUserAgent(headers) {
+  if (!headers) {
+    return 'undefined';
+  }
+
+  if (headers.get('CloudFront-Is-Desktop-Viewer') === 'true') {
+    return 'desktop';
+  } else if (headers.get('CloudFront-Is-Mobile-Viewer') === 'true') {
+    return 'mobile';
+  } else if (headers.get('CloudFront-Is-SmartTV-Viewer') === 'true') {
+    return 'desktop';
+  } else if (headers.get('CloudFront-Is-Tablet-Viewer') === 'true') {
+    return 'mobile';
+  }
+
+  const userAgent = headers.get('user-agent');
+
   if (!userAgent) {
     return 'undefined';
   }
   const lcUA = userAgent.toLowerCase();
 
   if (lcUA.includes('mobile')
+    || lcUA.includes('android')
     || lcUA.includes('opera mini')) {
-    return 'mobile';
+    return `mobile${getMobileOS(lcUA)}`;
   }
   if (lcUA.includes('bot')
     || lcUA.includes('spider')
     || lcUA.includes('crawler')
-    || lcUA.includes('ahc/')) {
-    return 'bot';
+    || lcUA.includes('ahc/')
+    || lcUA.includes('node')
+    || lcUA.includes('python')
+    || lcUA.includes('probe')
+    || lcUA.includes('axios')
+    || lcUA.includes('curl')
+    || lcUA.includes('synthetics')
+    || lcUA.includes('+https://')
+    || lcUA.includes('+http://')
+    || isSpider(lcUA)) {
+    return `bot${getBotType(lcUA)}`;
   }
 
-  return 'desktop';
+  return `desktop${getDesktopOS(lcUA)}`;
 }
 
 export function cleanurl(url) {
@@ -70,4 +155,43 @@ export function cleanurl(url) {
   } catch (e) {
     return url;
   }
+}
+
+export function getForwardedHost(fhh) {
+  const hosts = fhh.split(',');
+
+  const match = hosts
+    .map((h) => h.trim())
+    .filter((h) => h.match(/[.](adobeaemcloud|aemcloud|aem|hlx)[.](page|live|net)$/));
+
+  if (match.length > 0) {
+    return match[0];
+  } else {
+    return hosts[0].trim();
+  }
+}
+
+export function extractAdobeRoutingInfo(value) {
+  // value is a string with key value pairs, separated by a comma
+  // extract program, environment and tier
+  const pairs = value.split(',');
+  const routingInfo = {};
+  pairs.forEach((pair) => {
+    const keyValue = pair.trim().split('=');
+    const key = keyValue[0].trim();
+    const val = keyValue[1].trim();
+    routingInfo[key] = val;
+  });
+  return `${routingInfo.tier}-p${routingInfo.program}-e${routingInfo.environment}.adobeaemcloud.net`;
+}
+
+export function getSubsystem(req) {
+  if (req.headers.get('x-adobe-routing')) {
+    return extractAdobeRoutingInfo(req.headers.get('x-adobe-routing'));
+  } else if (req.headers.get('x-forwarded-host')) {
+    return getForwardedHost(req.headers.get('x-forwarded-host'));
+  } else if (req.headers.get('host')) {
+    return req.headers.get('host');
+  }
+  return 'undefined';
 }
