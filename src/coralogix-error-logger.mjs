@@ -10,18 +10,12 @@
  * governing permissions and limitations under the License.
  */
 import { Logger } from './logger.mjs';
-import { getMaskedTime, getMaskedUserAgent } from './utils.mjs';
+import { getMaskedTime, getMaskedUserAgent, getSubsystem } from './utils.mjs';
 
 export class CoralogixErrorLogger {
   constructor(req) {
-    this.subsystemName = 'undefined';
+    this.subsystemName = getSubsystem(req);
     this.req = req;
-
-    if (req.headers.get('x-forwarded-host')) {
-      this.subsystemName = (req.headers.get('x-forwarded-host') || '').split(',')[0].trim();
-    } else if (req.headers.get('host')) {
-      this.subsystemName = req.headers.get('host');
-    }
     this.start = Math.floor(Date.now());
     this.req = req;
     // eslint-disable-next-line: no-console
@@ -39,7 +33,7 @@ export class CoralogixErrorLogger {
       applicationName: 'helix-rum-collector',
       subsystemName: this.subsystemName,
       severity: Math.floor(status / 100),
-      json: {
+      text: JSON.stringify({
         edgecompute: {
           url: this.req.url,
         },
@@ -52,10 +46,10 @@ export class CoralogixErrorLogger {
         },
         request: {
           method: this.req.method,
-          user_agent: getMaskedUserAgent(this.req.headers.get('user-agent')),
+          user_agent: getMaskedUserAgent(this.req.headers),
         },
         message,
-      },
+      }),
     };
     console.log('ready to log (coralogix)');
     // console.log(JSON.stringify(data));

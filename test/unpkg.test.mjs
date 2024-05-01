@@ -48,7 +48,7 @@ describe.skip('Test unpkg handler', () => {
 
   it('handles @adobe/helix-rum request', async () => {
     const req = {};
-    req.url = 'http://foo.bar.org/.rum/@adobe/helix-rum-js?generation=42';
+    req.url = 'http://foo.bar.org/.rum/@adobe/helix-rum-js@^1?generation=42';
 
     const storedFetch = global.fetch;
 
@@ -56,7 +56,18 @@ describe.skip('Test unpkg handler', () => {
       // Mock the global fetch function
       global.fetch = (v, opts) => {
         assert.equal('unpkg.com', opts.backend);
-        if (v.url === 'https://unpkg.com/@adobe/helix-rum-js') {
+        if (v.url === 'https://unpkg.com/@adobe/helix-rum-js@^1') {
+          const resp = {
+            ok: true,
+            url: v.url,
+            status: 302,
+          };
+          resp.headers = new Headers();
+          resp.headers.append('location', 'https://unpkg.com/@adobe/helix-rum-js@1.0.1');
+          resp.headers.append('foo-header', 'bar');
+          return resp;
+        }
+        if (v.url === 'https://unpkg.com/@adobe/helix-rum-js@1.0.1') {
           const resp = {
             ok: true,
             url: v.url,

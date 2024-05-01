@@ -2,11 +2,11 @@ version: 2.1
 executors:
   node18:
     docker:
-      - image: cimg/node:18.18
+      - image: cimg/node:20.10
     working_directory: ~/repo
 
 orbs:
-  codecov: codecov/codecov@3.2.5
+  codecov: codecov/codecov@4.1.0
   fastly: adobe/fastly-cli@1.1.1
 
 commands:
@@ -22,7 +22,6 @@ commands:
       - run:
           name: Installing Dependencies
           command: npm ci
-
       # - save_cache:
       #     paths:
       #     - node_modules
@@ -62,21 +61,20 @@ jobs:
       - run:
           name: revert changes to package-lock.json
           command: git checkout -- package-lock.json
+
+      - run: npm ls @fastly/js-compute
+
       - run:
-          name: Package
-          command: npm run fastly-build
+          name: Package and Branch Deployment
+          command: HLX_FASTLY_AUTH=$HLX_FASTLY_CI_AUTH HLX_FASTLY_SVC=$HLX_FASTLY_CI_ID HLX_CLOUDFLARE_NAME=helix-rum-collector-ci npm run deploy
 
       - run:
           name: List Package Contents
-          command: tar -tvf pkg/helix3.tar.gz
-
-      - run:
-          name: Branch Deployment
-          command: fastly compute deploy -t $HLX_FASTLY_CI_AUTH -s $HLX_FASTLY_CI_ID
+          command: find bin && tar -tvf bin/dist/helix3/fastly-bundle.tar.gz
 
       - run:
           name: Wait for service to be updated
-          command: sleep 30
+          command: sleep 45
 
       - run:
           name: Post-Deployment Integration Test
@@ -100,8 +98,10 @@ jobs:
 workflows:
   default:
     jobs:
-      - build
+      - build:
+          context: Project Helix
       - branch-deploy:
+          context: Project Helix
           requires:
             - build
           filters:

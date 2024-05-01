@@ -42,7 +42,7 @@ describe('Test Google Logger', () => {
     assert(logged.time.toString().endsWith('00.011'), logged.time.toString());
     assert.equal('www.foo.com', logged.host);
     assert.equal('http://www.foo.com/referer', logged.url);
-    assert.equal('mobile', logged.user_agent);
+    assert.equal('mobile:android', logged.user_agent);
     assert.equal(5, logged.weight);
     assert.equal(67, logged.generation);
     assert.equal(9999999999999, logged.checkpoint);
@@ -102,5 +102,17 @@ describe('Test Google Logger', () => {
     assert.equal('www.blahblah.com', logged.hostname);
     assert.equal('x', logged.id);
     assert.equal(1, logged.weight);
+  });
+
+  it('Clean the fragment from the reported URL', () => {
+    const headers = new Map();
+    const url = 'https://www.blahblah.com/hihaho#with-a-fragment';
+
+    const req = { headers, url };
+    const gl = new GoogleLogger(req);
+    gl.logRUM({}, 'q123', 5);
+
+    const logged = JSON.parse(lastLogMessage);
+    assert.equal('https://www.blahblah.com/hihaho', logged.url);
   });
 });

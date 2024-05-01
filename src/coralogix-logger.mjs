@@ -10,18 +10,14 @@
  * governing permissions and limitations under the License.
  */
 import { Logger } from './logger.mjs';
-import { cleanurl, getMaskedTime, getMaskedUserAgent } from './utils.mjs';
+import {
+  cleanurl, getMaskedTime, getMaskedUserAgent, getSubsystem,
+} from './utils.mjs';
 
 export class CoralogixLogger {
   constructor(req) {
-    this.subsystemName = 'undefined';
+    this.subsystemName = getSubsystem(req);
     this.req = req;
-
-    if (req.headers.get('x-forwarded-host')) {
-      this.subsystemName = (req.headers.get('x-forwarded-host') || '').split(',')[0].trim();
-    } else if (req.headers.get('host')) {
-      this.subsystemName = req.headers.get('host');
-    }
     this.start = Math.floor(Date.now());
     this.req = req;
     // eslint-disable-next-line: no-console
@@ -29,17 +25,28 @@ export class CoralogixLogger {
     this.logger = new Logger('Coralogix');
   }
 
-  logRUM(json, id, weight, referer, generation, checkpoint, target, source, timePadding) {
+  logRUM(
+    json,
+    id,
+    weight,
+    referer,
+    generation,
+    checkpoint,
+    target,
+    source,
+    timePadding,
+    now = Date.now(),
+  ) {
     console.log(`logging to Coralogix: ${typeof this.logger}`);
     const maskedNow = getMaskedTime(timePadding);
-    console.log('at least I know the time');
 
     const data = {
-      timestamp: maskedNow,
+      timestamp: now,
       applicationName: 'helix-rum-collector',
       subsystemName: this.subsystemName,
       severity: checkpoint === 'error' ? 5 : 3,
-      json: {
+      // Coralogix recommends using a string for the text field, even though JSON could be used
+      text: JSON.stringify({
         edgecompute: {
           url: this.req.url,
         },
@@ -48,12 +55,12 @@ export class CoralogixLogger {
         },
         time: {
           start_msec: maskedNow,
-          elapsed: Math.floor(Date.now()) - this.start,
+          elapsed: Math.floor(now) - this.start,
         },
         request: {
           id,
           method: this.req.method,
-          user_agent: getMaskedUserAgent(this.req.headers.get('user-agent')),
+          user_agent: this.req.headers.get('user-agent'),
         },
         rum: {
           generation,
@@ -61,9 +68,10 @@ export class CoralogixLogger {
           target: cleanurl(target),
           source: cleanurl(source),
           weight,
+          user_agent: getMaskedUserAgent(this.req.headers),
           ...json,
         },
-      },
+      }),
     };
     console.log('ready to log (coralogix)');
     // console.log(JSON.stringify(data));

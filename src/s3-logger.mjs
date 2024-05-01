@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 Adobe. All rights reserved.
+ * Copyright 2024 Adobe. All rights reserved.
  * This file is licensed to you under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License. You may obtain a copy
  * of the License at http://www.apache.org/licenses/LICENSE-2.0
@@ -14,17 +14,17 @@ import {
   cleanurl, getMaskedTime, getMaskedUserAgent, getSubsystem,
 } from './utils.mjs';
 
-export class GoogleLogger {
+export class S3Logger {
   constructor(req) {
     this.subsystemName = getSubsystem(req);
     this.req = req;
     this.start = Math.floor(Date.now());
     this.req = req;
-    this.clusterlogger = new Logger('BigQuery-Clustered');
+    this.logger = new Logger('S3');
   }
 
   logRUM(json, id, weight, referer, generation, checkpoint, target, source, timePadding) {
-    console.log('logging to Google');
+    console.log('logging to S3');
     const now = getMaskedTime(timePadding);
 
     const data = {
@@ -42,24 +42,6 @@ export class GoogleLogger {
       ...json,
     };
 
-    const hn = (url) => {
-      try {
-        return (new URL(url)).hostname;
-      } catch (e) {
-        if (this.req.headers.has('referer')) {
-          return new URL(this.req.headers.get('referer')).hostname;
-        }
-        return new URL(this.req.url).hostname;
-      }
-    };
-
-    const clusterdata = {
-      ...data,
-      time: now / 1000, // the cluster table uses TIMESTAMP for time, so that it can be partitioned
-      hostname: hn(data.url), // the cluster table uses hostname for clustering
-      url: cleanurl(data.url),
-    };
-
-    this.clusterlogger.log(JSON.stringify(clusterdata));
+    this.logger.log(JSON.stringify(data));
   }
 }

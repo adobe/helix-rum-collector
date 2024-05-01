@@ -1,3 +1,165 @@
+# [2.16.0](https://github.com/adobe/helix-rum-collector/compare/v2.15.1...v2.16.0) (2024-04-24)
+
+
+### Features
+
+* **bots:** add advanced bot detection ([ee67901](https://github.com/adobe/helix-rum-collector/commit/ee67901443480d23a7cc0cad9f86f0d9eae2c03d))
+
+## [2.15.1](https://github.com/adobe/helix-rum-collector/compare/v2.15.0...v2.15.1) (2024-04-19)
+
+
+### Bug Fixes
+
+* **utils:** old android is mobile ([7326f1e](https://github.com/adobe/helix-rum-collector/commit/7326f1ed5d05cdd4084e6850733d9d69cb5bde9b))
+
+# [2.15.0](https://github.com/adobe/helix-rum-collector/compare/v2.14.0...v2.15.0) (2024-04-19)
+
+
+### Features
+
+* trigger release ([520dd7c](https://github.com/adobe/helix-rum-collector/commit/520dd7c4a63ef1b3071e0f6ecfcdc33d6ed54e9e))
+
+# [2.14.0](https://github.com/adobe/helix-rum-collector/compare/v2.13.0...v2.14.0) (2024-04-18)
+
+
+### Features
+
+* trigger release ([7d8ea1d](https://github.com/adobe/helix-rum-collector/commit/7d8ea1d566d2a908237f910e029e8a09bc22ee89))
+
+# [2.13.0](https://github.com/adobe/helix-rum-collector/compare/v2.12.0...v2.13.0) (2024-04-18)
+
+
+### Bug Fixes
+
+* adjust test ([1237893](https://github.com/adobe/helix-rum-collector/commit/12378939b8d6c88c1f4e15e1945479ce0aa1d590))
+
+
+### Features
+
+* enhance Coralogix logs ([#304](https://github.com/adobe/helix-rum-collector/issues/304)) ([df7e161](https://github.com/adobe/helix-rum-collector/commit/df7e161a1b1d9d1ca7e3b9f6ffadd3f71e1ea120))
+
+# [2.12.0](https://github.com/adobe/helix-rum-collector/compare/v2.11.0...v2.12.0) (2024-04-16)
+
+
+### Features
+
+* **utils:** detect mobile and desktop operating system ([5aa21dc](https://github.com/adobe/helix-rum-collector/commit/5aa21dc816bd68eb7264db525e3c2d1ec8330f9e))
+* **utils:** detect more bots ([db59202](https://github.com/adobe/helix-rum-collector/commit/db59202bb4fa9ca8a9be037872c907f2f75d72dd))
+* **utils:** detect more bots ([287edcc](https://github.com/adobe/helix-rum-collector/commit/287edcc34b3284c20fbf603d28a98657fcb506ed))
+
+# [2.11.0](https://github.com/adobe/helix-rum-collector/compare/v2.10.1...v2.11.0) (2024-04-16)
+
+
+### Features
+
+* **coralogix:** log full user agent if it is not normalized ([3f08ad5](https://github.com/adobe/helix-rum-collector/commit/3f08ad5e4471b25aa9f46ce3c6a0e4a5ddfbd097))
+
+## [2.10.1](https://github.com/adobe/helix-rum-collector/compare/v2.10.0...v2.10.1) (2024-04-16)
+
+
+### Bug Fixes
+
+* **index:** return 200 ([21ac92d](https://github.com/adobe/helix-rum-collector/commit/21ac92d66cb6c4654545ac63599c78011f2fa1b8))
+* **index:** run options before everything ([63802d5](https://github.com/adobe/helix-rum-collector/commit/63802d5e4f30880f519dbdc4958d8cd507899725))
+* **index:** run options before everything ([ea4a06c](https://github.com/adobe/helix-rum-collector/commit/ea4a06c40c93e03ff8ed5602b77a6138130ee890))
+* **index:** support OPTIONS requests for CORS ([978fcc3](https://github.com/adobe/helix-rum-collector/commit/978fcc3b3f57282976efe1b996538b48cb5bd25e))
+* **options:** don't return a body ([df5f2c6](https://github.com/adobe/helix-rum-collector/commit/df5f2c680a150562bdb5be4439990708ff5309ee))
+
+# [2.10.0](https://github.com/adobe/helix-rum-collector/compare/v2.9.1...v2.10.0) (2024-03-20)
+
+
+### Bug Fixes
+
+* add s3 log endpoint ([4602d7d](https://github.com/adobe/helix-rum-collector/commit/4602d7d8e910dd3037cbc7334946ce741b7414de))
+
+
+### Features
+
+* **logger:** add S3 log target for (experimental) rum-bundler ([7548d43](https://github.com/adobe/helix-rum-collector/commit/7548d43c498aa1f205056ee15dd6744c9c6dc415))
+
+## [2.9.1](https://github.com/adobe/helix-rum-collector/compare/v2.9.0...v2.9.1) (2024-03-20)
+
+
+### Bug Fixes
+
+* **logger:** support CloudFront-specific user-agent headers ([#288](https://github.com/adobe/helix-rum-collector/issues/288)) ([cdfbbf1](https://github.com/adobe/helix-rum-collector/commit/cdfbbf191c1aca8da34ec0b37135a190cc0e040c))
+
+# [2.9.0](https://github.com/adobe/helix-rum-collector/compare/v2.8.0...v2.9.0) (2024-02-15)
+
+
+### Bug Fixes
+
+* **coralogix:** adjust error logger message format, too ([866dfbc](https://github.com/adobe/helix-rum-collector/commit/866dfbc9e65c4965243016099ad43f44bbc5df57))
+
+
+### Features
+
+* **coralogix:** support log format for new ingress endpoint in coralogix ([391b0b2](https://github.com/adobe/helix-rum-collector/commit/391b0b2e2af1d0cc6ce54d285daa6ab6a56e3411))
+
+# [2.8.0](https://github.com/adobe/helix-rum-collector/compare/v2.7.0...v2.8.0) (2024-01-22)
+
+
+### Features
+
+* **utils:** Evaluate x-adobe-routing if set ([897875a](https://github.com/adobe/helix-rum-collector/commit/897875abaaf6a7778db4be14bd071fee09d606ac))
+* **utils:** Evaluate x-adobe-routing if set ([f38ad82](https://github.com/adobe/helix-rum-collector/commit/f38ad823aa171f33cdaaeaa9a012dd5198f26868))
+
+# [2.7.0](https://github.com/adobe/helix-rum-collector/compare/v2.6.0...v2.7.0) (2024-01-17)
+
+
+### Features
+
+* **utils:** Update extraction of hostname from X-Forwarded-Host to favour AEM hostname ([#256](https://github.com/adobe/helix-rum-collector/issues/256)) ([b233bdd](https://github.com/adobe/helix-rum-collector/commit/b233bdda3d8a8c3ab39064aca2a922c473b07098)), closes [#255](https://github.com/adobe/helix-rum-collector/issues/255)
+
+# [2.6.0](https://github.com/adobe/helix-rum-collector/compare/v2.5.0...v2.6.0) (2024-01-08)
+
+
+### Features
+
+* **cloudflare:** rum collector available on cloudflare ([abd87cd](https://github.com/adobe/helix-rum-collector/commit/abd87cd784cdf8836dee140f9fc17f1e36fa9845))
+
+# [2.5.0](https://github.com/adobe/helix-rum-collector/compare/v2.4.0...v2.5.0) (2023-11-29)
+
+
+### Features
+
+* **cloudflare:** Support Cloudflare Logging ([#236](https://github.com/adobe/helix-rum-collector/issues/236)) ([310f8ef](https://github.com/adobe/helix-rum-collector/commit/310f8ef7114a0dadd8158e1367e398e72bd91c03)), closes [#230](https://github.com/adobe/helix-rum-collector/issues/230)
+
+# [2.4.0](https://github.com/adobe/helix-rum-collector/compare/v2.3.0...v2.4.0) (2023-11-29)
+
+
+### Features
+
+* **utils:** detect bots and spiders based on IAB list ([b4a6cfa](https://github.com/adobe/helix-rum-collector/commit/b4a6cfa13313507e7499a4c15f7b441b41b27389))
+
+# [2.3.0](https://github.com/adobe/helix-rum-collector/compare/v2.2.5...v2.3.0) (2023-11-23)
+
+
+### Features
+
+* **context:** expose context to main method ([#233](https://github.com/adobe/helix-rum-collector/issues/233)) ([f170ac1](https://github.com/adobe/helix-rum-collector/commit/f170ac14cd2146ea588335fbab84f45e6964790c)), closes [#232](https://github.com/adobe/helix-rum-collector/issues/232)
+
+## [2.2.5](https://github.com/adobe/helix-rum-collector/compare/v2.2.4...v2.2.5) (2023-11-16)
+
+
+### Bug Fixes
+
+* **fastly:** Dummy commit to trigger a release ([#228](https://github.com/adobe/helix-rum-collector/issues/228)) ([59b976e](https://github.com/adobe/helix-rum-collector/commit/59b976edc11cff502540a1e8d4a401924930d706))
+
+## [2.2.4](https://github.com/adobe/helix-rum-collector/compare/v2.2.3...v2.2.4) (2023-11-09)
+
+
+### Bug Fixes
+
+* **log:** Limit time-padding value to 1 day ([#226](https://github.com/adobe/helix-rum-collector/issues/226)) ([2827c08](https://github.com/adobe/helix-rum-collector/commit/2827c0838ad0fc7e65e75a61e9591126e7250c8a)), closes [#225](https://github.com/adobe/helix-rum-collector/issues/225)
+
+## [2.2.3](https://github.com/adobe/helix-rum-collector/compare/v2.2.2...v2.2.3) (2023-10-03)
+
+
+### Bug Fixes
+
+* **unpkg:** only perform GENERATION rewriting for old versions that still have generation support ([fea4cab](https://github.com/adobe/helix-rum-collector/commit/fea4cabded35ac89a334fde26c7b4e48e9d9c912))
+
 ## [2.2.2](https://github.com/adobe/helix-rum-collector/compare/v2.2.1...v2.2.2) (2023-09-21)
 
 

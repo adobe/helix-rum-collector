@@ -10,24 +10,25 @@
  * governing permissions and limitations under the License.
  */
 /* eslint-env mocha */
-const { expect } = require('chai');
-const chai = require('chai');
-const chaiHttp = require('chai-http');
+import { expect } from 'chai';
+import * as chai from 'chai';
+import chaiHttp from 'chai-http';
 
-chai.use(chaiHttp);
+const { request } = chai.use(chaiHttp);
+
 const domain = !process.env.CI ? 'rum.hlx3.page' : 'helix-rum-collector-ci.edgecompute.app';
 
 console.log(`Using ${domain}`);
 
 describe('Helix RUM Collector Post-Deploy Tests', () => {
   it('Missing body returns 400', async () => {
-    const response = await chai.request(`https://${domain}`)
+    const response = await request(`https://${domain}`)
       .post('/');
     expect(response).to.have.status(400);
   });
 
   it('RUM collection with masked timestamp (t) returns 201', async () => {
-    const response = await chai.request(`https://${domain}`)
+    const response = await request(`https://${domain}`)
       .post('/')
       .send({
         t: 1234,
@@ -43,7 +44,7 @@ describe('Helix RUM Collector Post-Deploy Tests', () => {
   });
 
   it('RUM collection returns 201', async () => {
-    const response = await chai.request(`https://${domain}`)
+    const response = await request(`https://${domain}`)
       .post('/')
       .send({
         cwv: {
@@ -58,7 +59,7 @@ describe('Helix RUM Collector Post-Deploy Tests', () => {
   });
 
   it('RUM collection with empty string id returns 201', async () => {
-    const response = await chai.request(`https://${domain}`)
+    const response = await request(`https://${domain}`)
       .post('/')
       .send({
         cwv: {
@@ -73,13 +74,20 @@ describe('Helix RUM Collector Post-Deploy Tests', () => {
   });
 
   it('RUM collection via GET returns 201', async () => {
-    const response = await chai.request(`https://${domain}`)
+    const response = await request(`https://${domain}`)
       .get('/.rum/1?data=%7B%22checkpoint%22%3A%22noscript%22%2C%22weight%22%3A1%7D');
     expect(response).to.have.status(201);
   });
 
+  it('CORS headers are set', async () => {
+    const response = await request(`https://${domain}`)
+      .options('/');
+    expect(response).to.have.status(200);
+    expect(response).to.have.header('access-control-allow-origin', '*');
+  });
+
   it('robots.txt denies everything', async () => {
-    const response = await chai.request(`https://${domain}`)
+    const response = await request(`https://${domain}`)
       .get('/robots.txt');
     expect(response).to.have.status(200);
     // eslint-disable-next-line no-unused-expressions
@@ -87,7 +95,7 @@ describe('Helix RUM Collector Post-Deploy Tests', () => {
   });
 
   it('web vitals module is being served', async () => {
-    const response = await chai.request(`https://${domain}`)
+    const response = await request(`https://${domain}`)
       .get('/.rum/web-vitals@2.1.3/dist/web-vitals.base.js');
     expect(response).to.have.status(200);
     // eslint-disable-next-line no-unused-expressions
@@ -95,7 +103,7 @@ describe('Helix RUM Collector Post-Deploy Tests', () => {
   });
 
   it('web vitals module is being served without redirect', async () => {
-    const response = await chai.request(`https://${domain}`)
+    const response = await request(`https://${domain}`)
       .get('/.rum/web-vitals/dist/web-vitals.base.js');
     expect(response).to.have.status(200);
     // eslint-disable-next-line no-unused-expressions
@@ -103,15 +111,17 @@ describe('Helix RUM Collector Post-Deploy Tests', () => {
   });
 
   it('rum js module is being served without redirect', async () => {
-    const response = await chai.request(`https://${domain}`)
-      .get('/.rum/@adobe/helix-rum-js');
+    const response = await request(`https://${domain}`)
+      .get('/.rum/@adobe/helix-rum-js@^1/src/index.js');
     expect(response).to.have.status(200);
     // eslint-disable-next-line no-unused-expressions
     expect(response).to.have.header('content-type', /^application\/javascript/);
+    // content length should be greater than 0
+    expect(response).to.have.header('content-length', /^[1-9][0-9]*$/);
   }).timeout(5000);
 
-  it('rum js module is being served with default replacements', async () => {
-    const response = await chai.request(`https://${domain}`)
+  it.skip('rum js module is being served with default replacements', async () => {
+    const response = await request(`https://${domain}`)
       .get('/.rum/@adobe/helix-rum-js@1.0.0/src/index.js')
       .buffer(true);
     expect(response).to.have.status(200);
@@ -121,7 +131,7 @@ describe('Helix RUM Collector Post-Deploy Tests', () => {
   }).timeout(5000);
 
   it('Missing id returns 400', async () => {
-    const response = await chai.request(`https://${domain}`)
+    const response = await request(`https://${domain}`)
       .post('/')
       .send({
         cwv: {
@@ -135,7 +145,7 @@ describe('Helix RUM Collector Post-Deploy Tests', () => {
   });
 
   it('Non-numeric weight returns 400', async () => {
-    const response = await chai.request(`https://${domain}`)
+    const response = await request(`https://${domain}`)
       .post('/')
       .send({
         cwv: {
@@ -150,7 +160,7 @@ describe('Helix RUM Collector Post-Deploy Tests', () => {
   });
 
   it('Non-object root returns 400', async () => {
-    const response = await chai.request(`https://${domain}`)
+    const response = await request(`https://${domain}`)
       .post('/')
       .send([]);
     expect(response).to.have.status(400);

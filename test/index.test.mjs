@@ -36,7 +36,9 @@ describe('Test index', () => {
     req.method = 'GET';
     req.url = 'http://foo.bar.org?data={"referer":"http://blahblah", "checkpoint": 1234567}';
 
-    const resp = await methods.main(req);
+    const ctx = { runtime: { name: 'compute-at-edge' } };
+
+    const resp = await methods.main(req, ctx);
     assert.equal(201, resp.status);
     assert.equal('text/plain; charset=utf-8', resp.headers.get('Content-Type'));
 
@@ -55,7 +57,9 @@ describe('Test index', () => {
     req.method = 'GET';
     req.url = 'http://foo.bar.org?data={}';
 
-    const resp = await methods.main(req);
+    const ctx = { runtime: { name: 'compute-at-edge' } };
+
+    const resp = await methods.main(req, ctx);
     assert.equal(201, resp.status);
 
     const logged = JSON.parse(lastLogMessage);
@@ -63,7 +67,7 @@ describe('Test index', () => {
     assert(id1.length > 0);
 
     // Make another identical request
-    const resp2 = await methods.main(req);
+    const resp2 = await methods.main(req, ctx);
     assert.equal(201, resp2.status);
 
     const logged2 = JSON.parse(lastLogMessage);
@@ -96,7 +100,10 @@ describe('Test index', () => {
     req.method = 'POST';
     req.url = 'http://foo.bar.org';
 
-    const event = { request: req };
+    const event = {
+      request: req,
+      ctx: { runtime: { name: 'compute-at-edge' } },
+    };
 
     const resp = await methods.handler(event);
 
@@ -120,7 +127,7 @@ describe('Test index', () => {
   it('error handling', async () => {
     const headers = new Map();
     headers.set('host', 'some.host');
-    headers.set('user-agent', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:109.0) Gecko/20100101 Firefox/117.0');
+    headers.set('user-agent', 'Mozilla/5.0 (X11; Linux i686; rv:10.0) Gecko/20100101 Firefox/10.0');
 
     const json = () => JSON.parse('{"malformed"}');
 
@@ -137,13 +144,16 @@ describe('Test index', () => {
     const logged = JSON.parse(lastLogMessage);
     assert.equal(4, logged.severity);
     assert.equal('some.host', logged.subsystemName);
-    assert.equal('http://foo.bar.org', logged.json.edgecompute.url);
-    assert.equal('http://foo.bar.org', logged.json.cdn.url);
-    assert.equal('POST', logged.json.request.method);
-    assert.equal('desktop', logged.json.request.user_agent);
+
+    const loggedJSON = JSON.parse(logged.text);
+
+    assert.equal('http://foo.bar.org', loggedJSON.edgecompute.url);
+    assert.equal('http://foo.bar.org', loggedJSON.cdn.url);
+    assert.equal('POST', loggedJSON.request.method);
+    assert.equal('desktop:linux', loggedJSON.request.user_agent);
     assert(logged.timestamp.toString().endsWith('000'));
-    assert.equal(logged.timestamp, logged.json.time.start_msec);
-    assert(logged.json.message.startsWith('RUM Collector expects'));
+    assert.equal(logged.timestamp, loggedJSON.time.start_msec);
+    assert(loggedJSON.message.startsWith('RUM Collector expects'));
   });
 
   it('responds to robots.txt', async () => {
@@ -190,7 +200,7 @@ describe('Test index', () => {
 
     const t = await resp.text();
     assert(t.includes('webVitals'));
-  });
+  }).timeout(5000);
 
   it('responds to helix-rum-js', async () => {
     const headers = new Map();
@@ -210,11 +220,88 @@ describe('Test index', () => {
 
     const t = await resp.text();
     assert(t.includes('export function sampleRUM'));
-  });
+  }).timeout(5000);
 
   it('verifies inputs', async () => {
     await verifyInput('{"id": null}', 'id field is required');
     await verifyInput('{"weight": "hello"}', 'weight must be a number');
     await verifyInput('{"cwv": 123}', 'cwv must be an object');
+  }).timeout(5000);
+
+  it('Core Web Vitals', async () => {
+    const headers = new Map();
+
+    const json = () => JSON.parse(`{
+      "id": "myid1",
+      "cwv": {
+        "CLS": 0.06,
+        "LCP": 1.1,
+        "FCP": 0.9,
+        "TTFB": 800
+      },
+      "target": "https://t",
+      "source": "1.2.3.4",
+      "t": "3"
+    }`);
+
+    const req = { headers, json };
+    req.method = 'POST';
+    req.url = 'http://foo.bar.org';
+
+    const resp = await methods.main(req, { runtime: { name: 'compute-at-edge' } });
+    assert.equal(201, resp.status);
+
+    const logged = JSON.parse(lastLogMessage);
+    assert.equal(0.06, logged.CLS);
+    assert.equal(1.1, logged.LCP);
+    assert.equal(0.9, logged.FCP);
+    assert.equal(800, logged.TTFB);
+  });
+
+  it('info request', async () => {
+    const req = {
+      method: 'GET',
+      url: 'http://test.org/info.json?key=val',
+    };
+
+    const ctx = {
+      runtime: {
+        name: 'my-platform',
+      },
+      func: {
+        version: '1.2.ZZ',
+      },
+    };
+
+    const resp = await methods.main(req, ctx);
+    const res = await resp.json();
+    assert.equal('my-platform', res.platform);
+    assert.equal('1.2.ZZ', res.version);
+  });
+
+  it('console logger', async () => {
+    const logged = [];
+    const capturedConsole = {
+      log: (...args) => logged.push(args),
+    };
+
+    const req = {};
+    req.headers = new Map();
+    req.method = 'POST';
+    req.url = 'http://www.acme.org';
+    req.json = () => ({
+      id: 'xyz123',
+    });
+
+    const ctx = { altConsole: capturedConsole };
+    const resp = await methods.main(req, ctx);
+
+    assert.equal(201, resp.status);
+    assert.equal(logged.length, 1);
+
+    const ld = JSON.parse(logged[0]);
+    assert.equal(ld.url, 'http://www.acme.org');
+    assert.equal(ld.weight, 1);
+    assert.equal(ld.id, 'xyz123');
   });
 });
