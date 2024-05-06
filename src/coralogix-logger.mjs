@@ -25,13 +25,23 @@ export class CoralogixLogger {
     this.logger = new Logger('Coralogix');
   }
 
-  logRUM(json, id, weight, referer, generation, checkpoint, target, source, timePadding) {
+  logRUM(
+    json,
+    id,
+    weight,
+    referer,
+    generation,
+    checkpoint,
+    target,
+    source,
+    timePadding,
+    now = Date.now(),
+  ) {
     console.log(`logging to Coralogix: ${typeof this.logger}`);
     const maskedNow = getMaskedTime(timePadding);
-    console.log('at least I know the time');
 
     const data = {
-      timestamp: maskedNow,
+      timestamp: now,
       applicationName: 'helix-rum-collector',
       subsystemName: this.subsystemName,
       severity: checkpoint === 'error' ? 5 : 3,
@@ -45,7 +55,7 @@ export class CoralogixLogger {
         },
         time: {
           start_msec: maskedNow,
-          elapsed: Math.floor(Date.now()) - this.start,
+          elapsed: Math.floor(now) - this.start,
         },
         request: {
           id,
@@ -55,9 +65,7 @@ export class CoralogixLogger {
             // 🤷‍♂️
             x_adobe_routing: this.req.headers.get('x-adobe-routing'),
           },
-          user_agent: getMaskedUserAgent(this.req.headers) === 'undefined'
-            ? this.req.headers.get('user-agent')
-            : getMaskedUserAgent(this.req.headers),
+          user_agent: this.req.headers.get('user-agent'),
         },
         rum: {
           generation,
@@ -65,6 +73,7 @@ export class CoralogixLogger {
           target: cleanurl(target),
           source: cleanurl(source),
           weight,
+          user_agent: getMaskedUserAgent(this.req.headers),
           ...json,
         },
       }),

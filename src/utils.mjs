@@ -11,6 +11,7 @@
  */
 // Pass the current time to facilitate unit testing
 import { isSpider } from './spiders.mjs';
+import { bots } from './bots.mjs';
 
 export function maskTime(time, timePadding) {
   const msPerHour = 3600000;
@@ -80,6 +81,21 @@ function getDesktopOS(userAgent) {
   return '';
 }
 
+/**
+ * Determines the type of bot based on the user agent string. If no bot
+ * type can be determined, the empty string is returned.
+ * @param {string} userAgent the user agent string
+ * @returns {Enumerator('', ':search', ':seo', ':social', ':ai', ':security')} the bot type
+ */
+function getBotType(userAgent) {
+  const type = Object
+    .entries(bots)
+    .find(([, botList]) => (botList
+      .map(({ regex }) => new RegExp(regex, 'i'))
+      .find((re) => re.test(userAgent))));
+  return type ? `:${type[0].toLowerCase()}` : '';
+}
+
 export function getMaskedUserAgent(headers) {
   if (!headers) {
     return 'undefined';
@@ -103,6 +119,7 @@ export function getMaskedUserAgent(headers) {
   const lcUA = userAgent.toLowerCase();
 
   if (lcUA.includes('mobile')
+    || lcUA.includes('android')
     || lcUA.includes('opera mini')) {
     return `mobile${getMobileOS(lcUA)}`;
   }
@@ -115,10 +132,11 @@ export function getMaskedUserAgent(headers) {
     || lcUA.includes('probe')
     || lcUA.includes('axios')
     || lcUA.includes('curl')
+    || lcUA.includes('synthetics')
     || lcUA.includes('+https://')
     || lcUA.includes('+http://')
     || isSpider(lcUA)) {
-    return 'bot';
+    return `bot${getBotType(lcUA)}`;
   }
 
   return `desktop${getDesktopOS(lcUA)}`;

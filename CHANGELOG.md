@@ -1,3 +1,43 @@
+# [2.16.0](https://github.com/adobe/helix-rum-collector/compare/v2.15.1...v2.16.0) (2024-04-24)
+
+
+### Features
+
+* **bots:** add advanced bot detection ([ee67901](https://github.com/adobe/helix-rum-collector/commit/ee67901443480d23a7cc0cad9f86f0d9eae2c03d))
+
+## [2.15.1](https://github.com/adobe/helix-rum-collector/compare/v2.15.0...v2.15.1) (2024-04-19)
+
+
+### Bug Fixes
+
+* **utils:** old android is mobile ([7326f1e](https://github.com/adobe/helix-rum-collector/commit/7326f1ed5d05cdd4084e6850733d9d69cb5bde9b))
+
+# [2.15.0](https://github.com/adobe/helix-rum-collector/compare/v2.14.0...v2.15.0) (2024-04-19)
+
+
+### Features
+
+* trigger release ([520dd7c](https://github.com/adobe/helix-rum-collector/commit/520dd7c4a63ef1b3071e0f6ecfcdc33d6ed54e9e))
+
+# [2.14.0](https://github.com/adobe/helix-rum-collector/compare/v2.13.0...v2.14.0) (2024-04-18)
+
+
+### Features
+
+* trigger release ([7d8ea1d](https://github.com/adobe/helix-rum-collector/commit/7d8ea1d566d2a908237f910e029e8a09bc22ee89))
+
+# [2.13.0](https://github.com/adobe/helix-rum-collector/compare/v2.12.0...v2.13.0) (2024-04-18)
+
+
+### Bug Fixes
+
+* adjust test ([1237893](https://github.com/adobe/helix-rum-collector/commit/12378939b8d6c88c1f4e15e1945479ce0aa1d590))
+
+
+### Features
+
+* enhance Coralogix logs ([#304](https://github.com/adobe/helix-rum-collector/issues/304)) ([df7e161](https://github.com/adobe/helix-rum-collector/commit/df7e161a1b1d9d1ca7e3b9f6ffadd3f71e1ea120))
+
 # [2.12.0](https://github.com/adobe/helix-rum-collector/compare/v2.11.0...v2.12.0) (2024-04-16)
 
 
