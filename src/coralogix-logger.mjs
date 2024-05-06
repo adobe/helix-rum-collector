@@ -60,6 +60,11 @@ export class CoralogixLogger {
         request: {
           id,
           method: this.req.method,
+          headers: {
+            x_forwarded_host: this.req.headers.get('x-forwarded-host'),
+            // 🤷‍♂️
+            x_adobe_routing: this.req.headers.get('x-adobe-routing'),
+          },
           user_agent: this.req.headers.get('user-agent'),
         },
         rum: {

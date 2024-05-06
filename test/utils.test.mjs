@@ -109,8 +109,9 @@ describe('Test Utils', () => {
   });
 
   it('Get Forwarded Host', () => {
-    assert.equal('test.hlx.live', getForwardedHost('www.blah.blah,test.hlx.live'));
-    assert.equal('test.hlx.live', getForwardedHost('www.blah.blah, test.hlx.live, foo.hlx.live '));
+    assert.equal('test--test--test.hlx.live', getForwardedHost('www.blah.blah,test--test--test.hlx.live'));
+    assert.equal('test--the--domain.hlx.live', getForwardedHost('www.blah.blah, test--the--domain.hlx.live, foo.hlx.live '));
+    assert.equal('main--helix-website--adobe.aem.live', getForwardedHost('www.aem.live, main--helix-website--adobe.aem.live'));
     assert.equal('www.blah.blah', getForwardedHost('www.blah.blah,test.hlx.co.uk'));
     assert.equal('www.blah.blah', getForwardedHost(' www.blah.blah '));
     assert.equal('www.foobar.aemcloud.net', getForwardedHost('www.foobar.aemcloud.net'));
