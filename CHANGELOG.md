@@ -1,3 +1,15 @@
+# [2.17.0](https://github.com/adobe/helix-rum-collector/compare/v2.16.0...v2.17.0) (2024-05-06)
+
+
+### Bug Fixes
+
+* **utils:** getForwardedHost should only extract hostnames that match the naming pattern ([a46756f](https://github.com/adobe/helix-rum-collector/commit/a46756fc286e8d076c532597bca1527ec2b0d724))
+
+
+### Features
+
+* **coralogix:** log forwarded host and adobe routing headers ([0b8c54a](https://github.com/adobe/helix-rum-collector/commit/0b8c54abb0641715749f5f3770c6309ba179ef79))
+
 # [2.16.0](https://github.com/adobe/helix-rum-collector/compare/v2.15.1...v2.16.0) (2024-04-24)
 
 
