@@ -45,7 +45,7 @@ describe('Test index', () => {
     const logged = JSON.parse(lastLogMessage);
     assert.equal(1234567, logged.checkpoint);
     assert.equal('http://blahblah/', logged.url);
-    assert.equal('desktop', logged.user_agent);
+    assert.equal('desktop:chromeos', logged.user_agent);
     assert.equal(1, logged.weight);
     assert.equal('somehost', logged.host);
     assert.equal('blahblah', logged.hostname);
