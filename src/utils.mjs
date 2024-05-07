@@ -77,6 +77,8 @@ function getDesktopOS(userAgent) {
     return ':mac';
   } else if (userAgent.includes('linux')) {
     return ':linux';
+  } else if (userAgent.includes('x11; cros')) {
+    return ':chromeos';
   }
   return '';
 }
