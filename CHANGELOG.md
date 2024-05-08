@@ -1,3 +1,10 @@
+# [2.18.0](https://github.com/adobe/helix-rum-collector/compare/v2.17.0...v2.18.0) (2024-05-08)
+
+
+### Features
+
+* **utils:** detect chromeos as desktop operating system ([9943ed3](https://github.com/adobe/helix-rum-collector/commit/9943ed3165c067a32e3d1ed037e875804da61ae2))
+
 # [2.17.0](https://github.com/adobe/helix-rum-collector/compare/v2.16.0...v2.17.0) (2024-05-06)
 
 
