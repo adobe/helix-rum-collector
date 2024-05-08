@@ -77,6 +77,7 @@ describe('Test Utils', () => {
     assert.equal('desktop:windows', getMaskedUserAgent(getUserAgentHeaders('Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/111.0.5563.64 Safari/537.36')));
     assert.equal('desktop:mac', getMaskedUserAgent(getUserAgentHeaders('Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/116.0.0.0 Safari/537.36 Sidekick/6.30.0')));
     assert.equal('desktop:windows', getMaskedUserAgent(getUserAgentHeaders('Opera/12.0(Windows NT 5.2;U;en)Presto/22.9.168 Version/12.00')));
+    assert.equal('desktop:chromeos', getMaskedUserAgent(getUserAgentHeaders('Mozilla/5.0 (X11; CrOS x86_64 14541.0.0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/123.0.0.0 Safari/537.36')));
     assert.equal('desktop', getMaskedUserAgent(getUserAgentHeaders('foobar')));
 
     assert.equal('undefined', getMaskedUserAgent(new Map()));
