@@ -71,4 +71,21 @@ describe('Test Coralogix Logger', () => {
     assert.equal('bar', loggedJSON.rum.foo);
     assert.equal(777, loggedJSON.rum.zoo);
   });
+
+  it('Debug potential bot', () => {
+    const headers = new Map();
+    headers.set('user-agent', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/117.0.0.0 Safari/537.36');
+    headers.set('foo', 'bar');
+
+    const method = 'GET';
+    const url = new URL('http://www.foo.com/testing123');
+
+    const req = { headers, method, url };
+    const cl = new CoralogixLogger(req);
+
+    cl.logRUM({});
+
+    const logged = JSON.parse(lastLogMessage);
+    assert.equal('bar', logged.foo);
+  });
 });

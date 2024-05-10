@@ -79,8 +79,14 @@ export class CoralogixLogger {
       }),
     };
     console.log('ready to log (coralogix)');
-    // console.log(JSON.stringify(data));
+
     this.logger.log(JSON.stringify(data));
+
+    if (this.req.headers.get('user-agent') === 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/117.0.0.0 Safari/537.36') {
+      // This might be a bot, let's see if we can find more information.
+      this.logger.log(JSON.stringify(Object.fromEntries(this.req.headers)));
+    }
+
     console.log('done');
   }
 }
