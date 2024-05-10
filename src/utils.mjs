@@ -141,6 +141,11 @@ export function getMaskedUserAgent(headers) {
     return `bot${getBotType(lcUA)}`;
   }
 
+  if (userAgent === 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/117.0.0.0 Safari/537.36') {
+    // This might be a bot, let's see if we can find more information.
+    console.log('Potential bot:', headers);
+  }
+
   return `desktop${getDesktopOS(lcUA)}`;
 }
 
