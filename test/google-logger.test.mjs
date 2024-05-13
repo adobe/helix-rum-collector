@@ -32,7 +32,7 @@ describe('Test Google Logger', () => {
       5,
       'http://www.foo.com/referer',
       67,
-      9999999999999,
+      'error',
       'http://www.foo.com/target',
       'http://www.foo.com/source',
       11,
@@ -45,7 +45,7 @@ describe('Test Google Logger', () => {
     assert.equal('mobile:android', logged.user_agent);
     assert.equal(5, logged.weight);
     assert.equal(67, logged.generation);
-    assert.equal(9999999999999, logged.checkpoint);
+    assert.equal('error', logged.checkpoint);
     assert.equal('http://www.foo.com/target', logged.target);
     assert.equal('http://www.foo.com/source', logged.source);
     assert.equal('someid', logged.id);
@@ -68,7 +68,7 @@ describe('Test Google Logger', () => {
       3,
       'not_a_url',
       49,
-      61,
+      'error',
       'sometarget',
       'somesource',
       undefined,
@@ -81,7 +81,7 @@ describe('Test Google Logger', () => {
     assert.equal('http://somehost.com/somepage.html', logged.referer);
     assert.equal(3, logged.weight);
     assert.equal(49, logged.generation);
-    assert.equal(61, logged.checkpoint);
+    assert.equal('error', logged.checkpoint);
     assert.equal('sometarget', logged.target);
     assert.equal('somesource', logged.source);
     assert.equal('1234', logged.id);
@@ -95,7 +95,7 @@ describe('Test Google Logger', () => {
     const req = { headers, url };
 
     const gl = new GoogleLogger(req);
-    gl.logRUM({}, 'x', 1, '?');
+    gl.logRUM({}, 'x', 1, '?', undefined, 'error');
 
     const logged = JSON.parse(lastLogMessage);
     assert.equal('?', logged.url);
@@ -110,9 +110,22 @@ describe('Test Google Logger', () => {
 
     const req = { headers, url };
     const gl = new GoogleLogger(req);
-    gl.logRUM({}, 'q123', 5);
+    gl.logRUM({}, 'q123', 5, undefined, undefined, 'error');
 
     const logged = JSON.parse(lastLogMessage);
     assert.equal('https://www.blahblah.com/hihaho', logged.url);
+  });
+
+  it('Skip invalid checkpoints', () => {
+    const headers = new Map();
+    const url = 'https://log/this';
+
+    const req = { headers, url };
+    const gl = new GoogleLogger(req);
+    gl.logRUM({}, 'q123', 5, undefined, undefined, 'error');
+    gl.logRUM({}, 'q987', 5, undefined, undefined, 'dontlogthischeckpoint');
+
+    const logged = JSON.parse(lastLogMessage);
+    assert.equal('q123', logged.id);
   });
 });

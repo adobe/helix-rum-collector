@@ -34,7 +34,7 @@ describe('Test S3 Logger', () => {
       5,
       'http://www.foo.com/referer',
       67,
-      9999999999999,
+      'error',
       'http://www.foo.com/target',
       'http://www.foo.com/source',
       11,
@@ -46,11 +46,24 @@ describe('Test S3 Logger', () => {
     assert.equal(logged.url.toString(), 'http://www.foo.com/referer');
     assert.equal(logged.weight, 5);
     assert.equal(logged.generation, 67);
-    assert.equal(logged.checkpoint, 9999999999999);
+    assert.equal(logged.checkpoint, 'error');
     assert.equal(logged.target.toString(), 'http://www.foo.com/target');
     assert.equal(logged.source.toString(), 'http://www.foo.com/source');
     assert.equal(logged.id, 'someid');
     assert.equal(logged.user_agent, 'desktop:windows');
     assert.deepEqual(logged.foo, ['b', 'ar']);
+  });
+
+  it('Skip invalid checkpoints', () => {
+    const headers = new Map();
+    const url = 'https://log/this';
+
+    const req = { headers, url };
+    const gl = new S3Logger(req);
+    gl.logRUM({}, 'q123', 5, undefined, undefined, 'error');
+    gl.logRUM({}, 'q987', 5, undefined, undefined, 'dontlogthischeckpoint');
+
+    const logged = JSON.parse(lastLogMessage);
+    assert.equal('q123', logged.id);
   });
 });

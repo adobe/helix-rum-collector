@@ -34,7 +34,7 @@ describe('Test index', () => {
 
     const req = { headers };
     req.method = 'GET';
-    req.url = 'http://foo.bar.org?data={"referer":"http://blahblah", "checkpoint": 1234567}';
+    req.url = 'http://foo.bar.org?data={"referer":"http://blahblah", "checkpoint": "error"}';
 
     const ctx = { runtime: { name: 'compute-at-edge' } };
 
@@ -43,7 +43,7 @@ describe('Test index', () => {
     assert.equal('text/plain; charset=utf-8', resp.headers.get('Content-Type'));
 
     const logged = JSON.parse(lastLogMessage);
-    assert.equal(1234567, logged.checkpoint);
+    assert.equal('error', logged.checkpoint);
     assert.equal('http://blahblah/', logged.url);
     assert.equal('desktop:chromeos', logged.user_agent);
     assert.equal(1, logged.weight);
@@ -55,7 +55,7 @@ describe('Test index', () => {
     const headers = new Map();
     const req = { headers };
     req.method = 'GET';
-    req.url = 'http://foo.bar.org?data={}';
+    req.url = 'http://foo.bar.org?data={"checkpoint":"error"}';
 
     const ctx = { runtime: { name: 'compute-at-edge' } };
 
@@ -90,7 +90,7 @@ describe('Test index', () => {
       },
       "referrer": "http://a.b.c",
       "generation": 42,
-      "checkpoint": 1,
+      "checkpoint": "error",
       "target": "https://t",
       "source": "1.2.3.4",
       "t": "3"
@@ -239,6 +239,7 @@ describe('Test index', () => {
         "FCP": 0.9,
         "TTFB": 800
       },
+      "checkpoint": "cwv",
       "target": "https://t",
       "source": "1.2.3.4",
       "t": "3"
