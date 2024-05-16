@@ -42,7 +42,7 @@ function respondError(message, status, e, req) {
 }
 
 function getRandomID() {
-  return Array.from({ length: 75 }, (_, i) => String.fromCharCode(48 + i)).filter((a) => /\d|[A-Z]/i.test(a)).filter(() => Math.random() * 75 > 70).join('');
+  return Math.random().toString(36).slice(-4);
 }
 
 function respondInfo(ctx) {
