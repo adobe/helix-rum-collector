@@ -1,3 +1,10 @@
+## [2.18.1](https://github.com/adobe/helix-rum-collector/compare/v2.18.0...v2.18.1) (2024-05-17)
+
+
+### Bug Fixes
+
+* change random id function ([50a5a5f](https://github.com/adobe/helix-rum-collector/commit/50a5a5f0aceace58076687252dbac23f405a1524))
+
 # [2.18.0](https://github.com/adobe/helix-rum-collector/compare/v2.17.0...v2.18.0) (2024-05-08)
 
 
