@@ -71,7 +71,16 @@ async function transformBody(resp, responseUrl, req) {
 async function cleanupResponse(resp, req) {
   const cleanedResponse = cleanupHeaders(resp);
   try {
-    return await transformBody(cleanedResponse, resp.url, req);
+    if (resp.status < 400) {
+      return await transformBody(cleanedResponse, resp.url, req);
+    }
+    return new Response(`error: ${resp.status}`, {
+      status: resp.status,
+      headers: {
+        'Content-Type': 'text/plain',
+        'x-error': `Error: ${resp.status} from backend`,
+      },
+    });
   } catch (e) {
     console.error(e.message);
   }
