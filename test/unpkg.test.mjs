@@ -46,6 +46,37 @@ describe('Test unpkg handler', () => {
     }
   });
 
+  it('handles web-vitals 404 request', async () => {
+    const req = {};
+    req.url = 'http://foo.bar.org/.rum/web-vitals@0.1.0/error';
+
+    const storedFetch = global.fetch;
+
+    try {
+      // Mock the global fetch function
+      global.fetch = (v, opts) => {
+        assert.equal('unpkg.com', opts.backend);
+        if (v.url === 'https://unpkg.com/web-vitals@0.1.0/error') {
+          const resp = {
+            url: v.url,
+            status: 404,
+          };
+          resp.headers = new Headers();
+          resp.headers.append('xyz', 'abc');
+          return resp;
+        }
+        return undefined;
+      };
+
+      const resp = await respondUnpkg(req);
+
+      assert.equal(404, resp.status);
+      assert.equal('Error: 404 from backend', resp.headers.get('x-error'));
+    } finally {
+      global.fetch = storedFetch;
+    }
+  });
+
   it('handles @adobe/helix-rum request', async () => {
     const req = {};
     req.url = 'http://foo.bar.org/.rum/@adobe/helix-rum-js@^1?generation=42';
