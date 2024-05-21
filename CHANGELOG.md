@@ -1,3 +1,10 @@
+## [2.18.2](https://github.com/adobe/helix-rum-collector/compare/v2.18.1...v2.18.2) (2024-05-21)
+
+
+### Bug Fixes
+
+* **unpkg:** do not serve error responses verbatim ([f6b84d9](https://github.com/adobe/helix-rum-collector/commit/f6b84d90160e967508a02cb41dfa5fe8fac94cbe))
+
 ## [2.18.1](https://github.com/adobe/helix-rum-collector/compare/v2.18.0...v2.18.1) (2024-05-17)
 
 
