@@ -104,7 +104,7 @@ describe('Helix RUM Collector Post-Deploy Tests', () => {
 
   it('web vitals module is being served without redirect', async () => {
     const response = await request(`https://${domain}`)
-      .get('/.rum/web-vitals/dist/web-vitals.base.js');
+      .get('/.rum/web-vitals/dist/web-vitals.iife.js');
     expect(response).to.have.status(200);
     // eslint-disable-next-line no-unused-expressions
     expect(response).to.have.header('content-type', /^application\/javascript/);
