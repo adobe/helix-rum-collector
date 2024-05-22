@@ -18,6 +18,7 @@ import { CoralogixErrorLogger } from './coralogix-error-logger.mjs';
 import { ConsoleLogger } from './console-logger.mjs';
 import { S3Logger } from './s3-logger.mjs';
 import { respondRobots } from './robots.mjs';
+import { respondJsdelivr } from './jsdelivr.mjs';
 import { respondUnpkg } from './unpkg.mjs';
 
 function respondError(message, status, e, req) {
@@ -48,6 +49,7 @@ function getRandomID() {
 function respondInfo(ctx) {
   return new Response(`{"platform": "${ctx?.runtime?.name}", "version": "${ctx?.func?.version}"}`);
 }
+
 export function respondCORS() {
   return new Response('no data collected', {
     headers: {
@@ -58,7 +60,17 @@ export function respondCORS() {
   });
 }
 
+async function responsePackage(req) {
+  const pkgreg = new URL(req.url).searchParams.get('pkgreg');
+  if (pkgreg === 'jsdelivr') {
+    return respondJsdelivr(req);
+  }
+  return respondUnpkg(req);
+}
+
 export async function main(req, ctx) {
+  console.log('*** CTX:', ctx);
+
   if (req.method === 'OPTIONS') {
     return respondCORS();
   }
@@ -70,10 +82,10 @@ export async function main(req, ctx) {
       return respondInfo(ctx);
     }
     if (req.method === 'GET' && new URL(req.url).pathname.startsWith('/.rum/web-vitals')) {
-      return respondUnpkg(req);
+      return responsePackage(req);
     }
     if (req.method === 'GET' && new URL(req.url).pathname.startsWith('/.rum/@adobe/helix-rum')) {
-      return respondUnpkg(req);
+      return responsePackage(req);
     }
     const body = req.method === 'GET'
       ? JSON.parse(new URL(req.url).searchParams.get('data'))
