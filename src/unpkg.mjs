@@ -61,10 +61,14 @@ async function transformBody(resp, responseUrl, req) {
       // compatibility. In the next breaking change we should remove this entirely
       // because it's not needed anymore.
       const text = await resp.text();
+      if (text.length === 0) {
+        return new Response(undefined, { status: 204 });
+      }
       const body = text.replace(/__HELIX_RUM_JS_VERSION__/, generation.replace(/[^a-z0-9_.-]/ig, ''));
       return new Response(body, { headers: resp.headers });
     }
   }
+
   return resp;
 }
 
@@ -90,32 +94,24 @@ async function cleanupResponse(resp, req) {
 export async function respondUnpkg(req) {
   const url = new URL(req.url);
   const paths = url.pathname.split('/');
-  const beurl = new URL(paths.slice(2).join('/'), 'https://unpkg.com');
+  const beurl = new URL(paths.slice(2).join('/'), 'https://fastly.jsdelivr.net/npm/');
   const bereq = new Request(beurl.href);
+  console.log('fetching [1]', bereq.url);
   const beresp = await fetch(bereq, {
-    backend: 'unpkg.com',
+    backend: 'jsdelivr',
+    headers: {
+      'Accept-Encoding': 'identity',
+    },
   });
-  if (beresp.status === 302) {
-    const bereq2 = new Request(new URL(beresp.headers.get('location'), 'https://unpkg.com'));
-    const beresp2 = await fetch(bereq2, {
-      backend: 'unpkg.com',
-    });
+  console.log('fetched  [1] ', bereq.url, beresp.status, beresp.headers.get('ETag'), beresp.headers.get('Age'));
 
-    // override the cache control header
-    beresp2.headers.set('cache-control', beresp.headers.get('cache-control'));
+  const beurl2 = new URL(paths.slice(2).join('/'), 'https://cdn.jsdelivr.net/npm/');
+  const bereq2 = new Request(beurl2.href);
+  console.log('fetching [2]', bereq2.url);
+  const beresp2 = await fetch(bereq2, {
+    backend: 'jsdelivr',
+  });
+  console.log('fetched [2] ', bereq2.url, beresp2.status, beresp2.headers.get('ETag'), beresp2.headers.get('Content-Length'));
 
-    if (beresp2.status === 302) {
-      const bereq3 = new Request(new URL(beresp2.headers.get('location'), 'https://unpkg.com'));
-      const beresp3 = await fetch(bereq3, {
-        backend: 'unpkg.com',
-      });
-
-      // override the cache control header
-      beresp3.headers.set('cache-control', beresp.headers.get('cache-control'));
-
-      return cleanupResponse(beresp3, req);
-    }
-    return cleanupResponse(beresp2, req);
-  }
   return cleanupResponse(beresp, req);
 }
