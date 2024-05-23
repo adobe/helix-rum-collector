@@ -60,17 +60,72 @@ export function respondCORS() {
   });
 }
 
-async function responsePackage(req) {
-  const pkgreg = new URL(req.url).searchParams.get('pkgreg');
-  if (pkgreg === 'jsdelivr') {
+async function getConfigValue(key, ctx) {
+  if (ctx?.runtime?.name === 'compute-at-edge') {
+    const kv = await import('fastly:kv-store');
+    const store = new kv.KVStore('rum-collector-kvstore');
+
+    const entry = await store.get(key);
+    if (entry) {
+      const value = await entry.text();
+      console.log('Obtained from KV store "rum-collector-kvstore" for key', key, '=', value);
+      return value;
+    }
+  }
+  return undefined;
+}
+
+async function setConfigValue(key, value, ctx) {
+  if (ctx?.runtime?.name === 'compute-at-edge') {
+    const kv = await import('fastly:kv-store');
+    const store = new kv.KVStore('rum-collector-kvstore');
+    await store.put(key, value);
+    console.log('Set KV store "rum-collector-kvstore" value for key', key, 'to', value);
+  }
+}
+
+async function flipConfigValue(key, values, ctx) {
+  console.log('Flipping config value for', key, 'from', values.join(','));
+  const curValue = await getConfigValue(key, ctx);
+  const newValue = values.find((v) => v !== curValue);
+  await setConfigValue(key, newValue, ctx);
+  return newValue;
+}
+
+async function respondRegistry(regName, req) {
+  if (regName === 'jsdelivr') {
     return respondJsdelivr(req);
   }
+
+  // Fall back to unpkg
   return respondUnpkg(req);
 }
 
-export async function main(req, ctx) {
-  console.log('*** CTX:', ctx);
+async function respondPackage(req, ctx) {
+  let pkgreg = new URL(req.url).searchParams.get('pkgreg');
 
+  if (!pkgreg) {
+    pkgreg = await getConfigValue('PackageRegistry', ctx);
+  }
+
+  try {
+    let resp = await respondRegistry(pkgreg, req);
+    if (resp.status !== 200) {
+      console.log('Changing registry as its response was', resp.status);
+      const nv = await flipConfigValue('PackageRegistry', ['jsdelivr', 'unpkg'], ctx);
+      resp = await respondRegistry(nv, req);
+    }
+    return resp;
+  } catch (error) {
+    console.log('Contacting registry caused this error', error);
+    console.log('Changing package registry');
+
+    const nv = await flipConfigValue('PackageRegistry', ['jsdelivr', 'unpkg'], ctx);
+    return respondRegistry(nv, req);
+  }
+}
+
+export async function main(req, ctx) {
   if (req.method === 'OPTIONS') {
     return respondCORS();
   }
@@ -82,10 +137,10 @@ export async function main(req, ctx) {
       return respondInfo(ctx);
     }
     if (req.method === 'GET' && new URL(req.url).pathname.startsWith('/.rum/web-vitals')) {
-      return responsePackage(req);
+      return respondPackage(req, ctx);
     }
     if (req.method === 'GET' && new URL(req.url).pathname.startsWith('/.rum/@adobe/helix-rum')) {
-      return responsePackage(req);
+      return respondPackage(req, ctx);
     }
     const body = req.method === 'GET'
       ? JSON.parse(new URL(req.url).searchParams.get('data'))
