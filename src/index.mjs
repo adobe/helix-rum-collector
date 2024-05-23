@@ -21,6 +21,8 @@ import { respondRobots } from './robots.mjs';
 import { respondJsdelivr } from './jsdelivr.mjs';
 import { respondUnpkg } from './unpkg.mjs';
 
+let fastlyKVAPI;
+
 function respondError(message, status, e, req) {
   const headers = new Headers();
   const msg = e && e.message ? `${message}: ${e.message}` : message;
@@ -60,16 +62,27 @@ export function respondCORS() {
   });
 }
 
+async function getFastlyKVAPI() {
+  if (!fastlyKVAPI) {
+    fastlyKVAPI = import('fastly:kv-store');
+  }
+  return fastlyKVAPI;
+}
+
 async function getConfigValue(key, ctx) {
   if (ctx?.runtime?.name === 'compute-at-edge') {
-    const kv = await import('fastly:kv-store');
-    const store = new kv.KVStore('rum-collector-kvstore');
+    try {
+      const kv = await getFastlyKVAPI();
+      const store = new kv.KVStore('rum-collector-kvstore');
 
-    const entry = await store.get(key);
-    if (entry) {
-      const value = await entry.text();
-      console.log('Obtained from KV store "rum-collector-kvstore" for key', key, '=', value);
-      return value;
+      const entry = await store.get(key);
+      if (entry) {
+        const value = await entry.text();
+        console.log('Obtained from KV store "rum-collector-kvstore" for key', key, '=', value);
+        return value;
+      }
+    } catch (error) {
+      console.log('Error getting value from KV store', error);
     }
   }
   return undefined;
@@ -77,10 +90,14 @@ async function getConfigValue(key, ctx) {
 
 async function setConfigValue(key, value, ctx) {
   if (ctx?.runtime?.name === 'compute-at-edge') {
-    const kv = await import('fastly:kv-store');
-    const store = new kv.KVStore('rum-collector-kvstore');
-    await store.put(key, value);
-    console.log('Set KV store "rum-collector-kvstore" value for key', key, 'to', value);
+    try {
+      const kv = await getFastlyKVAPI();
+      const store = new kv.KVStore('rum-collector-kvstore');
+      await store.put(key, value);
+      console.log('Set KV store "rum-collector-kvstore" value for key', key, 'to', value);
+    } catch (error) {
+      console.log('Error setting value in KV store', error);
+    }
   }
 }
 
