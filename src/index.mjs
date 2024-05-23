@@ -21,7 +21,7 @@ import { respondRobots } from './robots.mjs';
 import { respondJsdelivr } from './jsdelivr.mjs';
 import { respondUnpkg } from './unpkg.mjs';
 
-let fastlyKVAPI;
+const PACKAGE_REGISTRIES = ['jsdelivr', 'unpkg'];
 
 function respondError(message, status, e, req) {
   const headers = new Headers();
@@ -62,54 +62,17 @@ export function respondCORS() {
   });
 }
 
-async function getFastlyKVAPI() {
-  if (!fastlyKVAPI) {
-    fastlyKVAPI = import('fastly:kv-store');
-  }
-  return fastlyKVAPI;
+function randomZeroOrOne() {
+  return (Math.random() >= 0.5) ? 1 : 0;
 }
 
-async function getConfigValue(key, ctx) {
-  if (ctx?.runtime?.name === 'compute-at-edge') {
-    try {
-      const kv = await getFastlyKVAPI();
-      const store = new kv.KVStore('rum-collector-kvstore');
-
-      const entry = await store.get(key);
-      if (entry) {
-        const value = await entry.text();
-        console.log('Obtained from KV store "rum-collector-kvstore" for key', key, '=', value);
-        return value;
-      }
-    } catch (error) {
-      console.log('Error getting value from KV store', error);
-    }
-  }
-  return undefined;
-}
-
-async function setConfigValue(key, value, ctx) {
-  if (ctx?.runtime?.name === 'compute-at-edge') {
-    try {
-      const kv = await getFastlyKVAPI();
-      const store = new kv.KVStore('rum-collector-kvstore');
-      await store.put(key, value);
-      console.log('Set KV store "rum-collector-kvstore" value for key', key, 'to', value);
-    } catch (error) {
-      console.log('Error setting value in KV store', error);
-    }
-  }
-}
-
-async function flipConfigValue(key, values, ctx) {
-  console.log('Flipping config value for', key, 'from', values.join(','));
-  const curValue = await getConfigValue(key, ctx);
-  const newValue = values.find((v) => v !== curValue);
-  await setConfigValue(key, newValue, ctx);
-  return newValue;
+function getOtherPackageRegistry(regName) {
+  return regName === PACKAGE_REGISTRIES[0] ? PACKAGE_REGISTRIES[1] : PACKAGE_REGISTRIES[0];
 }
 
 async function respondRegistry(regName, req) {
+  console.log('Using package registry', regName);
+
   if (regName === 'jsdelivr') {
     return respondJsdelivr(req);
   }
@@ -118,27 +81,25 @@ async function respondRegistry(regName, req) {
   return respondUnpkg(req);
 }
 
-async function respondPackage(req, ctx) {
+async function respondPackage(req) {
   let pkgreg = new URL(req.url).searchParams.get('pkgreg');
 
   if (!pkgreg) {
-    pkgreg = await getConfigValue('PackageRegistry', ctx);
+    pkgreg = PACKAGE_REGISTRIES[randomZeroOrOne()];
   }
 
   try {
     let resp = await respondRegistry(pkgreg, req);
     if (resp.status !== 200) {
       console.log('Changing registry as its response was', resp.status);
-      const nv = await flipConfigValue('PackageRegistry', ['jsdelivr', 'unpkg'], ctx);
-      resp = await respondRegistry(nv, req);
+      resp = await respondRegistry(getOtherPackageRegistry(pkgreg), req);
     }
     return resp;
   } catch (error) {
     console.log('Contacting registry caused this error', error);
     console.log('Changing package registry');
 
-    const nv = await flipConfigValue('PackageRegistry', ['jsdelivr', 'unpkg'], ctx);
-    return respondRegistry(nv, req);
+    return respondRegistry(getOtherPackageRegistry(pkgreg), req);
   }
 }
 
