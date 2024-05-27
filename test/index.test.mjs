@@ -11,6 +11,7 @@
  */
 /* eslint-env mocha */
 import assert from 'assert';
+import esmock from 'esmock';
 import { lastLogMessage } from '../src/logger.mjs';
 
 const methods = {};
@@ -222,6 +223,49 @@ describe('Test index', () => {
     assert(t.includes('export function sampleRUM'));
   }).timeout(5000);
 
+  it('Retry with another package registry', async () => {
+    const mockUnpkg = () => ({ status: 500 });
+    const { main } = await esmock('../src/index.mjs', {
+      '../src/unpkg.mjs': {
+        respondUnpkg: mockUnpkg,
+      },
+    });
+    const headers = new Map();
+
+    const req = { headers };
+    req.method = 'GET';
+    req.url = 'http://x.y/.rum/web-vitals?pkgreg=unpkg';
+
+    const resp = await main(req);
+
+    assert.equal(200, resp.status);
+    assert(resp.ok);
+
+    const t = await resp.text();
+    assert(t.includes('webVitals'));
+  });
+
+  it('Retry with another package registry after exception', async () => {
+    const { main } = await esmock('../src/index.mjs', {
+      '../src/jsdelivr.mjs': {
+        respondJsdelivr: () => { throw new Error('boom'); },
+      },
+    });
+    const headers = new Map();
+
+    const req = { headers };
+    req.method = 'GET';
+    req.url = 'http://x.y/.rum/@adobe/helix-rum-js@^1?pkgreg=jsdelivr';
+
+    const resp = await main(req);
+
+    assert.equal(200, resp.status);
+    assert(resp.ok);
+
+    const t = await resp.text();
+    assert(t.includes('export function sampleRUM'));
+  });
+
   it('verifies inputs', async () => {
     await verifyInput('{"id": null}', 'id field is required');
     await verifyInput('{"weight": "hello"}', 'weight must be a number');
@@ -303,5 +347,11 @@ describe('Test index', () => {
     assert.equal(ld.url, 'http://www.acme.org');
     assert.equal(ld.weight, 1);
     assert.equal(ld.id, 'xyz123');
+  });
+
+  it('get other package registry', async () => {
+    assert.equal('jsdelivr', methods.getOtherPackageRegistry('unpkg'));
+    assert.equal('unpkg', methods.getOtherPackageRegistry('jsdelivr'));
+    assert.equal('unpkg', methods.getOtherPackageRegistry('foobar'));
   });
 });

@@ -13,6 +13,9 @@
 
 // Headers removed by cleanupHeaders()
 const removedHeaders = [
+  'cf-cache-status',
+  'cf-ray',
+  'server',
   'x-jsd-version',
   'x-jsd-version-type',
   'x-served-by',

@@ -66,8 +66,8 @@ function randomZeroOrOne() {
   return (Math.random() >= 0.5) ? 1 : 0;
 }
 
-function getOtherPackageRegistry(regName) {
-  return regName === PACKAGE_REGISTRIES[0] ? PACKAGE_REGISTRIES[1] : PACKAGE_REGISTRIES[0];
+export function getOtherPackageRegistry(regName) {
+  return regName === PACKAGE_REGISTRIES[1] ? PACKAGE_REGISTRIES[0] : PACKAGE_REGISTRIES[1];
 }
 
 async function respondRegistry(regName, req) {
@@ -115,10 +115,10 @@ export async function main(req, ctx) {
       return respondInfo(ctx);
     }
     if (req.method === 'GET' && new URL(req.url).pathname.startsWith('/.rum/web-vitals')) {
-      return respondPackage(req, ctx);
+      return respondPackage(req);
     }
     if (req.method === 'GET' && new URL(req.url).pathname.startsWith('/.rum/@adobe/helix-rum')) {
-      return respondPackage(req, ctx);
+      return respondPackage(req);
     }
     const body = req.method === 'GET'
       ? JSON.parse(new URL(req.url).searchParams.get('data'))
