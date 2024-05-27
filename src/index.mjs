@@ -62,12 +62,12 @@ export function respondCORS() {
   });
 }
 
-function randomZeroOrOne() {
-  return (Math.random() >= 0.5) ? 1 : 0;
+function randomPackageRegistry() {
+  return PACKAGE_REGISTRIES[Math.floor(Math.random() * (PACKAGE_REGISTRIES.length))];
 }
 
 export function getOtherPackageRegistry(regName) {
-  return regName === PACKAGE_REGISTRIES[1] ? PACKAGE_REGISTRIES[0] : PACKAGE_REGISTRIES[1];
+  return PACKAGE_REGISTRIES[(PACKAGE_REGISTRIES.length - 1) - PACKAGE_REGISTRIES.indexOf(regName)];
 }
 
 async function respondRegistry(regName, req) {
@@ -77,7 +77,6 @@ async function respondRegistry(regName, req) {
     return respondJsdelivr(req);
   }
 
-  // Fall back to unpkg
   return respondUnpkg(req);
 }
 
@@ -85,7 +84,7 @@ async function respondPackage(req) {
   let pkgreg = new URL(req.url).searchParams.get('pkgreg');
 
   if (!pkgreg) {
-    pkgreg = PACKAGE_REGISTRIES[randomZeroOrOne()];
+    pkgreg = randomPackageRegistry();
   }
 
   try {

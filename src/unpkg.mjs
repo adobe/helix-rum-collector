@@ -20,6 +20,8 @@ const removedHeaders = [
   'server',
 ];
 
+const redirectHeaders = [301, 302, 307, 308];
+
 /**
  * Removes the headers listed in removeHeaders from the Response.
  * It does this by creating a new Response which is a copy of the
@@ -95,7 +97,7 @@ export async function respondUnpkg(req) {
   const beresp = await fetch(bereq, {
     backend: 'unpkg.com',
   });
-  if (beresp.status === 302) {
+  if (redirectHeaders.includes(beresp.status)) {
     const bereq2 = new Request(new URL(beresp.headers.get('location'), 'https://unpkg.com'));
     const beresp2 = await fetch(bereq2, {
       backend: 'unpkg.com',
@@ -104,7 +106,7 @@ export async function respondUnpkg(req) {
     // override the cache control header
     beresp2.headers.set('cache-control', beresp.headers.get('cache-control'));
 
-    if (beresp2.status === 302) {
+    if (redirectHeaders.includes(beresp2.status)) {
       const bereq3 = new Request(new URL(beresp2.headers.get('location'), 'https://unpkg.com'));
       const beresp3 = await fetch(bereq3, {
         backend: 'unpkg.com',

@@ -46,6 +46,83 @@ describe('Test jdelivr handler', () => {
     }
   });
 
+  it('handles redirects', async () => {
+    const req = {
+      url: 'http://foo.bar.org/npm/first',
+    };
+
+    const storedFetch = global.fetch;
+
+    try {
+      global.fetch = (v) => {
+        if (v.url === 'https://cdn.jsdelivr.net/npm/first') {
+          return {
+            status: 302,
+            headers: new Headers({
+              Location: 'https://cdn.jsdelivr.net/npm/second',
+            }),
+          };
+        } else if (v.url === 'https://cdn.jsdelivr.net/npm/second') {
+          return {
+            status: 301,
+            headers: new Headers({
+              Location: '/npm/third',
+            }),
+          };
+        } else if (v.url === 'https://cdn.jsdelivr.net/npm/third') {
+          return {
+            status: 200,
+            headers: new Headers({
+              foo: 'bar',
+            }),
+          };
+        }
+        return null;
+      };
+
+      const resp = await respondJsdelivr(req);
+      assert.equal(200, resp.status);
+      assert.equal('bar', resp.headers.get('foo'));
+    } finally {
+      global.fetch = storedFetch;
+    }
+  });
+
+  it('handles redirects 2', async () => {
+    const req = {
+      url: 'http://foo.bar.org/npm/first',
+    };
+
+    const storedFetch = global.fetch;
+
+    try {
+      global.fetch = (v) => {
+        if (v.url === 'https://cdn.jsdelivr.net/npm/first') {
+          return {
+            status: 307,
+            headers: new Headers({
+              Location: 'https://cdn.jsdelivr.net/npm/second',
+            }),
+          };
+        } else if (v.url === 'https://cdn.jsdelivr.net/npm/second') {
+          return {
+            status: 200,
+            headers: new Headers({
+              hi: 'ha',
+            }),
+          };
+        }
+        return null;
+      };
+
+      const resp = await respondJsdelivr(req);
+      assert.equal(200, resp.status);
+      assert.equal('ha', resp.headers.get('hi'));
+    } finally {
+      global.fetch = storedFetch;
+    }
+  });
+
   it('cleans up response', async () => {
     const req = {};
     req.url = 'http://foo.bar.org/.rum/@adobe/helix-rum-js?generation=42';

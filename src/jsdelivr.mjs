@@ -22,6 +22,8 @@ const removedHeaders = [
   'x-cache',
 ];
 
+const redirectHeaders = [301, 302, 307, 308];
+
 /**
  * Removes the headers listed in removeHeaders from the Response.
  * It does this by creating a new Response which is a copy of the
@@ -59,5 +61,29 @@ export async function respondJsdelivr(req) {
   });
   console.log('fetched', bereq.url, beresp.status, beresp.headers.get('ETag'), beresp.headers.get('Content-Length'));
 
+  if (redirectHeaders.includes(beresp.status)) {
+    const bereq2 = new Request(new URL(beresp.headers.get('location'), 'https://cdn.jsdelivr.net'));
+    const beresp2 = await fetch(bereq2, {
+      backend: 'jsdelivr',
+    });
+    console.log('fetched', bereq2.url, beresp2.status, beresp2.headers.get('ETag'), beresp2.headers.get('Content-Length'));
+
+    // override the cache control header
+    beresp2.headers.set('cache-control', beresp.headers.get('cache-control'));
+
+    if (redirectHeaders.includes(beresp2.status)) {
+      const bereq3 = new Request(new URL(beresp2.headers.get('location'), 'https://cdn.jsdelivr.net'));
+      const beresp3 = await fetch(bereq3, {
+        backend: 'jsdelivr',
+      });
+      console.log('fetched', bereq3.url, beresp3.status, beresp3.headers.get('ETag'), beresp3.headers.get('Content-Length'));
+
+      // override the cache control header
+      beresp3.headers.set('cache-control', beresp.headers.get('cache-control'));
+
+      return cleanupHeaders(beresp3);
+    }
+    return cleanupHeaders(beresp2);
+  }
   return cleanupHeaders(beresp);
 }

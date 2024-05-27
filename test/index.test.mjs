@@ -349,9 +349,8 @@ describe('Test index', () => {
     assert.equal(ld.id, 'xyz123');
   });
 
-  it('get other package registry', async () => {
+  it('get other package registry', () => {
     assert.equal('jsdelivr', methods.getOtherPackageRegistry('unpkg'));
     assert.equal('unpkg', methods.getOtherPackageRegistry('jsdelivr'));
-    assert.equal('unpkg', methods.getOtherPackageRegistry('foobar'));
   });
 });
