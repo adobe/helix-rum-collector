@@ -11,7 +11,7 @@
  */
 import { Logger } from './logger.mjs';
 import {
-  cleanurl, getMaskedTime, getMaskedUserAgent, getSubsystem,
+  cleanurl, getMaskedTime, getMaskedUserAgent, getSubsystem, isValidCheckpoint,
 } from './utils.mjs';
 
 export class GoogleLogger {
@@ -24,6 +24,9 @@ export class GoogleLogger {
   }
 
   logRUM(json, id, weight, referer, generation, checkpoint, target, source, timePadding) {
+    if (!isValidCheckpoint(checkpoint)) {
+      return;
+    }
     console.log('logging to Google');
     const now = getMaskedTime(timePadding);
 

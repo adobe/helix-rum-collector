@@ -11,7 +11,7 @@
  */
 import { Logger } from './logger.mjs';
 import {
-  cleanurl, getMaskedTime, getMaskedUserAgent, getSubsystem,
+  cleanurl, getMaskedTime, getMaskedUserAgent, getSubsystem, isValidCheckpoint,
 } from './utils.mjs';
 
 export class S3Logger {
@@ -24,6 +24,9 @@ export class S3Logger {
   }
 
   logRUM(json, id, weight, referer, generation, checkpoint, target, source, timePadding) {
+    if (!isValidCheckpoint(checkpoint)) {
+      return;
+    }
     console.log('logging to S3');
     const now = getMaskedTime(timePadding);
 
