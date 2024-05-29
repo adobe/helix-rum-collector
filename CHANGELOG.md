@@ -1,3 +1,10 @@
+# [2.19.0](https://github.com/adobe/helix-rum-collector/compare/v2.18.2...v2.19.0) (2024-05-29)
+
+
+### Features
+
+* **logging:** verify checkpoints against allowed list of checkpoints before logging ([3890a0a](https://github.com/adobe/helix-rum-collector/commit/3890a0a1f2b20fa7bc51fc83820b51ef7a2420d8))
+
 ## [2.18.2](https://github.com/adobe/helix-rum-collector/compare/v2.18.1...v2.18.2) (2024-05-21)
 
 
