@@ -128,6 +128,7 @@ describe('Test Utils', () => {
 
   it('Extract Adobe Routing Info', () => {
     assert.equal('publish-p12345-e1234.adobeaemcloud.net', extractAdobeRoutingInfo('environment=1234,program=12345,tier=publish,foo=baz'));
+    assert.equal('undefined-pundefined-eundefined.adobeaemcloud.net', extractAdobeRoutingInfo('nope'));
   });
 
   it('Get Subsystem', () => {
