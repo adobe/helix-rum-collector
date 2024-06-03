@@ -1,3 +1,10 @@
+## [2.19.1](https://github.com/adobe/helix-rum-collector/compare/v2.19.0...v2.19.1) (2024-06-03)
+
+
+### Bug Fixes
+
+* **utils:** harden routing info against bad input ([f70acda](https://github.com/adobe/helix-rum-collector/commit/f70acdaa8c2cba54397bbf2d1df4252e8714ec05))
+
 # [2.19.0](https://github.com/adobe/helix-rum-collector/compare/v2.18.2...v2.19.0) (2024-05-29)
 
 
