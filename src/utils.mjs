@@ -271,14 +271,15 @@ export function getForwardedHost(fhh) {
 export function extractAdobeRoutingInfo(value) {
   // value is a string with key value pairs, separated by a comma
   // extract program, environment and tier
-  const pairs = value.split(',');
-  const routingInfo = {};
-  pairs.forEach((pair) => {
-    const keyValue = pair.trim().split('=');
-    const key = keyValue[0].trim();
-    const val = keyValue[1].trim();
-    routingInfo[key] = val;
-  });
+  const routingInfo = value
+    .split(',')
+    .map((pair) => pair.trim())
+    .filter((pair) => pair.includes('='))
+    .map((pair) => pair.split('='))
+    .reduce((acc, [key, val]) => {
+      acc[key] = val;
+      return acc;
+    }, {});
   return `${routingInfo.tier}-p${routingInfo.program}-e${routingInfo.environment}.adobeaemcloud.net`;
 }
 
