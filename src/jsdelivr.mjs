@@ -15,9 +15,11 @@
 const removedHeaders = [
   'cf-cache-status',
   'cf-ray',
-  'expect-ct',
-  'fly-request-id',
   'server',
+  'x-jsd-version',
+  'x-jsd-version-type',
+  'x-served-by',
+  'x-cache',
 ];
 
 const redirectHeaders = [301, 302, 307, 308];
@@ -48,76 +50,40 @@ function cleanupHeaders(resp) {
   return result;
 }
 
-async function transformBody(resp, responseUrl, req) {
-  const url = new URL(req.url);
-  const respURL = new URL(responseUrl);
-  if (resp.ok
-    && resp.status === 200
-    && url.pathname.indexOf('@adobe/helix-rum-js') >= 0) {
-    const urlversion = respURL.pathname.split(/[@\\/]/).slice(2, 5).pop();
-    if (urlversion === '1.0.0' || urlversion === '1.0.1') {
-    // only rewrite for 1.0.0 and 1.0.1 – newer versions don't need this
-      const generation = url.searchParams.get('generation') || respURL.pathname.split(/[@\\/]/).slice(2, 5).join('-');
-      // in my testing, this has often returned an empty string, therefore
-      // we try to reduce this code path as much as possible without breaking
-      // compatibility. In the next breaking change we should remove this entirely
-      // because it's not needed anymore.
-      const text = await resp.text();
-      const body = text.replace(/__HELIX_RUM_JS_VERSION__/, generation.replace(/[^a-z0-9_.-]/ig, ''));
-      return new Response(body, { headers: resp.headers });
-    }
-  }
-  return resp;
-}
-
-async function cleanupResponse(resp, req) {
-  const cleanedResponse = cleanupHeaders(resp);
-  try {
-    if (resp.status < 400) {
-      return await transformBody(cleanedResponse, resp.url, req);
-    }
-    return new Response(`error: ${resp.status}`, {
-      status: resp.status,
-      headers: {
-        'Content-Type': 'text/plain',
-        'x-error': `Error: ${resp.status} from backend`,
-      },
-    });
-  } catch (e) {
-    console.error(e.message);
-  }
-  return cleanedResponse;
-}
-
-export async function respondUnpkg(req) {
+export async function respondJsdelivr(req) {
   const url = new URL(req.url);
   const paths = url.pathname.split('/');
-  const beurl = new URL(paths.slice(2).join('/'), 'https://unpkg.com');
+  const beurl = new URL(paths.slice(2).join('/'), 'https://cdn.jsdelivr.net/npm/');
   const bereq = new Request(beurl.href);
+  console.log('fetching', bereq.url);
   const beresp = await fetch(bereq, {
-    backend: 'unpkg.com',
+    backend: 'jsdelivr',
   });
+  console.log('fetched', bereq.url, beresp.status, beresp.headers.get('ETag'), beresp.headers.get('Content-Length'));
+
   if (redirectHeaders.includes(beresp.status)) {
-    const bereq2 = new Request(new URL(beresp.headers.get('location'), 'https://unpkg.com'));
+    const bereq2 = new Request(new URL(beresp.headers.get('location'), 'https://cdn.jsdelivr.net'));
     const beresp2 = await fetch(bereq2, {
-      backend: 'unpkg.com',
+      backend: 'jsdelivr',
     });
+    console.log('fetched', bereq2.url, beresp2.status, beresp2.headers.get('ETag'), beresp2.headers.get('Content-Length'));
 
     // override the cache control header
     beresp2.headers.set('cache-control', beresp.headers.get('cache-control'));
 
     if (redirectHeaders.includes(beresp2.status)) {
-      const bereq3 = new Request(new URL(beresp2.headers.get('location'), 'https://unpkg.com'));
+      const bereq3 = new Request(new URL(beresp2.headers.get('location'), 'https://cdn.jsdelivr.net'));
       const beresp3 = await fetch(bereq3, {
-        backend: 'unpkg.com',
+        backend: 'jsdelivr',
       });
+      console.log('fetched', bereq3.url, beresp3.status, beresp3.headers.get('ETag'), beresp3.headers.get('Content-Length'));
 
       // override the cache control header
       beresp3.headers.set('cache-control', beresp.headers.get('cache-control'));
 
-      return cleanupResponse(beresp3, req);
+      return cleanupHeaders(beresp3);
     }
-    return cleanupResponse(beresp2, req);
+    return cleanupHeaders(beresp2);
   }
-  return cleanupResponse(beresp, req);
+  return cleanupHeaders(beresp);
 }

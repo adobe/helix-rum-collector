@@ -18,7 +18,10 @@ import { CoralogixErrorLogger } from './coralogix-error-logger.mjs';
 import { ConsoleLogger } from './console-logger.mjs';
 import { S3Logger } from './s3-logger.mjs';
 import { respondRobots } from './robots.mjs';
+import { respondJsdelivr } from './jsdelivr.mjs';
 import { respondUnpkg } from './unpkg.mjs';
+
+const PACKAGE_REGISTRIES = ['jsdelivr', 'unpkg'];
 
 function respondError(message, status, e, req) {
   const headers = new Headers();
@@ -48,6 +51,7 @@ function getRandomID() {
 function respondInfo(ctx) {
   return new Response(`{"platform": "${ctx?.runtime?.name}", "version": "${ctx?.func?.version}"}`);
 }
+
 export function respondCORS() {
   return new Response('no data collected', {
     headers: {
@@ -56,6 +60,46 @@ export function respondCORS() {
       'Access-Control-Allow-Headers': 'Content-Type',
     },
   });
+}
+
+function randomPackageRegistry() {
+  return PACKAGE_REGISTRIES[Math.floor(Math.random() * (PACKAGE_REGISTRIES.length))];
+}
+
+export function getOtherPackageRegistry(regName) {
+  return PACKAGE_REGISTRIES[(PACKAGE_REGISTRIES.length - 1) - PACKAGE_REGISTRIES.indexOf(regName)];
+}
+
+async function respondRegistry(regName, req) {
+  console.log('Using package registry', regName);
+
+  if (regName === 'jsdelivr') {
+    return respondJsdelivr(req);
+  }
+
+  return respondUnpkg(req);
+}
+
+async function respondPackage(req) {
+  let pkgreg = new URL(req.url).searchParams.get('pkgreg');
+
+  if (!pkgreg) {
+    pkgreg = randomPackageRegistry();
+  }
+
+  try {
+    let resp = await respondRegistry(pkgreg, req);
+    if (resp.status !== 200) {
+      console.log('Changing registry as its response was', resp.status);
+      resp = await respondRegistry(getOtherPackageRegistry(pkgreg), req);
+    }
+    return resp;
+  } catch (error) {
+    console.log('Contacting registry caused this error', error);
+    console.log('Changing package registry');
+
+    return respondRegistry(getOtherPackageRegistry(pkgreg), req);
+  }
 }
 
 export async function main(req, ctx) {
@@ -70,10 +114,10 @@ export async function main(req, ctx) {
       return respondInfo(ctx);
     }
     if (req.method === 'GET' && new URL(req.url).pathname.startsWith('/.rum/web-vitals')) {
-      return respondUnpkg(req);
+      return respondPackage(req);
     }
     if (req.method === 'GET' && new URL(req.url).pathname.startsWith('/.rum/@adobe/helix-rum')) {
-      return respondUnpkg(req);
+      return respondPackage(req);
     }
     const body = req.method === 'GET'
       ? JSON.parse(new URL(req.url).searchParams.get('data'))
