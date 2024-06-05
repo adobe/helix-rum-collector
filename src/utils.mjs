@@ -207,6 +207,9 @@ export function getMaskedUserAgent(headers) {
   } else if (headers.get('CloudFront-Is-Tablet-Viewer') === 'true') {
     return 'mobile';
   }
+  if (headers.get('x-newrelic-id')) {
+    return 'bot:monitoring';
+  }
 
   const userAgent = headers.get('user-agent');
 
