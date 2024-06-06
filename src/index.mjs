@@ -125,6 +125,7 @@ export async function main(req, ctx) {
 
     const headers = new Headers();
     headers.set('Content-Type', 'text/plain; charset=utf-8');
+    headers.set('Cross-Origin-Resource-Policy', 'cross-origin');
 
     const {
       weight = 1,
