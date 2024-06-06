@@ -41,6 +41,7 @@ describe('Test jdelivr handler', () => {
 
       assert.equal(200, resp.status);
       assert.equal('abc', resp.headers.get('xyz'));
+      assert.equal('cross-origin', resp.headers.get('Cross-Origin-Resource-Policy'));
     } finally {
       global.fetch = storedFetch;
     }
