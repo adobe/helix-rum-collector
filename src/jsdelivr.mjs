@@ -41,6 +41,7 @@ function cleanupHeaders(resp) {
       newHeaders.append(kv[0], kv[1]);
     }
   }
+  newHeaders.set('Cross-Origin-Resource-Policy', 'cross-origin');
 
   const result = new Response(resp.body, {
     headers: newHeaders,
