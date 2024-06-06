@@ -1,3 +1,15 @@
+# [2.20.0](https://github.com/adobe/helix-rum-collector/compare/v2.19.1...v2.20.0) (2024-06-06)
+
+
+### Bug Fixes
+
+* **index:** make the dev tools shut up about CORP when it's too late anyway ([f212c47](https://github.com/adobe/helix-rum-collector/commit/f212c474633448ee9b1e59ac487ea9197af13ea8))
+
+
+### Features
+
+* **cdn:** deliver friendly CORP headers ([f770b25](https://github.com/adobe/helix-rum-collector/commit/f770b2520a0cb28fc385bb2217fed3b3a0e59de2))
+
 ## [2.19.1](https://github.com/adobe/helix-rum-collector/compare/v2.19.0...v2.19.1) (2024-06-03)
 
 
