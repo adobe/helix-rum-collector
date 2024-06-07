@@ -1,3 +1,10 @@
+# [2.21.0](https://github.com/adobe/helix-rum-collector/compare/v2.20.0...v2.21.0) (2024-06-07)
+
+
+### Features
+
+* **user-agents:** detect new relic monitors ([5816b02](https://github.com/adobe/helix-rum-collector/commit/5816b025eb760f5f20ef991427bbaf0f31c4ab03))
+
 # [2.20.0](https://github.com/adobe/helix-rum-collector/compare/v2.19.1...v2.20.0) (2024-06-06)
 
 
