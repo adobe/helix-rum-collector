@@ -80,6 +80,8 @@ describe('Test Utils', () => {
     assert.equal('desktop:chromeos', getMaskedUserAgent(getUserAgentHeaders('Mozilla/5.0 (X11; CrOS x86_64 14541.0.0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/123.0.0.0 Safari/537.36')));
     assert.equal('desktop', getMaskedUserAgent(getUserAgentHeaders('foobar')));
 
+    assert.equal('bot:monitoring', getMaskedUserAgent(new Map().set('x-newrelic-id', 'VQcPU1ZQGwYEXVZUBwY=')));
+
     assert.equal('undefined', getMaskedUserAgent(new Map()));
     assert.equal('undefined', getMaskedUserAgent());
   });
