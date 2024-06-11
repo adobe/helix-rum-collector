@@ -1,3 +1,10 @@
+# [2.22.0](https://github.com/adobe/helix-rum-collector/compare/v2.21.1...v2.22.0) (2024-06-11)
+
+
+### Features
+
+* **checkpoints:** enable paid and email checkpoints ([f60e1f3](https://github.com/adobe/helix-rum-collector/commit/f60e1f33f65b413fe0a4b25f0b4a85cc298722b9))
+
 ## [2.21.1](https://github.com/adobe/helix-rum-collector/compare/v2.21.0...v2.21.1) (2024-06-11)
 
 
