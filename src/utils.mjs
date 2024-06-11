@@ -86,6 +86,8 @@ export function isValidCheckpoint(checkpoint) {
     'formvalidationerrors',
     'showconsent',
     'consent',
+    'paid',
+    'email',
     'genai:consent:cancel',
     'sidekick:deleted',
     'sidekick:custom:version-history',
