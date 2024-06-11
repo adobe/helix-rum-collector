@@ -17,6 +17,7 @@ export function isValidCheckpoint(checkpoint) {
   const knowncheckpoints = [
     'loadresource',
     'cwv',
+    'cwv2',
     'click',
     'top',
     'lazy',
