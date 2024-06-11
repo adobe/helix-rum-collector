@@ -1,3 +1,10 @@
+## [2.21.1](https://github.com/adobe/helix-rum-collector/compare/v2.21.0...v2.21.1) (2024-06-11)
+
+
+### Bug Fixes
+
+* **checkpoint:** add consent to the list of valid checkpoints ([4980b1e](https://github.com/adobe/helix-rum-collector/commit/4980b1ebca7e24dd065b1a460ae33e00410b1193))
+
 # [2.21.0](https://github.com/adobe/helix-rum-collector/compare/v2.20.0...v2.21.0) (2024-06-07)
 
 
