@@ -10,46 +10,9 @@
  * governing permissions and limitations under the License.
  */
 /* eslint-env serviceworker */
-
-// Headers removed by cleanupHeaders()
-const removedHeaders = [
-  'cf-cache-status',
-  'cf-ray',
-  'server',
-  'x-jsd-version',
-  'x-jsd-version-type',
-  'x-served-by',
-  'x-cache',
-];
+import { cleanupResponse } from './cdnutils.mjs';
 
 const redirectHeaders = [301, 302, 307, 308];
-
-/**
- * Removes the headers listed in removeHeaders from the Response.
- * It does this by creating a new Response which is a copy of the
- * original with the headers removed.
- *
- * @param {Response} resp the response to clean
- * @returns the recreated, cleaned response
- */
-function cleanupHeaders(resp) {
-  // Can't modify the response headers, so recreate a new one with the headers removed
-  const newHeaders = new Headers();
-
-  for (const kv of resp.headers.entries()) {
-    if (!removedHeaders.includes(kv[0])) {
-      newHeaders.append(kv[0], kv[1]);
-    }
-  }
-  newHeaders.set('Cross-Origin-Resource-Policy', 'cross-origin');
-
-  const result = new Response(resp.body, {
-    headers: newHeaders,
-    status: resp.status,
-    statusText: resp.statusText,
-  });
-  return result;
-}
 
 export async function respondJsdelivr(req) {
   const url = new URL(req.url);
@@ -82,9 +45,9 @@ export async function respondJsdelivr(req) {
       // override the cache control header
       beresp3.headers.set('cache-control', beresp.headers.get('cache-control'));
 
-      return cleanupHeaders(beresp3);
+      return cleanupResponse(beresp3);
     }
-    return cleanupHeaders(beresp2);
+    return cleanupResponse(beresp2);
   }
-  return cleanupHeaders(beresp);
+  return cleanupResponse(beresp);
 }
