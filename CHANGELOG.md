@@ -1,3 +1,10 @@
+## [2.23.1](https://github.com/adobe/helix-rum-collector/compare/v2.23.0...v2.23.1) (2024-06-14)
+
+
+### Bug Fixes
+
+* **jsdelivr:** do not disclose path in 404 response ([c82696e](https://github.com/adobe/helix-rum-collector/commit/c82696eae7cab527d33b26bfcce9768cb4131ffe))
+
 # [2.23.0](https://github.com/adobe/helix-rum-collector/compare/v2.22.0...v2.23.0) (2024-06-12)
 
 
