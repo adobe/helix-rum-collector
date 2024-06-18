@@ -1,3 +1,11 @@
+## [2.23.2](https://github.com/adobe/helix-rum-collector/compare/v2.23.1...v2.23.2) (2024-06-18)
+
+
+### Bug Fixes
+
+* **jsdelivr:** do not allow dir list ([551bc68](https://github.com/adobe/helix-rum-collector/commit/551bc68eb8718fb1867964c83bd3a37d332039bc))
+* **jsdelivr:** stop creating url objects ([cae8014](https://github.com/adobe/helix-rum-collector/commit/cae80143cad5128592e6b2a942976f5e96a46f8f))
+
 ## [2.23.1](https://github.com/adobe/helix-rum-collector/compare/v2.23.0...v2.23.1) (2024-06-14)
 
 
