@@ -113,10 +113,17 @@ export async function main(req, ctx) {
     if (req.method === 'GET' && new URL(req.url).pathname.startsWith('/info.json')) {
       return respondInfo(ctx);
     }
+    const isDirList = (new URL(req.url).pathname.endsWith('/'));
     if (req.method === 'GET' && new URL(req.url).pathname.startsWith('/.rum/web-vitals')) {
+      if (isDirList) {
+        return respondError('Directory listing is not allowed', 404, undefined, req);
+      }
       return respondPackage(req);
     }
     if (req.method === 'GET' && new URL(req.url).pathname.startsWith('/.rum/@adobe/helix-rum')) {
+      if (isDirList) {
+        return respondError('Directory listing is not allowed', 404, undefined, req);
+      }
       return respondPackage(req);
     }
     const body = req.method === 'GET'

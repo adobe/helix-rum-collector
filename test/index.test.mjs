@@ -203,6 +203,18 @@ describe('Test index', () => {
     assert(t.includes('webVitals'));
   }).timeout(5000);
 
+  it('responds to web-vitals dir list', async () => {
+    const headers = new Map();
+
+    const req = { headers };
+    req.method = 'GET';
+    req.url = 'http://x.y/.rum/web-vitals/';
+
+    const resp = await methods.main(req);
+
+    assert.equal(404, resp.status);
+  }).timeout(5000);
+
   it('responds to helix-rum-js', async () => {
     const headers = new Map();
 
@@ -221,6 +233,30 @@ describe('Test index', () => {
 
     const t = await resp.text();
     assert(t.includes('export function sampleRUM'));
+  }).timeout(5000);
+
+  it('responds to helix-rum-js dir list', async () => {
+    const headers = new Map();
+
+    const req = { headers };
+    req.method = 'GET';
+    req.url = 'http://x.y/.rum/@adobe/helix-rum-js/';
+
+    const resp = await methods.main(req);
+
+    assert.equal(404, resp.status);
+  }).timeout(5000);
+
+  it('responds to helix-rum-enhancer dir list', async () => {
+    const headers = new Map();
+
+    const req = { headers };
+    req.method = 'GET';
+    req.url = 'http://x.y/.rum/@adobe/helix-rum-enhancer/';
+
+    const resp = await methods.main(req);
+
+    assert.equal(404, resp.status);
   }).timeout(5000);
 
   it('Retry with another package registry', async () => {

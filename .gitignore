@@ -19,4 +19,5 @@ pkg
 vendor/package
 junit
 src/spiders.mjs
+.idea/
 
