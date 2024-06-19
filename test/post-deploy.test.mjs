@@ -16,153 +16,163 @@ import chaiHttp from 'chai-http';
 
 const { request } = chai.use(chaiHttp);
 
-const domain = !process.env.CI ? 'rum.hlx3.page' : 'helix-rum-collector-ci.edgecompute.app';
+[
+  {
+    provider: 'cloudflare',
+    proddomain: 'rum.hlx-cloudflare.page',
+    cidomain: 'helix3--helix-rum-collector-ci.helix-runtime.workers.dev',
+  },
+  {
+    provider: 'fastly',
+    proddomain: 'rum.hlx3.page',
+    cidomain: 'helix-rum-collector-ci.edgecompute.ap',
+  },
+].forEach((env) => {
+  const domain = !process.env.CI ? env.proddomain : env.cidomain;
+  describe(`Helix RUM Collector Post-Deploy Tests on ${env.provider}`, () => {
+    it('Missing body returns 400', async () => {
+      const response = await request(`https://${domain}`)
+        .post('/');
+      expect(response).to.have.status(400);
+    });
 
-console.log(`Using ${domain}`);
+    it('RUM collection with masked timestamp (t) returns 201', async () => {
+      const response = await request(`https://${domain}`)
+        .post('/')
+        .send({
+          t: 1234,
+          cwv: {
+            CLS: 1.0,
+            LCP: 1.0,
+            FID: 4,
+          },
+          id: 'truncaty-me-timestampy-please',
+          weight: 1,
+        });
+      expect(response).to.have.status(201);
+    });
 
-describe('Helix RUM Collector Post-Deploy Tests', () => {
-  it('Missing body returns 400', async () => {
-    const response = await request(`https://${domain}`)
-      .post('/');
-    expect(response).to.have.status(400);
-  });
+    it('RUM collection returns 201', async () => {
+      const response = await request(`https://${domain}`)
+        .post('/')
+        .send({
+          cwv: {
+            CLS: 1.0,
+            LCP: 1.0,
+            FID: 4,
+          },
+          id: 'blablub',
+          weight: 1,
+        });
+      expect(response).to.have.status(201);
+    });
 
-  it('RUM collection with masked timestamp (t) returns 201', async () => {
-    const response = await request(`https://${domain}`)
-      .post('/')
-      .send({
-        t: 1234,
-        cwv: {
-          CLS: 1.0,
-          LCP: 1.0,
-          FID: 4,
-        },
-        id: 'truncaty-me-timestampy-please',
-        weight: 1,
-      });
-    expect(response).to.have.status(201);
-  });
+    it('RUM collection with empty string id returns 201', async () => {
+      const response = await request(`https://${domain}`)
+        .post('/')
+        .send({
+          cwv: {
+            CLS: 1.0,
+            LCP: 1.0,
+            FID: 4,
+          },
+          id: '',
+          weight: 1,
+        });
+      expect(response).to.have.status(201);
+    });
 
-  it('RUM collection returns 201', async () => {
-    const response = await request(`https://${domain}`)
-      .post('/')
-      .send({
-        cwv: {
-          CLS: 1.0,
-          LCP: 1.0,
-          FID: 4,
-        },
-        id: 'blablub',
-        weight: 1,
-      });
-    expect(response).to.have.status(201);
-  });
+    it('RUM collection via GET returns 201', async () => {
+      const response = await request(`https://${domain}`)
+        .get('/.rum/1?data=%7B%22checkpoint%22%3A%22noscript%22%2C%22weight%22%3A1%7D');
+      expect(response).to.have.status(201);
+    });
 
-  it('RUM collection with empty string id returns 201', async () => {
-    const response = await request(`https://${domain}`)
-      .post('/')
-      .send({
-        cwv: {
-          CLS: 1.0,
-          LCP: 1.0,
-          FID: 4,
-        },
-        id: '',
-        weight: 1,
-      });
-    expect(response).to.have.status(201);
-  });
+    it('CORS headers are set', async () => {
+      const response = await request(`https://${domain}`)
+        .options('/');
+      expect(response).to.have.status(200);
+      expect(response).to.have.header('access-control-allow-origin', '*');
+    });
 
-  it('RUM collection via GET returns 201', async () => {
-    const response = await request(`https://${domain}`)
-      .get('/.rum/1?data=%7B%22checkpoint%22%3A%22noscript%22%2C%22weight%22%3A1%7D');
-    expect(response).to.have.status(201);
-  });
+    it('robots.txt denies everything', async () => {
+      const response = await request(`https://${domain}`)
+        .get('/robots.txt');
+      expect(response).to.have.status(200);
+      // eslint-disable-next-line no-unused-expressions
+      expect(response).to.be.text;
+    });
 
-  it('CORS headers are set', async () => {
-    const response = await request(`https://${domain}`)
-      .options('/');
-    expect(response).to.have.status(200);
-    expect(response).to.have.header('access-control-allow-origin', '*');
-  });
+    it('web vitals module is being served', async () => {
+      const response = await request(`https://${domain}`)
+        .get('/.rum/web-vitals@2.1.3/dist/web-vitals.base.js');
+      expect(response).to.have.status(200);
+      // eslint-disable-next-line no-unused-expressions
+      expect(response).to.have.header('content-type', /^application\/javascript/);
+    });
 
-  it('robots.txt denies everything', async () => {
-    const response = await request(`https://${domain}`)
-      .get('/robots.txt');
-    expect(response).to.have.status(200);
-    // eslint-disable-next-line no-unused-expressions
-    expect(response).to.be.text;
-  });
+    it('web vitals module is being served without redirect', async () => {
+      const response = await request(`https://${domain}`)
+        .get('/.rum/web-vitals/dist/web-vitals.iife.js');
+      expect(response).to.have.status(200);
+      // eslint-disable-next-line no-unused-expressions
+      expect(response).to.have.header('content-type', /^application\/javascript/);
+    });
 
-  it('web vitals module is being served', async () => {
-    const response = await request(`https://${domain}`)
-      .get('/.rum/web-vitals@2.1.3/dist/web-vitals.base.js');
-    expect(response).to.have.status(200);
-    // eslint-disable-next-line no-unused-expressions
-    expect(response).to.have.header('content-type', /^application\/javascript/);
-  });
+    it('rum js module is being served without redirect', async () => {
+      const response = await request(`https://${domain}`)
+        .get('/.rum/@adobe/helix-rum-js@^1/src/index.js');
+      expect(response).to.have.status(200);
+      // eslint-disable-next-line no-unused-expressions
+      expect(response).to.have.header('content-type', /^application\/javascript/);
+      // content length should be greater than 0
+      expect(response).to.have.header('content-length', /^[1-9][0-9]*$/);
+    }).timeout(5000);
 
-  it('web vitals module is being served without redirect', async () => {
-    const response = await request(`https://${domain}`)
-      .get('/.rum/web-vitals/dist/web-vitals.iife.js');
-    expect(response).to.have.status(200);
-    // eslint-disable-next-line no-unused-expressions
-    expect(response).to.have.header('content-type', /^application\/javascript/);
-  });
+    it.skip('rum js module is being served with default replacements', async () => {
+      const response = await request(`https://${domain}`)
+        .get('/.rum/@adobe/helix-rum-js@1.0.0/src/index.js')
+        .buffer(true);
+      expect(response).to.have.status(200);
+      // eslint-disable-next-line no-unused-expressions
+      expect(response).to.have.header('content-type', /^application\/javascript/);
+      expect(response.text).to.contain('adobe-helix-rum-js-1.0.0');
+    }).timeout(5000);
 
-  it('rum js module is being served without redirect', async () => {
-    const response = await request(`https://${domain}`)
-      .get('/.rum/@adobe/helix-rum-js@^1/src/index.js');
-    expect(response).to.have.status(200);
-    // eslint-disable-next-line no-unused-expressions
-    expect(response).to.have.header('content-type', /^application\/javascript/);
-    // content length should be greater than 0
-    expect(response).to.have.header('content-length', /^[1-9][0-9]*$/);
-  }).timeout(5000);
+    it('Missing id returns 400', async () => {
+      const response = await request(`https://${domain}`)
+        .post('/')
+        .send({
+          cwv: {
+            CLS: 1.0,
+            LCP: 1.0,
+            FID: 4,
+          },
+          weight: 1,
+        });
+      expect(response).to.have.status(400);
+    });
 
-  it.skip('rum js module is being served with default replacements', async () => {
-    const response = await request(`https://${domain}`)
-      .get('/.rum/@adobe/helix-rum-js@1.0.0/src/index.js')
-      .buffer(true);
-    expect(response).to.have.status(200);
-    // eslint-disable-next-line no-unused-expressions
-    expect(response).to.have.header('content-type', /^application\/javascript/);
-    expect(response.text).to.contain('adobe-helix-rum-js-1.0.0');
-  }).timeout(5000);
+    it('Non-numeric weight returns 400', async () => {
+      const response = await request(`https://${domain}`)
+        .post('/')
+        .send({
+          cwv: {
+            CLS: 1.0,
+            LCP: 1.0,
+            FID: 4,
+          },
+          id: 'blablub',
+          weight: 'one',
+        });
+      expect(response).to.have.status(400);
+    });
 
-  it('Missing id returns 400', async () => {
-    const response = await request(`https://${domain}`)
-      .post('/')
-      .send({
-        cwv: {
-          CLS: 1.0,
-          LCP: 1.0,
-          FID: 4,
-        },
-        weight: 1,
-      });
-    expect(response).to.have.status(400);
-  });
-
-  it('Non-numeric weight returns 400', async () => {
-    const response = await request(`https://${domain}`)
-      .post('/')
-      .send({
-        cwv: {
-          CLS: 1.0,
-          LCP: 1.0,
-          FID: 4,
-        },
-        id: 'blablub',
-        weight: 'one',
-      });
-    expect(response).to.have.status(400);
-  });
-
-  it('Non-object root returns 400', async () => {
-    const response = await request(`https://${domain}`)
-      .post('/')
-      .send([]);
-    expect(response).to.have.status(400);
+    it('Non-object root returns 400', async () => {
+      const response = await request(`https://${domain}`)
+        .post('/')
+        .send([]);
+      expect(response).to.have.status(400);
+    });
   });
 });
