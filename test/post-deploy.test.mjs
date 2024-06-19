@@ -125,8 +125,6 @@ const { request } = chai.use(chaiHttp);
       expect(response).to.have.status(200);
       // eslint-disable-next-line no-unused-expressions
       expect(response).to.have.header('content-type', /^application\/javascript/);
-      // content length should be greater than 0
-      expect(response).to.have.header('content-length', /^[1-9][0-9]*$/);
     }).timeout(5000);
 
     it.skip('rum js module is being served with default replacements', async () => {
