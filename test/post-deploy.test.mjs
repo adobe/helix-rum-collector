@@ -25,7 +25,7 @@ const { request } = chai.use(chaiHttp);
   {
     provider: 'fastly',
     proddomain: 'rum.hlx3.page',
-    cidomain: 'helix-rum-collector-ci.edgecompute.ap',
+    cidomain: 'helix-rum-collector-ci.edgecompute.app',
   },
 ].forEach((env) => {
   const domain = !process.env.CI ? env.proddomain : env.cidomain;
