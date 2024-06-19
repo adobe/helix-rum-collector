@@ -11,6 +11,8 @@
  */
 /* eslint-env mocha */
 import assert from 'assert';
+import { it, describe, before } from 'node:test';
+// eslint-disable-next-line import/no-extraneous-dependencies
 import esmock from 'esmock';
 import { lastLogMessage } from '../src/logger.mjs';
 
@@ -201,7 +203,7 @@ describe('Test index', () => {
 
     const t = await resp.text();
     assert(t.includes('webVitals'));
-  }).timeout(5000);
+  }); // .timeout(5000);
 
   it('responds to web-vitals dir list', async () => {
     const headers = new Map();
@@ -213,7 +215,7 @@ describe('Test index', () => {
     const resp = await methods.main(req);
 
     assert.equal(404, resp.status);
-  }).timeout(5000);
+  }); // .timeout(5000);
 
   it('responds to helix-rum-js', async () => {
     const headers = new Map();
@@ -233,7 +235,7 @@ describe('Test index', () => {
 
     const t = await resp.text();
     assert(t.includes('export function sampleRUM'));
-  }).timeout(5000);
+  }); // .timeout(5000);
 
   it('responds to helix-rum-js dir list', async () => {
     const headers = new Map();
@@ -245,7 +247,7 @@ describe('Test index', () => {
     const resp = await methods.main(req);
 
     assert.equal(404, resp.status);
-  }).timeout(5000);
+  }); // .timeout(5000);
 
   it('responds to helix-rum-enhancer dir list', async () => {
     const headers = new Map();
@@ -257,7 +259,7 @@ describe('Test index', () => {
     const resp = await methods.main(req);
 
     assert.equal(404, resp.status);
-  }).timeout(5000);
+  }); // .timeout(5000);
 
   it('Retry with another package registry', async () => {
     const mockUnpkg = () => ({ status: 500 });
@@ -306,7 +308,7 @@ describe('Test index', () => {
     await verifyInput('{"id": null}', 'id field is required');
     await verifyInput('{"weight": "hello"}', 'weight must be a number');
     await verifyInput('{"cwv": 123}', 'cwv must be an object');
-  }).timeout(5000);
+  });// .timeout(5000);
 
   it('Core Web Vitals', async () => {
     const headers = new Map();

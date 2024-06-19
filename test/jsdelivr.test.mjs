@@ -12,6 +12,7 @@
 /* eslint-env mocha */
 /* eslint-env serviceworker */
 import assert from 'assert';
+import { it, describe } from 'node:test';
 import { respondJsdelivr } from '../src/jsdelivr.mjs';
 
 describe('Test jdelivr handler', () => {

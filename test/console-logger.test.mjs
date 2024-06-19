@@ -11,6 +11,7 @@
  */
 /* eslint-env mocha */
 import assert from 'assert';
+import { it, describe } from 'node:test';
 import { ConsoleLogger } from '../src/console-logger.mjs';
 
 describe('Test Console Logger', () => {
