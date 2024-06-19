@@ -8,9 +8,9 @@
     "fastly-build": "hedy --build --verbose --directory $INIT_CWD/bin --entryFile $INIT_CWD/src/index.mjs --target c@e --arch node --arch edge --externals fastly:logger --package.name helix3",
     "deploy": "hedy --build --verbose --directory $INIT_CWD/bin --entryFile $INIT_CWD/src/index.mjs --deploy --fastly-auth $HLX_FASTLY_AUTH --compute-service-id ${HLX_FASTLY_SVC:-5Qir8H8bLeaRuldIp9TWq4} --target c@e --arch node --arch edge --fastly-gateway deploy-test.anywhere.run --externals fastly:logger --package.name helix3 --target cloudflare --cloudflare-email $HLX_CLOUDFLARE_EMAIL --cloudflare-account-id $HLX_CLOUDFLARE_ACCOUNT --cloudflare-auth $HLX_CLOUDFLARE_AUTH --name ${HLX_CLOUDFLARE_NAME:-helix-rum-collector-prod}",
     "predeploy": "node tools/spider-list.js",
-    "test": "node --test --experimental-test-coverage --test-reporter=lcov --test-reporter-destination=../../lcov.info --test-reporter=spec --test-reporter-destination=stdout --test-reporter=junit --test-reporter-destination=../../junit.xml --test-name-pattern=Test",
+    "test": "node --test --experimental-test-coverage --test-reporter=lcov --test-reporter-destination=lcov.info --test-reporter=spec --test-reporter-destination=stdout --test-reporter=junit --test-reporter-destination=junit.xml --test-name-pattern=Test",
     "pretest": "node tools/spider-list.js",
-    "test-postdeploy": "node --test --experimental-test-coverage --test-reporter=lcov --test-reporter-destination=../../lcov.info --test-reporter=spec --test-reporter-destination=stdout --test-reporter=junit --test-reporter-destination=../../junit.xml --test-name-pattern=Post-Deploy",
+    "test-postdeploy": "node --test --experimental-test-coverage --test-reporter=lcov --test-reporter-destination=lcov.info --test-reporter=spec --test-reporter-destination=stdout --test-reporter=junit --test-reporter-destination=junit.xml --test-name-pattern=Post-Deploy",
     "prelint": "node tools/spider-list.js",
     "lint": "./node_modules/.bin/eslint .",
     "semantic-release": "semantic-release"
