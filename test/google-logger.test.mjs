@@ -11,6 +11,7 @@
  */
 /* eslint-env mocha */
 import assert from 'assert';
+import { it, describe } from 'node:test';
 import { lastLogMessage } from '../src/logger.mjs';
 import { GoogleLogger } from '../src/google-logger.mjs';
 

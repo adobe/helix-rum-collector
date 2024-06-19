@@ -12,6 +12,7 @@
 
 /* eslint-env mocha */
 import assert from 'assert';
+import { it, describe } from 'node:test';
 import { S3Logger } from '../src/s3-logger.mjs';
 import { lastLogMessage } from '../src/logger.mjs';
 

@@ -11,6 +11,7 @@
  */
 /* eslint-env mocha */
 import assert from 'assert';
+import { it, describe } from 'node:test';
 import {
   cleanurl, extractAdobeRoutingInfo, getForwardedHost, getMaskedUserAgent, getSubsystem, maskTime,
 } from '../src/utils.mjs';

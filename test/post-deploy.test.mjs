@@ -10,11 +10,8 @@
  * governing permissions and limitations under the License.
  */
 /* eslint-env mocha */
-import { expect } from 'chai';
-import * as chai from 'chai';
-import chaiHttp from 'chai-http';
-
-const { request } = chai.use(chaiHttp);
+import { describe, it } from 'node:test';
+import assert from 'assert';
 
 [
   {
@@ -29,17 +26,21 @@ const { request } = chai.use(chaiHttp);
   },
 ].forEach((env) => {
   const domain = !process.env.CI ? env.proddomain : env.cidomain;
-  describe(`Helix RUM Collector Post-Deploy Tests on ${env.provider}`, () => {
+  describe(`Helix RUM Collector Post-Deploy Validation on ${env.provider}`, () => {
     it('Missing body returns 400', async () => {
-      const response = await request(`https://${domain}`)
-        .post('/');
-      expect(response).to.have.status(400);
+      const response = await fetch(`https://${domain}`, {
+        method: 'POST',
+      });
+      assert.strictEqual(response.status, 400);
     });
 
     it('RUM collection with masked timestamp (t) returns 201', async () => {
-      const response = await request(`https://${domain}`)
-        .post('/')
-        .send({
+      const response = await fetch(`https://${domain}`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
           t: 1234,
           cwv: {
             CLS: 1.0,
@@ -48,14 +49,18 @@ const { request } = chai.use(chaiHttp);
           },
           id: 'truncaty-me-timestampy-please',
           weight: 1,
-        });
-      expect(response).to.have.status(201);
+        }),
+      });
+      assert.strictEqual(response.status, 201);
     });
 
     it('RUM collection returns 201', async () => {
-      const response = await request(`https://${domain}`)
-        .post('/')
-        .send({
+      const response = await fetch(`https://${domain}`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
           cwv: {
             CLS: 1.0,
             LCP: 1.0,
@@ -63,14 +68,18 @@ const { request } = chai.use(chaiHttp);
           },
           id: 'blablub',
           weight: 1,
-        });
-      expect(response).to.have.status(201);
+        }),
+      });
+      assert.strictEqual(response.status, 201);
     });
 
     it('RUM collection with empty string id returns 201', async () => {
-      const response = await request(`https://${domain}`)
-        .post('/')
-        .send({
+      const response = await fetch(`https://${domain}`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
           cwv: {
             CLS: 1.0,
             LCP: 1.0,
@@ -78,83 +87,98 @@ const { request } = chai.use(chaiHttp);
           },
           id: '',
           weight: 1,
-        });
-      expect(response).to.have.status(201);
+        }),
+      });
+      assert.strictEqual(response.status, 201);
     });
 
     it('RUM collection via GET returns 201', async () => {
-      const response = await request(`https://${domain}`)
-        .get('/.rum/1?data=%7B%22checkpoint%22%3A%22noscript%22%2C%22weight%22%3A1%7D');
-      expect(response).to.have.status(201);
+      const response = await fetch(`https://${domain}/.rum/1?data=%7B%22checkpoint%22%3A%22noscript%22%2C%22weight%22%3A1%7D`, {
+        method: 'GET',
+      });
+      assert.strictEqual(response.status, 201);
     });
 
     it('CORS headers are set', async () => {
-      const response = await request(`https://${domain}`)
-        .options('/');
-      expect(response).to.have.status(200);
-      expect(response).to.have.header('access-control-allow-origin', '*');
+      const response = await fetch(`https://${domain}/`, {
+        method: 'OPTIONS',
+      });
+      assert.strictEqual(response.status, 200);
+      assert.strictEqual(response.headers.get('access-control-allow-origin'), '*');
     });
 
     it('robots.txt denies everything', async () => {
-      const response = await request(`https://${domain}`)
-        .get('/robots.txt');
-      expect(response).to.have.status(200);
+      const response = await fetch(`https://${domain}/robots.txt`, {
+        method: 'GET',
+      });
+      assert.strictEqual(response.status, 200);
       // eslint-disable-next-line no-unused-expressions
-      expect(response).to.be.text;
+      assert.strictEqual(response.headers.get('content-type'), 'text/plain');
     });
 
     it('web vitals module is being served', async () => {
-      const response = await request(`https://${domain}`)
-        .get('/.rum/web-vitals@2.1.3/dist/web-vitals.base.js');
-      expect(response).to.have.status(200);
+      const response = await fetch(`https://${domain}/.rum/web-vitals@2.1.3/dist/web-vitals.base.js`, {
+        method: 'GET',
+      });
+      assert.strictEqual(response.status, 200);
       // eslint-disable-next-line no-unused-expressions
-      expect(response).to.have.header('content-type', /^application\/javascript/);
+      assert.match(response.headers.get('content-type'), /^application\/javascript/);
     });
 
     it('web vitals module is being served without redirect', async () => {
-      const response = await request(`https://${domain}`)
-        .get('/.rum/web-vitals/dist/web-vitals.iife.js');
-      expect(response).to.have.status(200);
+      const response = await fetch(`https://${domain}/.rum/web-vitals/dist/web-vitals.iife.js`, {
+        method: 'GET',
+      });
+      assert.strictEqual(response.status, 200);
       // eslint-disable-next-line no-unused-expressions
-      expect(response).to.have.header('content-type', /^application\/javascript/);
+      assert.match(response.headers.get('content-type'), /^application\/javascript/);
     });
 
     it('rum js module is being served without redirect', async () => {
-      const response = await request(`https://${domain}`)
-        .get('/.rum/@adobe/helix-rum-js@^1/src/index.js');
-      expect(response).to.have.status(200);
+      const response = await fetch(`https://${domain}/.rum/@adobe/helix-rum-js@^1/src/index.js`, {
+        method: 'GET',
+      });
+      assert.strictEqual(response.status, 200);
       // eslint-disable-next-line no-unused-expressions
-      expect(response).to.have.header('content-type', /^application\/javascript/);
-    }).timeout(5000);
+      assert.match(response.headers.get('content-type'), /^application\/javascript/);
+    });
 
     it.skip('rum js module is being served with default replacements', async () => {
-      const response = await request(`https://${domain}`)
-        .get('/.rum/@adobe/helix-rum-js@1.0.0/src/index.js')
-        .buffer(true);
-      expect(response).to.have.status(200);
+      const response = await fetch(`https://${domain}/.rum/@adobe/helix-rum-js@1.0.0/src/index.js`, {
+        method: 'GET',
+      });
+      assert.strictEqual(response.status, 200);
       // eslint-disable-next-line no-unused-expressions
-      expect(response).to.have.header('content-type', /^application\/javascript/);
-      expect(response.text).to.contain('adobe-helix-rum-js-1.0.0');
-    }).timeout(5000);
+      assert.match(response.headers.get('content-type'), /^application\/javascript/);
+      const text = await response.text();
+      assert.include(text, 'adobe-helix-rum-js-1.0.0');
+    });
 
     it('Missing id returns 400', async () => {
-      const response = await request(`https://${domain}`)
-        .post('/')
-        .send({
+      const response = await fetch(`https://${domain}/`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
           cwv: {
             CLS: 1.0,
             LCP: 1.0,
             FID: 4,
           },
           weight: 1,
-        });
-      expect(response).to.have.status(400);
+        }),
+      });
+      assert.strictEqual(response.status, 400);
     });
 
     it('Non-numeric weight returns 400', async () => {
-      const response = await request(`https://${domain}`)
-        .post('/')
-        .send({
+      const response = await fetch(`https://${domain}/`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
           cwv: {
             CLS: 1.0,
             LCP: 1.0,
@@ -162,15 +186,20 @@ const { request } = chai.use(chaiHttp);
           },
           id: 'blablub',
           weight: 'one',
-        });
-      expect(response).to.have.status(400);
+        }),
+      });
+      assert.strictEqual(response.status, 400);
     });
 
     it('Non-object root returns 400', async () => {
-      const response = await request(`https://${domain}`)
-        .post('/')
-        .send([]);
-      expect(response).to.have.status(400);
+      const response = await fetch(`https://${domain}/`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify([]),
+      });
+      assert.strictEqual(response.status, 400);
     });
   });
 });

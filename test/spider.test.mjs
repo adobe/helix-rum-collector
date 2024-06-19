@@ -11,6 +11,7 @@
  */
 /* eslint-env mocha */
 import assert from 'assert';
+import { it, describe } from 'node:test';
 import { isSpider } from '../src/spiders.mjs';
 
 describe('Test IAB Spider List', () => {
