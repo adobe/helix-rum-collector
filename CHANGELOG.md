@@ -1,3 +1,11 @@
+## [2.23.3](https://github.com/adobe/helix-rum-collector/compare/v2.23.2...v2.23.3) (2024-06-20)
+
+
+### Bug Fixes
+
+* **utils:** guard against null ([56f772b](https://github.com/adobe/helix-rum-collector/commit/56f772ba870ac5fde07f9a92a2661e783810e78f))
+* **utils:** remove and disable checkpoints without significant usage, deprecated checkpoints, or checkpoints that should no longer be used ([9fb97f7](https://github.com/adobe/helix-rum-collector/commit/9fb97f755aba08a0587ded0a0f6f03fb736e3eb4))
+
 ## [2.23.2](https://github.com/adobe/helix-rum-collector/compare/v2.23.1...v2.23.2) (2024-06-18)
 
 
