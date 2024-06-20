@@ -17,99 +17,50 @@ export function isValidCheckpoint(checkpoint) {
   const knowncheckpoints = [
     'loadresource',
     'cwv',
-    'cwv2',
+    'cwv2', // ekrem
     'click',
     'top',
-    'lazy',
+    // 'lazy', // killed, not used in minirum anymore
     'viewmedia',
     'viewblock',
-    'leave',
-    'load',
+    // 'leave', // killed, not in the explorer
     'enter',
-    // 'pagesviewed',
     'error',
     'navigate',
-    'utm',
+    'utm', // we keep it for now - needs to play nicely with with paid
     'reload',
     'back_forward',
-    'lcp',
+    // 'lcp', // not needed anymore, helix-specific
     'missingresource',
-    'sidekick:shown',
-    'sidekick:loaded',
     'experiment',
     'formsubmit',
-    'sidekick:hidden',
-    'sidekick:updated',
-    'sidekick:previewed',
-    'sidekick:envswitched',
     '404',
-    'crosswalk:previewed',
-    'crosswalk:published',
-    'sidekick:editoropened',
-    'sidekick:published',
     'convert',
-    'audiences',
-    'viewfooter',
-    // 'datadesk',
-    'sidekick:loggedin',
     'search',
     'unsupported',
     'genai:prompt:generate',
-    'sidekick:info',
-    'genai:prompt:generatedvariations',
-    'genai:prompt:isadobeselected',
-    'formviews',
-    'formready',
-    'sidekick:custom:preflight',
-    'formabondoned',
+    // 'formviews', // no data in last 30 days
+    // 'formready', // no data in last 30 days
+    // 'formabondoned', // no data in last 30 days
     'noscript',
-    'sidekick:paletteclosed',
-    'sidekick:custom:asset-library',
-    'formfieldchange',
-    'formfieldfocus',
-    'nullsearch',
-    'sidekick:custom:library',
+    // 'formfieldchange', // no data in last 30 days
+    // 'formfieldfocus', // no data in last 30 days
+    // 'nullsearch', // killed, not in the explorer
     'variant',
-    'genai:prompt:iscustomselected',
-    'genai:consent:agree',
-    'genai:prompt:new',
-    'formhttppostput',
-    'genai:prompt:copy',
-    'sidekick:custom:localize-2',
-    'sidekick:context-menu:addRemoveProject',
-    'sidekick:viewdocsource',
-    'sidekick:context-menu:openViewDocSource',
-    // 'rfq',
-    'sidekick:unpublished',
-    'sidekick:helpnext',
-    // 'csperror',
-    'library:blockviewed',
-    'formvalidationerrors',
-    'showconsent',
+    // 'formvalidationerrors', // no data in last 30 days
     'consent',
     'paid',
     'email',
-    'genai:consent:cancel',
-    'sidekick:deleted',
-    'sidekick:custom:version-history',
-    'sidekick:custom:ost',
-    'genai:prompt:thumbsup',
-    'sidekick:custom:localize-v2',
-    'sidekick:viewhidden',
-    'sidekick:helpdismissed',
-    'sidekick:custom:tagger',
-    'sidekick:custom:assist',
-    'sidekick:helpoptedout',
-    'sidekick:custom:send-to-caas',
-    'sidekick:share',
-    'sidekick:custom:generate-variations',
-    'sidekick:projectadded',
-    'library:opened',
-    'signin',
-    'genai:prompt:export',
-    'sidekick:custom:accessibility-mode',
-    'sidekick:custom:locales',
+    'login',
+    'signup',
   ];
+  const now = Date.now();
+  // Oct 1st 2024 is the date sidekick has promised to remove the sidekick: checkpoints
+  // and use regular checkpoints instead
+  const eol = new Date(2024, 9, 1).getTime();
+  if (now < eol && checkpoint && checkpoint.startsWith('sidekick:')) {
+    return true;
+  }
   return knowncheckpoints.indexOf(checkpoint) > -1;
 }
 export function maskTime(time, timePadding) {
