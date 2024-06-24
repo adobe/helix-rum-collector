@@ -1,3 +1,10 @@
+## [2.23.4](https://github.com/adobe/helix-rum-collector/compare/v2.23.3...v2.23.4) (2024-06-24)
+
+
+### Bug Fixes
+
+* **utils:** drop unused variant checkpoint ([6607f9a](https://github.com/adobe/helix-rum-collector/commit/6607f9abed359b874bad3c2ef3b9df13ba84ad44))
+
 ## [2.23.3](https://github.com/adobe/helix-rum-collector/compare/v2.23.2...v2.23.3) (2024-06-20)
 
 
