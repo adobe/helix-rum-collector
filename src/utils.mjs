@@ -39,15 +39,20 @@ export function isValidCheckpoint(checkpoint) {
     'search',
     'unsupported',
     'genai:prompt:generate',
-    // 'formviews', // no data in last 30 days
-    // 'formready', // no data in last 30 days
-    // 'formabondoned', // no data in last 30 days
+      // forms specific checkpoints
+    'formviews',
+    'formsubmit',
+    'formready',
+    'formabondoned',
+    'formfieldchange',
+    'formfieldfocus',
+    'formvalidationerrors',
+    'formhelpviews',
+    'formhttppostput',
+      // end of forms specific checkpoints
     'noscript',
-    // 'formfieldchange', // no data in last 30 days
-    // 'formfieldfocus', // no data in last 30 days
     // 'nullsearch', // killed, not in the explorer
     'variant',
-    // 'formvalidationerrors', // no data in last 30 days
     'consent',
     'paid',
     'email',
