@@ -46,7 +46,6 @@ export function isValidCheckpoint(checkpoint) {
     // 'formfieldchange', // no data in last 30 days
     // 'formfieldfocus', // no data in last 30 days
     // 'nullsearch', // killed, not in the explorer
-    'variant',
     // 'formvalidationerrors', // no data in last 30 days
     'consent',
     'paid',
