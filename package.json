@@ -22,7 +22,7 @@
     ],
     "arch": "edge",
     "entryFile": "src/index.mjs",
-    "plugin": "@adobe/helix-deploy-fastly-compute",
+    "plugin": "@adobe/helix-deploy-plugin-edge",
     "externals": [
       "fastly:logger"
     ],
