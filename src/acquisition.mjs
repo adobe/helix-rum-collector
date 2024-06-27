@@ -10,7 +10,7 @@
  * governing permissions and limitations under the License.
  */
 const vendorClassifications = [
-  { regex: /google|googleads|google-ads|google_search|google_deman|adwords/i, result: 'google' },
+  { regex: /google|googleads|google-ads|google_search|google_deman|adwords|dv360/i, result: 'google' },
   { regex: /instagram|ig/i, result: 'instagram' },
   { regex: /facebook|fb|meta/i, result: 'facebook' },
   { regex: /bing/i, result: 'bing' },
@@ -43,12 +43,13 @@ const vendorTypeLookup = {
   yext: 'paid',
   reddit: 'paid',
   tiktok: 'paid',
+  google: 'paid',
 };
 
 const categoryClassifications = [
   { regex: /search|sem|sea$/i, result: 'search' },
   { regex: /display|programmatic|banner/i, result: 'display' },
-  { regex: /video/i, result: 'video' },
+  { regex: /video|dv360/i, result: 'video' },
   { regex: /email|newsletter/i, result: 'email' },
   { regex: /social|bio/i, result: 'social' },
   { regex: /affiliate/i, result: 'affiliate' },

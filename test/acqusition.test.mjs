@@ -31,7 +31,7 @@ describe('classifyAcquisition', () => {
     { input: 'tiktok', expected: 'paid:video:tiktok', only: true },
     { input: 'newsletter', expected: 'owned:email' },
     { input: 'instagram', expected: ':social:instagram' },
-    { input: 'dv360', expected: '' },
+    { input: 'dv360', expected: 'paid:video:google' },
     { input: 'email', expected: 'owned:email' },
     { input: 'programmatic', expected: 'paid:display' },
     { input: 'googleads', expected: 'paid:search:google', only: true },
