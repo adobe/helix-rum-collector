@@ -108,7 +108,7 @@ describe('classifyAcquisition', () => {
     { input: 'social-cpc', expected: 'paid:social' },
     { input: 'social-organic', expected: 'owned:social' },
     { input: 'link', expected: '' },
-    { input: 'ctv', expected: '' },
+    { input: 'ctv', expected: 'paid:video:amazon' },
     { input: 'print', expected: 'owned:print' },
     { input: 'paid social', expected: 'paid:social', only: true },
   ];

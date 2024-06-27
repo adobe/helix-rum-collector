@@ -35,7 +35,7 @@ const vendorClassifications = [
   { regex: /teads/i, result: 'teads' },
   { regex: /yandex/i, result: 'yandex' },
   { regex: /baidu/i, result: 'baidu' },
-  { regex: /amazon/i, result: 'amazon' },
+  { regex: /amazon|ctv/i, result: 'amazon' },
 ];
 
 /* is the vendor paid or owned */
@@ -44,12 +44,13 @@ const vendorTypeLookup = {
   reddit: 'paid',
   tiktok: 'paid',
   google: 'paid',
+  amazon: 'paid',
 };
 
 const categoryClassifications = [
   { regex: /search|sem|sea$/i, result: 'search' },
   { regex: /display|programmatic|banner/i, result: 'display' },
-  { regex: /video|dv360/i, result: 'video' },
+  { regex: /video|dv360|tv/i, result: 'video' },
   { regex: /email|newsletter/i, result: 'email' },
   { regex: /social|bio/i, result: 'social' },
   { regex: /affiliate/i, result: 'affiliate' },
