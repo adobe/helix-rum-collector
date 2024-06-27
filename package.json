@@ -21,6 +21,7 @@
       "cloudflare"
     ],
     "arch": "edge",
+    "directory": "bin",
     "entryFile": "src/index.mjs",
     "plugin": "@adobe/helix-deploy-plugin-edge",
     "externals": [
