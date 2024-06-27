@@ -21,6 +21,7 @@ describe('classifyAcquisition', () => {
     { input: 'bing', expected: 'paid:search:bing' },
     { input: 'ig', expected: ':social:instagram' },
     { input: 'meta', expected: ':social:facebook' },
+    { input: 'push', expected: 'owned:push' },
     { input: 'youtube', expected: ':video:youtube' },
     { input: 'linkedin', expected: ':social:linkedin' },
     { input: 'gmb', expected: '' },

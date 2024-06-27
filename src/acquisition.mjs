@@ -52,6 +52,7 @@ const categoryClassifications = [
   { regex: /local/i, result: 'local' },
   { regex: /sms/i, result: 'sms' },
   { regex: /qr/i, result: 'qr' },
+  { regex: /push/i, result: 'push' },
   { regex: /print/i, result: 'print' },
   { regex: /web/i, result: 'web' },
 ];
@@ -61,6 +62,7 @@ const paidOwnedClassifications = [
   // "organic" is treated as "owned" as it is not paid and not earned
   // (noone puts UTM tags on real organic traffic)
   { regex: /email|newsletter|hs_email|organic|sms|qr|qrcode|print|website|web|linkin.bio/i, result: 'owned' },
+  { regex: /push/i, result: 'owned' },
   // { regex: /social/i, result: 'earned' },
 ];
 
