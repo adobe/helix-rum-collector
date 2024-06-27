@@ -131,10 +131,12 @@ function paidowned(origin, vendorResult, categoryResult) {
   return vendorTypeLookup[vendorResult] || categoryTypeLookup[categoryResult] || '';
 }
 
-export function classifyAcquisition(origin) {
+export function classifyAcquisition(origin, isPaid = false) {
   const vendorResult = vendor(origin);
   const categoryResult = category(origin, vendorResult);
-  const paidOwnedResult = paidowned(origin, vendorResult, categoryResult);
+  const paidOwnedResult = isPaid
+    ? 'paid'
+    : paidowned(origin, vendorResult, categoryResult);
 
   let result = paidOwnedResult;
   if (categoryResult || vendorResult) {
