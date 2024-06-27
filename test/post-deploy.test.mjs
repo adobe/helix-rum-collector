@@ -34,7 +34,7 @@ import assert from 'assert';
       const msg = {
         headers: response.headers.plain(),
         body: await response.text(),
-      }
+      };
       assert.strictEqual(response.status, 400, JSON.stringify(msg, null, 2));
     });
 
