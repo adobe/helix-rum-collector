@@ -10,7 +10,7 @@
  * governing permissions and limitations under the License.
  */
 const vendorClassifications = [
-  { regex: /google|googleads|google-ads|google_search|google_deman|adwords|dv360|gdn|doubleclick|dbm/i, result: 'google' },
+  { regex: /google|googleads|google-ads|google_search|google_deman|adwords|dv360|gdn|doubleclick|dbm|gmb/i, result: 'google' },
   { regex: /instagram|ig/i, result: 'instagram' },
   { regex: /facebook|fb|meta/i, result: 'facebook' },
   { regex: /bing/i, result: 'bing' },
@@ -43,7 +43,6 @@ const vendorTypeLookup = {
   yext: 'paid',
   reddit: 'paid',
   tiktok: 'paid',
-  google: 'paid',
   amazon: 'paid',
 };
 
@@ -54,7 +53,7 @@ const categoryClassifications = [
   { regex: /email|newsletter/i, result: 'email' },
   { regex: /social|bio/i, result: 'social' },
   { regex: /affiliate/i, result: 'affiliate' },
-  { regex: /local/i, result: 'local' },
+  { regex: /local|gmb/i, result: 'local' },
   { regex: /sms/i, result: 'sms' },
   { regex: /qr/i, result: 'qr' },
   { regex: /push/i, result: 'push' },
@@ -63,11 +62,12 @@ const categoryClassifications = [
 ];
 
 const paidOwnedClassifications = [
-  { regex: /cpc|ppc|paid|cpm|cpv|banner|display|programmatic|affiliate|^sea$|ads/i, result: 'paid' },
+  { regex: /cpc|ppc|paid|cpm|cpv|banner|display|programmatic|affiliate|^sea$|ads|dv360/i, result: 'paid' },
   // "organic" is treated as "owned" as it is not paid and not earned
   // (noone puts UTM tags on real organic traffic)
   { regex: /email|newsletter|hs_email|organic|sms|qr|qrcode|print|website|web|linkin.bio/i, result: 'owned' },
   { regex: /push/i, result: 'owned' },
+  { regex: /gmb/i, result: '' },
   // { regex: /social/i, result: 'earned' },
 ];
 
@@ -103,7 +103,6 @@ const categoryTypeLookup = {
   search: 'paid',
   display: 'paid',
   affiliate: 'paid',
-  local: 'paid',
   email: 'owned',
   web: 'owned',
   sms: 'owned',
