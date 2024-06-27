@@ -60,8 +60,5 @@
     "jsdoc-to-markdown": "8.0.1",
     "semantic-release": "24.0.0",
     "semantic-release-slack-bot": "4.0.2"
-  },
-  "dependencies": {
-    "@adobe/helix-deploy-fastly-compute": "^0.0.1"
   }
 }
