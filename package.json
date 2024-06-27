@@ -21,7 +21,7 @@
       "cloudflare"
     ],
     "arch": "edge",
-    "distDir": "bin/dist",
+    "distDirectory": "bin/dist",
     "entryFile": "src/index.mjs",
     "plugin": "@adobe/helix-deploy-plugin-edge",
     "fastlyGateway": "deploy-test.anywhere.run",
