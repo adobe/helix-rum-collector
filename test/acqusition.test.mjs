@@ -44,7 +44,7 @@ describe('classifyAcquisition', () => {
     { input: 'microsoft', expected: 'paid:display:microsoft', only: true },
     { input: 'adwords', expected: 'paid:search:google', only: true },
     { input: 'pinterest', expected: ':social:pinterest' },
-    { input: 'gdn', expected: '' },
+    { input: 'gdn', expected: 'paid:display:google' },
     { input: 'facebook-instagram', expected: ':social:instagram', only: true },
     { input: 'twitter', expected: ':social:x' },
     { input: 'snapchat', expected: ':social:snapchat' },
