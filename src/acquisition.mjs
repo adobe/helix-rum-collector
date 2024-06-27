@@ -33,6 +33,9 @@ const vendorClassifications = [
   { regex: /line/i, result: 'line' },
   { regex: /yext/i, result: 'yext' },
   { regex: /teads/i, result: 'teads' },
+  { regex: /yandex/i, result: 'yandex' },
+  { regex: /baidu/i, result: 'baidu' },
+  { regex: /amazon/i, result: 'amazon' },
 ];
 
 /* is the vendor paid or owned */
@@ -89,6 +92,9 @@ const vendorCategoryLookup = {
   microsoft: 'display',
   marketo: 'email',
   tiktok: 'video',
+  amazon: 'display',
+  yandex: 'search',
+  baidu: 'search',
 };
 
 const categoryTypeLookup = {
