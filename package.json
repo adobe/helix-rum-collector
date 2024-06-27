@@ -5,8 +5,8 @@
   "description": "Collect Real User Monitoring Data for Helix",
   "main": "src/index.mjs",
   "scripts": {
-    "fastly-build": "hedy --build --verbose --directory $INIT_CWD/bin --entryFile $INIT_CWD/src/index.mjs --target c@e --arch node --arch edge --externals fastly:logger --package.name helix3",
-    "deploy": "hedy --build --verbose --directory $INIT_CWD/bin --entryFile $INIT_CWD/src/index.mjs --deploy --fastly-auth $HLX_FASTLY_AUTH --compute-service-id ${HLX_FASTLY_SVC:-5Qir8H8bLeaRuldIp9TWq4} --target c@e --arch node --arch edge --fastly-gateway deploy-test.anywhere.run --externals fastly:logger --package.name helix3 --target cloudflare --cloudflare-email $HLX_CLOUDFLARE_EMAIL --cloudflare-account-id $HLX_CLOUDFLARE_ACCOUNT --cloudflare-auth $HLX_CLOUDFLARE_AUTH --name ${HLX_CLOUDFLARE_NAME:-helix-rum-collector-prod}",
+    "fastly-build": "hedy --build --verbose",
+    "deploy": "hedy --build --verbose --deploy --fastly-auth $HLX_FASTLY_AUTH --compute-service-id ${HLX_FASTLY_SVC:-5Qir8H8bLeaRuldIp9TWq4} --cloudflare-email $HLX_CLOUDFLARE_EMAIL --cloudflare-account-id $HLX_CLOUDFLARE_ACCOUNT --cloudflare-auth $HLX_CLOUDFLARE_AUTH --name ${HLX_CLOUDFLARE_NAME:-helix-rum-collector-prod}",
     "predeploy": "node tools/spider-list.js",
     "test": "node --test --experimental-test-coverage --test-reporter=lcov --test-reporter-destination=lcov.info --test-reporter=spec --test-reporter-destination=stdout --test-reporter=junit --test-reporter-destination=junit.xml --test-name-pattern=Test",
     "pretest": "node tools/spider-list.js",
@@ -14,6 +14,22 @@
     "prelint": "node tools/spider-list.js",
     "lint": "./node_modules/.bin/eslint .",
     "semantic-release": "semantic-release"
+  },
+  "wsk": {
+    "target": [
+      "c@e",
+      "cloudflare"
+    ],
+    "arch": "edge",
+    "entryFile": "src/index.mjs",
+    "plugin": "@adobe/helix-deploy-fastly-compute",
+    "externals": [
+      "fastly:logger"
+    ],
+    "fastlyGateway": "deploy-test.anywhere.run",
+    "package": {
+      "name": "helix3"
+    }
   },
   "mocha": {
     "reporter": "mocha-multi-reporters",
@@ -30,7 +46,8 @@
   "homepage": "https://github.com/adobe/helix-rum-collector#readme",
   "devDependencies": {
     "@adobe/eslint-config-helix": "2.0.6",
-    "@adobe/helix-deploy": "11.1.15",
+    "@adobe/helix-deploy": "12.0.0-pre.2",
+    "@adobe/helix-deploy-plugin-edge": "0.0.1",
     "@adobe/semantic-release-coralogix": "1.1.31",
     "@semantic-release/changelog": "6.0.3",
     "@semantic-release/exec": "6.0.3",
@@ -43,5 +60,8 @@
     "jsdoc-to-markdown": "8.0.1",
     "semantic-release": "24.0.0",
     "semantic-release-slack-bot": "4.0.2"
+  },
+  "dependencies": {
+    "@adobe/helix-deploy-fastly-compute": "^0.0.1"
   }
 }
