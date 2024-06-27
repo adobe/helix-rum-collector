@@ -10,7 +10,7 @@
  * governing permissions and limitations under the License.
  */
 const vendorClassifications = [
-  { regex: /google|googleads|google-ads|google_search|google_deman|adwords|dv360|gdn/i, result: 'google' },
+  { regex: /google|googleads|google-ads|google_search|google_deman|adwords|dv360|gdn|doubleclick|dbm/i, result: 'google' },
   { regex: /instagram|ig/i, result: 'instagram' },
   { regex: /facebook|fb|meta/i, result: 'facebook' },
   { regex: /bing/i, result: 'bing' },
@@ -49,7 +49,7 @@ const vendorTypeLookup = {
 
 const categoryClassifications = [
   { regex: /search|sem|sea$/i, result: 'search' },
-  { regex: /display|programmatic|banner|gdn/i, result: 'display' },
+  { regex: /display|programmatic|banner|gdn|dbm/i, result: 'display' },
   { regex: /video|dv360|tv/i, result: 'video' },
   { regex: /email|newsletter/i, result: 'email' },
   { regex: /social|bio/i, result: 'social' },

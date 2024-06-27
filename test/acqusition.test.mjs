@@ -70,7 +70,7 @@ describe('classifyAcquisition', () => {
     { input: 'sms', expected: 'owned:sms' },
     { input: 'qr', expected: 'owned:qr' },
     { input: 'reddit', expected: 'paid:social:reddit', only: true },
-    { input: 'dbm', expected: '' },
+    { input: 'dbm', expected: 'paid:display:google' },
     { input: 'google_search', expected: 'paid:search:google', only: true },
     { input: 'qrcode', expected: 'owned:qr' },
     { input: 'linkin.bio', expected: 'owned:social', only: true },
