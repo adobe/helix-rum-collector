@@ -31,11 +31,7 @@ import assert from 'assert';
       const response = await fetch(`https://${domain}`, {
         method: 'POST',
       });
-      const msg = {
-        headers: response.headers.plain(),
-        body: await response.text(),
-      };
-      assert.strictEqual(response.status, 400, JSON.stringify(msg, null, 2));
+      assert.strictEqual(response.status, 400);
     });
 
     it('RUM collection with masked timestamp (t) returns 201', async () => {
