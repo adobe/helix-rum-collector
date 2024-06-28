@@ -45,7 +45,7 @@
   "devDependencies": {
     "@adobe/eslint-config-helix": "2.0.6",
     "@adobe/helix-deploy": "12.0.0-pre.3",
-    "@adobe/helix-deploy-plugin-edge": "0.0.2",
+    "@adobe/helix-deploy-plugin-edge": "0.0.3",
     "@adobe/semantic-release-coralogix": "1.1.31",
     "@semantic-release/changelog": "6.0.3",
     "@semantic-release/exec": "6.0.3",
