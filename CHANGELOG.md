@@ -1,3 +1,23 @@
+# [2.24.0](https://github.com/adobe/helix-rum-collector/compare/v2.23.4...v2.24.0) (2024-06-28)
+
+
+### Bug Fixes
+
+* **acq:** dv360 is paid video ([18b00e7](https://github.com/adobe/helix-rum-collector/commit/18b00e7895cb5b610340c97d0ee3d14fdd657d91))
+* **acq:** identify doubleclick bid manager ([0d5f57e](https://github.com/adobe/helix-rum-collector/commit/0d5f57eb09c79360297a99d7720172034ae58f29))
+
+
+### Features
+
+* **acq:** add push ([1f0c765](https://github.com/adobe/helix-rum-collector/commit/1f0c7651202bae4131ce422740a857507dce33de))
+* **acq:** add yandex, baidu, amazon ([3c4bb97](https://github.com/adobe/helix-rum-collector/commit/3c4bb978c138266a98805473abf5636068e1caf2))
+* **acq:** detect google my business (can be owned or earned) ([d2c8532](https://github.com/adobe/helix-rum-collector/commit/d2c85324425972f1c1531fd83b6d09672a5e5832))
+* **acq:** identify amazon connected tv ([12fcb56](https://github.com/adobe/helix-rum-collector/commit/12fcb56f8f0be63e8413e9d15847452d049a21af))
+* **acq:** identify google display network ([98c624c](https://github.com/adobe/helix-rum-collector/commit/98c624c2c222579e33783224a1f570af69fc7c02))
+* **logger:** introduce `acqusition` checkpoint ([339e9b5](https://github.com/adobe/helix-rum-collector/commit/339e9b5030cc2439b9e957ceabe650a1dbe91ece))
+* **utils:** add classifier for traffic acqusition ([c3a2655](https://github.com/adobe/helix-rum-collector/commit/c3a2655f52579c42f62f34dbb6c1fcff91777306))
+* **utils:** allow-list acquisition checkpoint ([d2caacd](https://github.com/adobe/helix-rum-collector/commit/d2caacdfd7b8072d9517e9ef7422477d03f6c428))
+
 ## [2.23.4](https://github.com/adobe/helix-rum-collector/compare/v2.23.3...v2.23.4) (2024-06-24)
 
 
