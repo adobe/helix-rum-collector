@@ -50,6 +50,7 @@ export function isValidCheckpoint(checkpoint) {
     'consent',
     'paid',
     'email',
+    'acquisition',
     'login',
     'signup',
   ];
