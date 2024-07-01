@@ -18,6 +18,7 @@ pkg
 *.map
 vendor/package
 junit
+junit.xml
 src/spiders.mjs
 .idea/
-
+lcov.info
