@@ -12,6 +12,8 @@
 import { Logger } from './logger.mjs';
 import {
   cleanurl, getMaskedTime, getMaskedUserAgent, getSubsystem,
+  isReasonableWeight,
+  isValidCheckpoint,
 } from './utils.mjs';
 
 export class CoralogixLogger {
@@ -40,11 +42,16 @@ export class CoralogixLogger {
     console.log(`logging to Coralogix: ${typeof this.logger}`);
     const maskedNow = getMaskedTime(timePadding);
 
+    let severity = 3;
+    if (checkpoint === 'error') severity = 5;
+    if (!isReasonableWeight(weight)) severity = 4;
+    if (!isValidCheckpoint(checkpoint)) severity = 4;
+
     const data = {
       timestamp: now,
       applicationName: 'helix-rum-collector',
       subsystemName: this.subsystemName,
-      severity: checkpoint === 'error' ? 5 : 3,
+      severity,
       // Coralogix recommends using a string for the text field, even though JSON could be used
       text: JSON.stringify({
         edgecompute: {
