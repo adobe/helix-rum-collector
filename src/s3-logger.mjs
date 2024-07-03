@@ -12,7 +12,7 @@
 import { classifyAcquisition } from './acquisition.mjs';
 import { Logger } from './logger.mjs';
 import {
-  cleanurl, getMaskedTime, getMaskedUserAgent, getSubsystem, isValidCheckpoint,
+  cleanurl, getMaskedTime, getMaskedUserAgent, getSubsystem, isReasonableWeight, isValidCheckpoint,
 } from './utils.mjs';
 
 export class S3Logger {
@@ -25,7 +25,7 @@ export class S3Logger {
   }
 
   logRUM(json, id, weight, referer, generation, checkpoint, target, source, timePadding) {
-    if (!isValidCheckpoint(checkpoint)) {
+    if (!isValidCheckpoint(checkpoint) && !isReasonableWeight(weight)) {
       return;
     }
     console.log('logging to S3');

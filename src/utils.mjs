@@ -13,6 +13,13 @@
 import { isSpider } from './spiders.mjs';
 import { bots } from './bots.mjs';
 
+export function isReasonableWeight(weight) {
+  return [1, // debug
+    10, // low
+    100, // default
+    1000, // high
+  ].includes(weight);
+}
 export function isValidCheckpoint(checkpoint) {
   const knowncheckpoints = [
     'loadresource',
