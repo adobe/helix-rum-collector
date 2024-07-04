@@ -1,3 +1,16 @@
+# [2.25.0](https://github.com/adobe/helix-rum-collector/compare/v2.24.0...v2.25.0) (2024-07-04)
+
+
+### Bug Fixes
+
+* **loggers:** only log to consequential targets if weight is reasonable ([f85d143](https://github.com/adobe/helix-rum-collector/commit/f85d14368646d3504cc8b11b7d8db1aa7b41ca06))
+* **utils:** guard against non-string checkpoints ([d73a49c](https://github.com/adobe/helix-rum-collector/commit/d73a49c9c5747bc9465a8a0da64de4fbe1878a68))
+
+
+### Features
+
+* **coralogix:** log unsupported checkpoints and unreasonable weights as warnings ([83f9a93](https://github.com/adobe/helix-rum-collector/commit/83f9a93556ae47fd19844c8261821cd48ddb0034))
+
 # [2.24.0](https://github.com/adobe/helix-rum-collector/compare/v2.23.4...v2.24.0) (2024-06-28)
 
 
