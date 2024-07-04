@@ -13,6 +13,13 @@
 import { isSpider } from './spiders.mjs';
 import { bots } from './bots.mjs';
 
+export function isReasonableWeight(weight) {
+  return [1, // debug
+    10, // low
+    100, // default
+    1000, // high
+  ].includes(weight);
+}
 export function isValidCheckpoint(checkpoint) {
   const knowncheckpoints = [
     'loadresource',
@@ -58,7 +65,7 @@ export function isValidCheckpoint(checkpoint) {
   // Oct 1st 2024 is the date sidekick has promised to remove the sidekick: checkpoints
   // and use regular checkpoints instead
   const eol = new Date(2024, 9, 1).getTime();
-  if (now < eol && checkpoint && checkpoint.startsWith('sidekick:')) {
+  if (now < eol && checkpoint && typeof checkpoint === 'string' && checkpoint.startsWith('sidekick:')) {
     return true;
   }
   return knowncheckpoints.indexOf(checkpoint) > -1;

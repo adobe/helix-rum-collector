@@ -11,7 +11,7 @@
  */
 import { Logger } from './logger.mjs';
 import {
-  cleanurl, getMaskedTime, getMaskedUserAgent, getSubsystem, isValidCheckpoint,
+  cleanurl, getMaskedTime, getMaskedUserAgent, getSubsystem, isReasonableWeight, isValidCheckpoint,
 } from './utils.mjs';
 import { classifyAcquisition } from './acquisition.mjs';
 
@@ -25,7 +25,7 @@ export class GoogleLogger {
   }
 
   logRUM(json, id, weight, referer, generation, checkpoint, target, source, timePadding) {
-    if (!isValidCheckpoint(checkpoint)) {
+    if (!isValidCheckpoint(checkpoint) && !isReasonableWeight(weight)) {
       return;
     }
     console.log('logging to Google');
