@@ -16,6 +16,7 @@ import { bots } from './bots.mjs';
 export function isReasonableWeight(weight) {
   return [1, // debug
     10, // low
+    20, // that one customer who's doing it differently
     100, // default
     1000, // high
   ].includes(weight);
