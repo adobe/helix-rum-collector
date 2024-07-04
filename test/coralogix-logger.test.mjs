@@ -46,7 +46,7 @@ describe('Test Coralogix Logger', () => {
     assert.equal(logged.timestamp, now);
     assert.equal('helix-rum-collector', logged.applicationName);
     assert.equal('www.foo.com', logged.subsystemName);
-    assert.equal(3, logged.severity);
+    assert.equal(4, logged.severity);
 
     assert.ok(!logged.json, 'JSON should be empty');
     assert.ok(logged.text);
