@@ -1,3 +1,10 @@
+## [2.25.1](https://github.com/adobe/helix-rum-collector/compare/v2.25.0...v2.25.1) (2024-07-04)
+
+
+### Bug Fixes
+
+* **utils:** allow a weight of 20, too ([1ee7212](https://github.com/adobe/helix-rum-collector/commit/1ee7212d1e21a1b0a139febeae696fd92d98338e))
+
 # [2.25.0](https://github.com/adobe/helix-rum-collector/compare/v2.24.0...v2.25.0) (2024-07-04)
 
 
