@@ -10,6 +10,7 @@
  * governing permissions and limitations under the License.
  */
 import { classifyAcquisition } from './acquisition.mjs';
+import { classifyConsent } from './consent.mjs';
 import { Logger } from './logger.mjs';
 import {
   cleanurl, getMaskedTime, getMaskedUserAgent, getSubsystem, isReasonableWeight, isValidCheckpoint,
@@ -39,6 +40,12 @@ export class S3Logger {
     if (checkpoint === 'paid' || checkpoint === 'email') {
       checkpoint = 'acquisition';
       source = classifyAcquisition(source, true);
+    }
+    const consent = checkpoint === 'click' && classifyConsent(source);
+    if (consent) {
+      checkpoint = consent.checkpoint;
+      source = consent.source;
+      target = consent.target;
     }
 
     const data = {
