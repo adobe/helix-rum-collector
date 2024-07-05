@@ -14,6 +14,7 @@ import {
   cleanurl, getMaskedTime, getMaskedUserAgent, getSubsystem, isReasonableWeight, isValidCheckpoint,
 } from './utils.mjs';
 import { classifyAcquisition } from './acquisition.mjs';
+import { classifyConsent } from './consent.mjs';
 
 export class GoogleLogger {
   constructor(req) {
@@ -39,6 +40,12 @@ export class GoogleLogger {
     if (checkpoint === 'paid' || checkpoint === 'email') {
       checkpoint = 'acquisition';
       source = classifyAcquisition(source, true);
+    }
+    const consent = checkpoint === 'click' && classifyConsent(source);
+    if (consent) {
+      checkpoint = consent.checkpoint;
+      source = consent.source;
+      target = consent.target;
     }
 
     const data = {
