@@ -1,3 +1,10 @@
+## [2.25.3](https://github.com/adobe/helix-rum-collector/compare/v2.25.2...v2.25.3) (2024-07-09)
+
+
+### Bug Fixes
+
+* guard against potential non-strings ([#354](https://github.com/adobe/helix-rum-collector/issues/354)) ([2672bae](https://github.com/adobe/helix-rum-collector/commit/2672bae2da183810880f801c1613875c65ab5f5a)), closes [#353](https://github.com/adobe/helix-rum-collector/issues/353)
+
 ## [2.25.2](https://github.com/adobe/helix-rum-collector/compare/v2.25.1...v2.25.2) (2024-07-09)
 
 
