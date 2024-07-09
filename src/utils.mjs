@@ -213,7 +213,7 @@ function cleanJWT(str) {
   if (str && typeof str.replace === 'function') {
     return str.replace(/eyJ[a-zA-Z0-9]+\.eyJ[a-zA-Z0-9]+\.[a-zA-Z0-9]+/g, '<jwt>');
   }
-  return '';
+  return str;
 }
 
 export function cleanurl(url) {
