@@ -210,7 +210,10 @@ function cleanJWT(str) {
   // are always two segments of base64-encoded JSON and a signature,
   // separated by three dots. When we find this, we replace the string
   // with a generic placeholder.
-  return str && str.replace(/eyJ[a-zA-Z0-9]+\.eyJ[a-zA-Z0-9]+\.[a-zA-Z0-9]+/g, '<jwt>');
+  if (str && typeof str.replace === 'function') {
+    return str.replace(/eyJ[a-zA-Z0-9]+\.eyJ[a-zA-Z0-9]+\.[a-zA-Z0-9]+/g, '<jwt>');
+  }
+  return '';
 }
 
 export function cleanurl(url) {
