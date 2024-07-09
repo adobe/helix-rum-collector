@@ -1,3 +1,10 @@
+## [2.25.2](https://github.com/adobe/helix-rum-collector/compare/v2.25.1...v2.25.2) (2024-07-09)
+
+
+### Bug Fixes
+
+* **utils:** strip away JWT tokens in paths ([424f9bb](https://github.com/adobe/helix-rum-collector/commit/424f9bbedfab93ef42d28ea77debe3c43c183613))
+
 ## [2.25.1](https://github.com/adobe/helix-rum-collector/compare/v2.25.0...v2.25.1) (2024-07-04)
 
 
