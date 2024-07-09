@@ -112,6 +112,9 @@ describe('Test Utils', () => {
     assert.equal('http://foo.bar.com:9091/test', cleanurl('http://someone:something@foo.bar.com:9091/test'));
     // jwt tokens in URLs are discarded
     assert.equal(cleanurl('https://www.example.com/eyJmYWtlIjogdHJ1ZX0.eyJmYWtlIjogdHJ1ZX0.c3VwZXJmYWtl/auth'), 'https://www.example.com/%3Cjwt%3E/auth');
+    assert.equal(cleanurl(123), 123);
+    assert.equal(cleanurl(''), '');
+    assert.equal(cleanurl(null), null);
   });
 
   it('Get Forwarded Host', () => {
