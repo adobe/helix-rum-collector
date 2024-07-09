@@ -205,6 +205,14 @@ export function getMaskedUserAgent(headers) {
   return `desktop${getDesktopOS(lcUA)}`;
 }
 
+function cleanJWT(str) {
+  // sometimes we see JWTs in URLs or source or target values. These
+  // are always two segments of base64-encoded JSON and a signature,
+  // separated by three dots. When we find this, we replace the string
+  // with a generic placeholder.
+  return str && str.replace(/eyJ[a-zA-Z0-9]+\.eyJ[a-zA-Z0-9]+\.[a-zA-Z0-9]+/g, '<jwt>');
+}
+
 export function cleanurl(url) {
   // if URL does not parse, return it as is
   try {
@@ -214,9 +222,10 @@ export function cleanurl(url) {
     u.username = '';
     u.password = '';
     u.hash = '';
+    u.pathname = cleanJWT(u.pathname);
     return u.toString();
   } catch (e) {
-    return url;
+    return cleanJWT(url);
   }
 }
 
