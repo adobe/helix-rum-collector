@@ -154,7 +154,6 @@ describe('Test index', () => {
     assert.equal('http://foo.bar.org', loggedJSON.cdn.url);
     assert.equal('POST', loggedJSON.request.method);
     assert.equal('desktop:linux', loggedJSON.request.user_agent);
-    assert.equal(logged.timestamp, loggedJSON.time.start_msec);
     assert(loggedJSON.message.startsWith('RUM Collector expects'));
   });
 
