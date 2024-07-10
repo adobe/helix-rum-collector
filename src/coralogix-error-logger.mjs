@@ -29,7 +29,7 @@ export class CoralogixErrorLogger {
     const ts = getMaskedTime(timePadding);
 
     const data = {
-      timestamp: ts,
+      timestamp: now,
       applicationName: 'helix-rum-collector',
       subsystemName: this.subsystemName,
       severity: Math.floor(status / 100),
