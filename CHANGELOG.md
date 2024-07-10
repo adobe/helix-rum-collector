@@ -1,3 +1,10 @@
+## [2.25.4](https://github.com/adobe/helix-rum-collector/compare/v2.25.3...v2.25.4) (2024-07-10)
+
+
+### Bug Fixes
+
+* **coralogix:** don't mask error time ([939191f](https://github.com/adobe/helix-rum-collector/commit/939191f16368efe11ee255b7fb84c54aab8e55ea))
+
 ## [2.25.3](https://github.com/adobe/helix-rum-collector/compare/v2.25.2...v2.25.3) (2024-07-09)
 
 
