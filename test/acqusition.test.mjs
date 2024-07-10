@@ -13,7 +13,7 @@ import assert from 'assert';
 import { describe, it } from 'node:test';
 import { classifyAcquisition } from '../src/acquisition.mjs';
 
-describe('classifyAcquisition', () => {
+describe('Test classifyAcquisition', () => {
   const testCases = [
     { input: 'google', expected: 'paid:search:google', only: true },
     { input: 'facebook', expected: ':social:facebook' },
