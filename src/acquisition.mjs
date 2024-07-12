@@ -9,8 +9,13 @@
  * OF ANY KIND, either express or implied. See the License for the specific language
  * governing permissions and limitations under the License.
  */
+/* eslint-disable object-curly-newline */
+
+const hasText = (s) => typeof s === 'string' && s.trim().length > 0;
+const sanitize = (str) => (str || '').toLowerCase().replace(/[^a-zA-Z0-9]/, '');
+
 const vendorClassifications = [
-  { regex: /google|googleads|google-ads|google_search|google_deman|adwords|dv360|gdn|doubleclick|dbm|gmb/i, result: 'google' },
+  { regex: /google|googleads|google-ads|google_search|google_deman|adwords|dv360|gdn|doubleclick|dbm|gmb|2mdn/i, result: 'google' },
   { regex: /instagram|ig/i, result: 'instagram' },
   { regex: /facebook|fb|meta/i, result: 'facebook' },
   { regex: /bing/i, result: 'bing' },
@@ -36,79 +41,109 @@ const vendorClassifications = [
   { regex: /yandex/i, result: 'yandex' },
   { regex: /baidu/i, result: 'baidu' },
   { regex: /amazon|ctv/i, result: 'amazon' },
+  { regex: /duckduckgo/i, result: 'duckduckgo' },
 ];
 
-/* is the vendor paid or owned */
-const vendorTypeLookup = {
-  yext: 'paid',
-  reddit: 'paid',
-  tiktok: 'paid',
-  amazon: 'paid',
+// Known tracking params
+const tracking = {
+  paid: /gclid|gclsrc|wbraid|gbraid|dclid|msclkid|fb(cl|ad_|pxl_)id|tw(clid|src|term)|li_fat_id|epik|ttclid/,
+  email: /mc_([ce])id|mkt_tok/,
 };
 
-const categoryClassifications = [
-  { regex: /search|sem|sea$/i, result: 'search' },
-  { regex: /display|programmatic|banner|gdn|dbm/i, result: 'display' },
-  { regex: /video|dv360|tv/i, result: 'video' },
-  { regex: /email|newsletter/i, result: 'email' },
-  { regex: /social|bio/i, result: 'social' },
-  { regex: /affiliate/i, result: 'affiliate' },
-  { regex: /local|gmb/i, result: 'local' },
-  { regex: /sms/i, result: 'sms' },
-  { regex: /qr/i, result: 'qr' },
-  { regex: /push/i, result: 'push' },
-  { regex: /print/i, result: 'print' },
-  { regex: /web/i, result: 'web' },
-];
-
-const paidOwnedClassifications = [
-  { regex: /cpc|ppc|paid|cpm|cpv|banner|display|programmatic|affiliate|^sea$|ads|dv360/i, result: 'paid' },
-  // "organic" is treated as "owned" as it is not paid and not earned
-  // (noone puts UTM tags on real organic traffic)
-  { regex: /email|newsletter|hs_email|organic|sms|qr|qrcode|print|website|web|linkin.bio/i, result: 'owned' },
-  { regex: /push/i, result: 'owned' },
-  { regex: /gmb/i, result: '' },
-  // { regex: /social/i, result: 'earned' },
-];
-
-const vendorCategoryLookup = {
-  google: 'search',
-  bing: 'search',
-  yahoo: 'search',
-  facebook: 'social',
-  instagram: 'social',
-  linkedin: 'social',
-  x: 'social',
-  snapchat: 'social',
-  pinterest: 'social',
-  reddit: 'social',
-  youtube: 'video',
-  spotify: 'display',
-  yext: 'local',
-  line: 'social',
-  substack: 'email',
-  outbrain: 'display',
-  taboola: 'display',
-  criteo: 'display',
-  eloqua: 'email',
-  microsoft: 'display',
-  marketo: 'email',
-  tiktok: 'video',
-  amazon: 'display',
-  yandex: 'search',
-  baidu: 'search',
+// Known referrers
+const referrers = {
+  search: /^(https?:\/\/)?(.*\.)?(google|yahoo|bing|yandex|baidu|duckduckgo|brave|ecosia|aol|startpage|ask)\.(.*)(\/|$)/,
+  social: /^(https?:\/\/)?(.*\.)?(facebook|tiktok|snapchat|x|twitter|pinterest|reddit|linkedin|threads|quora|discord|tumblr|mastodon|bluesky|instagram)\.(.*)(\/|$)/,
+  ad: /googlesyndication|2mdn|spotify/,
+  video: /^(https?:\/\/)?(.*\.)?(youtube|vimeo|twitch|dailymotion|wistia|amazon)\.(.*)(\/|$)/,
 };
 
-const categoryTypeLookup = {
-  search: 'paid',
-  display: 'paid',
-  affiliate: 'paid',
-  email: 'owned',
-  web: 'owned',
-  sms: 'owned',
-  qr: 'owned',
-  print: 'owned',
+// Known UTM Sources
+const utmSources = {
+  paid: ['gdn'],
 };
+
+// Known UTM Mediums
+const utmMediums = {
+  paid: /^\bpp\b|(.*(cp[acmuv]|ppc|paid|display|banner|poster|placement|ads|adwords|dbm|programmatic).*)$/,
+  search: ['google', 'paidsearch', 'paidsearchnb', 'sea', 'sem'],
+  social: ['facebook', 'gnews', 'instagramfeed', 'instagramreels', 'instagramstories', 'line', 'linkedin', 'metasearch', 'organicsocialown', 'paidsocial', 'social', 'sociallinkedin', 'socialpaid'],
+  video: /video|dv360|tv/i,
+  affiliate: ['aff', 'affiliate', 'affiliatemarketing'],
+  organicsocial: ['organicsocial'],
+  email: ['em', 'email', 'mail', 'newsletter', 'hs_email'],
+  sms: ['sms', 'mms'],
+  qr: ['qr', 'qrcode'],
+  push: ['push', 'pushnotification'],
+  local: ['gmb'],
+};
+
+// HELPERS
+const any = () => true;
+const anyOf = (truth) => (text) => {
+  if (Array.isArray(truth)) return truth.includes(text);
+  if (truth instanceof RegExp) return truth.test(text);
+  return truth === text;
+};
+const none = (input) => (Array.isArray(input) ? input.length === 0 : !hasText(input));
+const not = (truth) => (text) => {
+  if (Array.isArray(truth)) return !truth.includes(text);
+  if (truth instanceof RegExp) return !truth.test(text);
+  return truth !== text;
+};
+const another = (truth) => (text) => hasText(text) && truth !== text;
+const same = (truth) => (text) => hasText(text) && truth === text;
+const notEmpty = (text) => hasText(text);
+
+const RULES = (origin) => ([
+  // PAID
+  { category: 'paid:search', referrer: anyOf(referrers.search), utmSource: any, utmMedium: anyOf(utmMediums.search), tracking: none },
+  { category: 'paid:search', referrer: anyOf(referrers.search), utmSource: any, utmMedium: anyOf(utmMediums.paid), tracking: none },
+  { category: 'paid:search', referrer: anyOf(referrers.search), utmSource: any, utmMedium: any, tracking: anyOf(tracking.paid) },
+
+  { category: 'paid:social', referrer: anyOf(referrers.social), utmSource: any, utmMedium: anyOf(utmMediums.social), tracking: none },
+  { category: 'paid:social', referrer: anyOf(referrers.social), utmSource: any, utmMedium: anyOf(utmMediums.paid), tracking: none },
+  { category: 'paid:social', referrer: anyOf(referrers.social), utmSource: any, utmMedium: any, tracking: anyOf(tracking.paid) },
+
+  { category: 'paid:video', referrer: anyOf(referrers.video), utmSource: any, utmMedium: anyOf(utmMediums.video), tracking: any },
+  { category: 'paid:video', referrer: anyOf(referrers.video), utmSource: any, utmMedium: anyOf(utmMediums.paid), tracking: any },
+  { category: 'paid:video', referrer: anyOf(referrers.video), utmSource: any, utmMedium: any, tracking: anyOf(tracking.paid) },
+
+  { category: 'paid:display', referrer: notEmpty, utmSource: any, utmMedium: anyOf(utmMediums.paid), tracking: any },
+  { category: 'paid:display', referrer: anyOf(referrers.ad), utmSource: any, utmMedium: any, tracking: any },
+  { category: 'paid:display', referrer: notEmpty, utmSource: anyOf(utmSources.paid), utmMedium: any, tracking: any },
+
+  { category: 'paid:affiliate', referrer: notEmpty, utmSource: any, utmMedium: anyOf(utmMediums.affiliate), tracking: any },
+
+  { category: 'paid:local', referrer: notEmpty, utmSource: any, utmMedium: anyOf(utmMediums.local), tracking: none },
+
+  { category: 'paid:uncategorized', referrer: not(origin), utmSource: any, utmMedium: anyOf(utmMediums.paid), tracking: any },
+  { category: 'paid:uncategorized', referrer: not(origin), utmSource: any, utmMedium: any, tracking: anyOf(tracking.paid) },
+
+  // EARNED
+  { category: 'earned:search', referrer: anyOf(referrers.search), utmSource: none, utmMedium: none, tracking: none },
+  { category: 'earned:search', referrer: anyOf(referrers.search), utmSource: any, utmMedium: not(utmMediums.paid), tracking: not(tracking.paid) },
+
+  { category: 'earned:social', referrer: anyOf(referrers.social), utmSource: none, utmMedium: none, tracking: none },
+  { category: 'earned:social', referrer: not(origin), utmSource: any, utmMedium: anyOf(utmMediums.organicsocial), tracking: none },
+
+  { category: 'earned:video', referrer: anyOf(referrers.video), utmSource: none, utmMedium: none, tracking: none },
+  { category: 'earned:video', referrer: anyOf(referrers.video), utmSource: any, utmMedium: not(utmMediums.paid), tracking: none },
+
+  { category: 'earned:referral', referrer: another(origin), utmSource: none, utmMedium: none, tracking: none },
+
+  // OWNED
+  { category: 'owned:direct', referrer: none, utmSource: none, utmMedium: none, tracking: none },
+  { category: 'owned:internal', referrer: same(origin), utmSource: none, utmMedium: none, tracking: none },
+  { category: 'owned:email', referrer: any, utmSource: any, utmMedium: any, tracking: anyOf(tracking.email) },
+  { category: 'owned:email', referrer: any, utmSource: any, utmMedium: anyOf(utmMediums.email), tracking: any },
+  { category: 'owned:sms', referrer: none, utmSource: any, utmMedium: anyOf(utmMediums.sms), tracking: none },
+  { category: 'owned:qr', referrer: none, utmSource: any, utmMedium: anyOf(utmMediums.qr), tracking: none },
+  { category: 'owned:push', referrer: none, utmSource: any, utmMedium: anyOf(utmMediums.push), tracking: none },
+
+  // FALLBACK
+  { category: 'owned:uncategorized', referrer: any, utmSource: any, utmMedium: any, tracking: any },
+]);
 
 function vendor(origin) {
   return vendorClassifications
@@ -118,41 +153,29 @@ function vendor(origin) {
         : result), '');
 }
 
-function category(origin, vendorResult) {
-  const categoryResult = categoryClassifications
-    .reduce((result, classification) => (
-      !result && classification.regex.test(origin)
-        ? classification.result
-        : result), '');
+export function classifyAcquisition(url, referrer, query) {
+  try {
+    let { origin } = new URL(url);
+    if (!origin.endsWith('/')) origin += '/';
 
-  if (categoryResult) return categoryResult;
-  return vendorCategoryLookup[vendorResult] || '';
-}
+    const rules = RULES(origin);
 
-function paidowned(origin, vendorResult, categoryResult) {
-  const paidOwnedResult = paidOwnedClassifications
-    .reduce((result, classification) => (
-      !result && classification.regex.test(origin)
-        ? classification.result
-        : result), '');
+    const usp = new URLSearchParams(query);
 
-  if (paidOwnedResult) return paidOwnedResult;
-  return vendorTypeLookup[vendorResult] || categoryTypeLookup[categoryResult] || '';
-}
+    const utmMedium = sanitize(usp.get('utm_medium') || '');
+    const utmSource = sanitize(usp.get('utm_source') || '');
+    const others = [...usp.keys()].find((k) => Object.values(tracking)
+      .some((t) => t.test(k))) || '';
 
-export function classifyAcquisition(origin, isPaid = false) {
-  const vendorResult = vendor(origin);
-  const categoryResult = category(origin, vendorResult);
-  const paidOwnedResult = isPaid
-    ? 'paid'
-    : paidowned(origin, vendorResult, categoryResult);
+    const { category } = rules.find((r) => (
+      r.referrer(referrer) && r.utmSource(utmSource) && r.utmMedium(utmMedium) && r.tracking(others)
+    ));
 
-  let result = paidOwnedResult;
-  if (categoryResult || vendorResult) {
-    result += `:${categoryResult}`;
+    const vendorResult = vendor(referrer || utmMedium || utmSource);
+
+    return vendorResult ? `${category}:${vendorResult}` : category;
+  } catch (e) {
+    console.error('Error during traffic classification', e);
+    return 'owned:uncategorized';
   }
-  if (vendorResult) {
-    result += `:${vendorResult}`;
-  }
-  return result;
 }

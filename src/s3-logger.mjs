@@ -31,14 +31,12 @@ export class S3Logger {
     console.log('logging to S3');
     const now = getMaskedTime(timePadding);
 
-    if (checkpoint === 'utm' && (source === 'utm_source' || source === 'utm_medium')) {
+    if (checkpoint === 'acquisition') {
       /* eslint-disable no-param-reassign */
-      checkpoint = 'acquisition';
-      source = classifyAcquisition(target);
-    }
-    if (checkpoint === 'paid' || checkpoint === 'email') {
-      checkpoint = 'acquisition';
-      source = classifyAcquisition(source, true);
+      source = classifyAcquisition(referer, source, target);
+      if (source.includes('uncategorized')) {
+        console.log(`Could not classify traffic. Referrer: ${source}, Query: ${target}`);
+      }
     }
 
     const data = {
