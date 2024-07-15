@@ -42,7 +42,7 @@ export class S3Logger {
       source = classifyAcquisition(source, true);
     }
 
-    if (checkpoint === 'audience') {
+    if (checkpoint === 'audiences') {
       source = anonymizeAudience(source, target);
     }
 

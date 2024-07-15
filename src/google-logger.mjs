@@ -42,7 +42,7 @@ export class GoogleLogger {
       source = classifyAcquisition(source, true);
     }
 
-    if (checkpoint === 'audience') {
+    if (checkpoint === 'audiences') {
       source = anonymizeAudience(source, target);
       if (source == null) {
         target = null;

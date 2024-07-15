@@ -40,7 +40,7 @@ export function isValidCheckpoint(checkpoint) {
     'back_forward',
     // 'lcp', // not needed anymore, helix-specific
     'missingresource',
-    'audience',
+    'audiences',
     'experiment',
     'formsubmit',
     '404',
