@@ -48,6 +48,7 @@ const vendorClassifications = [
 const tracking = {
   paid: /gclid|gclsrc|wbraid|gbraid|dclid|msclkid|fb(cl|ad_|pxl_)id|tw(clid|src|term)|li_fat_id|epik|ttclid/,
   email: /mc_([ce])id|mkt_tok/,
+  organic: /srsltid/,
 };
 
 // Known referrers
@@ -121,6 +122,7 @@ const RULES = (origin) => ([
   { category: 'paid:uncategorized', referrer: not(origin), utmSource: any, utmMedium: any, tracking: anyOf(tracking.paid) },
 
   // EARNED
+  { category: 'earned:search', referrer: anyOf(referrers.search), utmSource: any, utmMedium: not(utmMediums.paid), tracking: not(tracking.organic) },
   { category: 'earned:search', referrer: anyOf(referrers.search), utmSource: none, utmMedium: none, tracking: none },
   { category: 'earned:search', referrer: anyOf(referrers.search), utmSource: any, utmMedium: not(utmMediums.paid), tracking: not(tracking.paid) },
 
@@ -153,18 +155,18 @@ function vendor(origin) {
         : result), '');
 }
 
-export function classifyAcquisition(url, referrer, query) {
+export function classifyAcquisition(url, referrer, queryParams) {
   try {
     let { origin } = new URL(url);
     if (!origin.endsWith('/')) origin += '/';
 
     const rules = RULES(origin);
 
-    const usp = new URLSearchParams(query);
+    const hints = JSON.parse(queryParams);
 
-    const utmMedium = sanitize(usp.get('utm_medium') || '');
-    const utmSource = sanitize(usp.get('utm_source') || '');
-    const others = [...usp.keys()].find((k) => Object.values(tracking)
+    const utmMedium = sanitize(hints.utm_medium || '');
+    const utmSource = sanitize(hints.utm_source || '');
+    const others = (hints.others || []).find((k) => Object.values(tracking)
       .some((t) => t.test(k))) || '';
 
     const { category } = rules.find((r) => (

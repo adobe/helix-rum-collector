@@ -32,11 +32,10 @@ export class S3Logger {
     const now = getMaskedTime(timePadding);
 
     if (checkpoint === 'acquisition') {
+      const raw = `${source}:${target}`; // store for future analysis
       /* eslint-disable no-param-reassign */
       source = classifyAcquisition(referer, source, target);
-      if (source.includes('uncategorized')) {
-        console.log(`Could not classify traffic. Referrer: ${source}, Query: ${target}`);
-      }
+      target = raw;
     }
 
     const data = {
