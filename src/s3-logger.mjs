@@ -31,14 +31,11 @@ export class S3Logger {
     console.log('logging to S3');
     const now = getMaskedTime(timePadding);
 
-    if (checkpoint === 'utm' && (source === 'utm_source' || source === 'utm_medium')) {
+    if (checkpoint === 'acquisition') {
+      const raw = `${source}:${target}`; // store for future analysis
       /* eslint-disable no-param-reassign */
-      checkpoint = 'acquisition';
-      source = classifyAcquisition(target);
-    }
-    if (checkpoint === 'paid' || checkpoint === 'email') {
-      checkpoint = 'acquisition';
-      source = classifyAcquisition(source, true);
+      source = classifyAcquisition(referer, source, target);
+      target = raw;
     }
 
     const data = {
