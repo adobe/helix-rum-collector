@@ -14,6 +14,7 @@ import {
   cleanurl, getMaskedTime, getMaskedUserAgent, getSubsystem, isReasonableWeight, isValidCheckpoint,
 } from './utils.mjs';
 import { classifyAcquisition } from './acquisition.mjs';
+import { anonymizeAudience } from './audiences.mjs';
 
 export class GoogleLogger {
   constructor(req) {
@@ -39,6 +40,13 @@ export class GoogleLogger {
     if (checkpoint === 'paid' || checkpoint === 'email') {
       checkpoint = 'acquisition';
       source = classifyAcquisition(source, true);
+    }
+
+    if (checkpoint === 'audience') {
+      source = anonymizeAudience(source, target);
+      if (source == null) {
+        target = null;
+      }
     }
 
     const data = {
