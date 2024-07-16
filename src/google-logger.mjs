@@ -45,7 +45,7 @@ export class GoogleLogger {
     if (checkpoint === 'audiences') {
       source = anonymizeAudience(source, target);
       if (source == null) {
-        target = null;
+        return;
       }
     }
 

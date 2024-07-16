@@ -44,6 +44,9 @@ export class S3Logger {
 
     if (checkpoint === 'audiences') {
       source = anonymizeAudience(source, target);
+      if (source == null) {
+        return;
+      }
     }
 
     const data = {

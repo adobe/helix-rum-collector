@@ -13,9 +13,9 @@
 const SELECTION_PROBABILITY = 0.6;
 
 export function anonymizeAudience(source, target) {
-  const reportedAudience = source;
+  const reportedAudiences = source.split(':');
   const allAudiences = ['default', ...target.split(':')];
-  if (!allAudiences.includes(reportedAudience)) {
+  if (!reportedAudiences.every((a) => allAudiences.includes(a))) {
     return null;
   }
 
@@ -24,5 +24,7 @@ export function anonymizeAudience(source, target) {
     const randomAudience = Math.floor(Math.random() * allAudiences.length);
     return allAudiences[randomAudience];
   }
-  return reportedAudience;
+
+  // Only report the main audience for now
+  return reportedAudiences[0];
 }
