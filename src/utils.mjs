@@ -73,7 +73,7 @@ export function isValidCheckpoint(checkpoint) {
   return knowncheckpoints.indexOf(checkpoint) > -1;
 }
 
-export function isValidRumSourceTarget(checkpoint, source, target) {
+export function isValidSourceTarget(checkpoint, source, target) {
   switch (checkpoint) {
     case 'audience':
       return source?.match(/^[\w-]+$/)

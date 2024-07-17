@@ -12,7 +12,7 @@
 import { Logger } from './logger.mjs';
 import {
   cleanurl, getMaskedTime, getMaskedUserAgent, getSubsystem,
-  isReasonableWeight, isValidCheckpoint, isValidRumSourceTarget,
+  isReasonableWeight, isValidCheckpoint, isValidSourceTarget,
 } from './utils.mjs';
 import { classifyAcquisition } from './acquisition.mjs';
 
@@ -29,7 +29,7 @@ export class GoogleLogger {
     if (!isValidCheckpoint(checkpoint) && !isReasonableWeight(weight)) {
       return;
     }
-    if (!isValidRumSourceTarget(checkpoint, source, target)) {
+    if (!isValidSourceTarget(checkpoint, source, target)) {
       return;
     }
     console.log('logging to Google');
