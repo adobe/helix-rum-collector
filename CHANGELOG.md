@@ -1,3 +1,10 @@
+## [2.25.5](https://github.com/adobe/helix-rum-collector/compare/v2.25.4...v2.25.5) (2024-07-17)
+
+
+### Bug Fixes
+
+* remove acquisition classification ([b99489c](https://github.com/adobe/helix-rum-collector/commit/b99489c2f9bb1d69e8399e4bb438910e410129e6))
+
 ## [2.25.4](https://github.com/adobe/helix-rum-collector/compare/v2.25.3...v2.25.4) (2024-07-10)
 
 
