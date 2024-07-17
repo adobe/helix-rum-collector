@@ -40,7 +40,7 @@ export function isValidCheckpoint(checkpoint) {
     'back_forward',
     // 'lcp', // not needed anymore, helix-specific
     'missingresource',
-    'audiences',
+    'audience',
     'experiment',
     'formsubmit',
     '404',
@@ -72,6 +72,21 @@ export function isValidCheckpoint(checkpoint) {
   }
   return knowncheckpoints.indexOf(checkpoint) > -1;
 }
+
+export function isValidRumSourceTarget(checkpoint, source, target) {
+  switch (checkpoint) {
+    case 'audience':
+      return source?.match(/^[\w-]+$/)
+        && target?.match(/^[\w-:]+$/)
+        && ['default', target.split(':')].includes(source);
+    case 'experiment':
+      return source?.match(/^[\w-]+$/)
+        && target?.match(/^[\w-]+$/);
+    default:
+      return true;
+  }
+}
+
 export function maskTime(time, timePadding) {
   const msPerHour = 3600000;
 

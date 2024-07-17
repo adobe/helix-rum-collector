@@ -12,9 +12,9 @@
 import { classifyAcquisition } from './acquisition.mjs';
 import { Logger } from './logger.mjs';
 import {
-  cleanurl, getMaskedTime, getMaskedUserAgent, getSubsystem, isReasonableWeight, isValidCheckpoint,
+  cleanurl, getMaskedTime, getMaskedUserAgent, getSubsystem,
+  isReasonableWeight, isValidCheckpoint, isValidRumSourceTarget,
 } from './utils.mjs';
-import { anonymizeAudience } from './audiences.mjs';
 
 export class S3Logger {
   constructor(req) {
@@ -29,6 +29,9 @@ export class S3Logger {
     if (!isValidCheckpoint(checkpoint) && !isReasonableWeight(weight)) {
       return;
     }
+    if (!isValidRumSourceTarget(checkpoint, source, target)) {
+      return;
+    }
     console.log('logging to S3');
     const now = getMaskedTime(timePadding);
 
@@ -40,13 +43,6 @@ export class S3Logger {
     if (checkpoint === 'paid' || checkpoint === 'email') {
       checkpoint = 'acquisition';
       source = classifyAcquisition(source, true);
-    }
-
-    if (checkpoint === 'audiences') {
-      source = anonymizeAudience(source, target);
-      if (source == null) {
-        return;
-      }
     }
 
     const data = {
