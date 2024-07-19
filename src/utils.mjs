@@ -73,19 +73,13 @@ export function isValidCheckpoint(checkpoint) {
   return knowncheckpoints.indexOf(checkpoint) > -1;
 }
 
-export function isValidSourceTarget(checkpoint, source, target) {
-  switch (checkpoint) {
-    case 'audience':
-      return source?.match(/^[\w-]+$/)
-        && target?.match(/^[\w-:]+$/)
-        && ['default', target.split(':')].includes(source);
-    case 'experiment':
-      return source?.match(/^[\w-]+$/)
-        && target?.match(/^[\w-]+$/);
-    default:
-      return true;
-  }
-}
+export const sourceTargetValidator = {
+  audience: (source = '', target = '') => source.match(/^[\w-]+$/)
+    && target.match(/^[\w-:]+$/)
+    && ['default', target.split(':')].includes(source),
+  experiment: (source = '', target = '') => source.match(/^[\w-]+$/)
+    && target.match(/^[\w-]+$/),
+};
 
 export function maskTime(time, timePadding) {
   const msPerHour = 3600000;

@@ -13,7 +13,7 @@ import { classifyAcquisition } from './acquisition.mjs';
 import { Logger } from './logger.mjs';
 import {
   cleanurl, getMaskedTime, getMaskedUserAgent, getSubsystem,
-  isReasonableWeight, isValidCheckpoint, isValidSourceTarget,
+  isReasonableWeight, isValidCheckpoint, sourceTargetValidator,
 } from './utils.mjs';
 
 export class S3Logger {
@@ -29,7 +29,7 @@ export class S3Logger {
     if (!isValidCheckpoint(checkpoint) && !isReasonableWeight(weight)) {
       return;
     }
-    if (!isValidSourceTarget(checkpoint, source, target)) {
+    if (!sourceTargetValidator[checkpoint] || sourceTargetValidator[checkpoint](source, target)) {
       return;
     }
     console.log('logging to S3');

@@ -12,7 +12,7 @@
 import { Logger } from './logger.mjs';
 import {
   cleanurl, getMaskedTime, getMaskedUserAgent, getSubsystem,
-  isReasonableWeight, isValidCheckpoint, isValidSourceTarget,
+  isReasonableWeight, isValidCheckpoint, sourceTargetValidator,
 } from './utils.mjs';
 import { classifyAcquisition } from './acquisition.mjs';
 
@@ -29,7 +29,7 @@ export class GoogleLogger {
     if (!isValidCheckpoint(checkpoint) && !isReasonableWeight(weight)) {
       return;
     }
-    if (!isValidSourceTarget(checkpoint, source, target)) {
+    if (!sourceTargetValidator[checkpoint] || sourceTargetValidator[checkpoint](source, target)) {
       return;
     }
     console.log('logging to Google');
@@ -43,13 +43,6 @@ export class GoogleLogger {
     if (checkpoint === 'paid' || checkpoint === 'email') {
       checkpoint = 'acquisition';
       source = classifyAcquisition(source, true);
-    }
-
-    if (checkpoint === 'audiences') {
-      source = anonymizeAudience(source, target);
-      if (source == null) {
-        return;
-      }
     }
 
     const data = {
