@@ -29,7 +29,7 @@ export class S3Logger {
     if (!isValidCheckpoint(checkpoint) && !isReasonableWeight(weight)) {
       return;
     }
-    if (!sourceTargetValidator[checkpoint] || sourceTargetValidator[checkpoint](source, target)) {
+    if (sourceTargetValidator[checkpoint] && !sourceTargetValidator[checkpoint](source, target)) {
       return;
     }
     console.log('logging to S3');

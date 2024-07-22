@@ -76,7 +76,7 @@ export function isValidCheckpoint(checkpoint) {
 export const sourceTargetValidator = {
   audience: (source = '', target = '') => source.match(/^[\w-]+$/)
     && target.match(/^[\w-:]+$/)
-    && ['default', target.split(':')].includes(source),
+    && ['default', ...target.split(':')].includes(source),
   experiment: (source = '', target = '') => source.match(/^[\w-]+$/)
     && target.match(/^[\w-]+$/),
 };
