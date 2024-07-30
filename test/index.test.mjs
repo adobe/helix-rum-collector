@@ -85,7 +85,7 @@ describe('Test index', () => {
     headers.set('x-forwarded-host', 'www.foobar.com');
 
     const json = () => JSON.parse(`{
-      "weight": 5,
+      "weight": 10,
       "id": "foobar",
       "cwv": {
         "a": "aaa",
@@ -117,7 +117,7 @@ describe('Test index', () => {
     assert.equal('foobar', logged.id);
     assert(logged.time.toString().endsWith('.003'));
     assert.equal('http://a.b.c/', logged.url);
-    assert.equal(5, logged.weight);
+    assert.equal(10, logged.weight);
     assert.equal(42, logged.generation);
     assert.equal('https://t/', logged.target);
     assert.equal('1.2.3.4', logged.source);

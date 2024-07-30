@@ -32,7 +32,7 @@ describe('Test S3 Logger', () => {
     cl.logRUM(
       myJSON,
       'someid',
-      5,
+      10,
       'http://www.foo.com/referer',
       67,
       'error',
@@ -45,7 +45,7 @@ describe('Test S3 Logger', () => {
     assert(logged.time.toString().endsWith('0011'));
     assert.equal(logged.host, 'www.foo.com');
     assert.equal(logged.url.toString(), 'http://www.foo.com/referer');
-    assert.equal(logged.weight, 5);
+    assert.equal(logged.weight, 10);
     assert.equal(logged.generation, 67);
     assert.equal(logged.checkpoint, 'error');
     assert.equal(logged.target.toString(), 'http://www.foo.com/target');
@@ -61,8 +61,21 @@ describe('Test S3 Logger', () => {
 
     const req = { headers, url };
     const gl = new S3Logger(req);
-    gl.logRUM({}, 'q123', 5, undefined, undefined, 'error');
-    gl.logRUM({}, 'q987', 5, undefined, undefined, 'dontlogthischeckpoint');
+    gl.logRUM({}, 'q123', 10, undefined, undefined, 'error');
+    gl.logRUM({}, 'q987', 10, undefined, undefined, 'dontlogthischeckpoint');
+
+    const logged = JSON.parse(lastLogMessage);
+    assert.equal('q123', logged.id);
+  });
+
+  it('Skip invalid ids', () => {
+    const headers = new Map();
+    const url = 'https://log/this';
+
+    const req = { headers, url };
+    const gl = new S3Logger(req);
+    gl.logRUM({}, 'q123', 10, undefined, undefined, 'error');
+    gl.logRUM({}, '(sleep 30)', 10, undefined, undefined, 'error');
 
     const logged = JSON.parse(lastLogMessage);
     assert.equal('q123', logged.id);

@@ -14,6 +14,7 @@ import {
   cleanurl, getMaskedTime, getMaskedUserAgent, getSubsystem,
   isReasonableWeight,
   isValidCheckpoint,
+  isValidId,
 } from './utils.mjs';
 
 export class CoralogixLogger {
@@ -46,6 +47,7 @@ export class CoralogixLogger {
     if (checkpoint === 'error') severity = 5;
     if (!isReasonableWeight(weight)) severity = 4;
     if (!isValidCheckpoint(checkpoint)) severity = 4;
+    if (!isValidId(id)) severity = 4;
 
     const data = {
       timestamp: now,
