@@ -24,7 +24,7 @@ export class S3Logger {
   }
 
   logRUM(json, id, weight, referer, generation, checkpoint, target, source, timePadding) {
-    if (!isValidCheckpoint(checkpoint) && !isReasonableWeight(weight)) {
+    if (!isValidCheckpoint(checkpoint) || !isReasonableWeight(weight)) {
       return;
     }
     console.log('logging to S3');
