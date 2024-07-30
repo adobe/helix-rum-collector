@@ -30,7 +30,7 @@ export class GoogleLogger {
   }
 
   logRUM(json, id, weight, referer, generation, checkpoint, target, source, timePadding) {
-    if (!isValidCheckpoint(checkpoint) && !isReasonableWeight(weight) && !isValidId(id)) {
+    if (!isValidCheckpoint(checkpoint) || !isReasonableWeight(weight) || !isValidId(id)) {
       return;
     }
     console.log('logging to Google');
