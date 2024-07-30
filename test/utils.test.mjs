@@ -178,6 +178,8 @@ describe('Test Utils', () => {
     assert.strictEqual(isValidId('"and/*!sleep/*aa*/*/(7)#'), false);
 
     // happy path
-    assert.strictEqual(isValidId('asd-DSA-'), true);
+    assert.strictEqual(isValidId('a'), true);
+    assert.strictEqual(isValidId('aAsaAF13'), true);
+    assert.strictEqual(isValidId('aAs-aA-F13-'), true);
   });
 });
