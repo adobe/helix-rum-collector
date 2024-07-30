@@ -1,3 +1,11 @@
+## [2.25.6](https://github.com/adobe/helix-rum-collector/compare/v2.25.5...v2.25.6) (2024-07-30)
+
+
+### Bug Fixes
+
+* **logger:** reject unreasonable data ([50d52e5](https://github.com/adobe/helix-rum-collector/commit/50d52e54af786d64934189d4df17b05210e387ad))
+* unit tests ([4307e87](https://github.com/adobe/helix-rum-collector/commit/4307e8704e2b825ecd21834c27aba9818f6d1028))
+
 ## [2.25.5](https://github.com/adobe/helix-rum-collector/compare/v2.25.4...v2.25.5) (2024-07-17)
 
 
