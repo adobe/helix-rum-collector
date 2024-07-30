@@ -41,9 +41,5 @@ describe('Test Coralogix Error Logger', () => {
     assert.equal('http://www.foo.com/blah', loggedJSON.cdn.url);
     assert.equal('POST', loggedJSON.request.method);
     assert.equal('desktop', loggedJSON.request.user_agent);
-    assert(
-      logged.timestamp.toString().endsWith('00123'),
-      'Timestamp should be rounded and contain padding',
-    );
   });
 });

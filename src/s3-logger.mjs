@@ -9,7 +9,6 @@
  * OF ANY KIND, either express or implied. See the License for the specific language
  * governing permissions and limitations under the License.
  */
-import { classifyAcquisition } from './acquisition.mjs';
 import { Logger } from './logger.mjs';
 import {
   cleanurl, getMaskedTime, getMaskedUserAgent, getSubsystem, isReasonableWeight, isValidCheckpoint,
@@ -30,16 +29,6 @@ export class S3Logger {
     }
     console.log('logging to S3');
     const now = getMaskedTime(timePadding);
-
-    if (checkpoint === 'utm' && (source === 'utm_source' || source === 'utm_medium')) {
-      /* eslint-disable no-param-reassign */
-      checkpoint = 'acquisition';
-      source = classifyAcquisition(target);
-    }
-    if (checkpoint === 'paid' || checkpoint === 'email') {
-      checkpoint = 'acquisition';
-      source = classifyAcquisition(source, true);
-    }
 
     const data = {
       time: now,
