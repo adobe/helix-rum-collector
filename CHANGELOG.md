@@ -1,3 +1,10 @@
+## [2.25.7](https://github.com/adobe/helix-rum-collector/compare/v2.25.6...v2.25.7) (2024-07-30)
+
+
+### Bug Fixes
+
+* basic id validation ([#367](https://github.com/adobe/helix-rum-collector/issues/367)) ([fc33116](https://github.com/adobe/helix-rum-collector/commit/fc33116c7ad2542863b829336089de2441ff768e))
+
 ## [2.25.6](https://github.com/adobe/helix-rum-collector/compare/v2.25.5...v2.25.6) (2024-07-30)
 
 
