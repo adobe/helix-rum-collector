@@ -71,6 +71,11 @@ export function isValidCheckpoint(checkpoint) {
   }
   return knowncheckpoints.indexOf(checkpoint) > -1;
 }
+
+export function isValidId(id) {
+  return typeof id === 'string' && /^[a-zA-Z0-9-]+$/.test(id);
+}
+
 export function maskTime(time, timePadding) {
   const msPerHour = 3600000;
 

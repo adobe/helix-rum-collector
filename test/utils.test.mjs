@@ -13,7 +13,13 @@
 import assert from 'assert';
 import { it, describe } from 'node:test';
 import {
-  cleanurl, extractAdobeRoutingInfo, getForwardedHost, getMaskedUserAgent, getSubsystem, maskTime,
+  cleanurl,
+  extractAdobeRoutingInfo,
+  getForwardedHost,
+  getMaskedUserAgent,
+  getSubsystem,
+  isValidId,
+  maskTime,
 } from '../src/utils.mjs';
 
 describe('Test Utils', () => {
@@ -159,5 +165,19 @@ describe('Test Utils', () => {
     assert.equal('publish-p12345-e1234.adobeaemcloud.net', getSubsystem({
       headers,
     }));
+  });
+
+  it('id validation', () => {
+    // unhappy path
+    assert.strictEqual(isValidId(), false);
+    assert.strictEqual(isValidId(null), false);
+    assert.strictEqual(isValidId(123), false);
+    assert.strictEqual(isValidId({}), false);
+    assert.strictEqual(isValidId(''), false);
+    assert.strictEqual(isValidId('(some command)'), false);
+    assert.strictEqual(isValidId('"and/*!sleep/*aa*/*/(7)#'), false);
+
+    // happy path
+    assert.strictEqual(isValidId('asd-DSA-'), true);
   });
 });
