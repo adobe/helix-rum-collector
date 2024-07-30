@@ -129,4 +129,17 @@ describe('Test Google Logger', () => {
     const logged = JSON.parse(lastLogMessage);
     assert.equal('q123', logged.id);
   });
+
+  it('Skip invalid ids', () => {
+    const headers = new Map();
+    const url = 'https://log/this';
+
+    const req = { headers, url };
+    const gl = new GoogleLogger(req);
+    gl.logRUM({}, 'q123', 10, undefined, undefined, 'error');
+    gl.logRUM({}, '(sleep 30)', 10, undefined, undefined, 'error');
+
+    const logged = JSON.parse(lastLogMessage);
+    assert.equal('q123', logged.id);
+  });
 });
