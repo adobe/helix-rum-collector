@@ -9,11 +9,16 @@
  * OF ANY KIND, either express or implied. See the License for the specific language
  * governing permissions and limitations under the License.
  */
-import { classifyAcquisition } from './acquisition.mjs';
 import { Logger } from './logger.mjs';
 import {
-  cleanurl, getMaskedTime, getMaskedUserAgent, getSubsystem,
-  isReasonableWeight, isValidCheckpoint, sourceTargetValidator,
+  cleanurl,
+  getMaskedTime,
+  getMaskedUserAgent,
+  getSubsystem,
+  isReasonableWeight,
+  isValidCheckpoint,
+  isValidId,
+  sourceTargetValidator,
 } from './utils.mjs';
 
 export class S3Logger {
@@ -26,7 +31,7 @@ export class S3Logger {
   }
 
   logRUM(json, id, weight, referer, generation, checkpoint, target, source, timePadding) {
-    if (!isValidCheckpoint(checkpoint) && !isReasonableWeight(weight)) {
+    if (!isValidCheckpoint(checkpoint) || !isReasonableWeight(weight) || !isValidId(id)) {
       return;
     }
     if (sourceTargetValidator[checkpoint] && !sourceTargetValidator[checkpoint](source, target)) {
@@ -34,16 +39,6 @@ export class S3Logger {
     }
     console.log('logging to S3');
     const now = getMaskedTime(timePadding);
-
-    if (checkpoint === 'utm' && (source === 'utm_source' || source === 'utm_medium')) {
-      /* eslint-disable no-param-reassign */
-      checkpoint = 'acquisition';
-      source = classifyAcquisition(target);
-    }
-    if (checkpoint === 'paid' || checkpoint === 'email') {
-      checkpoint = 'acquisition';
-      source = classifyAcquisition(source, true);
-    }
 
     const data = {
       time: now,

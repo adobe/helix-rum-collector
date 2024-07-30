@@ -13,8 +13,14 @@
 import assert from 'assert';
 import { it, describe } from 'node:test';
 import {
-  cleanurl, extractAdobeRoutingInfo, getForwardedHost, getMaskedUserAgent, getSubsystem,
-  maskTime, sourceTargetValidator,
+  cleanurl,
+  extractAdobeRoutingInfo,
+  getForwardedHost,
+  getMaskedUserAgent,
+  getSubsystem,
+  isValidId,
+  maskTime,
+  sourceTargetValidator,
 } from '../src/utils.mjs';
 
 describe('Test Utils', () => {
@@ -198,5 +204,21 @@ describe('Test Utils', () => {
         assert.ok(!sourceTargetValidator.experiment('foo!', 'bar?'));
       });
     });
+  });
+
+  it('id validation', () => {
+    // unhappy path
+    assert.strictEqual(isValidId(), false);
+    assert.strictEqual(isValidId(null), false);
+    assert.strictEqual(isValidId(123), false);
+    assert.strictEqual(isValidId({}), false);
+    assert.strictEqual(isValidId(''), false);
+    assert.strictEqual(isValidId('(some command)'), false);
+    assert.strictEqual(isValidId('"and/*!sleep/*aa*/*/(7)#'), false);
+
+    // happy path
+    assert.strictEqual(isValidId('a'), true);
+    assert.strictEqual(isValidId('aAsaAF13'), true);
+    assert.strictEqual(isValidId('aAs-aA-F13-'), true);
   });
 });

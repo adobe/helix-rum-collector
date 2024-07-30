@@ -81,6 +81,10 @@ export const sourceTargetValidator = {
     && target.match(/^[\w-]+$/),
 };
 
+export function isValidId(id) {
+  return typeof id === 'string' && /^[a-zA-Z0-9-]+$/.test(id);
+}
+
 export function maskTime(time, timePadding) {
   const msPerHour = 3600000;
 

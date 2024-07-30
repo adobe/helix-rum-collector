@@ -11,10 +11,15 @@
  */
 import { Logger } from './logger.mjs';
 import {
-  cleanurl, getMaskedTime, getMaskedUserAgent, getSubsystem,
-  isReasonableWeight, isValidCheckpoint, sourceTargetValidator,
+  cleanurl,
+  getMaskedTime,
+  getMaskedUserAgent,
+  getSubsystem,
+  isReasonableWeight,
+  isValidCheckpoint,
+  isValidId,
+  sourceTargetValidator,
 } from './utils.mjs';
-import { classifyAcquisition } from './acquisition.mjs';
 
 export class GoogleLogger {
   constructor(req) {
@@ -26,7 +31,7 @@ export class GoogleLogger {
   }
 
   logRUM(json, id, weight, referer, generation, checkpoint, target, source, timePadding) {
-    if (!isValidCheckpoint(checkpoint) && !isReasonableWeight(weight)) {
+    if (!isValidCheckpoint(checkpoint) || !isReasonableWeight(weight) || !isValidId(id)) {
       return;
     }
     if (sourceTargetValidator[checkpoint] && !sourceTargetValidator[checkpoint](source, target)) {
@@ -34,16 +39,6 @@ export class GoogleLogger {
     }
     console.log('logging to Google');
     const now = getMaskedTime(timePadding);
-
-    if (checkpoint === 'utm' && (source === 'utm_source' || source === 'utm_medium')) {
-      /* eslint-disable no-param-reassign */
-      checkpoint = 'acquisition';
-      source = classifyAcquisition(target);
-    }
-    if (checkpoint === 'paid' || checkpoint === 'email') {
-      checkpoint = 'acquisition';
-      source = classifyAcquisition(source, true);
-    }
 
     const data = {
       time: now,

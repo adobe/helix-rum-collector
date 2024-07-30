@@ -1,3 +1,25 @@
+## [2.25.7](https://github.com/adobe/helix-rum-collector/compare/v2.25.6...v2.25.7) (2024-07-30)
+
+
+### Bug Fixes
+
+* basic id validation ([#367](https://github.com/adobe/helix-rum-collector/issues/367)) ([fc33116](https://github.com/adobe/helix-rum-collector/commit/fc33116c7ad2542863b829336089de2441ff768e))
+
+## [2.25.6](https://github.com/adobe/helix-rum-collector/compare/v2.25.5...v2.25.6) (2024-07-30)
+
+
+### Bug Fixes
+
+* **logger:** reject unreasonable data ([50d52e5](https://github.com/adobe/helix-rum-collector/commit/50d52e54af786d64934189d4df17b05210e387ad))
+* unit tests ([4307e87](https://github.com/adobe/helix-rum-collector/commit/4307e8704e2b825ecd21834c27aba9818f6d1028))
+
+## [2.25.5](https://github.com/adobe/helix-rum-collector/compare/v2.25.4...v2.25.5) (2024-07-17)
+
+
+### Bug Fixes
+
+* remove acquisition classification ([b99489c](https://github.com/adobe/helix-rum-collector/commit/b99489c2f9bb1d69e8399e4bb438910e410129e6))
+
 ## [2.25.4](https://github.com/adobe/helix-rum-collector/compare/v2.25.3...v2.25.4) (2024-07-10)
 
 

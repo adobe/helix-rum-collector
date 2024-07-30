@@ -1,6 +1,6 @@
 {
   "name": "@adobe/helix-rum-collector",
-  "version": "2.25.4",
+  "version": "2.25.7",
   "private": true,
   "description": "Collect Real User Monitoring Data for Helix",
   "main": "src/index.mjs",
@@ -44,8 +44,8 @@
   "homepage": "https://github.com/adobe/helix-rum-collector#readme",
   "devDependencies": {
     "@adobe/eslint-config-helix": "2.0.6",
-    "@adobe/helix-deploy": "12.0.3",
-    "@adobe/helix-deploy-plugin-edge": "1.0.1",
+    "@adobe/helix-deploy": "12.0.4",
+    "@adobe/helix-deploy-plugin-edge": "1.0.2",
     "@adobe/semantic-release-coralogix": "1.1.31",
     "@semantic-release/changelog": "6.0.3",
     "@semantic-release/exec": "6.0.3",
@@ -54,8 +54,8 @@
     "eslint": "8.57.0",
     "eslint-plugin-header": "3.1.1",
     "eslint-plugin-import": "2.29.1",
-    "esmock": "2.6.6",
-    "jsdoc-to-markdown": "8.0.1",
+    "esmock": "2.6.7",
+    "jsdoc-to-markdown": "8.0.3",
     "semantic-release": "24.0.0",
     "semantic-release-slack-bot": "4.0.2"
   }
