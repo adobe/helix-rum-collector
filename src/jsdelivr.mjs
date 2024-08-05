@@ -45,9 +45,9 @@ export async function respondJsdelivr(req) {
       // override the cache control header
       beresp3.headers.set('cache-control', beresp.headers.get('cache-control'));
 
-      return cleanupResponse(beresp3);
+      return cleanupResponse(beresp3, req);
     }
-    return cleanupResponse(beresp2);
+    return cleanupResponse(beresp2, req);
   }
-  return cleanupResponse(beresp);
+  return cleanupResponse(beresp, req);
 }
