@@ -1,3 +1,12 @@
+## [2.25.8](https://github.com/adobe/helix-rum-collector/compare/v2.25.7...v2.25.8) (2024-08-05)
+
+
+### Bug Fixes
+
+* **cloudflare:** clean @ from URLs ([dd8b011](https://github.com/adobe/helix-rum-collector/commit/dd8b011b8d4904c361c0ac4a7e6ca30a762d17d1))
+* **cloudflare:** clean up urls for real ([4fa53a0](https://github.com/adobe/helix-rum-collector/commit/4fa53a00eecae3998dc495a3dd542b80a08905d6))
+* **jsdelivr:** support body rewriting ([8f2d61d](https://github.com/adobe/helix-rum-collector/commit/8f2d61d53862a1e8bb8dcd52df696490f1145e1a))
+
 ## [2.25.7](https://github.com/adobe/helix-rum-collector/compare/v2.25.6...v2.25.7) (2024-07-30)
 
 
