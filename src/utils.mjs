@@ -231,9 +231,9 @@ export function cleanurl(url) {
     u.password = '';
     u.hash = '';
     u.pathname = cleanJWT(u.pathname);
-    return u.toString();
+    return u.toString().replace(/@/g, '');
   } catch (e) {
-    return cleanJWT(url);
+    return cleanJWT(url).replace(/@/g, '');
   }
 }
 
