@@ -233,7 +233,7 @@ export function cleanurl(url) {
     u.pathname = cleanJWT(u.pathname);
     return u.toString().replace(/@/g, '');
   } catch (e) {
-    return cleanJWT(url).replace(/@/g, '');
+    return cleanJWT(url);
   }
 }
 
