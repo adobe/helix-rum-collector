@@ -81,6 +81,7 @@ describe('Test Utils', () => {
     assert.equal('bot', getMaskedUserAgent(getUserAgentHeaders('AHC/2.1')));
     assert.equal('bot:monitoring', getMaskedUserAgent(getUserAgentHeaders('mozilla/5.0 (x11; linux x86_64) applewebkit/537.36 (khtml, like gecko) chrome/123.0.6312.122 safari/537.36 datadogsynthetics')));
     assert.equal('bot:seo', getMaskedUserAgent(getUserAgentHeaders('Mozilla/5.0 (Linux; Android 6.0.1; Nexus 5X Build/MMB29P) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/41.0.2272.96 Mobile Safari/537.36 (compatible; Googlebot/2.1; +http://www.google.com/bot.html) https://deepcrawl.com/bot')));
+    assert.equal('bot:search', getMaskedUserAgent(getUserAgentHeaders('Mozilla/5.0 (iPhone; CPU iPhone OS 6_0 like Mac OS X) AppleWebKit/536.26 (KHTML, like Gecko) Version/6.0 Mobile/10A5376e Safari/8536.25 (compatible; Googlebot/2.1; +http://www.google.com/bot.html)')));
 
     assert.equal('desktop:windows', getMaskedUserAgent(getUserAgentHeaders('Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/111.0.5563.64 Safari/537.36')));
     assert.equal('desktop:mac', getMaskedUserAgent(getUserAgentHeaders('Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/116.0.0.0 Safari/537.36 Sidekick/6.30.0')));
