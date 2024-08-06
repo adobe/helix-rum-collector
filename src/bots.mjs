@@ -128,6 +128,10 @@ export const bots = {
       user_agent: 'SiteAuditBot/0.97',
       regex: 'SiteAuditBot',
     },
+    {
+      user_agent: 'DeepCrawl',
+      regex: 'https://deepcrawl.com/bot',
+    },
   ],
   Search: [
     {

@@ -186,11 +186,6 @@ export function getMaskedUserAgent(headers) {
   }
   const lcUA = userAgent.toLowerCase();
 
-  if (lcUA.includes('mobile')
-    || lcUA.includes('android')
-    || lcUA.includes('opera mini')) {
-    return `mobile${getMobileOS(lcUA)}`;
-  }
   if (lcUA.includes('bot')
     || lcUA.includes('spider')
     || lcUA.includes('crawler')
@@ -205,6 +200,11 @@ export function getMaskedUserAgent(headers) {
     || lcUA.includes('+http://')
     || isSpider(lcUA)) {
     return `bot${getBotType(lcUA)}`;
+  }
+  if (lcUA.includes('mobile')
+    || lcUA.includes('android')
+    || lcUA.includes('opera mini')) {
+    return `mobile${getMobileOS(lcUA)}`;
   }
 
   return `desktop${getDesktopOS(lcUA)}`;
