@@ -1,3 +1,11 @@
+## [2.25.9](https://github.com/adobe/helix-rum-collector/compare/v2.25.8...v2.25.9) (2024-08-06)
+
+
+### Bug Fixes
+
+* **bots:** add bot detection for deepcrawl ([32e27d9](https://github.com/adobe/helix-rum-collector/commit/32e27d975d5eb93160c6f136bbe3fdacefc654e2)), closes [#375](https://github.com/adobe/helix-rum-collector/issues/375)
+* **utils:** detect bots first, then mobile ([f640f29](https://github.com/adobe/helix-rum-collector/commit/f640f293bf4987a7f0a08a9a51041cf824b0213e)), closes [#375](https://github.com/adobe/helix-rum-collector/issues/375)
+
 ## [2.25.8](https://github.com/adobe/helix-rum-collector/compare/v2.25.7...v2.25.8) (2024-08-05)
 
 
