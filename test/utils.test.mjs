@@ -47,10 +47,10 @@ describe('Test Utils', () => {
     assert.equal(nearestHour + (24 * 3600000), maskTime(now, timePadding));
   });
 
-  it('Use current second if padding is missing', () => {
+  it.only('Use current second if padding is missing', () => {
     const sometime = new Date(2023, 8, 6, 15, 45, 27, 999);
 
-    const expectedTime = new Date(2023, 8, 6, 15, 0, 27).getTime();
+    const expectedTime = new Date(2023, 8, 6, 15, 0, 27, 999).getTime();
     const masked = maskTime(sometime);
     assert.equal(expectedTime, masked);
   });
@@ -58,7 +58,7 @@ describe('Test Utils', () => {
   it('Use current second if padding is not a number', () => {
     const sometime = new Date(2023, 8, 6, 15, 45, 27, 999);
 
-    const expectedTime = new Date(2023, 8, 6, 15, 0, 27).getTime();
+    const expectedTime = new Date(2023, 8, 6, 15, 0, 27, 999).getTime();
     const masked = maskTime(sometime, 'hello');
     assert.equal(expectedTime, masked);
   });

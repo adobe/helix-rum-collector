@@ -95,12 +95,12 @@ export function maskTime(time, timePadding) {
     return baseHour + padding;
   } else {
     // If the padding is missing we use the current second to spread
-    // the result a little bit. We drop the current minute and the
-    // current milliseconds
+    // the result a little bit. We drop the current minute.
     const numSeconds = Math.floor((time - baseHour) / 1000);
+    const numMillis = time - baseHour - (numSeconds * 1000);
     const currentSecondAsMS = (numSeconds % 60) * 1000;
 
-    return baseHour + currentSecondAsMS;
+    return baseHour + currentSecondAsMS + numMillis;
   }
 }
 
