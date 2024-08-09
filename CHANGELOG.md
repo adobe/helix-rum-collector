@@ -1,3 +1,10 @@
+## [2.25.10](https://github.com/adobe/helix-rum-collector/compare/v2.25.9...v2.25.10) (2024-08-09)
+
+
+### Bug Fixes
+
+* unmask milliseconds ([#377](https://github.com/adobe/helix-rum-collector/issues/377)) ([e10009f](https://github.com/adobe/helix-rum-collector/commit/e10009f247777417c3ec8deed7c3de9628156e78))
+
 ## [2.25.9](https://github.com/adobe/helix-rum-collector/compare/v2.25.8...v2.25.9) (2024-08-06)
 
 
