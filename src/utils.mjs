@@ -61,6 +61,7 @@ export function isValidCheckpoint(checkpoint) {
     'acquisition',
     'login',
     'signup',
+    'prerender',
   ];
   const now = Date.now();
   // Oct 1st 2024 is the date sidekick has promised to remove the sidekick: checkpoints
