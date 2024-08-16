@@ -20,9 +20,32 @@ import {
   getSubsystem,
   isValidId,
   maskTime,
+  bloatControl,
 } from '../src/utils.mjs';
 
 describe('Test Utils', () => {
+  it('Bloat control', () => {
+    assert.equal('{}', bloatControl({}));
+    assert.equal('[]', bloatControl([]));
+    assert.equal('{"lorem":"Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent ac molestie ex. Suspendisse a imperdiet enim. Nulla tempor, tellus volutpat dictum auctor, purus justo consequat felis, sit amet condimentum odio urna ornare dolor. Pellentesque eget ultrices libero. Suspendisse quis diam eu augue consectetur lobortis at et leo. Quisque efficitur sit amet sem id aliquet. In hac habitasse platea dictumst. Maecenas sed orci tincidunt, tempus diam lobortis, egestas nibh. Nulla arcu purus, fermentum vitae augue vel, sodales porttitor arcu. Quisque iaculis porttitor lectus, id rhoncus arcu sollicitudin lobortis.\\n\\nMauris massa leo, feugiat ac congue sit amet, auctor id arcu. Orci varius natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Vestibulum hendrerit urna sit amet quam accumsan consequat quis id diam. Morbi scelerisque a diam in mollis. Ut at convallis diam, a accumsan sem. Curabitur molestie sem nec orci mattis, ut convallis metus pellentesque. Morbi vitae erat felis. Curabitur purus n…"}', bloatControl({
+      lorem: `Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent ac molestie ex. Suspendisse a imperdiet enim. Nulla tempor, tellus volutpat dictum auctor, purus justo consequat felis, sit amet condimentum odio urna ornare dolor. Pellentesque eget ultrices libero. Suspendisse quis diam eu augue consectetur lobortis at et leo. Quisque efficitur sit amet sem id aliquet. In hac habitasse platea dictumst. Maecenas sed orci tincidunt, tempus diam lobortis, egestas nibh. Nulla arcu purus, fermentum vitae augue vel, sodales porttitor arcu. Quisque iaculis porttitor lectus, id rhoncus arcu sollicitudin lobortis.
+
+Mauris massa leo, feugiat ac congue sit amet, auctor id arcu. Orci varius natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Vestibulum hendrerit urna sit amet quam accumsan consequat quis id diam. Morbi scelerisque a diam in mollis. Ut at convallis diam, a accumsan sem. Curabitur molestie sem nec orci mattis, ut convallis metus pellentesque. Morbi vitae erat felis. Curabitur purus nulla, tempus non arcu ut, convallis euismod justo. Etiam hendrerit risus ligula, a mattis libero placerat eu. Proin interdum elit quam. In sit amet dictum sapien. Duis tempor vulputate tellus. Nam fermentum ligula a nibh facilisis, et eleifend mi euismod.
+
+Pellentesque viverra id magna vel varius. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec porta quis mauris sit amet aliquet. Duis non nulla sed metus sagittis condimentum. Nam rhoncus, risus et gravida tempus, nibh diam pellentesque tellus, vel accumsan arcu nibh in lorem. Pellentesque eu semper ipsum, ac lacinia ante. Phasellus neque urna, laoreet eu purus id, interdum tristique turpis. Nulla pretium fermentum elit non tristique. Aliquam ut orci elit. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae; Sed a pulvinar urna. Nunc vel augue ultrices, aliquet sapien eget, ornare sem. Etiam sagittis porttitor arcu vitae tristique. Praesent tempus neque ac vehicula viverra. Donec justo nibh, faucibus a rhoncus nec.`,
+    }));
+
+    assert.equal('{"LCP":1234,"INP":2345,"CLS":0.789,"TTFB":1234}', bloatControl({
+      LCP: 1234.5678,
+      INP: 2345.6789,
+      CLS: 0.7890,
+      TTFB: 1234.5678,
+    }));
+
+    // what is neither a string nor a number nor an array nor an object gets stringified as is
+    assert.equal('true', bloatControl(true));
+  });
+
   it('Mask the time', () => {
     const now = Date.now();
     const nearestHour = Math.floor(now / 3600000) * 3600000;
