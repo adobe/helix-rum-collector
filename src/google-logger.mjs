@@ -11,6 +11,7 @@
  */
 import { Logger } from './logger.mjs';
 import {
+  bloatControl,
   cleanurl,
   getMaskedTime,
   getMaskedUserAgent,
@@ -73,6 +74,6 @@ export class GoogleLogger {
       url: cleanurl(data.url),
     };
 
-    this.clusterlogger.log(JSON.stringify(clusterdata));
+    this.clusterlogger.log(bloatControl(clusterdata));
   }
 }

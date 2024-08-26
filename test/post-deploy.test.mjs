@@ -27,14 +27,21 @@ import assert from 'assert';
 ].forEach((env) => {
   const domain = !process.env.CI ? env.proddomain : env.cidomain;
   describe(`Helix RUM Collector Post-Deploy Validation on ${env.provider}`, () => {
-    it('Missing body returns 400', async () => {
+    it('Missing body returns 400', async function test() {
+      if (!process.env.TEST_INTEGRATION) {
+        this.skip();
+      }
+
       const response = await fetch(`https://${domain}`, {
         method: 'POST',
       });
       assert.strictEqual(response.status, 400);
     });
 
-    it('RUM collection with masked timestamp (t) returns 201', async () => {
+    it('RUM collection with masked timestamp (t) returns 201', async function test() {
+      if (!process.env.TEST_INTEGRATION) {
+        this.skip();
+      }
       const response = await fetch(`https://${domain}`, {
         method: 'POST',
         headers: {
@@ -54,7 +61,10 @@ import assert from 'assert';
       assert.strictEqual(response.status, 201);
     });
 
-    it('RUM collection returns 201', async () => {
+    it('RUM collection returns 201', async function test() {
+      if (!process.env.TEST_INTEGRATION) {
+        this.skip();
+      }
       const response = await fetch(`https://${domain}`, {
         method: 'POST',
         headers: {
@@ -73,7 +83,10 @@ import assert from 'assert';
       assert.strictEqual(response.status, 201);
     });
 
-    it('RUM collection with empty string id returns 201', async () => {
+    it('RUM collection with empty string id returns 201', async function test() {
+      if (!process.env.TEST_INTEGRATION) {
+        this.skip();
+      }
       const response = await fetch(`https://${domain}`, {
         method: 'POST',
         headers: {
@@ -92,14 +105,20 @@ import assert from 'assert';
       assert.strictEqual(response.status, 201);
     });
 
-    it('RUM collection via GET returns 201', async () => {
+    it('RUM collection via GET returns 201', async function test() {
+      if (!process.env.TEST_INTEGRATION) {
+        this.skip();
+      }
       const response = await fetch(`https://${domain}/.rum/1?data=%7B%22checkpoint%22%3A%22noscript%22%2C%22weight%22%3A1%7D`, {
         method: 'GET',
       });
       assert.strictEqual(response.status, 201);
     });
 
-    it('CORS headers are set', async () => {
+    it('CORS headers are set', async function test() {
+      if (!process.env.TEST_INTEGRATION) {
+        this.skip();
+      }
       const response = await fetch(`https://${domain}/`, {
         method: 'OPTIONS',
       });
@@ -107,7 +126,10 @@ import assert from 'assert';
       assert.strictEqual(response.headers.get('access-control-allow-origin'), '*');
     });
 
-    it('robots.txt denies everything', async () => {
+    it('robots.txt denies everything', async function test() {
+      if (!process.env.TEST_INTEGRATION) {
+        this.skip();
+      }
       const response = await fetch(`https://${domain}/robots.txt`, {
         method: 'GET',
       });
@@ -116,7 +138,10 @@ import assert from 'assert';
       assert.strictEqual(response.headers.get('content-type'), 'text/plain');
     });
 
-    it('web vitals module is being served', async () => {
+    it('web vitals module is being served', async function test() {
+      if (!process.env.TEST_INTEGRATION) {
+        this.skip();
+      }
       const response = await fetch(`https://${domain}/.rum/web-vitals@2.1.3/dist/web-vitals.base.js`, {
         method: 'GET',
       });
@@ -125,7 +150,10 @@ import assert from 'assert';
       assert.match(response.headers.get('content-type'), /^application\/javascript/);
     });
 
-    it('web vitals module is being served without redirect', async () => {
+    it('web vitals module is being served without redirect', async function test() {
+      if (!process.env.TEST_INTEGRATION) {
+        this.skip();
+      }
       const response = await fetch(`https://${domain}/.rum/web-vitals/dist/web-vitals.iife.js`, {
         method: 'GET',
       });
@@ -134,7 +162,10 @@ import assert from 'assert';
       assert.match(response.headers.get('content-type'), /^application\/javascript/);
     });
 
-    it('rum js module is being served without redirect', async () => {
+    it('rum js module is being served without redirect', async function test() {
+      if (!process.env.TEST_INTEGRATION) {
+        this.skip();
+      }
       const response = await fetch(`https://${domain}/.rum/@adobe/helix-rum-js@^1/src/index.js`, {
         method: 'GET',
       });
@@ -143,7 +174,10 @@ import assert from 'assert';
       assert.match(response.headers.get('content-type'), /^application\/javascript/);
     });
 
-    it.skip('rum js module is being served with default replacements', async () => {
+    it.skip('rum js module is being served with default replacements', async function test() {
+      if (!process.env.TEST_INTEGRATION) {
+        this.skip();
+      }
       const response = await fetch(`https://${domain}/.rum/@adobe/helix-rum-js@1.0.0/src/index.js`, {
         method: 'GET',
       });
@@ -154,7 +188,10 @@ import assert from 'assert';
       assert.include(text, 'adobe-helix-rum-js-1.0.0');
     });
 
-    it('Missing id returns 400', async () => {
+    it('Missing id returns 400', async function test() {
+      if (!process.env.TEST_INTEGRATION) {
+        this.skip();
+      }
       const response = await fetch(`https://${domain}/`, {
         method: 'POST',
         headers: {
@@ -172,7 +209,10 @@ import assert from 'assert';
       assert.strictEqual(response.status, 400);
     });
 
-    it('Non-numeric weight returns 400', async () => {
+    it('Non-numeric weight returns 400', async function test() {
+      if (!process.env.TEST_INTEGRATION) {
+        this.skip();
+      }
       const response = await fetch(`https://${domain}/`, {
         method: 'POST',
         headers: {
@@ -191,7 +231,10 @@ import assert from 'assert';
       assert.strictEqual(response.status, 400);
     });
 
-    it('Non-object root returns 400', async () => {
+    it('Non-object root returns 400', async function test() {
+      if (!process.env.TEST_INTEGRATION) {
+        this.skip();
+      }
       const response = await fetch(`https://${domain}/`, {
         method: 'POST',
         headers: {

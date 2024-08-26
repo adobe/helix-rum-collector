@@ -62,6 +62,7 @@ export function isValidCheckpoint(checkpoint) {
     'acquisition',
     'login',
     'signup',
+    'prerender',
   ];
   const now = Date.now();
   // Oct 1st 2024 is the date sidekick has promised to remove the sidekick: checkpoints
@@ -104,12 +105,12 @@ export function maskTime(time, timePadding) {
     return baseHour + padding;
   } else {
     // If the padding is missing we use the current second to spread
-    // the result a little bit. We drop the current minute and the
-    // current milliseconds
+    // the result a little bit. We drop the current minute.
     const numSeconds = Math.floor((time - baseHour) / 1000);
+    const numMillis = time - baseHour - (numSeconds * 1000);
     const currentSecondAsMS = (numSeconds % 60) * 1000;
 
-    return baseHour + currentSecondAsMS;
+    return baseHour + currentSecondAsMS + numMillis;
   }
 }
 
@@ -195,11 +196,6 @@ export function getMaskedUserAgent(headers) {
   }
   const lcUA = userAgent.toLowerCase();
 
-  if (lcUA.includes('mobile')
-    || lcUA.includes('android')
-    || lcUA.includes('opera mini')) {
-    return `mobile${getMobileOS(lcUA)}`;
-  }
   if (lcUA.includes('bot')
     || lcUA.includes('spider')
     || lcUA.includes('crawler')
@@ -214,6 +210,11 @@ export function getMaskedUserAgent(headers) {
     || lcUA.includes('+http://')
     || isSpider(lcUA)) {
     return `bot${getBotType(lcUA)}`;
+  }
+  if (lcUA.includes('mobile')
+    || lcUA.includes('android')
+    || lcUA.includes('opera mini')) {
+    return `mobile${getMobileOS(lcUA)}`;
   }
 
   return `desktop${getDesktopOS(lcUA)}`;
@@ -240,7 +241,7 @@ export function cleanurl(url) {
     u.password = '';
     u.hash = '';
     u.pathname = cleanJWT(u.pathname);
-    return u.toString();
+    return u.toString().replace(/@/g, '');
   } catch (e) {
     return cleanJWT(url);
   }
@@ -284,4 +285,39 @@ export function getSubsystem(req) {
     return req.headers.get('host');
   }
   return 'undefined';
+}
+
+/**
+ * Cloudflare applies a 16kb limit to all log messages, so we need to make sure
+ * that the JSON we send to the logger is not too large. This function will
+ * apply a couple of tricks to make this happen
+ * 1. limit the length of any string value to 1024 characters
+ * 2. cast LCP, INP, TTFB to integers
+ * @param {Object} obj an object to be logged
+ * @returns {String} the sanitized object as a JSON string
+ */
+export function bloatControl(obj) {
+  // the object can have nested objects, so we may need recursion
+  const sanitize = (o, k) => {
+    if (typeof o === 'string' && o.length > 1024) {
+      return `${o.substring(0, 1024)}…`;
+    }
+    if (typeof o === 'number') {
+      if (['LCP', 'INP', 'TTFB'].includes(k)) {
+        return Math.floor(o);
+      }
+      return o;
+    }
+    if (Array.isArray(o)) {
+      return o.map(sanitize);
+    }
+    if (typeof o === 'object' && o !== null) {
+      return Object.entries(o).reduce((acc, [key, value]) => {
+        acc[key] = sanitize(value, key);
+        return acc;
+      }, {});
+    }
+    return o;
+  };
+  return JSON.stringify(sanitize(obj));
 }

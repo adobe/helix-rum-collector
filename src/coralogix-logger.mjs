@@ -11,6 +11,7 @@
  */
 import { Logger } from './logger.mjs';
 import {
+  bloatControl,
   cleanurl, getMaskedTime, getMaskedUserAgent, getSubsystem,
   isReasonableWeight,
   isValidCheckpoint,
@@ -89,7 +90,7 @@ export class CoralogixLogger {
     };
     console.log('ready to log (coralogix)');
     // console.log(JSON.stringify(data));
-    this.logger.log(JSON.stringify(data));
+    this.logger.log(bloatControl(data));
     console.log('done');
   }
 }

@@ -1,6 +1,6 @@
 {
   "name": "@adobe/helix-rum-collector",
-  "version": "2.25.7",
+  "version": "2.26.0",
   "private": true,
   "description": "Collect Real User Monitoring Data for Helix",
   "main": "src/index.mjs",
@@ -8,9 +8,9 @@
     "fastly-build": "hedy --build --verbose",
     "deploy": "hedy --build --verbose --deploy --fastly-auth $HLX_FASTLY_AUTH --compute-service-id ${HLX_FASTLY_SVC:-5Qir8H8bLeaRuldIp9TWq4} --cloudflare-email $HLX_CLOUDFLARE_EMAIL --cloudflare-account-id $HLX_CLOUDFLARE_ACCOUNT --cloudflare-auth $HLX_CLOUDFLARE_AUTH --name ${HLX_CLOUDFLARE_NAME:-helix-rum-collector-prod}",
     "predeploy": "node tools/spider-list.js",
-    "test": "node --test --experimental-test-coverage --test-reporter=lcov --test-reporter-destination=lcov.info --test-reporter=spec --test-reporter-destination=stdout --test-reporter=junit --test-reporter-destination=junit.xml --test-name-pattern=Test",
+    "test": "node --test --experimental-test-coverage --test-reporter=lcov --test-reporter-destination=lcov.info --test-reporter=spec --test-reporter-destination=stdout --test-reporter=junit --test-reporter-destination=junit.xml --test-skip-pattern=Post-Deploy",
     "pretest": "node tools/spider-list.js",
-    "test-postdeploy": "node --test --experimental-test-coverage --test-reporter=lcov --test-reporter-destination=lcov.info --test-reporter=spec --test-reporter-destination=stdout --test-reporter=junit --test-reporter-destination=junit.xml --test-name-pattern=Post-Deploy",
+    "test-postdeploy": "TEST_INTEGRATION=true node --test --experimental-test-coverage --test-reporter=lcov --test-reporter-destination=lcov.info --test-reporter=spec --test-reporter-destination=stdout --test-reporter=junit --test-reporter-destination=junit.xml --test-name-pattern=Post-Deploy",
     "prelint": "node tools/spider-list.js",
     "lint": "./node_modules/.bin/eslint .",
     "semantic-release": "semantic-release"
@@ -44,7 +44,7 @@
   "homepage": "https://github.com/adobe/helix-rum-collector#readme",
   "devDependencies": {
     "@adobe/eslint-config-helix": "2.0.6",
-    "@adobe/helix-deploy": "12.0.4",
+    "@adobe/helix-deploy": "12.0.10",
     "@adobe/helix-deploy-plugin-edge": "1.0.2",
     "@adobe/semantic-release-coralogix": "1.1.31",
     "@semantic-release/changelog": "6.0.3",
@@ -56,7 +56,7 @@
     "eslint-plugin-import": "2.29.1",
     "esmock": "2.6.7",
     "jsdoc-to-markdown": "8.0.3",
-    "semantic-release": "24.0.0",
+    "semantic-release": "24.1.0",
     "semantic-release-slack-bot": "4.0.2"
   }
 }

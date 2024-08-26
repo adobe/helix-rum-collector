@@ -21,9 +21,32 @@ import {
   isValidId,
   maskTime,
   sourceTargetValidator,
+  bloatControl,
 } from '../src/utils.mjs';
 
 describe('Test Utils', () => {
+  it('Bloat control', () => {
+    assert.equal('{}', bloatControl({}));
+    assert.equal('[]', bloatControl([]));
+    assert.equal('{"lorem":"Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent ac molestie ex. Suspendisse a imperdiet enim. Nulla tempor, tellus volutpat dictum auctor, purus justo consequat felis, sit amet condimentum odio urna ornare dolor. Pellentesque eget ultrices libero. Suspendisse quis diam eu augue consectetur lobortis at et leo. Quisque efficitur sit amet sem id aliquet. In hac habitasse platea dictumst. Maecenas sed orci tincidunt, tempus diam lobortis, egestas nibh. Nulla arcu purus, fermentum vitae augue vel, sodales porttitor arcu. Quisque iaculis porttitor lectus, id rhoncus arcu sollicitudin lobortis.\\n\\nMauris massa leo, feugiat ac congue sit amet, auctor id arcu. Orci varius natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Vestibulum hendrerit urna sit amet quam accumsan consequat quis id diam. Morbi scelerisque a diam in mollis. Ut at convallis diam, a accumsan sem. Curabitur molestie sem nec orci mattis, ut convallis metus pellentesque. Morbi vitae erat felis. Curabitur purus n…"}', bloatControl({
+      lorem: `Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent ac molestie ex. Suspendisse a imperdiet enim. Nulla tempor, tellus volutpat dictum auctor, purus justo consequat felis, sit amet condimentum odio urna ornare dolor. Pellentesque eget ultrices libero. Suspendisse quis diam eu augue consectetur lobortis at et leo. Quisque efficitur sit amet sem id aliquet. In hac habitasse platea dictumst. Maecenas sed orci tincidunt, tempus diam lobortis, egestas nibh. Nulla arcu purus, fermentum vitae augue vel, sodales porttitor arcu. Quisque iaculis porttitor lectus, id rhoncus arcu sollicitudin lobortis.
+
+Mauris massa leo, feugiat ac congue sit amet, auctor id arcu. Orci varius natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Vestibulum hendrerit urna sit amet quam accumsan consequat quis id diam. Morbi scelerisque a diam in mollis. Ut at convallis diam, a accumsan sem. Curabitur molestie sem nec orci mattis, ut convallis metus pellentesque. Morbi vitae erat felis. Curabitur purus nulla, tempus non arcu ut, convallis euismod justo. Etiam hendrerit risus ligula, a mattis libero placerat eu. Proin interdum elit quam. In sit amet dictum sapien. Duis tempor vulputate tellus. Nam fermentum ligula a nibh facilisis, et eleifend mi euismod.
+
+Pellentesque viverra id magna vel varius. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec porta quis mauris sit amet aliquet. Duis non nulla sed metus sagittis condimentum. Nam rhoncus, risus et gravida tempus, nibh diam pellentesque tellus, vel accumsan arcu nibh in lorem. Pellentesque eu semper ipsum, ac lacinia ante. Phasellus neque urna, laoreet eu purus id, interdum tristique turpis. Nulla pretium fermentum elit non tristique. Aliquam ut orci elit. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae; Sed a pulvinar urna. Nunc vel augue ultrices, aliquet sapien eget, ornare sem. Etiam sagittis porttitor arcu vitae tristique. Praesent tempus neque ac vehicula viverra. Donec justo nibh, faucibus a rhoncus nec.`,
+    }));
+
+    assert.equal('{"LCP":1234,"INP":2345,"CLS":0.789,"TTFB":1234}', bloatControl({
+      LCP: 1234.5678,
+      INP: 2345.6789,
+      CLS: 0.7890,
+      TTFB: 1234.5678,
+    }));
+
+    // what is neither a string nor a number nor an array nor an object gets stringified as is
+    assert.equal('true', bloatControl(true));
+  });
+
   it('Mask the time', () => {
     const now = Date.now();
     const nearestHour = Math.floor(now / 3600000) * 3600000;
@@ -51,7 +74,7 @@ describe('Test Utils', () => {
   it('Use current second if padding is missing', () => {
     const sometime = new Date(2023, 8, 6, 15, 45, 27, 999);
 
-    const expectedTime = new Date(2023, 8, 6, 15, 0, 27).getTime();
+    const expectedTime = new Date(2023, 8, 6, 15, 0, 27, 999).getTime();
     const masked = maskTime(sometime);
     assert.equal(expectedTime, masked);
   });
@@ -59,7 +82,7 @@ describe('Test Utils', () => {
   it('Use current second if padding is not a number', () => {
     const sometime = new Date(2023, 8, 6, 15, 45, 27, 999);
 
-    const expectedTime = new Date(2023, 8, 6, 15, 0, 27).getTime();
+    const expectedTime = new Date(2023, 8, 6, 15, 0, 27, 999).getTime();
     const masked = maskTime(sometime, 'hello');
     assert.equal(expectedTime, masked);
   });
@@ -81,6 +104,8 @@ describe('Test Utils', () => {
     assert.equal('bot:monitoring', getMaskedUserAgent(getUserAgentHeaders('Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/85.0.4183.121 Safari/537.36 PingdomPageSpeed/1.0 (pingbot/2.0; +http://www.pingdom.com/)')));
     assert.equal('bot', getMaskedUserAgent(getUserAgentHeaders('AHC/2.1')));
     assert.equal('bot:monitoring', getMaskedUserAgent(getUserAgentHeaders('mozilla/5.0 (x11; linux x86_64) applewebkit/537.36 (khtml, like gecko) chrome/123.0.6312.122 safari/537.36 datadogsynthetics')));
+    assert.equal('bot:seo', getMaskedUserAgent(getUserAgentHeaders('Mozilla/5.0 (Linux; Android 6.0.1; Nexus 5X Build/MMB29P) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/41.0.2272.96 Mobile Safari/537.36 (compatible; Googlebot/2.1; +http://www.google.com/bot.html) https://deepcrawl.com/bot')));
+    assert.equal('bot:search', getMaskedUserAgent(getUserAgentHeaders('Mozilla/5.0 (iPhone; CPU iPhone OS 6_0 like Mac OS X) AppleWebKit/536.26 (KHTML, like Gecko) Version/6.0 Mobile/10A5376e Safari/8536.25 (compatible; Googlebot/2.1; +http://www.google.com/bot.html)')));
 
     assert.equal('desktop:windows', getMaskedUserAgent(getUserAgentHeaders('Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/111.0.5563.64 Safari/537.36')));
     assert.equal('desktop:mac', getMaskedUserAgent(getUserAgentHeaders('Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/116.0.0.0 Safari/537.36 Sidekick/6.30.0')));

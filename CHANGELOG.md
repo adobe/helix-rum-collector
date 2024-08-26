@@ -1,3 +1,41 @@
+# [2.26.0](https://github.com/adobe/helix-rum-collector/compare/v2.25.10...v2.26.0) (2024-08-26)
+
+
+### Bug Fixes
+
+* allow prerender checkpoint ([44dc9f2](https://github.com/adobe/helix-rum-collector/commit/44dc9f286b21d6bbf1fb28ca13fb701783a7f16a))
+* **sanitize:** guard against empty objects ([61b381b](https://github.com/adobe/helix-rum-collector/commit/61b381bb7acc40a188ed5b50666a2419532d5fae))
+
+
+### Features
+
+* **logger:** control bloat of JSON logs for Cloudflare ([b872d3b](https://github.com/adobe/helix-rum-collector/commit/b872d3bfce70ebaa2d1598217b26571c4a57e0c0))
+* **utils:** add bloat control utility to ensure JSON strings don't get too long ([cee29ea](https://github.com/adobe/helix-rum-collector/commit/cee29ea0c379d936a583eabfc1b29d9713c26c5a))
+
+## [2.25.10](https://github.com/adobe/helix-rum-collector/compare/v2.25.9...v2.25.10) (2024-08-09)
+
+
+### Bug Fixes
+
+* unmask milliseconds ([#377](https://github.com/adobe/helix-rum-collector/issues/377)) ([e10009f](https://github.com/adobe/helix-rum-collector/commit/e10009f247777417c3ec8deed7c3de9628156e78))
+
+## [2.25.9](https://github.com/adobe/helix-rum-collector/compare/v2.25.8...v2.25.9) (2024-08-06)
+
+
+### Bug Fixes
+
+* **bots:** add bot detection for deepcrawl ([32e27d9](https://github.com/adobe/helix-rum-collector/commit/32e27d975d5eb93160c6f136bbe3fdacefc654e2)), closes [#375](https://github.com/adobe/helix-rum-collector/issues/375)
+* **utils:** detect bots first, then mobile ([f640f29](https://github.com/adobe/helix-rum-collector/commit/f640f293bf4987a7f0a08a9a51041cf824b0213e)), closes [#375](https://github.com/adobe/helix-rum-collector/issues/375)
+
+## [2.25.8](https://github.com/adobe/helix-rum-collector/compare/v2.25.7...v2.25.8) (2024-08-05)
+
+
+### Bug Fixes
+
+* **cloudflare:** clean @ from URLs ([dd8b011](https://github.com/adobe/helix-rum-collector/commit/dd8b011b8d4904c361c0ac4a7e6ca30a762d17d1))
+* **cloudflare:** clean up urls for real ([4fa53a0](https://github.com/adobe/helix-rum-collector/commit/4fa53a00eecae3998dc495a3dd542b80a08905d6))
+* **jsdelivr:** support body rewriting ([8f2d61d](https://github.com/adobe/helix-rum-collector/commit/8f2d61d53862a1e8bb8dcd52df696490f1145e1a))
+
 ## [2.25.7](https://github.com/adobe/helix-rum-collector/compare/v2.25.6...v2.25.7) (2024-07-30)
 
 
