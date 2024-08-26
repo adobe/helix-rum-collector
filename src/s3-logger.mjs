@@ -11,6 +11,7 @@
  */
 import { Logger } from './logger.mjs';
 import {
+  bloatControl,
   cleanurl,
   getMaskedTime,
   getMaskedUserAgent,
@@ -51,6 +52,6 @@ export class S3Logger {
       ...json,
     };
 
-    this.logger.log(JSON.stringify(data));
+    this.logger.log(bloatControl(data));
   }
 }

@@ -334,7 +334,7 @@ describe('Test index', () => {
 
     const logged = JSON.parse(lastLogMessage);
     assert.equal(0.06, logged.CLS);
-    assert.equal(1.1, logged.LCP);
+    assert.equal(1, logged.LCP);
     assert.equal(0.9, logged.FCP);
     assert.equal(800, logged.TTFB);
   });

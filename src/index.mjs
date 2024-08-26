@@ -34,7 +34,7 @@ function respondError(message, status, e, req) {
     status,
     headers,
   });
-  console.error(msg);
+  console.error('Loggable error:', msg, e && e.stack);
   try {
     const c = new CoralogixErrorLogger(req);
     c.logError(status, message);

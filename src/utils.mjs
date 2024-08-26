@@ -277,3 +277,38 @@ export function getSubsystem(req) {
   }
   return 'undefined';
 }
+
+/**
+ * Cloudflare applies a 16kb limit to all log messages, so we need to make sure
+ * that the JSON we send to the logger is not too large. This function will
+ * apply a couple of tricks to make this happen
+ * 1. limit the length of any string value to 1024 characters
+ * 2. cast LCP, INP, TTFB to integers
+ * @param {Object} obj an object to be logged
+ * @returns {String} the sanitized object as a JSON string
+ */
+export function bloatControl(obj) {
+  // the object can have nested objects, so we may need recursion
+  const sanitize = (o, k) => {
+    if (typeof o === 'string' && o.length > 1024) {
+      return `${o.substring(0, 1024)}…`;
+    }
+    if (typeof o === 'number') {
+      if (['LCP', 'INP', 'TTFB'].includes(k)) {
+        return Math.floor(o);
+      }
+      return o;
+    }
+    if (Array.isArray(o)) {
+      return o.map(sanitize);
+    }
+    if (typeof o === 'object' && o !== null) {
+      return Object.entries(o).reduce((acc, [key, value]) => {
+        acc[key] = sanitize(value, key);
+        return acc;
+      }, {});
+    }
+    return o;
+  };
+  return JSON.stringify(sanitize(obj));
+}
