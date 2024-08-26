@@ -301,7 +301,7 @@ export function bloatControl(obj) {
     if (Array.isArray(o)) {
       return o.map(sanitize);
     }
-    if (typeof o === 'object') {
+    if (typeof o === 'object' && o !== null) {
       return Object.entries(o).reduce((acc, [key, value]) => {
         acc[key] = sanitize(value, key);
         return acc;
