@@ -1,3 +1,17 @@
+# [2.26.0](https://github.com/adobe/helix-rum-collector/compare/v2.25.10...v2.26.0) (2024-08-26)
+
+
+### Bug Fixes
+
+* allow prerender checkpoint ([44dc9f2](https://github.com/adobe/helix-rum-collector/commit/44dc9f286b21d6bbf1fb28ca13fb701783a7f16a))
+* **sanitize:** guard against empty objects ([61b381b](https://github.com/adobe/helix-rum-collector/commit/61b381bb7acc40a188ed5b50666a2419532d5fae))
+
+
+### Features
+
+* **logger:** control bloat of JSON logs for Cloudflare ([b872d3b](https://github.com/adobe/helix-rum-collector/commit/b872d3bfce70ebaa2d1598217b26571c4a57e0c0))
+* **utils:** add bloat control utility to ensure JSON strings don't get too long ([cee29ea](https://github.com/adobe/helix-rum-collector/commit/cee29ea0c379d936a583eabfc1b29d9713c26c5a))
+
 ## [2.25.10](https://github.com/adobe/helix-rum-collector/compare/v2.25.9...v2.25.10) (2024-08-09)
 
 
