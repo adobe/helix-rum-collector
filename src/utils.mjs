@@ -293,7 +293,7 @@ export function bloatControl(obj) {
       return `${o.substring(0, 1024)}…`;
     }
     if (typeof o === 'number') {
-      if (['LCP', 'INP', 'TTFB'].includes(k)) {
+      if (['LCP', 'INP', 'TTFB', 'time'].includes(k)) {
         return Math.floor(o);
       }
       return o;
