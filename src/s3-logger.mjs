@@ -19,6 +19,7 @@ import {
   isReasonableWeight,
   isValidCheckpoint,
   isValidId,
+  sourceTargetValidator,
 } from './utils.mjs';
 
 export class S3Logger {
@@ -32,6 +33,9 @@ export class S3Logger {
 
   logRUM(json, id, weight, referer, generation, checkpoint, target, source, timePadding) {
     if (!isValidCheckpoint(checkpoint) || !isReasonableWeight(weight) || !isValidId(id)) {
+      return;
+    }
+    if (sourceTargetValidator[checkpoint] && !sourceTargetValidator[checkpoint](source, target)) {
       return;
     }
     console.log('logging to S3');

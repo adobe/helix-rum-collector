@@ -40,6 +40,7 @@ export function isValidCheckpoint(checkpoint) {
     'back_forward',
     // 'lcp', // not needed anymore, helix-specific
     'missingresource',
+    'audience',
     'experiment',
     'formsubmit',
     '404',
@@ -72,6 +73,14 @@ export function isValidCheckpoint(checkpoint) {
   }
   return knowncheckpoints.indexOf(checkpoint) > -1;
 }
+
+export const sourceTargetValidator = {
+  audience: (source = '', target = '') => source.match(/^[\w-]+$/)
+    && target.match(/^[\w-:]+$/)
+    && ['default', ...target.split(':')].includes(source),
+  experiment: (source = '', target = '') => source.match(/^[\w-]+$/)
+    && target.match(/^[\w-]+$/),
+};
 
 export function isValidId(id) {
   return typeof id === 'string' && /^[a-zA-Z0-9-]+$/.test(id);

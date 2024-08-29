@@ -20,6 +20,7 @@ import {
   getSubsystem,
   isValidId,
   maskTime,
+  sourceTargetValidator,
   bloatControl,
 } from '../src/utils.mjs';
 
@@ -190,6 +191,44 @@ Pellentesque viverra id magna vel varius. Lorem ipsum dolor sit amet, consectetu
     assert.equal('publish-p12345-e1234.adobeaemcloud.net', getSubsystem({
       headers,
     }));
+  });
+
+  describe('Source & Target validators', () => {
+    describe('audience', () => {
+      it('has a validator for the "audience" checkpoint', () => {
+        assert.ok(sourceTargetValidator.audience);
+      });
+
+      it('validates that source and target are proper identifiers', () => {
+        assert.ok(sourceTargetValidator.audience('foo', 'foo'));
+        assert.ok(sourceTargetValidator.audience('f-o-o', 'f-o-o'));
+        assert.ok(sourceTargetValidator.audience('f_o_o', 'f_o_o'));
+        assert.ok(sourceTargetValidator.audience('f00', 'f00'));
+        assert.ok(sourceTargetValidator.audience('foo', 'foo:bar:baz'));
+        assert.ok(sourceTargetValidator.audience('default', 'foo:bar:baz'));
+
+        assert.ok(!sourceTargetValidator.audience('foo', 'bar:baz'));
+        assert.ok(!sourceTargetValidator.audience('foo bar', 'baz qux'));
+        assert.ok(!sourceTargetValidator.audience('foo!', 'foo!'));
+      });
+    });
+
+    describe('experiment', () => {
+      it('has a validator for the "experiment" checkpoint', () => {
+        assert.ok(sourceTargetValidator.experiment);
+      });
+
+      it('validates that source and target are proper identifiers', () => {
+        assert.ok(sourceTargetValidator.experiment('foo', 'bar'));
+        assert.ok(sourceTargetValidator.experiment('f-o-o', 'b-a-r'));
+        assert.ok(sourceTargetValidator.experiment('f_o_o', 'b_a_r'));
+        assert.ok(sourceTargetValidator.experiment('f00', 'b4r'));
+
+        assert.ok(!sourceTargetValidator.experiment('foo', 'bar:baz'));
+        assert.ok(!sourceTargetValidator.experiment('foo bar', 'baz qux'));
+        assert.ok(!sourceTargetValidator.experiment('foo!', 'bar?'));
+      });
+    });
   });
 
   it('id validation', () => {

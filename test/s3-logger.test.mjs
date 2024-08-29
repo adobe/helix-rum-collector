@@ -80,4 +80,30 @@ describe('Test S3 Logger', () => {
     const logged = JSON.parse(lastLogMessage);
     assert.equal('q123', logged.id);
   });
+
+  it('Skips invalid audience checkpoints', () => {
+    const headers = new Map();
+    const url = 'https://log/this';
+
+    const req = { headers, url };
+    const gl = new S3Logger(req);
+    gl.logRUM({}, 'q1337', 1, undefined, undefined, 'audience', 'foo:bar', 'foo');
+    gl.logRUM({}, 'q1338', 1, undefined, undefined, 'audience', 'bar', 'foo');
+
+    const logged = JSON.parse(lastLogMessage);
+    assert.equal('q1337', logged.id);
+  });
+
+  it('Skips invalid experiment checkpoints', () => {
+    const headers = new Map();
+    const url = 'https://log/this';
+
+    const req = { headers, url };
+    const gl = new S3Logger(req);
+    gl.logRUM({}, 'q1339', 1, undefined, undefined, 'experiment', 'bar', 'foo');
+    gl.logRUM({}, 'q1340', 1, undefined, undefined, 'experiment', '', 'foo');
+
+    const logged = JSON.parse(lastLogMessage);
+    assert.equal('q1339', logged.id);
+  });
 });
