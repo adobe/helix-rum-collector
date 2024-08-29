@@ -1,3 +1,17 @@
+# [2.27.0](https://github.com/adobe/helix-rum-collector/compare/v2.26.0...v2.27.0) (2024-08-29)
+
+
+### Bug Fixes
+
+* only track the 1st reported audience and bail out of invalid ([48f03da](https://github.com/adobe/helix-rum-collector/commit/48f03da0ccfaba3e051e75053ac10dfcd9b8c265))
+* rename checkpoint to audiences to be backward compatible ([822224f](https://github.com/adobe/helix-rum-collector/commit/822224f68cb91d93debcb241c7e92f9925e0aaef))
+
+
+### Features
+
+* track audience using a privacy compliant algorithm ([014ea76](https://github.com/adobe/helix-rum-collector/commit/014ea76e11336383893d07b420f5f70fbdd0a914))
+* validate experiment and audiences checkpoints ([3209abb](https://github.com/adobe/helix-rum-collector/commit/3209abb9e5408a346ce6ecc172cf883060679a8b))
+
 # [2.26.0](https://github.com/adobe/helix-rum-collector/compare/v2.25.10...v2.26.0) (2024-08-26)
 
 
