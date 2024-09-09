@@ -1,3 +1,11 @@
+# [2.28.0](https://github.com/adobe/helix-rum-collector/compare/v2.27.0...v2.28.0) (2024-09-09)
+
+
+### Features
+
+* **utils:** enable language checkpoint ([d3e1d3d](https://github.com/adobe/helix-rum-collector/commit/d3e1d3d5e6cdff9eca2da48d2afe8583106f89a4))
+* **utils:** enable redirect checkpoint ([07bfa93](https://github.com/adobe/helix-rum-collector/commit/07bfa9366d28385371321393ba0f971cc25721ac))
+
 # [2.27.0](https://github.com/adobe/helix-rum-collector/compare/v2.26.0...v2.27.0) (2024-08-29)
 
 
