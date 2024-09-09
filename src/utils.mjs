@@ -62,6 +62,7 @@ export function isValidCheckpoint(checkpoint) {
     'acquisition',
     'login',
     'signup',
+    'language', // record language preference
     'prerender',
   ];
   const now = Date.now();
