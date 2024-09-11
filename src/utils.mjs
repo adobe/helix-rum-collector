@@ -278,9 +278,17 @@ export function extractAdobeRoutingInfo(value) {
   return `${routingInfo.tier}-p${routingInfo.program}-e${routingInfo.environment}.adobeaemcloud.net`;
 }
 
+/**
+ * Extract the subsystem from the request
+ * @param {Request} req the request
+ * @returns {string} the subsystem
+ */
 export function getSubsystem(req) {
+  const params = req.url && new URL(req.url).searchParams;
   if (req.headers.get('x-adobe-routing')) {
     return extractAdobeRoutingInfo(req.headers.get('x-adobe-routing'));
+  } else if (params && params.has('routing')) {
+    return extractAdobeRoutingInfo(params.get('routing'));
   } else if (req.headers.get('x-forwarded-host')) {
     return getForwardedHost(req.headers.get('x-forwarded-host'));
   } else if (req.headers.get('host')) {
