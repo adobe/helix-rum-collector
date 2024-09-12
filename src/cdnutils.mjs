@@ -43,6 +43,7 @@ export function cleanupHeaders(resp) {
     }
   }
   newHeaders.set('Cross-Origin-Resource-Policy', 'cross-origin');
+  newHeaders.set('x-compress-hint', 'on');
 
   const result = new Response(resp.body, {
     headers: newHeaders,
