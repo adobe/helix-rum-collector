@@ -174,6 +174,22 @@ import assert from 'assert';
       assert.match(response.headers.get('content-type'), /^application\/javascript/);
     });
 
+    it('rum js module is served with compression', async function test() {
+      if (!process.env.TEST_INTEGRATION) {
+        this.skip();
+      }
+      const response = await fetch(`https://${domain}/.rum/@adobe/helix-rum-js@^1/src/index.js`, {
+        method: 'GET',
+        headers: {
+          'Accept-Encoding': 'brotli, gzip, deflate',
+        },
+      });
+      assert.strictEqual(response.status, 200);
+      // eslint-disable-next-line no-unused-expressions
+      assert.match(response.headers.get('content-type'), /^application\/javascript/);
+      assert.match(response.headers.get('content-encoding'), /^(br|gzip|deflate)$/);
+    });
+
     it.skip('rum js module is being served with default replacements', async function test() {
       if (!process.env.TEST_INTEGRATION) {
         this.skip();
