@@ -1,3 +1,10 @@
+# [2.29.0](https://github.com/adobe/helix-rum-collector/compare/v2.28.0...v2.29.0) (2024-09-12)
+
+
+### Features
+
+* **cdn:** enable compression on fastly ([5f98ead](https://github.com/adobe/helix-rum-collector/commit/5f98eadd3683fb4895698a64ea5744d2708fe5db))
+
 # [2.28.0](https://github.com/adobe/helix-rum-collector/compare/v2.27.0...v2.28.0) (2024-09-09)
 
 
