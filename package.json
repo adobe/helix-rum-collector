@@ -55,8 +55,8 @@
     "eslint-plugin-header": "3.1.1",
     "eslint-plugin-import": "2.30.0",
     "esmock": "2.6.7",
-    "jsdoc-to-markdown": "9.0.0",
-    "semantic-release": "24.1.0",
+    "jsdoc-to-markdown": "9.0.1",
+    "semantic-release": "24.1.1",
     "semantic-release-slack-bot": "4.0.2"
   }
 }
