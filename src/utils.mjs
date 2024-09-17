@@ -67,9 +67,9 @@ export function isValidCheckpoint(checkpoint) {
     'redirect', // there was a redirect as part of the request
   ];
   const now = Date.now();
-  // Oct 1st 2024 is the date sidekick has promised to remove the sidekick: checkpoints
+  // Jan 1st 2025 is the date the sidekick team has promised to remove the sidekick: checkpoints
   // and use regular checkpoints instead
-  const eol = new Date(2024, 9, 1).getTime();
+  const eol = new Date(2025, 0, 1).getTime();
   if (now < eol && checkpoint && typeof checkpoint === 'string' && checkpoint.startsWith('sidekick:')) {
     return true;
   }
