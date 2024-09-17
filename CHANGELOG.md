@@ -1,3 +1,10 @@
+## [2.29.1](https://github.com/adobe/helix-rum-collector/compare/v2.29.0...v2.29.1) (2024-09-17)
+
+
+### Bug Fixes
+
+* extend deadline for sidekick checkpoints ([#393](https://github.com/adobe/helix-rum-collector/issues/393)) ([8b06d64](https://github.com/adobe/helix-rum-collector/commit/8b06d64877bb8168cdca5a64b567a627ad44d5ed))
+
 # [2.29.0](https://github.com/adobe/helix-rum-collector/compare/v2.28.0...v2.29.0) (2024-09-12)
 
 
