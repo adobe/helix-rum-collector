@@ -1,3 +1,10 @@
+# [2.30.0](https://github.com/adobe/helix-rum-collector/compare/v2.29.1...v2.30.0) (2024-09-19)
+
+
+### Features
+
+* **utils:** allow specifying the routing info via `routing` URL parameter ([a4b3834](https://github.com/adobe/helix-rum-collector/commit/a4b38340608c5987b6072eeee0ddc56b810b1430))
+
 ## [2.29.1](https://github.com/adobe/helix-rum-collector/compare/v2.29.0...v2.29.1) (2024-09-17)
 
 
