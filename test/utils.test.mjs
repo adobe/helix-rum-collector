@@ -191,6 +191,11 @@ Pellentesque viverra id magna vel varius. Lorem ipsum dolor sit amet, consectetu
     assert.equal('publish-p12345-e1234.adobeaemcloud.net', getSubsystem({
       headers,
     }));
+
+    assert.equal('publish-p12345-e1234.adobeaemcloud.net', getSubsystem({
+      url: 'http://www.blah.com?routing=environment=1234,program=12345,tier=publish,foo=baz',
+      headers: new Map(),
+    }));
   });
 
   describe('Source & Target validators', () => {
