@@ -91,3 +91,10 @@ export async function cleanupResponse(resp, req) {
   }
   return cleanedResponse;
 }
+
+export function prohibitDirectoryRequest(req) {
+  if (req?.url.endsWith('/')) {
+    return new Response('Directory listing is not permitted', { status: 404 });
+  }
+  return undefined;
+}

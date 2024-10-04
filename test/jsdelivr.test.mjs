@@ -167,4 +167,72 @@ describe('Test jdelivr handler', () => {
       global.fetch = storedFetch;
     }
   });
+
+  it('Redirects to directory listing are prevented', async () => {
+    const req = {
+      url: 'https://cdn.jsdelivr.net/npm/@adobe/helix-rum-js@2/src',
+    };
+
+    const storedFetch = global.fetch;
+
+    let redirectsMade = 0;
+    try {
+      global.fetch = (v) => {
+        if (v.url === 'https://cdn.jsdelivr.net/npm/@adobe/helix-rum-js@2/src') {
+          redirectsMade += 1;
+          return {
+            status: 302,
+            headers: new Headers({
+              Location: 'https://cdn.jsdelivr.net/npm/@adobe/helix-rum-js@2/src/',
+            }),
+          };
+        }
+        return null;
+      };
+
+      const resp = await respondJsdelivr(req);
+      assert.equal(404, resp.status);
+      assert.equal(1, redirectsMade, 'Expected redirect to be made by the test');
+    } finally {
+      global.fetch = storedFetch;
+    }
+  });
+
+  it('Redirects to directory listing are prevented2', async () => {
+    const req = {
+      url: 'https://cdn.jsdelivr.net/npm/@adobe/helix-rum-js@2/src',
+    };
+
+    const storedFetch = global.fetch;
+
+    const redirectsMade = [];
+    try {
+      global.fetch = (v) => {
+        if (v.url === 'https://cdn.jsdelivr.net/npm/@adobe/helix-rum-js@2/src') {
+          redirectsMade.push('a');
+          return {
+            status: 302,
+            headers: new Headers({
+              Location: 'https://cdn.jsdelivr.net/npm/@adobe/helix-rum-js@2/src/sub',
+            }),
+          };
+        } else if (v.url === 'https://cdn.jsdelivr.net/npm/@adobe/helix-rum-js@2/src/sub') {
+          redirectsMade.push('b');
+          return {
+            status: 302,
+            headers: new Headers({
+              Location: 'https://cdn.jsdelivr.net/npm/@adobe/helix-rum-js@2/src/sub/',
+            }),
+          };
+        }
+        return null;
+      };
+
+      const resp = await respondJsdelivr(req);
+      assert.equal(404, resp.status);
+      assert.deepStrictEqual(['a', 'b'], redirectsMade, 'Expected two redirects to be made by the test');
+    } finally {
+      global.fetch = storedFetch;
+    }
+  });
 });
