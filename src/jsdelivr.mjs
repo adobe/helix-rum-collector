@@ -10,7 +10,7 @@
  * governing permissions and limitations under the License.
  */
 /* eslint-env serviceworker */
-import { cleanupResponse } from './cdnutils.mjs';
+import { cleanupResponse, prohibitDirectoryRequest } from './cdnutils.mjs';
 
 const redirectHeaders = [301, 302, 307, 308];
 
@@ -27,6 +27,11 @@ export async function respondJsdelivr(req) {
 
   if (redirectHeaders.includes(beresp.status)) {
     const bereq2 = new Request(new URL(beresp.headers.get('location'), 'https://cdn.jsdelivr.net'));
+    const err2 = prohibitDirectoryRequest(bereq2);
+    if (err2) {
+      return cleanupResponse(err2);
+    }
+
     const beresp2 = await fetch(bereq2, {
       backend: 'jsdelivr',
     });
@@ -37,6 +42,11 @@ export async function respondJsdelivr(req) {
 
     if (redirectHeaders.includes(beresp2.status)) {
       const bereq3 = new Request(new URL(beresp2.headers.get('location'), 'https://cdn.jsdelivr.net'));
+      const err3 = prohibitDirectoryRequest(bereq3);
+      if (err3) {
+        return cleanupResponse(err3);
+      }
+
       const beresp3 = await fetch(bereq3, {
         backend: 'jsdelivr',
       });

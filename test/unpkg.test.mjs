@@ -187,10 +187,10 @@ describe('Test unpkg handler', () => {
         if (v.url === 'https://unpkg.com/relocated/web-vitals') {
           const resp = { status: 302 };
           resp.headers = new Map();
-          resp.headers.set('location', 'https://foo.bar.web.vitals');
+          resp.headers.set('location', 'https://foo.bar.web.vitals/rel2');
           return resp;
         }
-        if (v.url === 'https://foo.bar.web.vitals/') {
+        if (v.url === 'https://foo.bar.web.vitals/rel2') {
           const resp = {
             url: v.url,
             status: 200,
@@ -255,6 +255,74 @@ describe('Test unpkg handler', () => {
       assert(!resp.headers.has('expect-ct'));
       assert(!resp.headers.has('fly-request-id'));
       assert(!resp.headers.has('server'));
+    } finally {
+      global.fetch = storedFetch;
+    }
+  });
+
+  it('Redirects to directory listing are prevented', async () => {
+    const req = {
+      url: 'http://rum.hlx.page/.rum/@adobe/helix-rum-js@2/src',
+    };
+
+    const storedFetch = global.fetch;
+
+    let redirectsMade = 0;
+    try {
+      global.fetch = (v) => {
+        if (v.url === 'https://unpkg.com/@adobe/helix-rum-js@2/src') {
+          redirectsMade += 1;
+          return {
+            status: 302,
+            headers: new Headers({
+              Location: 'https://unpkg.com/@adobe/helix-rum-js@2/src/',
+            }),
+          };
+        }
+        return null;
+      };
+
+      const resp = await respondUnpkg(req);
+      assert.equal(404, resp.status);
+      assert.equal(1, redirectsMade, 'Expected redirect to be made by the test');
+    } finally {
+      global.fetch = storedFetch;
+    }
+  });
+
+  it('Redirects to directory listing are prevented2', async () => {
+    const req = {
+      url: 'https://unpkg.com/npm/@adobe/helix-rum-js@2/src',
+    };
+
+    const storedFetch = global.fetch;
+
+    const redirectsMade = [];
+    try {
+      global.fetch = (v) => {
+        if (v.url === 'https://unpkg.com/@adobe/helix-rum-js@2/src') {
+          redirectsMade.push('a');
+          return {
+            status: 302,
+            headers: new Headers({
+              Location: 'https://unpkg.com/@adobe/helix-rum-js@2/src/sub',
+            }),
+          };
+        } else if (v.url === 'https://unpkg.com/@adobe/helix-rum-js@2/src/sub') {
+          redirectsMade.push('b');
+          return {
+            status: 302,
+            headers: new Headers({
+              Location: 'https://unpkg.com/@adobe/helix-rum-js@2/src/sub/',
+            }),
+          };
+        }
+        return null;
+      };
+
+      const resp = await respondUnpkg(req);
+      assert.equal(404, resp.status);
+      assert.deepStrictEqual(['a', 'b'], redirectsMade, 'Expected two redirects to be made by the test');
     } finally {
       global.fetch = storedFetch;
     }
