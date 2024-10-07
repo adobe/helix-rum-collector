@@ -1,3 +1,10 @@
+## [2.30.1](https://github.com/adobe/helix-rum-collector/compare/v2.30.0...v2.30.1) (2024-10-07)
+
+
+### Bug Fixes
+
+* **packages:** Prevent package registry dir listings ([#402](https://github.com/adobe/helix-rum-collector/issues/402)) ([ed41ed7](https://github.com/adobe/helix-rum-collector/commit/ed41ed767ca1d33a00c93eb881bbc199e5c3a780))
+
 # [2.30.0](https://github.com/adobe/helix-rum-collector/compare/v2.29.1...v2.30.0) (2024-09-19)
 
 
