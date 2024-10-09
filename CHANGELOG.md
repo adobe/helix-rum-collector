@@ -1,3 +1,10 @@
+## [2.30.2](https://github.com/adobe/helix-rum-collector/compare/v2.30.1...v2.30.2) (2024-10-09)
+
+
+### Bug Fixes
+
+* filter invalid events in consolelogger ([#405](https://github.com/adobe/helix-rum-collector/issues/405)) ([ba3fbdb](https://github.com/adobe/helix-rum-collector/commit/ba3fbdbaf7860b340b4a15421f136b44c40de299))
+
 ## [2.30.1](https://github.com/adobe/helix-rum-collector/compare/v2.30.0...v2.30.1) (2024-10-07)
 
 
