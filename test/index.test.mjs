@@ -372,6 +372,7 @@ describe('Test index', () => {
     req.url = 'http://www.acme.org';
     req.json = () => ({
       id: 'xyz123',
+      checkpoint: 'top',
     });
 
     const ctx = { altConsole: capturedConsole };
@@ -384,6 +385,7 @@ describe('Test index', () => {
     assert.equal(ld.url, 'http://www.acme.org');
     assert.equal(ld.weight, 1);
     assert.equal(ld.id, 'xyz123');
+    assert.equal(ld.checkpoint, 'top');
   });
 
   it('get other package registry', () => {
