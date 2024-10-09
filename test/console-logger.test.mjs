@@ -33,10 +33,10 @@ describe('Test Console Logger', () => {
     cl.logRUM(
       myJSON,
       'someid',
-      5,
+      100,
       'http://www.foo.com/referer',
       67,
-      9999999999999,
+      'loadresource',
       'http://www.foo.com/target',
       'http://www.foo.com/source',
       11,
@@ -47,9 +47,9 @@ describe('Test Console Logger', () => {
     assert(ld.time.toString().endsWith('0011'));
     assert.equal(ld.host, 'www.foo.com');
     assert.equal(ld.url.toString(), 'http://www.foo.com/referer');
-    assert.equal(ld.weight, 5);
+    assert.equal(ld.weight, 100);
     assert.equal(ld.generation, 67);
-    assert.equal(ld.checkpoint, 9999999999999);
+    assert.equal(ld.checkpoint, 'loadresource');
     assert.equal(ld.target.toString(), 'http://www.foo.com/target');
     assert.equal(ld.source.toString(), 'http://www.foo.com/source');
     assert.equal(ld.id, 'someid');
@@ -69,15 +69,18 @@ describe('Test Console Logger', () => {
     };
     const cl = new ConsoleLogger(req, testLogger);
 
-    cl.logRUM({}, 'id123', 2, undefined, 42, 1);
+    cl.logRUM({}, 'id123', 1, undefined, 42, 'top');
+    cl.logRUM({}, 'id123', 1, undefined, 42, 'invalid-checkpoint-not-logged');
+    cl.logRUM({}, 'id123', 9, undefined, 42, 'top'); // invalid weight
+    cl.logRUM({}, 'id123', 'foo', undefined, 42, 'top'); // really invalid weight
     assert.equal(logged.length, 1);
     const ld = JSON.parse(logged[0]);
 
     assert.equal(ld.host, 'www.acme.com');
     assert.equal(ld.url.toString(), 'http://www.foo.com/testing123');
-    assert.equal(ld.weight, 2);
+    assert.equal(ld.weight, 1);
     assert.equal(ld.generation, 42);
-    assert.equal(ld.checkpoint, 1);
+    assert.equal(ld.checkpoint, 'top');
     assert.equal(ld.id, 'id123');
   });
 });
