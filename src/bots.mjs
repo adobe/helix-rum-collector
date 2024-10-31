@@ -15,7 +15,6 @@
 // | select $d.request.user_agent as ua, $d.rum.user_agent as ua2
 // | filter $d.ua2 == 'bot'
 // | groupby ua agg count() as count
-// | orderby count desc;
 export const bots = {
   Ads: [
     {
@@ -39,6 +38,10 @@ export const bots = {
       user_agent: 'AmazonProductDiscovery/1.0',
       regex: 'AmazonProductDiscovery',
     },
+    {
+      user_agent: 'Storebot-Google/1.0',
+      regex: 'Storebot-Google',
+    },
   ],
   Quality: [
     {
@@ -57,9 +60,16 @@ export const bots = {
       user_agent: 'OSVCLinkChecker/1.0',
       regex: 'OSVCLinkChecker',
     },
+    {
+      user_agent: 'TagInspector/500.1',
+      regex: 'TagInspector',
+    },
+    {
+      user_agent: 'SiteCheck-sitecrawl by Siteimprove.com',
+      regex: 'Siteimprove',
+    },
   ],
   Monitoring: [
-
     {
       user_agent: 'DatadogSynthetics',
       regex: 'DatadogSynthetics',
@@ -100,11 +110,31 @@ export const bots = {
       user_agent: 'RuxitSynthetic various versions',
       regex: 'RuxitSynthetic',
     },
+    {
+      user_agent: 'StatusCake_Pagespeed_Indev',
+      regex: 'StatusCake_Pagespeed',
+    },
+    {
+      user_agent: 'One.Shop New Relic Synthetics',
+      regex: 'New Relic Synthetics',
+    },
+    {
+      user_agent: 'Splunk Synthetics',
+      regex: 'Splunk Synthetics',
+    },
+    {
+      user_agent: 'VisualMonitoring/0.1',
+      regex: 'VisualMonitoring',
+    },
   ],
   Social: [
     {
       user_agent: 'facebookexternalhit/1.1',
       regex: 'facebookexternalhit',
+    },
+    {
+      user_agent: 'Pinterestbot/1.0',
+      regex: 'Pinterestbot',
     },
   ],
   SEO: [
@@ -158,11 +188,51 @@ export const bots = {
       user_agent: 'Googlebot/2.1',
       regex: 'Googlebot',
     },
+    {
+      user_agent: 'Applebot/0.1',
+      regex: 'Applebot',
+    },
+    {
+      user_agent: 'AddSearchBot/1.0',
+      regex: 'AddSearchBot',
+    },
+    {
+      user_agent: 'ClarityBot/9.0',
+      regex: 'ClarityBot',
+    },
   ],
   Security: [
     {
       user_agent: 'Popetech-Scanbot/1.0',
       regex: 'Popetech-Scanbot',
+    },
+    {
+      user_agent: 'Detectify',
+      regex: 'Detectify',
+    },
+    {
+      user_agent: 'Probely',
+      regex: 'Probely',
+    },
+  ],
+  Compliance: [
+    {
+      user_agent: 'Cookiebot/1.0',
+      regex: 'Cookiebot',
+    },
+    {
+      user_agent: 'OneTrustBot',
+      regex: 'OneTrustBot',
+    },
+  ],
+  Archive: [
+    {
+      user_agent: 'PageFreezer',
+      regex: 'PageFreezer',
+    },
+    {
+      user_agent: 'mirrorweb.com',
+      regex: 'mirrorweb.com',
     },
   ],
 };
