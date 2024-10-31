@@ -126,6 +126,18 @@ export const bots = {
       user_agent: 'VisualMonitoring/0.1',
       regex: 'VisualMonitoring',
     },
+    {
+      user_agent: 'ERAMonitor',
+      regex: 'ERAMonitor',
+    },
+    {
+      user_agent: 'WatchMouse',
+      regex: 'watchmouse.com',
+    },
+    {
+      user_agent: 'Elastic/Synthetics',
+      regex: 'Elastic/Synthetics',
+    },
   ],
   Social: [
     {
@@ -135,6 +147,14 @@ export const bots = {
     {
       user_agent: 'Pinterestbot/1.0',
       regex: 'Pinterestbot',
+    },
+    {
+      user_agent: 'Slackbot-LinkExpanding',
+      regex: 'Slackbot-LinkExpanding',
+    },
+    {
+      user_agent: 'Iframely/1.3.1',
+      regex: 'Iframely',
     },
   ],
   SEO: [
@@ -174,7 +194,7 @@ export const bots = {
     },
     {
       user_agent: 'YandexRenderResourcesBot/1.0',
-      regex: 'YandexRenderResourcesBot',
+      regex: 'Yandex',
     },
     {
       user_agent: 'MS-Search Crawler',
@@ -200,6 +220,10 @@ export const bots = {
       user_agent: 'ClarityBot/9.0',
       regex: 'ClarityBot',
     },
+    {
+      user_agent: 'PetalBot',
+      regex: 'PetalBot',
+    },
   ],
   Security: [
     {
@@ -214,6 +238,11 @@ export const bots = {
       user_agent: 'Probely',
       regex: 'Probely',
     },
+    {
+      user_agent: 'VirusTotalBot',
+      regex: 'VirusTotalBot',
+    },
+
   ],
   Compliance: [
     {
@@ -224,6 +253,14 @@ export const bots = {
       user_agent: 'OneTrustBot',
       regex: 'OneTrustBot',
     },
+    {
+      user_agent: 'CookieReports.com',
+      regex: 'CookieReports.com',
+    },
+    {
+      user_agent: 'ActiveComply',
+      regex: 'ActiveComply',
+    },
   ],
   Archive: [
     {
@@ -233,6 +270,22 @@ export const bots = {
     {
       user_agent: 'mirrorweb.com',
       regex: 'mirrorweb.com',
+    },
+  ],
+  Translation: [
+    {
+      user_agent: 'TransSync',
+      regex: 'TransSync.*motionpoint',
+    },
+    {
+      user_agent: 'WovnCrawler',
+      regex: 'WovnCrawler',
+    },
+  ],
+  AI: [
+    {
+      user_agent: 'Ai2Bot-Dolma',
+      regex: 'Ai2Bot-Dolma',
     },
   ],
 };
