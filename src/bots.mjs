@@ -183,6 +183,54 @@ export const bots = {
       regex: 'https://deepcrawl.com/bot',
     },
   ],
+  // There is some overlap between AI and Search, and some companies like Apple,
+  // Google, and Meta have many bots that are used for different purposes.
+  // the repo https://github.com/ai-robots-txt/ai.robots.txt/blob/main/robots.json
+  // has a longer list of AI bots, but many of them don't have enough traffic
+  // to be worth adding here. In addition, the repo seems to err on the side of
+  // classifying crawlers as AI bots.
+  AI: [
+    {
+      user_agent: 'Ai2Bot-Dolma',
+      regex: 'Ai2Bot-Dolma',
+    },
+    {
+      user_agent: 'GPTBot',
+      regex: 'GPTBot',
+    },
+    {
+      user_agent: 'Claude-Web',
+      regex: 'Claude-Web',
+    },
+    {
+      user_agent: 'anthropic-ai',
+      regex: 'anthropic-ai',
+    },
+    {
+      user_agent: 'Google-Extended',
+      regex: 'Google-Extended',
+    },
+    {
+      user_agent: 'FacebookBot',
+      regex: 'FacebookBot',
+    },
+    {
+      user_agent: 'Applebot-Extended',
+      regex: 'Applebot.*Extended',
+    },
+    {
+      user_agent: 'Meta-ExternalAgent',
+      regex: 'Meta-ExternalAgent',
+    },
+    {
+      user_agent: 'PerplexityBot',
+      regex: 'PerplexityBot',
+    },
+    {
+      user_agent: 'YouBot',
+      regex: 'YouBot',
+    },
+  ],
   Search: [
     {
       user_agent: 'CoveoBot/2.0',
@@ -271,6 +319,13 @@ export const bots = {
       user_agent: 'mirrorweb.com',
       regex: 'mirrorweb.com',
     },
+    {
+      // CCBot is a bot that crawls the web to find content for the Common Crawl project
+      // common crawl is used to train many AI datasets, but the bot is not an AI crawler
+      // per se, so it's not included in the AI category
+      user_agent: 'CCBot',
+      regex: 'CCBot',
+    },
   ],
   Translation: [
     {
@@ -280,12 +335,6 @@ export const bots = {
     {
       user_agent: 'WovnCrawler',
       regex: 'WovnCrawler',
-    },
-  ],
-  AI: [
-    {
-      user_agent: 'Ai2Bot-Dolma',
-      regex: 'Ai2Bot-Dolma',
     },
   ],
 };
