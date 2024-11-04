@@ -15,6 +15,7 @@
 // | select $d.request.user_agent as ua, $d.rum.user_agent as ua2
 // | filter $d.ua2 == 'bot'
 // | groupby ua agg count() as count
+// | sort by count desc
 export const bots = {
   Ads: [
     {
