@@ -1,3 +1,12 @@
+# [2.31.0](https://github.com/adobe/helix-rum-collector/compare/v2.30.2...v2.31.0) (2024-11-11)
+
+
+### Features
+
+* **bots:** add more AI bots, based on ai.robots.txt ([4b49da5](https://github.com/adobe/helix-rum-collector/commit/4b49da55000f08134715b7fc14d6070eaef31eee))
+* **bots:** add more bots, based on 2024-10-31 data ([1d9d4fa](https://github.com/adobe/helix-rum-collector/commit/1d9d4fab39dd16028ac382aa523134871d2439a9))
+* **bots:** add more bots, based on extensive list of bots ([14949a9](https://github.com/adobe/helix-rum-collector/commit/14949a9d449f3f03658da8d2fe1065a67e2922da))
+
 ## [2.30.2](https://github.com/adobe/helix-rum-collector/compare/v2.30.1...v2.30.2) (2024-10-09)
 
 
