@@ -43,7 +43,7 @@ describe('Test Google Logger', () => {
     assert(logged.time.toString().endsWith('00.011'), logged.time.toString());
     assert.equal('www.foo.com', logged.host);
     assert.equal('http://www.foo.com/referer', logged.url);
-    assert.equal('mobile:android', logged.user_agent);
+    assert.equal('mobile:android:blink', logged.user_agent);
     assert.equal(10, logged.weight);
     assert.equal(67, logged.generation);
     assert.equal('error', logged.checkpoint);

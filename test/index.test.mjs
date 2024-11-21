@@ -48,7 +48,7 @@ describe('Test index', () => {
     const logged = JSON.parse(lastLogMessage);
     assert.equal('error', logged.checkpoint);
     assert.equal('http://blahblah/', logged.url);
-    assert.equal('desktop:chromeos', logged.user_agent);
+    assert.equal('desktop:chromeos:blink', logged.user_agent);
     assert.equal(1, logged.weight);
     assert.equal('somehost', logged.host);
     assert.equal('blahblah', logged.hostname);
@@ -153,7 +153,7 @@ describe('Test index', () => {
     assert.equal('http://foo.bar.org', loggedJSON.edgecompute.url);
     assert.equal('http://foo.bar.org', loggedJSON.cdn.url);
     assert.equal('POST', loggedJSON.request.method);
-    assert.equal('desktop:linux', loggedJSON.request.user_agent);
+    assert.equal('desktop:linux:gecko', loggedJSON.request.user_agent);
     assert(loggedJSON.message.startsWith('RUM Collector expects'));
   });
 
