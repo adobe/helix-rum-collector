@@ -173,6 +173,29 @@ function getBotType(userAgent) {
   return type ? `:${type[0].toLowerCase()}` : '';
 }
 
+function getBrowserEngine(userAgent) {
+  const engines = [
+    {
+      name: 'edgehtml',
+      pattern: /windows.+ edge/,
+    }, {
+      name: 'blink',
+      pattern: /webkit.+chrome/,
+    }, {
+      name: 'presto',
+      pattern: /presto/,
+    }, {
+      name: 'webkit',
+      pattern: /(webkit)\/([\w.]+)/,
+    }, {
+      name: 'gecko',
+      pattern: /rv:([\w.]{1,9})\b.+(gecko)/,
+    }];
+
+  const engine = engines.find(({ pattern }) => pattern.test(userAgent));
+  return engine ? `:${engine.name}` : '';
+}
+
 export function getMaskedUserAgent(headers) {
   if (!headers) {
     return 'undefined';
@@ -216,10 +239,12 @@ export function getMaskedUserAgent(headers) {
   if (lcUA.includes('mobile')
     || lcUA.includes('android')
     || lcUA.includes('opera mini')) {
-    return `mobile${getMobileOS(lcUA)}`;
+    const mobileOS = getMobileOS(lcUA);
+    return `mobile${mobileOS}${mobileOS ? getBrowserEngine(lcUA) : ''}`;
   }
 
-  return `desktop${getDesktopOS(lcUA)}`;
+  const desktopOS = getDesktopOS(lcUA);
+  return `desktop${desktopOS}${desktopOS ? getBrowserEngine(lcUA) : ''}`;
 }
 
 function cleanJWT(str) {

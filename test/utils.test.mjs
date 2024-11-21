@@ -23,6 +23,7 @@ import {
   sourceTargetValidator,
   bloatControl,
 } from '../src/utils.mjs';
+import knownUserAgents from './fixtures/user-agents.json' assert { type: 'json' };
 
 describe('Test Utils', () => {
   it('Bloat control', () => {
@@ -94,30 +95,21 @@ Pellentesque viverra id magna vel varius. Lorem ipsum dolor sit amet, consectetu
   }
 
   it('Mask user agent', () => {
-    assert.equal('mobile:ios', getMaskedUserAgent(getUserAgentHeaders('Mozilla/5.0 (iPhone; CPU iPhone OS 16_5 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/16.5 Mobile/15E148 Safari/604.1')));
-    assert.equal('mobile:ipados', getMaskedUserAgent(getUserAgentHeaders('Mozilla/5.0 (iPad; CPU OS 16_6 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/20G75 [FBAN/FBIOS;FBDV/iPad11,3;FBMD/iPad;FBSN/iPadOS;FBSV/16.6;FBSS/2;FBID/tablet;FBLC/en_US;FBOP/5];FBNV/1')));
-    assert.equal('mobile', getMaskedUserAgent(getUserAgentHeaders('Opera/9.80 (SpreadTrum; Opera Mini/4.4.33961/191.315; U; fr) Presto/2.12.423 Version/12.16')));
-    assert.equal('mobile:android', getMaskedUserAgent(getUserAgentHeaders('Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/118.0.0.0 Safari/537.36')));
-
-    assert.equal('bot', getMaskedUserAgent(getUserAgentHeaders('Mozilla/5.0 (compatible; Baiduspider/2.0; +http://www.baidu.com/search/spider.html)')));
-    assert.equal('bot', getMaskedUserAgent(getUserAgentHeaders('"Mozilla/5.0 (compatible; HubSpot Crawler; +https://www.hubspot.com)"')));
-    assert.equal('bot:monitoring', getMaskedUserAgent(getUserAgentHeaders('Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/85.0.4183.121 Safari/537.36 PingdomPageSpeed/1.0 (pingbot/2.0; +http://www.pingdom.com/)')));
-    assert.equal('bot', getMaskedUserAgent(getUserAgentHeaders('AHC/2.1')));
-    assert.equal('bot:monitoring', getMaskedUserAgent(getUserAgentHeaders('mozilla/5.0 (x11; linux x86_64) applewebkit/537.36 (khtml, like gecko) chrome/123.0.6312.122 safari/537.36 datadogsynthetics')));
-    assert.equal('bot:seo', getMaskedUserAgent(getUserAgentHeaders('Mozilla/5.0 (Linux; Android 6.0.1; Nexus 5X Build/MMB29P) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/41.0.2272.96 Mobile Safari/537.36 (compatible; Googlebot/2.1; +http://www.google.com/bot.html) https://deepcrawl.com/bot')));
-    assert.equal('bot:search', getMaskedUserAgent(getUserAgentHeaders('Mozilla/5.0 (iPhone; CPU iPhone OS 6_0 like Mac OS X) AppleWebKit/536.26 (KHTML, like Gecko) Version/6.0 Mobile/10A5376e Safari/8536.25 (compatible; Googlebot/2.1; +http://www.google.com/bot.html)')));
-
-    assert.equal('desktop:windows', getMaskedUserAgent(getUserAgentHeaders('Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/111.0.5563.64 Safari/537.36')));
-    assert.equal('desktop:mac', getMaskedUserAgent(getUserAgentHeaders('Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/116.0.0.0 Safari/537.36 Sidekick/6.30.0')));
-    assert.equal('desktop:windows', getMaskedUserAgent(getUserAgentHeaders('Opera/12.0(Windows NT 5.2;U;en)Presto/22.9.168 Version/12.00')));
-    assert.equal('desktop:chromeos', getMaskedUserAgent(getUserAgentHeaders('Mozilla/5.0 (X11; CrOS x86_64 14541.0.0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/123.0.0.0 Safari/537.36')));
-    assert.equal('desktop', getMaskedUserAgent(getUserAgentHeaders('foobar')));
-
     assert.equal('bot:monitoring', getMaskedUserAgent(new Map().set('x-newrelic-id', 'VQcPU1ZQGwYEXVZUBwY=')));
 
     assert.equal('undefined', getMaskedUserAgent(new Map()));
     assert.equal('undefined', getMaskedUserAgent());
+
+
   });
+
+  describe('Mask and classify user agents', () => {
+    knownUserAgents.forEach(({ desc, ua, expected }) => {
+      it(`${desc}: classified as "${expected}"`, () => {
+        assert.equal(getMaskedUserAgent(getUserAgentHeaders(ua)), expected);
+      });
+    });
+  })
 
   it('Mask user agent CloudFront', () => {
     const hm1 = new Map();
