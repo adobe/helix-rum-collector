@@ -11,6 +11,7 @@
  */
 module.exports = {
   root: true,
+  parser: '@typescript-eslint/parser',
   extends: '@adobe/helix',
   parserOptions: {
     ecmaVersion: '2020',

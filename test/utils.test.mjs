@@ -23,7 +23,8 @@ import {
   sourceTargetValidator,
   bloatControl,
 } from '../src/utils.mjs';
-import knownUserAgents from './fixtures/user-agents.json' assert { type: 'json' };
+
+import knownUserAgents from './fixtures/user-agents.json' with { type: 'json' };
 
 describe('Test Utils', () => {
   it('Bloat control', () => {
@@ -99,8 +100,6 @@ Pellentesque viverra id magna vel varius. Lorem ipsum dolor sit amet, consectetu
 
     assert.equal('undefined', getMaskedUserAgent(new Map()));
     assert.equal('undefined', getMaskedUserAgent());
-
-
   });
 
   describe('Mask and classify user agents', () => {
@@ -109,7 +108,7 @@ Pellentesque viverra id magna vel varius. Lorem ipsum dolor sit amet, consectetu
         assert.equal(getMaskedUserAgent(getUserAgentHeaders(ua)), expected);
       });
     });
-  })
+  });
 
   it('Mask user agent CloudFront', () => {
     const hm1 = new Map();
