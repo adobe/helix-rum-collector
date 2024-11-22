@@ -51,7 +51,7 @@ describe('Test S3 Logger', () => {
     assert.equal(logged.target.toString(), 'http://www.foo.com/target');
     assert.equal(logged.source.toString(), 'http://www.foo.com/source');
     assert.equal(logged.id, 'someid');
-    assert.equal(logged.user_agent, 'desktop:windows');
+    assert.equal(logged.user_agent, 'desktop:windows:presto');
     assert.deepEqual(logged.foo, ['b', 'ar']);
   });
 
