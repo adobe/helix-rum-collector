@@ -1,3 +1,10 @@
+## [2.31.1](https://github.com/adobe/helix-rum-collector/compare/v2.31.0...v2.31.1) (2024-11-22)
+
+
+### Bug Fixes
+
+* include browser engines in user agent ([#421](https://github.com/adobe/helix-rum-collector/issues/421)) ([2781f75](https://github.com/adobe/helix-rum-collector/commit/2781f753844d60232a09e0c99b324441d28580fd))
+
 # [2.31.0](https://github.com/adobe/helix-rum-collector/compare/v2.30.2...v2.31.0) (2024-11-11)
 
 
