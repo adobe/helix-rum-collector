@@ -114,6 +114,13 @@ export async function main(req, ctx) {
     if (req.method === 'GET' && pathname.startsWith('/info.json')) {
       return respondInfo(ctx);
     }
+
+    // Block access to sensitive files
+    if (pathname.toLowerCase().includes('package.json')
+      || pathname.toLowerCase().includes('changelog.md')) {
+      return respondError('Not Found', 404, undefined, req);
+    }
+
     const isDirList = (pathname.endsWith('/'));
     if (req.method === 'GET' && pathname.startsWith('/.rum/web-vitals')) {
       if (isDirList) {
