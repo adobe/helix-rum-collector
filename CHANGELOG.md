@@ -1,3 +1,10 @@
+## [2.31.2](https://github.com/adobe/helix-rum-collector/compare/v2.31.1...v2.31.2) (2024-12-11)
+
+
+### Bug Fixes
+
+* **cdn:** do not serve package.json or changelog ([6296a38](https://github.com/adobe/helix-rum-collector/commit/6296a38b70843ea2c3678884310cc0692a805098))
+
 ## [2.31.1](https://github.com/adobe/helix-rum-collector/compare/v2.31.0...v2.31.1) (2024-11-22)
 
 
