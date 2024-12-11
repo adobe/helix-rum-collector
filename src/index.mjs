@@ -116,8 +116,8 @@ export async function main(req, ctx) {
     }
 
     // Block access to sensitive files
-    if (pathname.toLowerCase().includes('package.json') ||
-      pathname.toLowerCase().includes('changelog.md')) {
+    if (pathname.toLowerCase().includes('package.json')
+      || pathname.toLowerCase().includes('changelog.md')) {
       return respondError('Not Found', 404, undefined, req);
     }
 

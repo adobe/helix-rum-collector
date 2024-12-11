@@ -265,19 +265,26 @@ import assert from 'assert';
       if (!process.env.TEST_INTEGRATION) {
         this.skip();
       }
-      const sensitiveUrls = [
-        '/.rum/@adobe/helix-rum-js@^2/package.json',
-        '/.rum/@adobe/helix-rum-js@^2/CHANGELOG.md'
-      ];
+      const url = '/.rum/@adobe/helix-rum-js@^2/package.json';
+      const response = await fetch(`https://${domain}${url}`, {
+        method: 'GET',
+      });
+      assert.strictEqual(response.status, 404, `Expected 404 for ${url}`);
+      const text = await response.text();
+      assert.match(text, /Not Found/);
+    });
 
-      for (const url of sensitiveUrls) {
-        const response = await fetch(`https://${domain}${url}`, {
-          method: 'GET'
-        });
-        assert.strictEqual(response.status, 404, `Expected 404 for ${url}`);
-        const text = await response.text();
-        assert.match(text, /Not Found/);
+    it('Sensitive files return 404 - CHANGELOG.md', async function test() {
+      if (!process.env.TEST_INTEGRATION) {
+        this.skip();
       }
+      const url = '/.rum/@adobe/helix-rum-js@^2/CHANGELOG.md';
+      const response = await fetch(`https://${domain}${url}`, {
+        method: 'GET',
+      });
+      assert.strictEqual(response.status, 404, `Expected 404 for ${url}`);
+      const text = await response.text();
+      assert.match(text, /Not Found/);
     });
   });
 });
