@@ -260,5 +260,24 @@ import assert from 'assert';
       });
       assert.strictEqual(response.status, 400);
     });
+
+    it('Sensitive files return 404 - package.json', async function test() {
+      if (!process.env.TEST_INTEGRATION) {
+        this.skip();
+      }
+      const sensitiveUrls = [
+        '/.rum/@adobe/helix-rum-js@^2/package.json',
+        '/.rum/@adobe/helix-rum-js@^2/CHANGELOG.md'
+      ];
+
+      for (const url of sensitiveUrls) {
+        const response = await fetch(`https://${domain}${url}`, {
+          method: 'GET'
+        });
+        assert.strictEqual(response.status, 404, `Expected 404 for ${url}`);
+        const text = await response.text();
+        assert.match(text, /Not Found/);
+      }
+    });
   });
 });
