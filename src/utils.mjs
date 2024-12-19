@@ -48,6 +48,7 @@ export function isValidCheckpoint(checkpoint) {
     'search',
     'unsupported',
     'genai:prompt:generate',
+    'fill', // when a form field is filled
     // 'formviews', // no data in last 30 days
     // 'formready', // no data in last 30 days
     // 'formabondoned', // no data in last 30 days
