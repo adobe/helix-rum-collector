@@ -1,3 +1,10 @@
+# [2.32.0](https://github.com/adobe/helix-rum-collector/compare/v2.31.2...v2.32.0) (2024-12-19)
+
+
+### Features
+
+* enabling fill checkpoint. ([44149f9](https://github.com/adobe/helix-rum-collector/commit/44149f923f499af5934531bad3f67844b808cc2c))
+
 ## [2.31.2](https://github.com/adobe/helix-rum-collector/compare/v2.31.1...v2.31.2) (2024-12-11)
 
 
