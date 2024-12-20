@@ -89,7 +89,7 @@ describe('Test index', () => {
       "id": "foobar",
       "cwv": {
         "a": "aaa",
-        "b": 123
+        "INP": 123
       },
       "referrer": "http://a.b.c",
       "generation": 42,
@@ -121,8 +121,8 @@ describe('Test index', () => {
     assert.equal(42, logged.generation);
     assert.equal('https://t/', logged.target);
     assert.equal('1.2.3.4', logged.source);
-    assert.equal('aaa', logged.a);
-    assert.equal(123, logged.b);
+    assert.equal(undefined, logged.a);
+    assert.equal(123, logged.INP);
     assert.equal('www.foobar.com', logged.host);
     assert.equal('mobile', logged.user_agent);
   });
