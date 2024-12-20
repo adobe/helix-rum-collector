@@ -316,7 +316,7 @@ describe('Test index', () => {
       "cwv": {
         "CLS": 0.06,
         "LCP": 1.1,
-        "FCP": 0.9,
+        "INP": 90,
         "TTFB": 800
       },
       "checkpoint": "cwv",
@@ -335,7 +335,7 @@ describe('Test index', () => {
     const logged = JSON.parse(lastLogMessage);
     assert.equal(0.06, logged.CLS);
     assert.equal(1, logged.LCP);
-    assert.equal(0.9, logged.FCP);
+    assert.equal(90, logged.INP);
     assert.equal(800, logged.TTFB);
   });
 
