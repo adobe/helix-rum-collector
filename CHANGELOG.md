@@ -1,3 +1,10 @@
+## [2.32.1](https://github.com/adobe/helix-rum-collector/compare/v2.32.0...v2.32.1) (2025-01-02)
+
+
+### Bug Fixes
+
+* **cwv:** remove deprecated FID ([bf2fc97](https://github.com/adobe/helix-rum-collector/commit/bf2fc97251d695cce6febd1f5ccef7e2934a3fb6))
+
 # [2.32.0](https://github.com/adobe/helix-rum-collector/compare/v2.31.2...v2.32.0) (2024-12-19)
 
 
