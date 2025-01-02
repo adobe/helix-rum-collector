@@ -163,6 +163,13 @@ export async function main(req, ctx) {
       return respondError('cwv must be an object', 400, undefined, req);
     }
 
+    // Remove any properties that aren't allowed metrics
+    Object.keys(cwv).forEach((key) => {
+      if (!['LCP', 'INP', 'CLS', 'TTFB'].includes(key)) {
+        delete cwv[key];
+      }
+    });
+
     try {
       if (ctx?.runtime?.name === 'compute-at-edge') {
         const c = new CoralogixLogger(req);

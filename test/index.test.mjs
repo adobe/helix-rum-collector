@@ -89,7 +89,7 @@ describe('Test index', () => {
       "id": "foobar",
       "cwv": {
         "a": "aaa",
-        "b": 123
+        "INP": 123
       },
       "referrer": "http://a.b.c",
       "generation": 42,
@@ -121,8 +121,8 @@ describe('Test index', () => {
     assert.equal(42, logged.generation);
     assert.equal('https://t/', logged.target);
     assert.equal('1.2.3.4', logged.source);
-    assert.equal('aaa', logged.a);
-    assert.equal(123, logged.b);
+    assert.equal(undefined, logged.a);
+    assert.equal(123, logged.INP);
     assert.equal('www.foobar.com', logged.host);
     assert.equal('mobile', logged.user_agent);
   });
@@ -316,7 +316,7 @@ describe('Test index', () => {
       "cwv": {
         "CLS": 0.06,
         "LCP": 1.1,
-        "FCP": 0.9,
+        "INP": 90,
         "TTFB": 800
       },
       "checkpoint": "cwv",
@@ -335,7 +335,7 @@ describe('Test index', () => {
     const logged = JSON.parse(lastLogMessage);
     assert.equal(0.06, logged.CLS);
     assert.equal(1, logged.LCP);
-    assert.equal(0.9, logged.FCP);
+    assert.equal(90, logged.INP);
     assert.equal(800, logged.TTFB);
   });
 
