@@ -78,7 +78,7 @@ describe('Test Google Logger', () => {
     const logged = JSON.parse(lastLogMessage);
     assert.equal('a_host', logged.host);
     assert.equal('not_a_url', logged.url);
-    assert.equal('desktop', logged.user_agent);
+    assert.equal('undefined', logged.user_agent);
     assert.equal('http://somehost.com/somepage.html', logged.referer);
     assert.equal(10, logged.weight);
     assert.equal(49, logged.generation);

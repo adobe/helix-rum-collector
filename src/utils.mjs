@@ -243,9 +243,13 @@ export function getMaskedUserAgent(headers) {
     const mobileOS = getMobileOS(lcUA);
     return `mobile${mobileOS}${mobileOS ? getBrowserEngine(lcUA) : ''}`;
   }
+  if (lcUA.includes('mozilla')
+    || lcUA.includes('opera')) {
+    const desktopOS = getDesktopOS(lcUA);
+    return `desktop${desktopOS}${desktopOS ? getBrowserEngine(lcUA) : ''}`;
+  }
 
-  const desktopOS = getDesktopOS(lcUA);
-  return `desktop${desktopOS}${desktopOS ? getBrowserEngine(lcUA) : ''}`;
+  return 'undefined';
 }
 
 function cleanJWT(str) {

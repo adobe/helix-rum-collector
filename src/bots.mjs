@@ -69,6 +69,10 @@ export const bots = {
       user_agent: 'SiteCheck-sitecrawl by Siteimprove.com',
       regex: 'Siteimprove',
     },
+    {
+      user_agent: 'Chrome Lighthouse',
+      regex: 'chrome-lighthouse',
+    },
   ],
   Monitoring: [
     {
@@ -183,6 +187,10 @@ export const bots = {
       user_agent: 'DeepCrawl',
       regex: 'https://deepcrawl.com/bot',
     },
+    {
+      user_agent: 'OnCrawl',
+      regex: 'http://www.oncrawl.com',
+    },
   ],
   // There is some overlap between AI and Search, and some companies like Apple,
   // Google, and Meta have many bots that are used for different purposes.
@@ -272,6 +280,18 @@ export const bots = {
     {
       user_agent: 'PetalBot',
       regex: 'PetalBot',
+    },
+    {
+      user_agent: '360spider',
+      regex: '360spider',
+    },
+    {
+      user_agent: 'yisouspider',
+      regex: 'yisouspider',
+    },
+    {
+      user_agent: 'ev-crawler',
+      regex: 'ev-crawler',
     },
   ],
   Security: [

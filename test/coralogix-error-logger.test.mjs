@@ -40,6 +40,6 @@ describe('Test Coralogix Error Logger', () => {
     assert.equal('http://www.foo.com/blah', loggedJSON.edgecompute.url);
     assert.equal('http://www.foo.com/blah', loggedJSON.cdn.url);
     assert.equal('POST', loggedJSON.request.method);
-    assert.equal('desktop', loggedJSON.request.user_agent);
+    assert.equal('undefined', loggedJSON.request.user_agent);
   });
 });
