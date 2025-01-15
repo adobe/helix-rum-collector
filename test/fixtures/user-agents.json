@@ -333,5 +333,25 @@
     "desc": "Windows desktop",
     "ua": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36 Edg/131.0.0.0",
     "expected": "desktop:windows:blink"
+  },
+  {
+    "desc": "Opera desktop",
+    "ua": "Opera/12.0(Windows NT 5.2;U;en)Presto/22.9.168 Version/12.00",
+    "expected": "desktop:windows:presto"
+  },
+  {
+    "desc": "Empty",
+    "ua": "",
+    "expected": "undefined"
+  },
+  {
+    "desc": "Java",
+    "ua": "Java/1.8.0-262",
+    "expected": "undefined"
+  },
+  {
+    "desc": "Windows desktop",
+    "ua": "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:134.0) Gecko/20100101 Firefox/134.0",
+    "expected": "desktop:windows:gecko"
   }
 ]
