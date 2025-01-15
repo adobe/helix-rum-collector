@@ -313,5 +313,40 @@
     "desc": "Twitter",
     "ua": "Mozilla/5.0 (iPad; CPU OS 15_7 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/19H12 Twitter for iPhone/10.34",
     "expected": "mobile:ipados:webkit"
+  },
+  {
+    "desc": "OnCrawl",
+    "ua": "mozilla/5.0 (compatible; brightedgeoncrawl/1.0; +http://www.oncrawl.com)",
+    "expected": "bot:seo"
+  },
+  {
+    "desc": "ev-crawler",
+    "ua": "mozilla/5.0 (compatible; ev-crawler/1.0; +https://headline.com/legal/crawler)",
+    "expected": "bot:search"
+  },
+  {
+    "desc": "Adobe CCXProcess",
+    "ua": "Adobe CCXProcess-6.1.0-9/win32-10.0.19045-x64",
+    "expected": "undefined"
+  },
+  {
+    "desc": "Windows desktop",
+    "ua": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36 Edg/131.0.0.0",
+    "expected": "desktop:windows:blink"
+  },
+  {
+    "desc": "Opera desktop",
+    "ua": "Opera/12.0(Windows NT 5.2;U;en)Presto/22.9.168 Version/12.00",
+    "expected": "desktop:windows:presto"
+  },
+  {
+    "desc": "Empty",
+    "ua": "",
+    "expected": "undefined"
+  },
+  {
+    "desc": "Windows desktop",
+    "ua": "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:134.0) Gecko/20100101 Firefox/134.0",
+    "expected": "desktop:windows:gecko"
   }
 ]
