@@ -1,3 +1,10 @@
+# [2.33.0](https://github.com/adobe/helix-rum-collector/compare/v2.32.1...v2.33.0) (2025-01-15)
+
+
+### Features
+
+* additional bot classification and adjust devicetype fallback ([75dcf00](https://github.com/adobe/helix-rum-collector/commit/75dcf0048d9c866ff71080a7e0a6488552ea7d3e))
+
 ## [2.32.1](https://github.com/adobe/helix-rum-collector/compare/v2.32.0...v2.32.1) (2025-01-02)
 
 
