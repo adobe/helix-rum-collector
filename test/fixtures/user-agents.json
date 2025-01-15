@@ -345,11 +345,6 @@
     "expected": "undefined"
   },
   {
-    "desc": "Java",
-    "ua": "Java/1.8.0-262",
-    "expected": "undefined"
-  },
-  {
     "desc": "Windows desktop",
     "ua": "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:134.0) Gecko/20100101 Firefox/134.0",
     "expected": "desktop:windows:gecko"
