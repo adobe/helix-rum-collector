@@ -160,6 +160,8 @@ Pellentesque viverra id magna vel varius. Lorem ipsum dolor sit amet, consectetu
   it('Extract Adobe Routing Info', () => {
     assert.equal('publish-p12345-e1234.adobeaemcloud.net', extractAdobeRoutingInfo('environment=1234,program=12345,tier=publish,foo=baz'));
     assert.equal('undefined-pundefined-eundefined.adobeaemcloud.net', extractAdobeRoutingInfo('nope'));
+    assert.equal('ams:Customer', extractAdobeRoutingInfo('name=Customer'));
+    assert.equal('ams:whitespace dot.comma,parenthesis()dash-', extractAdobeRoutingInfo('name=whitespace dot.comma,parenthesis()dash-'));
   });
 
   it('Get Subsystem', () => {

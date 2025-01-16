@@ -295,7 +295,14 @@ export function getForwardedHost(fhh) {
 
 export function extractAdobeRoutingInfo(value) {
   // value is a string with key value pairs, separated by a comma
-  // extract program, environment and tier
+  // extract program, environment and tier (AEM CS, 3 pairs), or name (AMS, 1 pair)
+  if (value.startsWith('name=')) {
+    // AMS customer names can contain whitespace, dot . comma . parentheses () dash -
+    // so we cannot split on comma char like AEM CS logic
+    const [key, val] = value.split("=");
+    return `ams:${val}`;
+  }
+
   const routingInfo = value
     .split(',')
     .map((pair) => pair.trim())
