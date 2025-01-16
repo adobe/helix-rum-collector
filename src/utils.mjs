@@ -293,18 +293,31 @@ export function getForwardedHost(fhh) {
   }
 }
 
+function cleanDNSSegment(segment) {
+  return segment
+    .replace(/[^a-zA-Z0-9-]/g, '-')
+    .replace(/^(.{63}).*$/, '$1')
+    .toLowerCase();
+}
+
 export function extractAdobeRoutingInfo(value) {
   // value is a string with key value pairs, separated by a comma
   // extract program, environment and tier
   const routingInfo = value
-    .split(',')
+    .split(/,(?=.*=)/)
     .map((pair) => pair.trim())
     .filter((pair) => pair.includes('='))
     .map((pair) => pair.split('='))
     .reduce((acc, [key, val]) => {
-      acc[key] = val;
+      acc[key] = cleanDNSSegment(val);
       return acc;
     }, {});
+  if (routingInfo.ams) {
+    return `${routingInfo.ams}.adobecqms.net`;
+  }
+  if (routingInfo.commerce) {
+    return `${routingInfo.commerce}.adobecommerce.net`;
+  }
   return `${routingInfo.tier}-p${routingInfo.program}-e${routingInfo.environment}.adobeaemcloud.net`;
 }
 
