@@ -1,3 +1,10 @@
+# [2.34.0](https://github.com/adobe/helix-rum-collector/compare/v2.33.0...v2.34.0) (2025-01-17)
+
+
+### Features
+
+* **utils:** support AMS and Commerce IDs in routing information ([76c61c0](https://github.com/adobe/helix-rum-collector/commit/76c61c04e6a1f6672a2581c0f66a6deeb81968da))
+
 # [2.33.0](https://github.com/adobe/helix-rum-collector/compare/v2.32.1...v2.33.0) (2025-01-15)
 
 
