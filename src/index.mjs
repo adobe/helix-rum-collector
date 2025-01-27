@@ -107,6 +107,10 @@ export async function main(req, ctx) {
     return respondCORS();
   }
   const { pathname } = new URL(req.url);
+  if (pathname.includes('..')) {
+    return respondError('Invalid path', 400, undefined, req);
+  }
+
   try {
     if (req.method === 'GET' && pathname.startsWith('/robots.txt')) {
       return respondRobots(req);
