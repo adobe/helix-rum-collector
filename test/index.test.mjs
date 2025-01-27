@@ -392,4 +392,11 @@ describe('Test index', () => {
     assert.equal('jsdelivr', methods.getOtherPackageRegistry('unpkg'));
     assert.equal('unpkg', methods.getOtherPackageRegistry('jsdelivr'));
   });
+
+  it('reject urls that contain ".."', async () => {
+    const url = 'https://a.b.com/.rum/@adobe/helix-rum-js@%5E1/src/..%2fREADME.md';
+    const req = { url, method: 'GET' };
+    const resp = await methods.main(req, {});
+    assert.equal(400, resp.status);
+  });
 });
