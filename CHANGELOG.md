@@ -1,3 +1,10 @@
+## [2.34.1](https://github.com/adobe/helix-rum-collector/compare/v2.34.0...v2.34.1) (2025-01-27)
+
+
+### Bug Fixes
+
+* **url:** Disallow request URLs containing '..' ([#453](https://github.com/adobe/helix-rum-collector/issues/453)) ([192d6d3](https://github.com/adobe/helix-rum-collector/commit/192d6d327e4459584c09224b2dce182fbc1ed816))
+
 # [2.34.0](https://github.com/adobe/helix-rum-collector/compare/v2.33.0...v2.34.0) (2025-01-17)
 
 
