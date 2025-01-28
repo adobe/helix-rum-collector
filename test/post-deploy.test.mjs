@@ -298,7 +298,7 @@ import assert from 'assert';
       assert(respTxt.startsWith('Invalid path'));
     });
 
-    it('Reject paths that contain encoded ".."', async function test() {
+    it('Reject paths that contain partially encoded ".."', async function test() {
       if (!process.env.TEST_INTEGRATION) {
         this.skip();
       }

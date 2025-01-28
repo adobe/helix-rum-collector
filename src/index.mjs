@@ -108,7 +108,7 @@ export async function main(req, ctx) {
   }
   const { pathname } = new URL(req.url);
   // if (pathname.includes('%25') || decodeURI(pathname).includes('..')) {
-  if (decodeURI(pathname).includes('..')) {
+  if (pathname.includes('%25') || pathname.includes('..')) {
     return respondError('Invalid path', 400, undefined, req);
   }
 
