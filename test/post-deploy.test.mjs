@@ -286,5 +286,27 @@ import assert from 'assert';
       const text = await response.text();
       assert.match(text, /Not Found/);
     });
+
+    it('Reject paths that are double-encoded', async function test() {
+      if (!process.env.TEST_INTEGRATION) {
+        this.skip();
+      }
+
+      const resp = await fetch(`https://${domain}/.rum/@adobe/helix-rum-js@%5E1/src/.%252e%252f.%252e%252f.%252e%252ffavicon.ico`);
+      assert.strictEqual(resp.status, 400);
+      const respTxt = await resp.text();
+      assert(respTxt.startsWith('Invalid path'));
+    });
+
+    it('Reject paths that contain partially encoded ".."', async function test() {
+      if (!process.env.TEST_INTEGRATION) {
+        this.skip();
+      }
+
+      const resp = await fetch(`https://${domain}/.rum/@adobe/helix-rum-js@^1/src/.%2e%2f.%2e%2f.%2e%2ffavicon.ico`);
+      assert.strictEqual(resp.status, 400);
+      const respTxt = await resp.text();
+      assert(respTxt.startsWith('Invalid path'));
+    });
   });
 });
