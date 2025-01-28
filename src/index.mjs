@@ -107,7 +107,10 @@ export async function main(req, ctx) {
     return respondCORS();
   }
   const { pathname } = new URL(req.url);
-  if (pathname.includes('..')) {
+
+  // Reject double-encoded URLs (which contain %25 as that is the percent sign)
+  // Also reject paths that contain '..' but decode the URL first as it might be encoded
+  if (pathname.includes('%25') || decodeURI(pathname).includes('..')) {
     return respondError('Invalid path', 400, undefined, req);
   }
 
