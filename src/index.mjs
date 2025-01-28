@@ -107,8 +107,7 @@ export async function main(req, ctx) {
     return respondCORS();
   }
   const { pathname } = new URL(req.url);
-  // if (pathname.includes('%25') || decodeURI(pathname).includes('..')) {
-  if (pathname.includes('%25') || pathname.includes('..')) {
+  if (pathname.includes('%25') || decodeURI(pathname).includes('..')) {
     return respondError('Invalid path', 400, undefined, req);
   }
 
