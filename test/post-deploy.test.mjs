@@ -286,5 +286,14 @@ import assert from 'assert';
       const text = await response.text();
       assert.match(text, /Not Found/);
     });
+
+    it('Check pathname, temporary test', async function test() {
+      if (!process.env.TEST_INTEGRATION) {
+        this.skip();
+      }
+
+      await fetch(`https://${domain}/.rum/@adobe/helix-rum-js@%5E1/src/.%252e%252f.%252e%252f.%252e%252ffavicon.ico`);
+      // assert.strictEqual(response.status, 404);
+    });
   });
 });

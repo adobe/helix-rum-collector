@@ -20,6 +20,7 @@ import { S3Logger } from './s3-logger.mjs';
 import { respondRobots } from './robots.mjs';
 import { respondJsdelivr } from './jsdelivr.mjs';
 import { respondUnpkg } from './unpkg.mjs';
+import path from 'path';
 
 const PACKAGE_REGISTRIES = ['jsdelivr', 'unpkg'];
 
@@ -107,6 +108,11 @@ export async function main(req, ctx) {
     return respondCORS();
   }
   const { pathname } = new URL(req.url);
+  if (pathname.includes('favicon')) {
+    console.log('*************');
+    console.log('*** pathname:', pathname);
+    console.log('*************');
+  }
   if (pathname.includes('..')) {
     return respondError('Invalid path', 400, undefined, req);
   }
