@@ -1,3 +1,10 @@
+## [2.34.2](https://github.com/adobe/helix-rum-collector/compare/v2.34.1...v2.34.2) (2025-01-28)
+
+
+### Bug Fixes
+
+* **url:** Disallow encoded '..' and double encoded urls ([#456](https://github.com/adobe/helix-rum-collector/issues/456)) ([4a2f34a](https://github.com/adobe/helix-rum-collector/commit/4a2f34aa38cef0905afddc5d80dcde6f896961c9)), closes [#452](https://github.com/adobe/helix-rum-collector/issues/452)
+
 ## [2.34.1](https://github.com/adobe/helix-rum-collector/compare/v2.34.0...v2.34.1) (2025-01-27)
 
 
