@@ -292,8 +292,9 @@ import assert from 'assert';
         this.skip();
       }
 
-      await fetch(`https://${domain}/.rum/@adobe/helix-rum-js@%5E1/src/.%252e%252f.%252e%252f.%252e%252ffavicon.ico`);
+      const resp = await fetch(`https://${domain}/.rum/@adobe/helix-rum-js@%5E1/src/.%252e%252f.%252e%252f.%252e%252ffavicon.ico`);
       // assert.strictEqual(response.status, 404);
+      assert.strictEqual('foo', await resp.text());
     });
   });
 });
