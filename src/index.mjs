@@ -20,7 +20,6 @@ import { S3Logger } from './s3-logger.mjs';
 import { respondRobots } from './robots.mjs';
 import { respondJsdelivr } from './jsdelivr.mjs';
 import { respondUnpkg } from './unpkg.mjs';
-import path from 'path';
 
 const PACKAGE_REGISTRIES = ['jsdelivr', 'unpkg'];
 
