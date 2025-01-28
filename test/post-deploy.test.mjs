@@ -287,15 +287,17 @@ import assert from 'assert';
       assert.match(text, /Not Found/);
     });
 
-    // it('Check pathname, temporary test', async function test() {
-    //   if (!process.env.TEST_INTEGRATION) {
-    //     this.skip();
-    //   }
+    it('Reject paths that are double-encoded', async function test() {
+      if (!process.env.TEST_INTEGRATION) {
+        this.skip();
+      }
 
-    //   const resp = await fetch(`https://${domain}/.rum/@adobe/helix-rum-js@%5E1/src/.%252e%252f.%252e%252f.%252e%252ffavicon.ico`);
-    //   // assert.strictEqual(response.status, 404);
-    //   assert.strictEqual('foo', await resp.text());
-    // });
+      const resp = await fetch(`https://${domain}/.rum/@adobe/helix-rum-js@%5E1/src/.%252e%252f.%252e%252f.%252e%252ffavicon.ico`);
+      assert.strictEqual(resp.status, 400);
+      const respTxt = await resp.text();
+      assert(respTxt.startsWith('Invalid path'));
+    });
+
     it('Reject paths that contain encoded ".."', async function test() {
       if (!process.env.TEST_INTEGRATION) {
         this.skip();

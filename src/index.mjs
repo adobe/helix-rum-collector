@@ -107,17 +107,7 @@ export async function main(req, ctx) {
     return respondCORS();
   }
   const { pathname } = new URL(req.url);
-  // if (pathname.includes('favicon')) {
-  //   if (pathname.includes('%2e')) {
-  //     return respondError(`Contained %2e: ${pathname}`, 500, undefined, req);
-  //   } else {
-  //     return respondError(`Did not contain %2e: ${pathname}`, 500, undefined, req);
-  //   }
-  //   // console.log('*************');
-  //   // console.log('*** pathname:', pathname);
-  //   // console.log('*************');
-  // }
-  if (decodeURI(pathname).includes('..')) {
+  if (pathname.includes('%25') || decodeURI(pathname).includes('..')) {
     return respondError('Invalid path', 400, undefined, req);
   }
 
