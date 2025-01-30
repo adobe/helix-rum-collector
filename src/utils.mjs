@@ -313,7 +313,7 @@ export function extractAdobeRoutingInfo(value) {
       return acc;
     }, {});
   if (routingInfo.ams) {
-    return `${routingInfo.tier}.${routingInfo.env}.${routingInfo.ams}.adobecqms.net`;
+    return `${routingInfo.tier}-${routingInfo.env}-${routingInfo.ams}.adobecqms.net`;
   }
   if (routingInfo.commerce) {
     return `${routingInfo.commerce}.adobecommerce.net`;
