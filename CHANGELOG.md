@@ -1,3 +1,11 @@
+## [2.34.3](https://github.com/adobe/helix-rum-collector/compare/v2.34.2...v2.34.3) (2025-01-30)
+
+
+### Bug Fixes
+
+* consolidate domain segments ([b9afd6c](https://github.com/adobe/helix-rum-collector/commit/b9afd6c9613230e1f6ae3f070519e03cfc50d9b5))
+* updated AMS routing info ([7fc5bbe](https://github.com/adobe/helix-rum-collector/commit/7fc5bbe62c4e2b39d0e2cfec375f305c5190b392))
+
 ## [2.34.2](https://github.com/adobe/helix-rum-collector/compare/v2.34.1...v2.34.2) (2025-01-28)
 
 
