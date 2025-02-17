@@ -50,14 +50,14 @@
     "@semantic-release/changelog": "6.0.3",
     "@semantic-release/exec": "7.0.3",
     "@semantic-release/git": "10.0.1",
-    "@typescript-eslint/parser": "8.24.0",
+    "@typescript-eslint/parser": "8.24.1",
     "codecov": "3.8.3",
     "eslint": "8.57.1",
     "eslint-plugin-header": "3.1.1",
     "eslint-plugin-import": "2.31.0",
     "esmock": "2.7.0",
     "jsdoc-to-markdown": "9.1.1",
-    "semantic-release": "24.2.2",
+    "semantic-release": "24.2.3",
     "semantic-release-slack-bot": "4.0.2"
   }
 }
