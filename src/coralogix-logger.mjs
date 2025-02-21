@@ -45,7 +45,7 @@ export class CoralogixLogger {
     const maskedNow = getMaskedTime(timePadding);
 
     let severity = 3;
-    if (checkpoint === 'error') severity = 5;
+    if (checkpoint === 'error') severity = 4;
     if (!isReasonableWeight(weight)) severity = 4;
     if (!isValidCheckpoint(checkpoint)) severity = 4;
     if (!isValidId(id)) severity = 4;
