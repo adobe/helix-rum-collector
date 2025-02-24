@@ -1,3 +1,10 @@
+## [2.34.4](https://github.com/adobe/helix-rum-collector/compare/v2.34.3...v2.34.4) (2025-02-24)
+
+
+### Bug Fixes
+
+* **logging:** adjust error severity level in Coralogix logger ([b74f4da](https://github.com/adobe/helix-rum-collector/commit/b74f4da21bbc2e02c87e95127d98739999d37c7c))
+
 ## [2.34.3](https://github.com/adobe/helix-rum-collector/compare/v2.34.2...v2.34.3) (2025-01-30)
 
 
