@@ -87,8 +87,21 @@ async function respondPackage(req) {
     pkgreg = randomPackageRegistry();
   }
 
+  // Define timeout value in milliseconds
+  const REGISTRY_TIMEOUT_MS = 5000;
+
+  // Create a timeout promise
+  const timeoutPromise = new Promise((_, reject) => {
+    setTimeout(() => reject(new Error(`Registry request timed out after ${REGISTRY_TIMEOUT_MS}ms`)), REGISTRY_TIMEOUT_MS);
+  });
+
   try {
-    let resp = await respondRegistry(pkgreg, req);
+    // Use Promise.race to implement timeout
+    let resp = await Promise.race([
+      respondRegistry(pkgreg, req),
+      timeoutPromise
+    ]);
+
     if (resp.status !== 200) {
       console.log('Changing registry as its response was', resp.status);
       resp = await respondRegistry(getOtherPackageRegistry(pkgreg), req);
