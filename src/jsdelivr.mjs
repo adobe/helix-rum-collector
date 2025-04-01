@@ -25,6 +25,11 @@ export async function respondJsdelivr(req) {
   });
   console.log('fetched', bereq.url, beresp.status, beresp.headers.get('ETag'), beresp.headers.get('Content-Length'));
 
+  let cc = beresp.headers().get('cache-control');
+  if (beurl.href.includes('^')) {
+    cc = 'public, max-age=3600';
+  }
+
   if (redirectHeaders.includes(beresp.status)) {
     const bereq2 = new Request(new URL(beresp.headers.get('location'), 'https://cdn.jsdelivr.net'));
     const err2 = prohibitDirectoryRequest(bereq2);
@@ -55,9 +60,9 @@ export async function respondJsdelivr(req) {
       // Set cache control to 1 hour as this is a redirect from the original (ranged) request
       // beresp3.headers.set('cache-control', 'public, max-age=3600');
 
-      return cleanupResponse(beresp3, req, new Map([['foo-bar', 'baz3'], ['beurl', beurl.toString()], ['cache-control', 'public, max-age=3600']]));
+      return cleanupResponse(beresp3, req, new Map([['foo-bar', 'baz3'], ['beurl', beurl.toString()], ['qqqcache-control', 'public, max-age=3600']]));
     }
-    return cleanupResponse(beresp2, req, new Map([['foo-bar', 'baz2'], ['beurl', beurl.toString()], ['cache-control', 'public, max-age=3600']]));
+    return cleanupResponse(beresp2, req, new Map([['foo-bar', 'baz2'], ['beurl', beurl.toString()], ['qqqcache-control', 'public, max-age=3600']]));
   }
-  return cleanupResponse(beresp, req, new Map([['lala', 'lolo'], ['foo-bar', 'baz'], ['beurl', beurl.toString()]]));
+  return cleanupResponse(beresp, req, new Map([['lala', 'lolo'], ['foo-bar', 'baz'], ['beurl', beurl.toString()], ['yyycache-control', cc]]));
 }
