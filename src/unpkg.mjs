@@ -35,7 +35,7 @@ export async function respondUnpkg(req) {
     });
 
     // Set cache control to 1 hour as this is a redirect from the original (ranged) request
-    //    beresp2.headers.set('cache-control', 'public, max-age=3600');
+    // beresp2.headers.set('cache-control', 'public, max-age=3600');
 
     if (redirectHeaders.includes(beresp2.status)) {
       const bereq3 = new Request(new URL(beresp2.headers.get('location'), 'https://unpkg.com'));
