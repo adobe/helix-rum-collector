@@ -24,7 +24,6 @@ export async function respondJsdelivr(req) {
     backend: 'jsdelivr',
   });
   console.log('fetched', bereq.url, beresp.status, beresp.headers.get('ETag'), beresp.headers.get('Content-Length'));
-  beresp.headers.set('foo-bar', 'jsdelivr');
 
   if (redirectHeaders.includes(beresp.status)) {
     const bereq2 = new Request(new URL(beresp.headers.get('location'), 'https://cdn.jsdelivr.net'));
@@ -39,8 +38,7 @@ export async function respondJsdelivr(req) {
     console.log('fetched', bereq2.url, beresp2.status, beresp2.headers.get('ETag'), beresp2.headers.get('Content-Length'));
 
     // Set cache control to 1 hour as this is a redirect from the original (ranged) request
-    beresp2.headers.set('cache-control', 'public, max-age=3600');
-    beresp2.headers.set('foo-bar', 'jsdelivr2');
+    //    beresp2.headers.set('cache-control', 'public, max-age=3600');
 
     if (redirectHeaders.includes(beresp2.status)) {
       const bereq3 = new Request(new URL(beresp2.headers.get('location'), 'https://cdn.jsdelivr.net'));
@@ -55,11 +53,11 @@ export async function respondJsdelivr(req) {
       console.log('fetched', bereq3.url, beresp3.status, beresp3.headers.get('ETag'), beresp3.headers.get('Content-Length'));
 
       // Set cache control to 1 hour as this is a redirect from the original (ranged) request
-      beresp3.headers.set('cache-control', 'public, max-age=3600');
+      //      beresp3.headers.set('cache-control', 'public, max-age=3600');
 
-      return cleanupResponse(beresp3, req);
+      return cleanupResponse(beresp3, req, new Map([['foo-bar', 'baz3'], ['cache-control', 'public, max-age=3600']]));
     }
-    return cleanupResponse(beresp2, req);
+    return cleanupResponse(beresp2, req, new Map([['foo-bar', 'baz2'], ['cache-control', 'public, max-age=3600']]));
   }
-  return cleanupResponse(beresp, req);
+  return cleanupResponse(beresp, req, new Map([['foo-bar', 'baz']]));
 }

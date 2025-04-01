@@ -23,7 +23,6 @@ export async function respondUnpkg(req) {
   const beresp = await fetch(bereq, {
     backend: 'unpkg.com',
   });
-  beresp.headers.set('foo-bar', 'unpkg');
 
   if (redirectHeaders.includes(beresp.status)) {
     const bereq2 = new Request(new URL(beresp.headers.get('location'), 'https://unpkg.com'));
@@ -36,8 +35,7 @@ export async function respondUnpkg(req) {
     });
 
     // Set cache control to 1 hour as this is a redirect from the original (ranged) request
-    beresp2.headers.set('cache-control', 'public, max-age=3600');
-    beresp2.headers.set('foo-bar', 'unpkg2');
+    //    beresp2.headers.set('cache-control', 'public, max-age=3600');
 
     if (redirectHeaders.includes(beresp2.status)) {
       const bereq3 = new Request(new URL(beresp2.headers.get('location'), 'https://unpkg.com'));
@@ -51,11 +49,11 @@ export async function respondUnpkg(req) {
       });
 
       // Set cache control to 1 hour as this is a redirect from the original (ranged) request
-      beresp3.headers.set('cache-control', 'public, max-age=3600');
+      //  beresp3.headers.set('cache-control', 'public, max-age=3600');
 
-      return cleanupResponse(beresp3, req);
+      return cleanupResponse(beresp3, req, new Map([['foo-bar', 'far3'], ['cache-control', 'public, max-age=3600']]));
     }
-    return cleanupResponse(beresp2, req);
+    return cleanupResponse(beresp2, req, new Map([['foo-bar', 'far2'], ['cache-control', 'public, max-age=3600']]));
   }
-  return cleanupResponse(beresp, req);
+  return cleanupResponse(beresp, req, new Map([['foo-bar', 'far']]));
 }
