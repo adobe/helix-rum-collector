@@ -55,9 +55,9 @@ export async function respondJsdelivr(req) {
       // Set cache control to 1 hour as this is a redirect from the original (ranged) request
       //      beresp3.headers.set('cache-control', 'public, max-age=3600');
 
-      return cleanupResponse(beresp3, req, new Map([['foo-bar', 'baz3'], ['cache-control', 'public, max-age=3600']]));
+      return cleanupResponse(beresp3, req, new Map([['foo-bar', 'baz3'], ['beurl', beurl], ['cache-control', 'public, max-age=3600']]));
     }
-    return cleanupResponse(beresp2, req, new Map([['foo-bar', 'baz2'], ['cache-control', 'public, max-age=3600']]));
+    return cleanupResponse(beresp2, req, new Map([['foo-bar', 'baz2'], ['beurl', beurl], ['cache-control', 'public, max-age=3600']]));
   }
-  return cleanupResponse(beresp, req, new Map([['foo-bar', 'baz']]));
+  return cleanupResponse(beresp, req, new Map([['foo-bar', 'baz'], ['beurl', beurl]]));
 }
