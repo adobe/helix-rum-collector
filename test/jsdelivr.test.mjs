@@ -125,7 +125,7 @@ describe('Test jdelivr handler', () => {
     }
   });
 
-  it.only('cleans up response', async () => {
+  it('cleans up response', async () => {
     const req = {};
     req.url = 'http://foo.bar.org/.rum/@adobe/helix-rum-js?generation=42';
 

@@ -25,7 +25,7 @@ export async function respondJsdelivr(req) {
   });
   console.log('fetched', bereq.url, beresp.status, beresp.headers.get('ETag'), beresp.headers.get('Content-Length'));
 
-  let cc = beresp.headers().get('cache-control');
+  let cc = beresp.headers.get('cache-control');
   if (beurl.href.includes('^')) {
     cc = 'public, max-age=3600';
   }

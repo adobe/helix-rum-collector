@@ -24,7 +24,7 @@ export async function respondUnpkg(req) {
     backend: 'unpkg.com',
   });
 
-  let cc = beresp.headers().get('cache-control');
+  let cc = beresp.headers.get('cache-control');
   if (beurl.href.includes('^')) {
     cc = 'public, max-age=3600';
   }
