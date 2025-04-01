@@ -49,11 +49,11 @@ export async function respondUnpkg(req) {
       });
 
       // Set cache control to 1 hour as this is a redirect from the original (ranged) request
-      //  beresp3.headers.set('cache-control', 'public, max-age=3600');
+      // beresp3.headers.set('cache-control', 'public, max-age=3600');
 
-      return cleanupResponse(beresp3, req, new Map([['foo-bar', 'far3'], ['cache-control', 'public, max-age=3600']]));
+      return cleanupResponse(beresp3, req, new Map([['foo-bar', 'far3'], ['beurl', beurl], ['cache-control', 'public, max-age=3600']]));
     }
-    return cleanupResponse(beresp2, req, new Map([['foo-bar', 'far2'], ['cache-control', 'public, max-age=3600']]));
+    return cleanupResponse(beresp2, req, new Map([['foo-bar', 'far2'], ['beurl', beurl], ['cache-control', 'public, max-age=3600']]));
   }
-  return cleanupResponse(beresp, req, new Map([['foo-bar', 'far']]));
+  return cleanupResponse(beresp, req, new Map([['foo-bar', 'far'], ['beurl', beurl]]));
 }
