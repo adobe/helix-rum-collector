@@ -53,7 +53,7 @@ export async function respondJsdelivr(req) {
       console.log('fetched', bereq3.url, beresp3.status, beresp3.headers.get('ETag'), beresp3.headers.get('Content-Length'));
 
       // Set cache control to 1 hour as this is a redirect from the original (ranged) request
-      //      beresp3.headers.set('cache-control', 'public, max-age=3600');
+      // beresp3.headers.set('cache-control', 'public, max-age=3600');
 
       return cleanupResponse(beresp3, req, new Map([['foo-bar', 'baz3'], ['beurl', beurl.toString()], ['cache-control', 'public, max-age=3600']]));
     }
