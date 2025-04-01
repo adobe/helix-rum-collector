@@ -159,7 +159,7 @@ describe('Test unpkg handler', () => {
       const resp = await respondUnpkg(req);
 
       assert.equal(200, resp.status);
-      assert.equal('forget-it', resp.headers.get('cache-control'));
+      assert.equal('public, max-age=3600', resp.headers.get('cache-control'));
       assert.equal('123', resp.headers.get('etag'));
       assert(!resp.headers.has('server'));
     } finally {
@@ -207,7 +207,7 @@ describe('Test unpkg handler', () => {
 
       assert.equal(200, resp.status);
       assert.equal('//got-there-in-the-end', await resp.text());
-      assert.equal('forget-it', resp.headers.get('cache-control'));
+      assert.equal('public, max-age=3600', resp.headers.get('cache-control'));
     } finally {
       global.fetch = storedFetch;
     }
