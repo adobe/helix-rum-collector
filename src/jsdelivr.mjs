@@ -38,7 +38,7 @@ export async function respondJsdelivr(req) {
     console.log('fetched', bereq2.url, beresp2.status, beresp2.headers.get('ETag'), beresp2.headers.get('Content-Length'));
 
     // Set cache control to 1 hour as this is a redirect from the original (ranged) request
-    //    beresp2.headers.set('cache-control', 'public, max-age=3600');
+    //   beresp2.headers.set('cache-control', 'public, max-age=3600');
 
     if (redirectHeaders.includes(beresp2.status)) {
       const bereq3 = new Request(new URL(beresp2.headers.get('location'), 'https://cdn.jsdelivr.net'));
