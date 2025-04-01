@@ -197,7 +197,8 @@ import assert from 'assert';
 
       const respRange = await fetch(`https://${domain}/.rum/@adobe/helix-rum-enhancer@%5E2/src/index.js`);
       assert.strictEqual(respRange.status, 200);
-      assert(respRange.headers.get('cache-control').includes('max-age=3600'));
+      // assert(respRange.headers.get('cache-control').includes('max-age=3600'));
+      assert.strictEqual(respRange.headers.get('cache-control'), 'max-age=3600');
 
       const respSpecific = await fetch(`https://${domain}/.rum/@adobe/helix-rum-enhancer@2.33.0/src/index.js`);
       assert.strictEqual(respSpecific.status, 200);
