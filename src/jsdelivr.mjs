@@ -24,6 +24,7 @@ export async function respondJsdelivr(req) {
     backend: 'jsdelivr',
   });
   console.log('fetched', bereq.url, beresp.status, beresp.headers.get('ETag'), beresp.headers.get('Content-Length'));
+  beresp.headers.set('foo-bar', 'jsdelivr');
 
   if (redirectHeaders.includes(beresp.status)) {
     const bereq2 = new Request(new URL(beresp.headers.get('location'), 'https://cdn.jsdelivr.net'));
@@ -39,6 +40,7 @@ export async function respondJsdelivr(req) {
 
     // Set cache control to 1 hour as this is a redirect from the original (ranged) request
     beresp2.headers.set('cache-control', 'public, max-age=3600');
+    beresp2.headers.set('foo-bar', 'jsdelivr2');
 
     if (redirectHeaders.includes(beresp2.status)) {
       const bereq3 = new Request(new URL(beresp2.headers.get('location'), 'https://cdn.jsdelivr.net'));
