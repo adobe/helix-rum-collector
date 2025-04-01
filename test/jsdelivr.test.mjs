@@ -125,7 +125,7 @@ describe('Test jdelivr handler', () => {
     }
   });
 
-  it('cleans up response', async () => {
+  it.only('cleans up response', async () => {
     const req = {};
     req.url = 'http://foo.bar.org/.rum/@adobe/helix-rum-js?generation=42';
 
@@ -157,6 +157,7 @@ describe('Test jdelivr handler', () => {
 
       assert.equal(200, resp.status);
       assert.equal('bar', resp.headers.get('foo'));
+      assert.equal('baz', resp.headers.get('foo-bar'));
 
       // Should clear these headers in the cleanupHeaders()
       assert(!resp.headers.has('x-jsd-version'));

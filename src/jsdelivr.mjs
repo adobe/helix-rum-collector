@@ -59,5 +59,5 @@ export async function respondJsdelivr(req) {
     }
     return cleanupResponse(beresp2, req, new Map([['foo-bar', 'baz2'], ['beurl', beurl], ['cache-control', 'public, max-age=3600']]));
   }
-  return cleanupResponse(beresp, req, new Map([['foo-bar', 'baz'], ['beurl', beurl]]));
+  return cleanupResponse(beresp, req, new Map([['lala', 'lolo'], ['foo-bar', 'baz'], ['beurl', beurl]]));
 }

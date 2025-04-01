@@ -55,5 +55,5 @@ export async function respondUnpkg(req) {
     }
     return cleanupResponse(beresp2, req, new Map([['foo-bar', 'far2'], ['beurl', beurl], ['cache-control', 'public, max-age=3600']]));
   }
-  return cleanupResponse(beresp, req, new Map([['foo-bar', 'far'], ['beurl', beurl]]));
+  return cleanupResponse(beresp, req, new Map([['lala', 'lolo'], ['foo-bar', 'far'], ['beurl', beurl]]));
 }
