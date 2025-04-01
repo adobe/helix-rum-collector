@@ -139,7 +139,6 @@ describe('Test unpkg handler', () => {
           const resp = { status: 302 };
           resp.headers = new Map();
           resp.headers.set('location', 'relocated/web-vitals');
-          resp.headers.set('cache-control', 'forget-it');
           return resp;
         }
         if (v.url === 'https://unpkg.com/relocated/web-vitals') {
@@ -150,6 +149,7 @@ describe('Test unpkg handler', () => {
           resp.headers = new Headers();
           resp.headers.append('server', 'hidden');
           resp.headers.append('etag', '123');
+          resp.headers.append('cache-control', 'forget-it');
           return resp;
         }
 
@@ -159,7 +159,7 @@ describe('Test unpkg handler', () => {
       const resp = await respondUnpkg(req);
 
       assert.equal(200, resp.status);
-      // assert.equal('public, max-age=3600', resp.headers.get('cache-control'));
+      assert.equal('forget-it', resp.headers.get('cache-control'));
       assert.equal('123', resp.headers.get('etag'));
       assert(!resp.headers.has('server'));
     } finally {
@@ -181,7 +181,6 @@ describe('Test unpkg handler', () => {
           const resp = { status: 302 };
           resp.headers = new Map();
           resp.headers.set('location', 'relocated/web-vitals');
-          resp.headers.set('cache-control', 'forget-it');
           return resp;
         }
         if (v.url === 'https://unpkg.com/relocated/web-vitals') {
@@ -196,6 +195,7 @@ describe('Test unpkg handler', () => {
             status: 200,
           };
           resp.headers = new Map();
+          resp.headers.set('cache-control', 'forget-it');
           resp.body = '//got-there-in-the-end';
           return resp;
         }
@@ -207,7 +207,7 @@ describe('Test unpkg handler', () => {
 
       assert.equal(200, resp.status);
       assert.equal('//got-there-in-the-end', await resp.text());
-      // assert.equal('public, max-age=3600', resp.headers.get('cache-control'));
+      assert.equal('forget-it', resp.headers.get('cache-control'));
     } finally {
       global.fetch = storedFetch;
     }

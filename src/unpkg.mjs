@@ -24,9 +24,9 @@ export async function respondUnpkg(req) {
     backend: 'unpkg.com',
   });
 
-  let cc = beresp.headers.get('cache-control');
+  let ccMap;
   if (beurl.href.includes('^')) {
-    cc = 'public, max-age=3600';
+    ccMap = new Map([['cache-control', 'public, max-age=3600']]);
   }
 
   if (redirectHeaders.includes(beresp.status)) {
@@ -39,9 +39,6 @@ export async function respondUnpkg(req) {
       backend: 'unpkg.com',
     });
 
-    // Set cache control to 1 hour as this is a redirect from the original (ranged) request
-    // beresp2.headers.set('cache-control', 'public, max-age=3600');
-
     if (redirectHeaders.includes(beresp2.status)) {
       const bereq3 = new Request(new URL(beresp2.headers.get('location'), 'https://unpkg.com'));
       const err3 = prohibitDirectoryRequest(bereq3);
@@ -53,12 +50,9 @@ export async function respondUnpkg(req) {
         backend: 'unpkg.com',
       });
 
-      // Set cache control to 1 hour as this is a redirect from the original (ranged) request
-      // beresp3.headers.set('cache-control', 'public, max-age=3600');
-
-      return cleanupResponse(beresp3, req, new Map([['foo-bar', 'far3'], ['beurl', beurl.toString()], ['zzzcache-control', 'public, max-age=3600']]));
+      return cleanupResponse(beresp3, req, ccMap);
     }
-    return cleanupResponse(beresp2, req, new Map([['foo-bar', 'far2'], ['beurl', beurl.toString()], ['zzzcache-control', 'public, max-age=3600']]));
+    return cleanupResponse(beresp2, req, ccMap);
   }
-  return cleanupResponse(beresp, req, new Map([['lala', 'lolo'], ['foo-bar', 'far'], ['beurl', beurl.toString()], ['zzzcache-control', cc]]));
+  return cleanupResponse(beresp, req, ccMap);
 }
