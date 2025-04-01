@@ -202,6 +202,7 @@ import assert from 'assert';
       const respSpecific = await fetch(`https://${domain}/.rum/@adobe/helix-rum-enhancer@2.33.0/src/index.js`);
       assert.strictEqual(respSpecific.status, 200);
       const ccVals = respSpecific.headers.get('cache-control').split(',');
+
       let maxAgeFound = false;
       for (const ccVal of ccVals) {
         if (ccVal.trim().startsWith('max-age=')) {
