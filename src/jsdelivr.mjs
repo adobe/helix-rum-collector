@@ -25,7 +25,6 @@ export async function respondJsdelivr(req) {
   });
   console.log('fetched', bereq.url, beresp.status, beresp.headers.get('ETag'), beresp.headers.get('Content-Length'));
 
-
   // TODO maybe move to cleanup response?
   let ccMap;
   if (beurl.href.includes('^')) {
