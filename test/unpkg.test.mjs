@@ -16,7 +16,7 @@ import { it, describe } from 'node:test';
 import { respondUnpkg } from '../src/unpkg.mjs';
 
 describe('Test unpkg handler', () => {
-  it.only('handles web-vitals request', async () => {
+  it('handles web-vitals request', async () => {
     const req = {};
     req.url = 'http://foo.bar.org/.rum/web-vitals';
 

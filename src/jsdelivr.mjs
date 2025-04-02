@@ -26,10 +26,11 @@ export async function respondJsdelivr(req) {
   });
   console.log('fetched', bereq.url, beresp.status, beresp.headers.get('ETag'), beresp.headers.get('Content-Length'));
 
-  let ccMap;
+  const ccMap = new Map();
   if (rangeChars.find((char) => beurl.href.includes(char))) {
     // If the URL contains a range character, set cache-control to 1 hour
-    ccMap = new Map([['x-foobar', 'bheuaark'], ['cache-control', 'public, max-age=3600']]);
+    ccMap.set('x-foobar', 'bheuaark');
+    ccMap.set('cache-control', 'public, max-age=3600');
   }
 
   if (redirectHeaders.includes(beresp.status)) {
