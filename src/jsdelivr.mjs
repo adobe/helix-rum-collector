@@ -28,7 +28,7 @@ export async function respondJsdelivr(req) {
 
   const ccMap = new Map();
   // if (rangeChars.find((char) => beurl.href.includes(char))) {
-  // If the URL contains a range character, set cache-control to 1 hour
+  // // If the URL contains a range character, set cache-control to 1 hour
   ccMap.set('x-foobar', 'bheuaark');
   ccMap.set('cache-control', 'public, max-age=3600');
   // }
