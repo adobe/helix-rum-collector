@@ -14,7 +14,7 @@
 import { cleanupResponse, prohibitDirectoryRequest } from './cdnutils.mjs';
 
 const redirectHeaders = [301, 302, 307, 308];
-const rangeChars = ['^', '~'];
+// const rangeChars = ['^', '~'];
 
 export async function respondUnpkg(req) {
   const url = new URL(req.url);
@@ -27,7 +27,7 @@ export async function respondUnpkg(req) {
 
   const ccMap = new Map();
   // if (rangeChars.find((char) => beurl.href.includes(char))) {
-    // If the URL contains a range character, set cache-control to 1 hour
+  // If the URL contains a range character, set cache-control to 1 hour
   ccMap.set('x-foobar', 'bheuaark');
   ccMap.set('cache-control', 'public, max-age=3600');
   // }
