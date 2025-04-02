@@ -226,7 +226,6 @@ describe('Test index', () => {
 
     assert.equal(200, resp.status);
     assert(resp.ok);
-    // assert(resp.headers.has('etag'));
     assert(!resp.headers.has('server'));
     assert(!resp.headers.has('cf-cache-status'));
     assert(!resp.headers.has('cr-ray'));
