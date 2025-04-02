@@ -57,8 +57,15 @@ export function cleanupHeaders(resp, addHeaders) {
   newHeaders.set('Cross-Origin-Resource-Policy', 'cross-origin');
   newHeaders.set('x-compress-hint', 'on');
 
+  const headers = {
+    'Content-Type': 'text/plain',
+    'x-yippie': 'yoyo',
+    'cache-control': 'public, max-age=3700',
+  };
+
   const result = new Response(resp.body, {
-    headers: newHeaders,
+    // headers: newHeaders,
+    headers,
     status: resp.status,
     statusText: resp.statusText,
   });
