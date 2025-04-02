@@ -91,6 +91,7 @@ async function respondPackage(req) {
     let resp = await respondRegistry(pkgreg, req);
     if (resp.status !== 200) {
       console.log('Changing registry as its response was', resp.status);
+      req.foobar = 'changed registry';
       resp = await respondRegistry(getOtherPackageRegistry(pkgreg), req);
     }
     return resp;
@@ -98,6 +99,7 @@ async function respondPackage(req) {
     console.log('Contacting registry caused this error', error);
     console.log('Changing package registry');
 
+    req.foobar = `changed registry due to error: ${error.message}`;
     return respondRegistry(getOtherPackageRegistry(pkgreg), req);
   }
 }
