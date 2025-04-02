@@ -60,7 +60,7 @@ export function cleanupHeaders(resp, addHeaders) {
 
   newHeaders['Cross-Origin-Resource-Policy'] = 'cross-origin';
   newHeaders['x-compress-hint'] = 'on';
-  newHeaders['Content-Type'] = 'text/plain';
+  // newHeaders['Content-Type'] = 'text/plain';
 
   const clone = { ...newHeaders };
   newHeaders['x-yippie'] = JSON.stringify(clone);
