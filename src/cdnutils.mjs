@@ -31,6 +31,7 @@ const removedHeaders = [
  * original with the headers removed.
  *
  * @param {Response} resp the response to clean
+ * @param {Map} addHeaders Headers to add to the response (optional)
  * @returns the recreated, cleaned response
  */
 export function cleanupHeaders(resp, addHeaders) {
@@ -59,8 +60,10 @@ export function cleanupHeaders(resp, addHeaders) {
 
   newHeaders['Cross-Origin-Resource-Policy'] = 'cross-origin';
   newHeaders['x-compress-hint'] = 'on';
-  newHeaders['x-yippie'] = 'yoyo';
   newHeaders['Content-Type'] = 'text/plain';
+
+  const clone = { ...newHeaders };
+  newHeaders['x-yippie'] = JSON.stringify(clone);
 
   // const headers = {
   //   'Content-Type': 'text/plain',
