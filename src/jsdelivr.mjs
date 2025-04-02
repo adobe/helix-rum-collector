@@ -27,11 +27,11 @@ export async function respondJsdelivr(req) {
   console.log('fetched', bereq.url, beresp.status, beresp.headers.get('ETag'), beresp.headers.get('Content-Length'));
 
   const ccMap = new Map();
-  if (rangeChars.find((char) => beurl.href.includes(char))) {
-    // If the URL contains a range character, set cache-control to 1 hour
-    ccMap.set('x-foobar', 'bheuaark');
-    ccMap.set('cache-control', 'public, max-age=3600');
-  }
+  // if (rangeChars.find((char) => beurl.href.includes(char))) {
+  // If the URL contains a range character, set cache-control to 1 hour
+  ccMap.set('x-foobar', 'bheuaark');
+  ccMap.set('cache-control', 'public, max-age=3600');
+  // }
 
   if (redirectHeaders.includes(beresp.status)) {
     const bereq2 = new Request(new URL(beresp.headers.get('location'), 'https://cdn.jsdelivr.net'));
