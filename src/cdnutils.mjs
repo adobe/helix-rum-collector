@@ -35,37 +35,39 @@ const removedHeaders = [
  */
 export function cleanupHeaders(resp, addHeaders) {
   // Can't modify the response headers, so recreate a new one with the headers removed
-  const newHeaders = new Headers();
+  const newHeaders = {};
 
   for (const kv of resp.headers.entries()) {
     if (!removedHeaders.includes(kv[0])) {
-      newHeaders.append(kv[0], kv[1]);
+      // eslint-disable-next-line prefer-destructuring
+      newHeaders[kv[0]] = kv[1];
     }
   }
 
   if (addHeaders) {
     // Add all the addHeaders
-    addHeaders.forEach((value, key) => newHeaders.set(key, value));
+    addHeaders.forEach((value, key) => {
+      newHeaders[key] = value;
+    });
   }
 
   const cacheControl = resp.headers.get('cache-control');
   if (!cacheControl || cacheControl === 'null') {
     // Ensure that cacheControl has a value, if not set, use 1 hour
-    newHeaders.set('cache-control', 'public, max-age=3600');
+    newHeaders['cache-control'] = 'public, max-age=3600';
   }
 
-  newHeaders.set('Cross-Origin-Resource-Policy', 'cross-origin');
-  newHeaders.set('x-compress-hint', 'on');
+  newHeaders['Cross-Origin-Resource-Policy'] = 'cross-origin';
+  newHeaders['x-compress-hint'] = 'on';
 
-  const headers = {
-    'Content-Type': 'text/plain',
-    'x-yippie': 'yoyo',
-    'cache-control': 'public, max-age=3700',
-  };
+  // const headers = {
+  //   'Content-Type': 'text/plain',
+  //   'x-yippie': 'yoyo',
+  //   'cache-control': 'public, max-age=3700',
+  // };
 
   const result = new Response(resp.body, {
-    // headers: newHeaders,
-    headers,
+    headers: newHeaders,
     status: resp.status,
     statusText: resp.statusText,
   });
