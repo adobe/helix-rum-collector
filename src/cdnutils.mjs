@@ -95,6 +95,8 @@ export async function cleanupResponse(resp, req, newHeaders) {
       status: resp.status,
       headers: {
         'Content-Type': 'text/plain',
+        'x-blah': 'yeehaa',
+        'cache-control': 'public, max-age=300',
         'x-error': `Error: ${resp.status} from backend`,
       },
     });
