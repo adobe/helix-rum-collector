@@ -14,6 +14,7 @@
 import { cleanupResponse, prohibitDirectoryRequest } from './cdnutils.mjs';
 
 const redirectHeaders = [301, 302, 307, 308];
+const rangeChars = ['^', '~'];
 
 export async function respondUnpkg(req) {
   const url = new URL(req.url);
@@ -23,6 +24,13 @@ export async function respondUnpkg(req) {
   const beresp = await fetch(bereq, {
     backend: 'unpkg.com',
   });
+
+  let ccMap;
+  if (rangeChars.find((char) => beurl.href.includes(char))) {
+    // If the URL contains a range character, set cache-control to 1 hour
+    ccMap = new Map([['cache-control', 'public, max-age=3600']]);
+  }
+
   if (redirectHeaders.includes(beresp.status)) {
     const bereq2 = new Request(new URL(beresp.headers.get('location'), 'https://unpkg.com'));
     const err2 = prohibitDirectoryRequest(bereq2);
@@ -32,9 +40,6 @@ export async function respondUnpkg(req) {
     const beresp2 = await fetch(bereq2, {
       backend: 'unpkg.com',
     });
-
-    // override the cache control header
-    beresp2.headers.set('cache-control', beresp.headers.get('cache-control'));
 
     if (redirectHeaders.includes(beresp2.status)) {
       const bereq3 = new Request(new URL(beresp2.headers.get('location'), 'https://unpkg.com'));
@@ -47,12 +52,9 @@ export async function respondUnpkg(req) {
         backend: 'unpkg.com',
       });
 
-      // override the cache control header
-      beresp3.headers.set('cache-control', beresp.headers.get('cache-control'));
-
-      return cleanupResponse(beresp3, req);
+      return cleanupResponse(beresp3, req, ccMap);
     }
-    return cleanupResponse(beresp2, req);
+    return cleanupResponse(beresp2, req, ccMap);
   }
-  return cleanupResponse(beresp, req);
+  return cleanupResponse(beresp, req, ccMap);
 }

@@ -43,6 +43,11 @@ describe('Test jdelivr handler', () => {
       assert.equal(200, resp.status);
       assert.equal('abc', resp.headers.get('xyz'));
       assert.equal('cross-origin', resp.headers.get('Cross-Origin-Resource-Policy'));
+      assert.equal(
+        'public, max-age=3600',
+        resp.headers.get('cache-control'),
+        'If not set, cache-control should default to 1 hour',
+      );
     } finally {
       global.fetch = storedFetch;
     }
@@ -231,6 +236,87 @@ describe('Test jdelivr handler', () => {
       const resp = await respondJsdelivr(req);
       assert.equal(404, resp.status);
       assert.deepStrictEqual(['a', 'b'], redirectsMade, 'Expected two redirects to be made by the test');
+    } finally {
+      global.fetch = storedFetch;
+    }
+  });
+
+  it('sets cache-control to 1 hour if the URL contains a range character', async () => {
+    const req = {
+      url: 'https://foo.bar.org/.rum/@adobe/helix-rum-enhancer@%5E2/src/index.js',
+    };
+
+    const storedFetch = global.fetch;
+    try {
+      // Mock the global fetch function
+      global.fetch = (v) => {
+        const resp = {
+          url: v.url,
+          status: 200,
+        };
+        resp.headers = new Headers();
+        return resp;
+      };
+
+      const resp = await respondJsdelivr(req);
+      assert.equal(200, resp.status);
+      assert.equal('public, max-age=3600', resp.headers.get('cache-control'));
+    } finally {
+      global.fetch = storedFetch;
+    }
+  });
+
+  it('forces cache-control to 1 hour if the URL contains a range character', async () => {
+    const req = {
+      url: 'https://foo.bar.org/.rum/@adobe/helix-rum-enhancer@~2/src/index.js',
+    };
+
+    const storedFetch = global.fetch;
+    try {
+      // Mock the global fetch function
+      global.fetch = (v) => {
+        const resp = {
+          url: v.url,
+          status: 200,
+        };
+        resp.headers = new Headers();
+        resp.headers.set('cache-control', 'max-age=999999999');
+        return resp;
+      };
+
+      const resp = await respondJsdelivr(req);
+      assert.equal(200, resp.status);
+      assert.equal(
+        'public, max-age=3600',
+        resp.headers.get('cache-control'),
+        'Should have overridden the cache control header on range request',
+      );
+    } finally {
+      global.fetch = storedFetch;
+    }
+  });
+
+  it('keeps original cache-control for specific version requests', async () => {
+    const req = {
+      url: 'https://foo.bar.org/.rum/@adobe/helix-rum-enhancer@2.33.0/src/index.js',
+    };
+
+    const storedFetch = global.fetch;
+    try {
+      // Mock the global fetch function
+      global.fetch = (v) => {
+        const resp = {
+          url: v.url,
+          status: 200,
+        };
+        resp.headers = new Headers();
+        resp.headers.set('cache-control', 'max-age=999999999');
+        return resp;
+      };
+
+      const resp = await respondJsdelivr(req);
+      assert.equal(200, resp.status);
+      assert.equal('max-age=999999999', resp.headers.get('cache-control'));
     } finally {
       global.fetch = storedFetch;
     }

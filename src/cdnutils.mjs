@@ -33,7 +33,7 @@ const removedHeaders = [
  * @param {Response} resp the response to clean
  * @returns the recreated, cleaned response
  */
-export function cleanupHeaders(resp) {
+export function cleanupHeaders(resp, addHeaders) {
   // Can't modify the response headers, so recreate a new one with the headers removed
   const newHeaders = new Headers();
 
@@ -42,6 +42,18 @@ export function cleanupHeaders(resp) {
       newHeaders.append(kv[0], kv[1]);
     }
   }
+
+  if (addHeaders) {
+    // Add all the addHeaders
+    addHeaders.forEach((value, key) => newHeaders.set(key, value));
+  }
+
+  const cacheControl = resp.headers.get('cache-control');
+  if (!cacheControl || cacheControl === 'null') {
+    // Ensure that cacheControl has a value, if not set, use 1 hour
+    newHeaders.set('cache-control', 'public, max-age=3600');
+  }
+
   newHeaders.set('Cross-Origin-Resource-Policy', 'cross-origin');
   newHeaders.set('x-compress-hint', 'on');
 
@@ -73,8 +85,8 @@ export async function transformBody(resp, responseUrl, req) {
   }
   return resp;
 }
-export async function cleanupResponse(resp, req) {
-  const cleanedResponse = cleanupHeaders(resp);
+export async function cleanupResponse(resp, req, newHeaders) {
+  const cleanedResponse = cleanupHeaders(resp, newHeaders);
   try {
     if (resp.status < 400) {
       return await transformBody(cleanedResponse, resp.url, req);

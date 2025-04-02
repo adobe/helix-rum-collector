@@ -13,6 +13,7 @@
 import { cleanupResponse, prohibitDirectoryRequest } from './cdnutils.mjs';
 
 const redirectHeaders = [301, 302, 307, 308];
+const rangeChars = ['^', '~'];
 
 export async function respondJsdelivr(req) {
   const url = new URL(req.url);
@@ -24,6 +25,12 @@ export async function respondJsdelivr(req) {
     backend: 'jsdelivr',
   });
   console.log('fetched', bereq.url, beresp.status, beresp.headers.get('ETag'), beresp.headers.get('Content-Length'));
+
+  let ccMap;
+  if (rangeChars.find((char) => beurl.href.includes(char))) {
+    // If the URL contains a range character, set cache-control to 1 hour
+    ccMap = new Map([['cache-control', 'public, max-age=3600']]);
+  }
 
   if (redirectHeaders.includes(beresp.status)) {
     const bereq2 = new Request(new URL(beresp.headers.get('location'), 'https://cdn.jsdelivr.net'));
@@ -37,9 +44,6 @@ export async function respondJsdelivr(req) {
     });
     console.log('fetched', bereq2.url, beresp2.status, beresp2.headers.get('ETag'), beresp2.headers.get('Content-Length'));
 
-    // override the cache control header
-    beresp2.headers.set('cache-control', beresp.headers.get('cache-control'));
-
     if (redirectHeaders.includes(beresp2.status)) {
       const bereq3 = new Request(new URL(beresp2.headers.get('location'), 'https://cdn.jsdelivr.net'));
       const err3 = prohibitDirectoryRequest(bereq3);
@@ -52,12 +56,9 @@ export async function respondJsdelivr(req) {
       });
       console.log('fetched', bereq3.url, beresp3.status, beresp3.headers.get('ETag'), beresp3.headers.get('Content-Length'));
 
-      // override the cache control header
-      beresp3.headers.set('cache-control', beresp.headers.get('cache-control'));
-
-      return cleanupResponse(beresp3, req);
+      return cleanupResponse(beresp3, req, ccMap);
     }
-    return cleanupResponse(beresp2, req);
+    return cleanupResponse(beresp2, req, ccMap);
   }
-  return cleanupResponse(beresp, req);
+  return cleanupResponse(beresp, req, ccMap);
 }
