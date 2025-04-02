@@ -59,6 +59,8 @@ export function cleanupHeaders(resp, addHeaders) {
 
   newHeaders['Cross-Origin-Resource-Policy'] = 'cross-origin';
   newHeaders['x-compress-hint'] = 'on';
+  newHeaders['x-yippie'] = 'yoyo';
+  newHeaders['Content-Type'] = 'text/plain';
 
   // const headers = {
   //   'Content-Type': 'text/plain',
