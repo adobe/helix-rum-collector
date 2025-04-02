@@ -28,7 +28,7 @@ export async function respondUnpkg(req) {
   let ccMap;
   if (rangeChars.find((char) => beurl.href.includes(char))) {
     // If the URL contains a range character, set cache-control to 1 hour
-    ccMap = new Map([['cache-control', 'public, max-age=3600']]);
+    ccMap = new Map([['x-foobar', 'bheuaark'], ['cache-control', 'public, max-age=3600']]);
   }
 
   if (redirectHeaders.includes(beresp.status)) {
