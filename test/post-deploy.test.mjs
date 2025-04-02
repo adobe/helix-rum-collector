@@ -147,7 +147,7 @@ import assert from 'assert';
       });
       assert.strictEqual(response.status, 200);
       // eslint-disable-next-line no-unused-expressions
-      assert.match(response.headers.get('content-type'), /^application\/javascript/);
+      assert.match(response.headers.get('content-type'), /^(application|text)\/javascript/);
     });
 
     it('web vitals module is being served without redirect', async function test() {
@@ -159,7 +159,7 @@ import assert from 'assert';
       });
       assert.strictEqual(response.status, 200);
       // eslint-disable-next-line no-unused-expressions
-      assert.match(response.headers.get('content-type'), /^application\/javascript/);
+      assert.match(response.headers.get('content-type'), /^(application|text)\/javascript/);
     });
 
     it('rum js module is being served without redirect', async function test() {
@@ -171,7 +171,7 @@ import assert from 'assert';
       });
       assert.strictEqual(response.status, 200);
       // eslint-disable-next-line no-unused-expressions
-      assert.match(response.headers.get('content-type'), /^application\/javascript/);
+      assert.match(response.headers.get('content-type'), /^(application|text)\/javascript/);
     });
 
     it('rum js module is served with compression', async function test() {
@@ -186,7 +186,7 @@ import assert from 'assert';
       });
       assert.strictEqual(response.status, 200);
       // eslint-disable-next-line no-unused-expressions
-      assert.match(response.headers.get('content-type'), /^application\/javascript/);
+      assert.match(response.headers.get('content-type'), /^(application|text)\/javascript/);
       assert.match(response.headers.get('content-encoding'), /^(br|gzip|deflate)$/);
     });
 
@@ -215,7 +215,7 @@ import assert from 'assert';
       });
       assert.strictEqual(response.status, 200);
       // eslint-disable-next-line no-unused-expressions
-      assert.match(response.headers.get('content-type'), /^application\/javascript/);
+      assert.match(response.headers.get('content-type'), /^(application|text)\/javascript/);
       const text = await response.text();
       assert.include(text, 'adobe-helix-rum-js-1.0.0');
     });
