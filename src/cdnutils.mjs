@@ -58,10 +58,8 @@ export function cleanupHeaders(resp, addHeaders) {
 
   newHeaders.set('Cross-Origin-Resource-Policy', 'cross-origin');
   newHeaders.set('x-compress-hint', 'on');
-  // newHeaders['Content-Type'] = 'text/plain';
 
-  const headers = Object.fromEntries(newHeaders);
-  newHeaders.set('x-yippie', JSON.stringify(headers));
+  // const headers = Object.fromEntries(newHeaders);
 
   // const headers = {
   //   'Content-Type': 'text/plain',
@@ -70,8 +68,8 @@ export function cleanupHeaders(resp, addHeaders) {
   // };
 
   const result = new Response(resp.body, {
-    // headers: newHeaders,
-    headers,
+    headers: newHeaders,
+    // headers,
     status: resp.status,
     statusText: resp.statusText,
   });
