@@ -139,7 +139,6 @@ describe('Test unpkg handler', () => {
           const resp = { status: 302 };
           resp.headers = new Map();
           resp.headers.set('location', 'relocated/web-vitals');
-          resp.headers.set('cache-control', 'forget-it');
           return resp;
         }
         if (v.url === 'https://unpkg.com/relocated/web-vitals') {
@@ -150,6 +149,7 @@ describe('Test unpkg handler', () => {
           resp.headers = new Headers();
           resp.headers.append('server', 'hidden');
           resp.headers.append('etag', '123');
+          resp.headers.append('cache-control', 'forget-it');
           return resp;
         }
 
@@ -181,7 +181,6 @@ describe('Test unpkg handler', () => {
           const resp = { status: 302 };
           resp.headers = new Map();
           resp.headers.set('location', 'relocated/web-vitals');
-          resp.headers.set('cache-control', 'forget-it');
           return resp;
         }
         if (v.url === 'https://unpkg.com/relocated/web-vitals') {
@@ -196,6 +195,7 @@ describe('Test unpkg handler', () => {
             status: 200,
           };
           resp.headers = new Map();
+          resp.headers.set('cache-control', 'forget-it');
           resp.body = '//got-there-in-the-end';
           return resp;
         }
@@ -323,6 +323,87 @@ describe('Test unpkg handler', () => {
       const resp = await respondUnpkg(req);
       assert.equal(404, resp.status);
       assert.deepStrictEqual(['a', 'b'], redirectsMade, 'Expected two redirects to be made by the test');
+    } finally {
+      global.fetch = storedFetch;
+    }
+  });
+
+  it('sets cache-control to 1 hour if the URL contains a range character', async () => {
+    const req = {
+      url: 'https://foo.bar.org/.rum/@adobe/helix-rum-enhancer@%5E2/src/index.js',
+    };
+
+    const storedFetch = global.fetch;
+    try {
+      // Mock the global fetch function
+      global.fetch = (v) => {
+        const resp = {
+          url: v.url,
+          status: 200,
+        };
+        resp.headers = new Headers();
+        return resp;
+      };
+
+      const resp = await respondUnpkg(req);
+      assert.equal(200, resp.status);
+      assert.equal('public, max-age=3600', resp.headers.get('cache-control'));
+    } finally {
+      global.fetch = storedFetch;
+    }
+  });
+
+  it('forces cache-control to 1 hour if the URL contains a range character', async () => {
+    const req = {
+      url: 'https://foo.bar.org/.rum/@adobe/helix-rum-enhancer@~2/src/index.js',
+    };
+
+    const storedFetch = global.fetch;
+    try {
+      // Mock the global fetch function
+      global.fetch = (v) => {
+        const resp = {
+          url: v.url,
+          status: 200,
+        };
+        resp.headers = new Headers();
+        resp.headers.set('cache-control', 'max-age=999999999');
+        return resp;
+      };
+
+      const resp = await respondUnpkg(req);
+      assert.equal(200, resp.status);
+      assert.equal(
+        'public, max-age=3600',
+        resp.headers.get('cache-control'),
+        'Should have overridden the cache control header on range request',
+      );
+    } finally {
+      global.fetch = storedFetch;
+    }
+  });
+
+  it('keeps original cache-control for specific version requests', async () => {
+    const req = {
+      url: 'https://foo.bar.org/.rum/@adobe/helix-rum-enhancer@2.33.0/src/index.js',
+    };
+
+    const storedFetch = global.fetch;
+    try {
+      // Mock the global fetch function
+      global.fetch = (v) => {
+        const resp = {
+          url: v.url,
+          status: 200,
+        };
+        resp.headers = new Headers();
+        resp.headers.set('cache-control', 'max-age=999999999');
+        return resp;
+      };
+
+      const resp = await respondUnpkg(req);
+      assert.equal(200, resp.status);
+      assert.equal('max-age=999999999', resp.headers.get('cache-control'));
     } finally {
       global.fetch = storedFetch;
     }
