@@ -36,34 +36,32 @@ const removedHeaders = [
  */
 export function cleanupHeaders(resp, addHeaders) {
   // Can't modify the response headers, so recreate a new one with the headers removed
-  const newHeaders = {};
+  const newHeaders = new Headers();
 
   for (const kv of resp.headers.entries()) {
     if (!removedHeaders.includes(kv[0])) {
       // eslint-disable-next-line prefer-destructuring
-      newHeaders[kv[0]] = kv[1];
+      newHeaders.set(kv[0], kv[1]);
     }
   }
 
   if (addHeaders) {
     // Add all the addHeaders
-    addHeaders.forEach((value, key) => {
-      newHeaders[key] = value;
-    });
+    addHeaders.forEach((value, key) => newHeaders.set(key, value));
   }
 
   const cacheControl = resp.headers.get('cache-control');
   if (!cacheControl || cacheControl === 'null') {
     // Ensure that cacheControl has a value, if not set, use 1 hour
-    newHeaders['cache-control'] = 'public, max-age=3600';
+    newHeaders.set('cache-control', 'public, max-age=3600');
   }
 
-  newHeaders['Cross-Origin-Resource-Policy'] = 'cross-origin';
-  newHeaders['x-compress-hint'] = 'on';
+  newHeaders.set('Cross-Origin-Resource-Policy', 'cross-origin');
+  newHeaders.set('x-compress-hint', 'on');
   // newHeaders['Content-Type'] = 'text/plain';
 
-  const clone = { ...newHeaders };
-  newHeaders['x-yippie'] = JSON.stringify(clone);
+  const headers = Object.fromEntries(newHeaders);
+  newHeaders.set('x-yippie', JSON.stringify(headers));
 
   // const headers = {
   //   'Content-Type': 'text/plain',
@@ -72,7 +70,8 @@ export function cleanupHeaders(resp, addHeaders) {
   // };
 
   const result = new Response(resp.body, {
-    headers: newHeaders,
+    // headers: newHeaders,
+    headers,
     status: resp.status,
     statusText: resp.statusText,
   });
