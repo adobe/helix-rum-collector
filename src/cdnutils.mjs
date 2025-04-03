@@ -58,8 +58,8 @@ export function cleanupHeaders(resp, addHeaders) {
 
   const contentType = newHeaders.get('content-type');
   if (contentType && contentType.indexOf('application/javascript') >= 0) {
-    contentType.replace('application/javascript', 'text/javascript');
-    newHeaders.set('content-type', contentType);
+    const newContentType = contentType.replace('application/javascript', 'text/javascript');
+    newHeaders.set('content-type', newContentType);
   }
 
   newHeaders.set('Cross-Origin-Resource-Policy', 'cross-origin');
