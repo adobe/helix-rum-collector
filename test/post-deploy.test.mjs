@@ -147,7 +147,7 @@ import assert from 'assert';
       });
       assert.strictEqual(response.status, 200);
       // eslint-disable-next-line no-unused-expressions
-      assert.match(response.headers.get('content-type'), /^application\/javascript/);
+      assert.match(response.headers.get('content-type'), /^text\/javascript/);
     });
 
     it('web vitals module is being served without redirect', async function test() {
@@ -159,7 +159,7 @@ import assert from 'assert';
       });
       assert.strictEqual(response.status, 200);
       // eslint-disable-next-line no-unused-expressions
-      assert.match(response.headers.get('content-type'), /^application\/javascript/);
+      assert.match(response.headers.get('content-type'), /^text\/javascript/);
     });
 
     it('rum js module is being served without redirect', async function test() {
@@ -171,7 +171,7 @@ import assert from 'assert';
       });
       assert.strictEqual(response.status, 200);
       // eslint-disable-next-line no-unused-expressions
-      assert.match(response.headers.get('content-type'), /^application\/javascript/);
+      assert.match(response.headers.get('content-type'), /^text\/javascript/);
     });
 
     it('rum js module is served with compression', async function test() {
@@ -186,7 +186,7 @@ import assert from 'assert';
       });
       assert.strictEqual(response.status, 200);
       // eslint-disable-next-line no-unused-expressions
-      assert.match(response.headers.get('content-type'), /^application\/javascript/);
+      assert.match(response.headers.get('content-type'), /^text\/javascript/);
       assert.match(response.headers.get('content-encoding'), /^(br|gzip|deflate)$/);
     });
 
@@ -197,13 +197,15 @@ import assert from 'assert';
 
       const respRange = await fetch(`https://${domain}/.rum/@adobe/helix-rum-enhancer@%5E2/src/index.js`);
       assert.strictEqual(respRange.status, 200);
-      const ccHeader = respRange.headers.get('cache-control');
-      assert(ccHeader && ccHeader !== 'null', 'cache-control should have a value');
+      const ccHeader = respRange.headers.get('cache-control').split(',');
+      assert(ccHeader.find((header) => header.trim() === 'max-age=3600'), 'Should have a max cache age of 3600');
 
       const respSpecific = await fetch(`https://${domain}/.rum/@adobe/helix-rum-enhancer@2.33.0/src/index.js`);
       assert.strictEqual(respSpecific.status, 200);
-      const ccHeaderSp = respSpecific.headers.get('cache-control');
-      assert(ccHeaderSp && ccHeaderSp !== 'null', 'cache-control should have a value');
+      const ccHeaderSp = respSpecific.headers.get('cache-control').split(',');
+      const maHeader = ccHeaderSp.find((header) => header.trim().startsWith('max-age='));
+      const maxAge = Number(maHeader.split('=')[1]);
+      assert(maxAge > 3600, 'Should have a max cache age greater than 3600');
     });
 
     it.skip('rum js module is being served with default replacements', async function test() {
@@ -215,7 +217,7 @@ import assert from 'assert';
       });
       assert.strictEqual(response.status, 200);
       // eslint-disable-next-line no-unused-expressions
-      assert.match(response.headers.get('content-type'), /^application\/javascript/);
+      assert.match(response.headers.get('content-type'), /^text\/javascript/);
       const text = await response.text();
       assert.include(text, 'adobe-helix-rum-js-1.0.0');
     });

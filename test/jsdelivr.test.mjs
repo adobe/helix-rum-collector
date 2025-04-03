@@ -281,11 +281,13 @@ describe('Test jdelivr handler', () => {
         };
         resp.headers = new Headers();
         resp.headers.set('cache-control', 'max-age=999999999');
+        resp.headers.set('content-type', 'application/javascript; charset=utf-8');
         return resp;
       };
 
       const resp = await respondJsdelivr(req);
       assert.equal(200, resp.status);
+      assert.equal('text/javascript; charset=utf-8', resp.headers.get('content-type'));
       assert.equal(
         'public, max-age=3600',
         resp.headers.get('cache-control'),
@@ -311,11 +313,13 @@ describe('Test jdelivr handler', () => {
         };
         resp.headers = new Headers();
         resp.headers.set('cache-control', 'max-age=999999999');
+        resp.headers.set('content-type', 'text/javascript');
         return resp;
       };
 
       const resp = await respondJsdelivr(req);
       assert.equal(200, resp.status);
+      assert.equal('text/javascript', resp.headers.get('content-type'));
       assert.equal('max-age=999999999', resp.headers.get('cache-control'));
     } finally {
       global.fetch = storedFetch;

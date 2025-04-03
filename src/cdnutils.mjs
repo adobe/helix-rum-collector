@@ -56,6 +56,12 @@ export function cleanupHeaders(resp, addHeaders) {
     newHeaders.set('cache-control', 'public, max-age=3600');
   }
 
+  const contentType = newHeaders.get('content-type');
+  if (contentType && contentType.indexOf('application/javascript') >= 0) {
+    contentType.replace('application/javascript', 'text/javascript');
+    newHeaders.set('content-type', contentType);
+  }
+
   newHeaders.set('Cross-Origin-Resource-Policy', 'cross-origin');
   newHeaders.set('x-compress-hint', 'on');
 
