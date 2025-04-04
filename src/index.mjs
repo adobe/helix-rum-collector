@@ -21,7 +21,7 @@ import { respondRobots } from './robots.mjs';
 import { respondJsdelivr } from './jsdelivr.mjs';
 import { respondUnpkg } from './unpkg.mjs';
 
-const PACKAGE_REGISTRIES = ['jsdelivr', 'unpkg'];
+const REGISTRY_TIMEOUT_MS = 5000;
 
 function respondError(message, status, e, req) {
   const headers = new Headers();
@@ -62,58 +62,35 @@ export function respondCORS() {
   });
 }
 
-function randomPackageRegistry() {
-  return PACKAGE_REGISTRIES[Math.floor(Math.random() * (PACKAGE_REGISTRIES.length))];
-}
-
-export function getOtherPackageRegistry(regName) {
-  return PACKAGE_REGISTRIES[(PACKAGE_REGISTRIES.length - 1) - PACKAGE_REGISTRIES.indexOf(regName)];
-}
-
 async function respondRegistry(regName, req) {
-  console.log('Using package registry', regName);
+  return new Promise((resolve, reject) => {
+    console.log('Using package registry', regName);
 
-  if (regName === 'jsdelivr') {
-    return respondJsdelivr(req);
-  }
-
-  return respondUnpkg(req);
+    try {
+      const respondFunc = regName === 'jsdelivr' ? respondJsdelivr : respondUnpkg;
+      respondFunc(req).then(
+        (resp) => {
+          if (resp.status !== 200) {
+            // Hold off resolving the promise with an error for a few seconds
+            setTimeout(() => reject(new Error(`Registry ${regName} returned ${resp.status}`)), REGISTRY_TIMEOUT_MS);
+            return;
+          }
+          resolve(resp);
+        },
+      );
+    } catch (error) {
+      // If there is an error, hold off throwing it to give the other registry a chance
+      setTimeout(() => reject(error), REGISTRY_TIMEOUT_MS);
+    }
+  });
 }
 
 async function respondPackage(req) {
-  let pkgreg = new URL(req.url).searchParams.get('pkgreg');
-
-  if (!pkgreg) {
-    pkgreg = randomPackageRegistry();
-  }
-
-  // Define timeout value in milliseconds
-  const REGISTRY_TIMEOUT_MS = 5000;
-
-  // Create a timeout promise
-  const timeoutPromise = new Promise((_, reject) => {
-    setTimeout(() => reject(new Error(`Registry request timed out after ${REGISTRY_TIMEOUT_MS}ms`)), REGISTRY_TIMEOUT_MS);
-  });
-
-  try {
-    // let resp = await respondRegistry(pkgreg, req);
-    // Use Promise.race to implement timeout
-    let resp = await Promise.race([
-      respondRegistry(pkgreg, req),
-      timeoutPromise,
-    ]);
-
-    if (resp.status !== 200) {
-      console.log('Changing registry as its response was', resp.status);
-      resp = await respondRegistry(getOtherPackageRegistry(pkgreg), req);
-    }
-    return resp;
-  } catch (error) {
-    console.log('Contacting registry caused this error', error);
-    console.log('Changing package registry');
-
-    return respondRegistry(getOtherPackageRegistry(pkgreg), req);
-  }
+  // TODO possibly randomize the order of the array?
+  return /* await */ Promise.race([
+    respondRegistry('jsdelivr', req),
+    respondRegistry('unpkg', req),
+  ]);
 }
 
 export async function main(req, ctx) {

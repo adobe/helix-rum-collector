@@ -259,7 +259,7 @@ describe('Test index', () => {
   }); // .timeout(5000);
 
   it('Retry with another package registry', async () => {
-    const mockUnpkg = () => ({ status: 500 });
+    const mockUnpkg = async () => ({ status: 500 });
     const { main } = await esmock('../src/index.mjs', {
       '../src/unpkg.mjs': {
         respondUnpkg: mockUnpkg,
@@ -385,11 +385,6 @@ describe('Test index', () => {
     assert.equal(ld.weight, 1);
     assert.equal(ld.id, 'xyz123');
     assert.equal(ld.checkpoint, 'top');
-  });
-
-  it('get other package registry', () => {
-    assert.equal('jsdelivr', methods.getOtherPackageRegistry('unpkg'));
-    assert.equal('unpkg', methods.getOtherPackageRegistry('jsdelivr'));
   });
 
   it('reject urls that contain ".."', async () => {
