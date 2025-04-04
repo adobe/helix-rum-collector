@@ -99,7 +99,7 @@ async function respondPackage(req) {
     // Use Promise.race to implement timeout
     let resp = await Promise.race([
       respondRegistry(pkgreg, req),
-      timeoutPromise
+      timeoutPromise,
     ]);
 
     if (resp.status !== 200) {
