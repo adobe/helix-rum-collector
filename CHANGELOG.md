@@ -1,3 +1,10 @@
+## [2.34.5](https://github.com/adobe/helix-rum-collector/compare/v2.34.4...v2.34.5) (2025-04-04)
+
+
+### Bug Fixes
+
+* **headers:** cache-control header should never return null ([#485](https://github.com/adobe/helix-rum-collector/issues/485)) ([6d09419](https://github.com/adobe/helix-rum-collector/commit/6d0941963d14651a476b8128fdcbc3a8b77f8eae)), closes [#483](https://github.com/adobe/helix-rum-collector/issues/483)
+
 ## [2.34.4](https://github.com/adobe/helix-rum-collector/compare/v2.34.3...v2.34.4) (2025-02-24)
 
 

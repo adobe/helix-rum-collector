@@ -31,17 +31,37 @@ const removedHeaders = [
  * original with the headers removed.
  *
  * @param {Response} resp the response to clean
+ * @param {Map} addHeaders Headers to add to the response (optional)
  * @returns the recreated, cleaned response
  */
-export function cleanupHeaders(resp) {
+export function cleanupHeaders(resp, addHeaders) {
   // Can't modify the response headers, so recreate a new one with the headers removed
   const newHeaders = new Headers();
 
   for (const kv of resp.headers.entries()) {
     if (!removedHeaders.includes(kv[0])) {
-      newHeaders.append(kv[0], kv[1]);
+      newHeaders.set(kv[0], kv[1]);
     }
   }
+
+  if (addHeaders) {
+    // Add all the addHeaders
+    addHeaders.forEach((value, key) => newHeaders.set(key, value));
+  }
+
+  const cacheControl = resp.headers.get('cache-control');
+  if (!cacheControl || cacheControl === 'null') {
+    // Ensure that cacheControl has a value, if not set, use 1 hour
+    newHeaders.set('cache-control', 'public, max-age=3600');
+  }
+
+  const contentType = newHeaders.get('content-type');
+  if (contentType && contentType.indexOf('application/javascript') >= 0) {
+    // content-type of application/javascript is obsolete and replaced by text/javascript
+    const newContentType = contentType.replace('application/javascript', 'text/javascript');
+    newHeaders.set('content-type', newContentType);
+  }
+
   newHeaders.set('Cross-Origin-Resource-Policy', 'cross-origin');
   newHeaders.set('x-compress-hint', 'on');
 
@@ -73,8 +93,8 @@ export async function transformBody(resp, responseUrl, req) {
   }
   return resp;
 }
-export async function cleanupResponse(resp, req) {
-  const cleanedResponse = cleanupHeaders(resp);
+export async function cleanupResponse(resp, req, newHeaders) {
+  const cleanedResponse = cleanupHeaders(resp, newHeaders);
   try {
     if (resp.status < 400) {
       return await transformBody(cleanedResponse, resp.url, req);
