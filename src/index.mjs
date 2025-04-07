@@ -102,15 +102,13 @@ async function respondPackage(req) {
   const unpkgDelay = useJsdelivr ? REGISTRY_TIMEOUT_MS : undefined;
 
   const successTracker = { success: true };
-  const result = await Promise.any([
-    respondRegistry('jsdelivr', req, successTracker, jsdDelay),
-    respondRegistry('unpkg', req, successTracker, unpkgDelay),
-  ]);
-
-  if (result instanceof AggregateError) {
-    return new Response(result.errors, { status: 500 });
-  } else {
-    return result;
+  try {
+    return await Promise.any([
+      respondRegistry('jsdelivr', req, successTracker, jsdDelay),
+      respondRegistry('unpkg', req, successTracker, unpkgDelay),
+    ]);
+  } catch (error) {
+    return new Response(error.errors, { status: 500 });
   }
 }
 
