@@ -301,6 +301,65 @@ describe('Test index', () => {
     assert(t.includes('export function sampleRUM'));
   });
 
+  it('Both package registries fail', async () => {
+    const { main } = await esmock('../src/index.mjs', {
+      '../src/unpkg.mjs': {
+        respondUnpkg: () => { throw new Error('bam'); },
+      },
+      '../src/jsdelivr.mjs': {
+        respondJsdelivr: () => { throw new Error('boom'); },
+      },
+    });
+
+    const req = {
+      url: 'http://x.y/.rum/@adobe/helix-rum-js@^1',
+      method: 'GET',
+    };
+    const resp = await main(req);
+    assert.equal(500, resp.status);
+    const t = await resp.text();
+    assert(t.includes('bam'));
+    assert(t.includes('boom'));
+  });
+
+  async function waitForTimeout(ms) {
+    return new Promise((resolve) => {
+      setTimeout(() => {
+        resolve();
+      }, ms);
+    });
+  }
+
+  it('No double request on success', async () => {
+    const called = [];
+    const { main } = await esmock('../src/index.mjs', {
+      '../src/unpkg.mjs': {
+        respondUnpkg: async () => {
+          called.push('unpkg');
+          return new Response('unpkg', { status: 200 });
+        },
+      },
+      '../src/jsdelivr.mjs': {
+        respondJsdelivr: async () => {
+          called.push('jsdelivr');
+          return new Response('jsdelivr', { status: 200 });
+        },
+      },
+    });
+
+    const req = {
+      url: 'http://x.y/.rum/@adobe/helix-rum-js@^1',
+      method: 'GET',
+    };
+    const resp = await main(req);
+    assert.equal(200, resp.status);
+
+    // Wait for a little while so that the other thread will run
+    await waitForTimeout(6000);
+
+    assert.equal(called.length, 1, 'Should have called only one');
+  });
+
   it('verifies inputs', async () => {
     await verifyInput('{"id": null}', 'id field is required');
     await verifyInput('{"weight": "hello"}', 'weight must be a number');
