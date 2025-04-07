@@ -101,7 +101,9 @@ async function respondPackage(req) {
   const jsdDelay = useJsdelivr ? undefined : REGISTRY_TIMEOUT_MS;
   const unpkgDelay = useJsdelivr ? REGISTRY_TIMEOUT_MS : undefined;
 
-  const successTracker = { success: true };
+  // This shared object between the promises is used to track
+  // if one of the requests has succeeded, to avoid unneccessary requests.
+  const successTracker = {};
   try {
     return await Promise.any([
       respondRegistry('jsdelivr', req, successTracker, jsdDelay),
