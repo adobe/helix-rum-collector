@@ -21,7 +21,7 @@ import { respondRobots } from './robots.mjs';
 import { respondJsdelivr } from './jsdelivr.mjs';
 import { respondUnpkg } from './unpkg.mjs';
 
-// const REGISTRY_TIMEOUT_MS = 5000;
+const REGISTRY_TIMEOUT_MS = 5000;
 
 function respondError(message, status, e, req) {
   const headers = new Headers();
@@ -66,7 +66,7 @@ async function respondRegistry(regName, req, successTracker, timeout) {
   return new Promise((resolve, reject) => {
     function callRegistry() {
       if (successTracker.success) {
-        // the value has already been obtained
+        reject(new Error('Already obtained'));
         return;
       }
 
@@ -75,7 +75,7 @@ async function respondRegistry(regName, req, successTracker, timeout) {
         respondFunc(req).then(
           (resp) => {
             if (resp.status !== 200) {
-              reject(new Error(`Registry ${regName} returned ${resp.status}`));
+              reject(new Error(`Error from registry: ${resp.status}`));
               return;
             }
             // eslint-disable-next-line no-param-reassign
@@ -97,15 +97,21 @@ async function respondRegistry(regName, req, successTracker, timeout) {
 }
 
 async function respondPackage(req) {
-  // const random_boolean = Math.random() < 0.5;
-  // const jsdDelay = random_boolean ? undefined : 5000;
-  // const unpkgDelay = random_boolean ? 5000 : undefined;
+  const useJsdelivr = Math.random() < 0.5; // 50% chance to use jsdelivr
+  const jsdDelay = useJsdelivr ? undefined : REGISTRY_TIMEOUT_MS;
+  const unpkgDelay = useJsdelivr ? REGISTRY_TIMEOUT_MS : undefined;
 
-  const successTracker = {};
-  return /* await */ Promise.any([
-    respondRegistry('jsdelivr', req, successTracker, 5000),
-    respondRegistry('unpkg', req, successTracker, 5000),
+  const successTracker = { success: true };
+  const result = await Promise.any([
+    respondRegistry('jsdelivr', req, successTracker, jsdDelay),
+    respondRegistry('unpkg', req, successTracker, unpkgDelay),
   ]);
+
+  if (result instanceof AggregateError) {
+    return new Response(result.errors, { status: 500 });
+  } else {
+    return result;
+  }
 }
 
 export async function main(req, ctx) {
