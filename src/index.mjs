@@ -62,9 +62,14 @@ export function respondCORS() {
   });
 }
 
-async function respondRegistry(regName, req, timeout) {
+async function respondRegistry(regName, req, successTracker, timeout) {
   return new Promise((resolve, reject) => {
     function callRegistry() {
+      if (successTracker.success) {
+        // the value has already been obtained
+        return;
+      }
+
       try {
         const respondFunc = regName === 'jsdelivr' ? respondJsdelivr : respondUnpkg;
         respondFunc(req).then(
@@ -73,9 +78,9 @@ async function respondRegistry(regName, req, timeout) {
               reject(new Error(`Registry ${regName} returned ${resp.status}`));
               return;
             }
-            throw new Error('foobar!');
-
-            // resolve(resp);
+            // eslint-disable-next-line no-param-reassign
+            successTracker.success = true;
+            resolve(resp);
           },
         );
       } catch (error) {
@@ -92,9 +97,10 @@ async function respondRegistry(regName, req, timeout) {
 }
 
 async function respondPackage(req) {
+  const successTracker = {};
   return /* await */ Promise.any([
-    respondRegistry('jsdelivr', req),
-    respondRegistry('unpkg', req, 1000),
+    respondRegistry('jsdelivr', req, successTracker),
+    respondRegistry('unpkg', req, successTracker, 1000),
   ]);
 }
 
