@@ -62,34 +62,37 @@ export function respondCORS() {
   });
 }
 
-async function respondRegistry(regName, req) {
+async function respondRegistry(regName, req, timeout) {
   return new Promise((resolve, reject) => {
-    console.log('Using package registry', regName);
+    function callRegistry() {
+      try {
+        const respondFunc = regName === 'jsdelivr' ? respondJsdelivr : respondUnpkg;
+        respondFunc(req).then(
+          (resp) => {
+            if (resp.status !== 200) {
+              reject(new Error(`Registry ${regName} returned ${resp.status}`));
+              return;
+            }
+            resolve(resp);
+          },
+        );
+      } catch (error) {
+        reject(error);
+      }
+    }
 
-    try {
-      const respondFunc = regName === 'jsdelivr' ? respondJsdelivr : respondUnpkg;
-      respondFunc(req).then(
-        (resp) => {
-          if (resp.status !== 200) {
-            // Hold off resolving the promise with an error for a few seconds
-            setTimeout(() => reject(new Error(`Registry ${regName} returned ${resp.status}`)), REGISTRY_TIMEOUT_MS);
-            return;
-          }
-          resolve(resp);
-        },
-      );
-    } catch (error) {
-      // If there is an error, hold off throwing it to give the other registry a chance
-      setTimeout(() => reject(error), REGISTRY_TIMEOUT_MS);
+    if (timeout) {
+      setTimeout(callRegistry, timeout);
+    } else {
+      callRegistry();
     }
   });
 }
 
 async function respondPackage(req) {
-  // TODO possibly randomize the order of the array?
-  return /* await */ Promise.race([
-    respondRegistry('jsdelivr', req),
-    respondRegistry('unpkg', req),
+  return /* await */ Promise.any([
+    respondRegistry('jsdelivr', req, 100),
+    respondRegistry('unpkg', req, 100),
   ]);
 }
 
