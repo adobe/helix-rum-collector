@@ -97,10 +97,14 @@ async function respondRegistry(regName, req, successTracker, timeout) {
 }
 
 async function respondPackage(req) {
+  // const random_boolean = Math.random() < 0.5;
+  // const jsdDelay = random_boolean ? undefined : 5000;
+  // const unpkgDelay = random_boolean ? 5000 : undefined;
+
   const successTracker = {};
   return /* await */ Promise.any([
-    respondRegistry('jsdelivr', req, successTracker),
-    respondRegistry('unpkg', req, successTracker, 1000),
+    respondRegistry('jsdelivr', req, successTracker, 5000),
+    respondRegistry('unpkg', req, successTracker, 5000),
   ]);
 }
 
