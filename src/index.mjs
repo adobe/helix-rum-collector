@@ -91,8 +91,8 @@ async function respondRegistry(regName, req, timeout) {
 
 async function respondPackage(req) {
   return /* await */ Promise.any([
-    respondRegistry('jsdelivr', req, 100),
-    respondRegistry('unpkg', req, 100),
+    respondRegistry('jsdelivr', req),
+    respondRegistry('unpkg', req, 1000),
   ]);
 }
 
