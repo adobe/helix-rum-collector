@@ -21,7 +21,7 @@ import { respondRobots } from './robots.mjs';
 import { respondJsdelivr } from './jsdelivr.mjs';
 import { respondUnpkg } from './unpkg.mjs';
 
-const REGISTRY_TIMEOUT_MS = 5000;
+// const REGISTRY_TIMEOUT_MS = 5000;
 
 function respondError(message, status, e, req) {
   const headers = new Headers();
