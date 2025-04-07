@@ -69,11 +69,13 @@ async function respondRegistry(regName, req, timeout) {
         const respondFunc = regName === 'jsdelivr' ? respondJsdelivr : respondUnpkg;
         respondFunc(req).then(
           (resp) => {
-            if (resp.status !== 200 || regName === 'jsdelivr') {
+            if (resp.status !== 200) {
               reject(new Error(`Registry ${regName} returned ${resp.status}`));
               return;
             }
-            resolve(resp);
+            throw new Error('foobar!');
+
+            // resolve(resp);
           },
         );
       } catch (error) {
