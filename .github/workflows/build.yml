@@ -24,8 +24,8 @@ jobs:
       run: npm run test
     - name: Fastly Build
       run: npm run fastly-build
-    # - name: Setup LCOV
-    #   uses: hrishikesh-kadam/setup-lcov@v1
+    - name: Setup LCOV
+      uses: hrishikesh-kadam/setup-lcov@v1
     - name: Report code coverage
       uses: zgosalvez/github-actions-report-lcov@v4
       with:
