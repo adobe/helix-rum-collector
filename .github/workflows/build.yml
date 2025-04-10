@@ -8,7 +8,6 @@ on:
     types: [opened, synchronize, reopened]
 jobs:
   test:
-    timeout-minutes: 60
     runs-on: ubuntu-latest
 
     steps:
@@ -34,3 +33,16 @@ jobs:
         artifact-name: code-coverage-report
         github-token: ${{ secrets.GITHUB_TOKEN }}
         update-comment: true
+
+  branch-deploy:
+    runs-on: ubuntu-latest
+    needs: test
+    steps:
+    - uses: actions/checkout@v4
+    - uses: actions/setup-node@v4
+    - name: Install
+      run: npm ci
+    - name: Fastly Build
+      run: npm run fastly-build
+    - name: Fastly Version
+      run: npm ls @fastly/js-compute
