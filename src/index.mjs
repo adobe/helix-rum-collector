@@ -21,7 +21,7 @@ import { respondRobots } from './robots.mjs';
 import { respondJsdelivr } from './jsdelivr.mjs';
 import { respondUnpkg } from './unpkg.mjs';
 
-const PACKAGE_REGISTRIES = ['jsdelivr', 'unpkg'];
+const REGISTRY_TIMEOUT_MS = 5000;
 
 function respondError(message, status, e, req) {
   const headers = new Headers();
@@ -62,43 +62,55 @@ export function respondCORS() {
   });
 }
 
-function randomPackageRegistry() {
-  return PACKAGE_REGISTRIES[Math.floor(Math.random() * (PACKAGE_REGISTRIES.length))];
-}
+async function respondRegistry(regName, req, successTracker, timeout) {
+  return new Promise((resolve, reject) => {
+    function callRegistry() {
+      if (successTracker.success) {
+        reject(new Error('Already obtained'));
+        return;
+      }
 
-export function getOtherPackageRegistry(regName) {
-  return PACKAGE_REGISTRIES[(PACKAGE_REGISTRIES.length - 1) - PACKAGE_REGISTRIES.indexOf(regName)];
-}
+      try {
+        const respondFunc = regName === 'jsdelivr' ? respondJsdelivr : respondUnpkg;
+        respondFunc(req).then(
+          (resp) => {
+            if (resp.status !== 200) {
+              reject(new Error(`Error from registry: ${resp.status}`));
+              return;
+            }
+            // eslint-disable-next-line no-param-reassign
+            successTracker.success = true;
+            resolve(resp);
+          },
+        );
+      } catch (error) {
+        reject(error);
+      }
+    }
 
-async function respondRegistry(regName, req) {
-  console.log('Using package registry', regName);
-
-  if (regName === 'jsdelivr') {
-    return respondJsdelivr(req);
-  }
-
-  return respondUnpkg(req);
+    if (timeout) {
+      setTimeout(callRegistry, timeout);
+    } else {
+      callRegistry();
+    }
+  });
 }
 
 async function respondPackage(req) {
-  let pkgreg = new URL(req.url).searchParams.get('pkgreg');
+  const useJsdelivr = Math.random() < 0.5; // 50% chance to use jsdelivr
+  const jsdDelay = useJsdelivr ? undefined : REGISTRY_TIMEOUT_MS;
+  const unpkgDelay = useJsdelivr ? REGISTRY_TIMEOUT_MS : undefined;
 
-  if (!pkgreg) {
-    pkgreg = randomPackageRegistry();
-  }
-
+  // This shared object between the promises is used to track
+  // if one of the requests has succeeded, to avoid unneccessary requests.
+  const successTracker = {};
   try {
-    let resp = await respondRegistry(pkgreg, req);
-    if (resp.status !== 200) {
-      console.log('Changing registry as its response was', resp.status);
-      resp = await respondRegistry(getOtherPackageRegistry(pkgreg), req);
-    }
-    return resp;
+    return await Promise.any([
+      respondRegistry('jsdelivr', req, successTracker, jsdDelay),
+      respondRegistry('unpkg', req, successTracker, unpkgDelay),
+    ]);
   } catch (error) {
-    console.log('Contacting registry caused this error', error);
-    console.log('Changing package registry');
-
-    return respondRegistry(getOtherPackageRegistry(pkgreg), req);
+    return new Response(error.errors, { status: 500 });
   }
 }
 
