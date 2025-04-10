@@ -1,3 +1,10 @@
+## [2.34.6](https://github.com/adobe/helix-rum-collector/compare/v2.34.5...v2.34.6) (2025-04-10)
+
+
+### Bug Fixes
+
+* **registry:** use timeout to agressively switch to secondary registry if the first one is too slow ([a6d4411](https://github.com/adobe/helix-rum-collector/commit/a6d4411a478db6780a1ef0bd0ddd9655b9617ab4))
+
 ## [2.34.5](https://github.com/adobe/helix-rum-collector/compare/v2.34.4...v2.34.5) (2025-04-04)
 
 
