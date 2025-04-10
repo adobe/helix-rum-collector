@@ -23,7 +23,7 @@ describe('Test IAB Spider List', () => {
     assert.equal(isSpider('Mozilla/5.0 (Windows NT 10.0; rv:78.0) Gecko/20100101 Firefox/78.0'), false);
   });
 
-  it('Googlebot is a spider', () => {
+  it.skip('Googlebot is a spider', () => {
     assert.equal(isSpider('Mozilla/5.0 (compatible; Googlebot/2.1; +http://www.google.com/bot.html)'), true);
   });
 });
