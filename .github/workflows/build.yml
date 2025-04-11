@@ -45,17 +45,3 @@ jobs:
       run: sleep 45
     - name: Post-Deployment Integration Test
       run: npm run test-postdeploy && mv lcov.info lcov-pd.info
-
-    # Compute coverage and update coverage comment
-    - name: Setup LCOV
-      uses: hrishikesh-kadam/setup-lcov@v1
-    - name: Report code coverage
-      uses: zgosalvez/github-actions-report-lcov@v4
-      with:
-        coverage-files: lcov-*.info
-        # minimum-coverage: 85
-        artifact-name: code-coverage-report
-        github-token: ${{ secrets.GITHUB_TOKEN }}
-        update-comment: true
-
-
