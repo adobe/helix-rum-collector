@@ -1,8 +1,9 @@
 name: build
 on:
   workflow_dispatch:
-  pull_request:
-    types: [opened, synchronize, reopened]
+  push:
+    branches-ignore:
+      - 'main'
 jobs:
   test_ci_deploy:
     name: Test, Deploy to CI workers and test Post-Deployment integration
