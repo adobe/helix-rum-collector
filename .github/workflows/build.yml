@@ -23,8 +23,6 @@ jobs:
       env:
         IAB_SPIDER_LIST: ${{ secrets.IAB_SPIDER_LIST }}
       run: npm run test && mv lcov.info lcov-junit.info
-    - name: Fastly Build
-      run: npm run fastly-build
 
     # Deploy to CI workers
     - name: Fastly Build
