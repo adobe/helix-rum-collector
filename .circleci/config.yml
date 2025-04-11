@@ -53,35 +53,6 @@ jobs:
       - store_artifacts:
           path: junit
 
-  branch-deploy:
-    executor: node22
-
-    steps:
-      - setup
-      - run:
-          name: revert changes to package-lock.json
-          command: git checkout -- package-lock.json
-
-      - run: npm ls @fastly/js-compute
-
-      # - run:
-      #     name: Package and Branch Deployment
-      #     command: HLX_FASTLY_AUTH=$HLX_FASTLY_CI_AUTH HLX_FASTLY_SVC=$HLX_FASTLY_CI_ID HLX_CLOUDFLARE_NAME=helix-rum-collector-ci npm run deploy
-
-      # - run:
-      #     name: List Package Contents
-      #     command: find bin && tar -tvf bin/dist/helix3/fastly-bundle.tar.gz
-
-      # - run:
-      #     name: Wait for service to be updated
-      #     command: sleep 45
-
-      # - run:
-      #     name: Post-Deployment Integration Test
-      #     command: npm run test-postdeploy
-      # - store_test_results:
-      #     path: junit
-
   semantic-release:
     executor: node22
 
@@ -100,13 +71,6 @@ workflows:
     jobs:
       - build:
           context: Project Helix
-      - branch-deploy:
-          context: Project Helix
-          requires:
-            - build
-          filters:
-            branches:
-              ignore: main
       - semantic-release:
           context: Project Helix
           requires:

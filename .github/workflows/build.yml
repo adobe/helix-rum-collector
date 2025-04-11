@@ -25,18 +25,6 @@ jobs:
       run: npm run test
     - name: Fastly Build
       run: npm run fastly-build
-    - name: Setup LCOV
-      uses: hrishikesh-kadam/setup-lcov@v1
-    - name: Report code coverage
-      uses: zgosalvez/github-actions-report-lcov@v4
-      with:
-        coverage-files: lcov.info
-        # minimum-coverage: 85
-        artifact-name: code-coverage-report
-        github-token: ${{ secrets.GITHUB_TOKEN }}
-        update-comment: true
-    - name: List files
-      run: find . -type f
 
     # Deploy to CI workers
     - name: Fastly Build
@@ -57,5 +45,17 @@ jobs:
       run: sleep 45
     - name: Post-Deployment Integration Test
       run: npm run test-postdeploy
+
+    # Compute coverage and update coverage comment
+    - name: Setup LCOV
+      uses: hrishikesh-kadam/setup-lcov@v1
+    - name: Report code coverage
+      uses: zgosalvez/github-actions-report-lcov@v4
+      with:
+        coverage-files: lcov.info
+        # minimum-coverage: 85
+        artifact-name: code-coverage-report
+        github-token: ${{ secrets.GITHUB_TOKEN }}
+        update-comment: true
 
 
