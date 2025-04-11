@@ -74,8 +74,7 @@ async function respondRegistry(regName, req, successTracker, timeout) {
         const respondFunc = regName === 'jsdelivr' ? respondJsdelivr : respondUnpkg;
         respondFunc(req).then(
           (resp) => {
-            // Successful responses are 200 and 404 (for a 404 we don't try any other registry)
-            if (resp.status !== 200 && resp.status !== 404) {
+            if (resp.status >= 500) {
               reject(new Error(`Error from registry: ${resp.status}`));
               return;
             }
