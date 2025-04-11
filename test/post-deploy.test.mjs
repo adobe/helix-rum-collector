@@ -326,5 +326,15 @@ import assert from 'assert';
       const respTxt = await resp.text();
       assert(respTxt.startsWith('Invalid path'));
     });
+
+    it('Non-existent files in .rum directory return 404', async function test() {
+      if (!process.env.TEST_INTEGRATION) {
+        this.skip();
+      }
+
+      const resp = await fetch(`https://${domain}/.rum/@adobe/helix-rum-js@%5E2/dist/rum-standalone.js/favicon.ico`);
+      const respTxt = await resp.text();
+      assert.strictEqual(resp.status, 404, `Expected 404 but got ${resp.status}. Response body: ${respTxt}`);
+    });
   });
 });
