@@ -1,3 +1,10 @@
+## [2.34.9](https://github.com/adobe/helix-rum-collector/compare/v2.34.8...v2.34.9) (2025-04-11)
+
+
+### Bug Fixes
+
+* **response:** don't switch registries on responses < 500 ([397f235](https://github.com/adobe/helix-rum-collector/commit/397f2354bb5e3671fdceb0d5134d10109857bf65))
+
 ## [2.34.8](https://github.com/adobe/helix-rum-collector/compare/v2.34.7...v2.34.8) (2025-04-10)
 
 
