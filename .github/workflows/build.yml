@@ -19,7 +19,9 @@ jobs:
       run: npm ci
     - name: Lint
       run: npm run lint
-    - name: Tests
+    - name: Unit Test
+      env:
+        IAB_SPIDER_LIST: ${{ secrets.IAB_SPIDER_LIST }}
       run: npm run test
     - name: Fastly Build
       run: npm run fastly-build
