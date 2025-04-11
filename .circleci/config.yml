@@ -69,6 +69,11 @@ jobs:
 workflows:
   default:
     jobs:
+      - build:
+          context: Project Helix
+          filters:
+            branches:
+              only: main
       - semantic-release:
           context: Project Helix
           requires:
