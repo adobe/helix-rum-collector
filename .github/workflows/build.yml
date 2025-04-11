@@ -1,9 +1,6 @@
 name: build
 on:
   workflow_dispatch:
-  # push:
-  #   branches:
-  #     - main
   pull_request:
     types: [opened, synchronize, reopened]
 jobs:
@@ -22,7 +19,7 @@ jobs:
     - name: Unit Test
       env:
         IAB_SPIDER_LIST: ${{ secrets.IAB_SPIDER_LIST }}
-      run: npm run test && mv lcov.info lcov-junit.info
+      run: npm run test
 
     # Deploy to CI workers
     - name: Fastly Build
@@ -42,4 +39,4 @@ jobs:
     - name: Wait for service to be updated
       run: sleep 45
     - name: Post-Deployment Integration Test
-      run: npm run test-postdeploy && mv lcov.info lcov-pd.info
+      run: npm run test-postdeploy
