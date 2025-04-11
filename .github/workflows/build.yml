@@ -45,11 +45,15 @@ jobs:
       env:
         HLX_FASTLY_CI_ID: ${{ secrets.HLX_FASTLY_CI_ID }}
         HLX_FASTLY_CI_AUTH: ${{ secrets.HLX_FASTLY_CI_AUTH }}
-        HLX_FASTLY_SVC: ${{ secrets.HLX_FASTLY_SVC }}
         HLX_CLOUDFLARE_EMAIL: ${{ secrets.HLX_CLOUDFLARE_EMAIL }}
         HLX_CLOUDFLARE_ACCOUNT: ${{ secrets.HLX_CLOUDFLARE_ACCOUNT }}
         HLX_CLOUDFLARE_AUTH: ${{ secrets.HLX_CLOUDFLARE_AUTH }}
-        HLX_CLOUDFLARE_NAME: ${{ secrets.HLX_CLOUDFLARE_NAME }}
-        BLAHBLAH: ${{ secrets.BLAHBLAH }}
       run: HLX_FASTLY_AUTH=$HLX_FASTLY_CI_AUTH HLX_FASTLY_SVC=$HLX_FASTLY_CI_ID HLX_CLOUDFLARE_NAME=helix-rum-collector-ci npm run deploy
+    - name: List Package Contents
+      run: find bin && tar -tvf bin/dist/helix3/fastly-bundle.tar.gz
+    - name: Wait for service to be updated
+      run: sleep 45
+    - name: Post-Deployment Integration Test
+      run: npm run test-postdeploy
+
 
