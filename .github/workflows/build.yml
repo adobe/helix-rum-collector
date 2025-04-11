@@ -4,7 +4,8 @@ on:
   pull_request:
     types: [opened, synchronize, reopened]
 jobs:
-  test:
+  test_ci_deploy:
+    name: Test, Deploy to CI workers and test Post-Deployment integration
     runs-on: ubuntu-latest
 
     steps:
