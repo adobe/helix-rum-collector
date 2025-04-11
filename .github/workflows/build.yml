@@ -20,7 +20,7 @@ jobs:
     - name: Unit Test
       env:
         IAB_SPIDER_LIST: ${{ secrets.IAB_SPIDER_LIST }}
-      run: npm run test
+      run: npm run test && mv lcov.info lcov-junit.info
 
     # Deploy to CI workers
     - name: Fastly Build
@@ -40,4 +40,9 @@ jobs:
     - name: Wait for service to be updated
       run: sleep 45
     - name: Post-Deployment Integration Test
-      run: npm run test-postdeploy
+      run: npm run test-postdeploy && mv lcov.info lcov-pd.info
+    - name: Upload coverage to Codecov
+      uses: codecov/codecov-action@v5
+      with:
+        token: ${{ secrets.CODECOV_TOKEN }}
+        files: lcov-junit.info,lcov-pd.info
