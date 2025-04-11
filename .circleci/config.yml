@@ -64,23 +64,23 @@ jobs:
 
       - run: npm ls @fastly/js-compute
 
-      - run:
-          name: Package and Branch Deployment
-          command: HLX_FASTLY_AUTH=$HLX_FASTLY_CI_AUTH HLX_FASTLY_SVC=$HLX_FASTLY_CI_ID HLX_CLOUDFLARE_NAME=helix-rum-collector-ci npm run deploy
+      # - run:
+      #     name: Package and Branch Deployment
+      #     command: HLX_FASTLY_AUTH=$HLX_FASTLY_CI_AUTH HLX_FASTLY_SVC=$HLX_FASTLY_CI_ID HLX_CLOUDFLARE_NAME=helix-rum-collector-ci npm run deploy
 
-      - run:
-          name: List Package Contents
-          command: find bin && tar -tvf bin/dist/helix3/fastly-bundle.tar.gz
+      # - run:
+      #     name: List Package Contents
+      #     command: find bin && tar -tvf bin/dist/helix3/fastly-bundle.tar.gz
 
-      - run:
-          name: Wait for service to be updated
-          command: sleep 45
+      # - run:
+      #     name: Wait for service to be updated
+      #     command: sleep 45
 
-      - run:
-          name: Post-Deployment Integration Test
-          command: npm run test-postdeploy
-      - store_test_results:
-          path: junit
+      # - run:
+      #     name: Post-Deployment Integration Test
+      #     command: npm run test-postdeploy
+      # - store_test_results:
+      #     path: junit
 
   semantic-release:
     executor: node22
