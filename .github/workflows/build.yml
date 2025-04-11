@@ -40,3 +40,4 @@ jobs:
       run: npm run fastly-build
     - name: Fastly Version
       run: npm ls @fastly/js-compute
+    - run: echo HLX_CLOUDFLARE_EMAIL $HLX_CLOUDFLARE_EMAIL
