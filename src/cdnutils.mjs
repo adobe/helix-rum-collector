@@ -64,7 +64,6 @@ export function cleanupHeaders(resp, addHeaders) {
 
   newHeaders.set('Cross-Origin-Resource-Policy', 'cross-origin');
   newHeaders.set('x-compress-hint', 'on');
-  newHeaders.set('x-foo', 'hohoho');
 
   const result = new Response(resp.body, {
     headers: newHeaders,
