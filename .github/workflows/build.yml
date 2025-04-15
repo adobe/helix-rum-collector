@@ -1,0 +1,49 @@
+name: build
+on:
+  workflow_dispatch:
+  push:
+    branches-ignore:
+      - 'main'
+jobs:
+  test_ci_deploy:
+    name: Test, Deploy to CI workers and test Post-Deployment integration
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v4
+    - uses: actions/setup-node@v4
+      with:
+        node-version: lts/*
+    - name: Install
+      run: npm ci
+    - name: Lint
+      run: npm run lint
+    - name: Unit Test
+      env:
+        IAB_SPIDER_LIST: ${{ secrets.IAB_SPIDER_LIST }}
+      run: npm run test && mv lcov.info lcov-junit.info
+
+    # Deploy to CI workers
+    - name: Fastly Build
+      run: npm run fastly-build
+    - name: Fastly Version
+      run: npm ls @fastly/js-compute
+    - name: Package and Branch Deployment
+      env:
+        HLX_FASTLY_CI_ID: ${{ secrets.HLX_FASTLY_CI_ID }}
+        HLX_FASTLY_CI_AUTH: ${{ secrets.HLX_FASTLY_CI_AUTH }}
+        HLX_CLOUDFLARE_EMAIL: ${{ secrets.HLX_CLOUDFLARE_EMAIL }}
+        HLX_CLOUDFLARE_ACCOUNT: ${{ secrets.HLX_CLOUDFLARE_ACCOUNT }}
+        HLX_CLOUDFLARE_AUTH: ${{ secrets.HLX_CLOUDFLARE_AUTH }}
+      run: HLX_FASTLY_AUTH=$HLX_FASTLY_CI_AUTH HLX_FASTLY_SVC=$HLX_FASTLY_CI_ID HLX_CLOUDFLARE_NAME=helix-rum-collector-ci npm run deploy
+    - name: List Package Contents
+      run: find bin && tar -tvf bin/dist/helix3/fastly-bundle.tar.gz
+    - name: Wait for service to be updated
+      run: sleep 45
+    - name: Post-Deployment Integration Test
+      run: npm run test-postdeploy && mv lcov.info lcov-pd.info
+    - name: Upload coverage to Codecov
+      uses: codecov/codecov-action@v5
+      with:
+        token: ${{ secrets.CODECOV_TOKEN }}
+        files: lcov-junit.info,lcov-pd.info
