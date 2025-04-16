@@ -1,3 +1,26 @@
+## [2.34.12](https://github.com/adobe/helix-rum-collector/compare/v2.34.11...v2.34.12) (2025-04-16)
+
+
+### Bug Fixes
+
+* trigger release ([b035f25](https://github.com/adobe/helix-rum-collector/commit/b035f255e6c6906b7a60ba1362381771dbb9c596))
+
+## [2.34.11](https://github.com/adobe/helix-rum-collector/compare/v2.34.10...v2.34.11) (2025-04-16)
+
+
+### Bug Fixes
+
+* trigger release ([4945cef](https://github.com/adobe/helix-rum-collector/commit/4945cef72c8afaab9d04fd271e715d7f3f86d3c8))
+
+## [2.34.10](https://github.com/adobe/helix-rum-collector/compare/v2.34.9...v2.34.10) (2025-04-16)
+
+
+### Bug Fixes
+
+* **build:** remove reference to nonexistent lcov file ([0f7a888](https://github.com/adobe/helix-rum-collector/commit/0f7a8889f42214349a0c4d8a7fda7f69ece5b51c))
+* **response:** update CORS response to use status 204 and null body ([29b3937](https://github.com/adobe/helix-rum-collector/commit/29b393743da3ec4013685b79d390ba61d69ac0d2))
+* **tests:** update CORS test to assert status 204 instead of 200 ([3747c95](https://github.com/adobe/helix-rum-collector/commit/3747c9544bf399edb0073b30f1498742fe52547f))
+
 ## [2.34.9](https://github.com/adobe/helix-rum-collector/compare/v2.34.8...v2.34.9) (2025-04-11)
 
 

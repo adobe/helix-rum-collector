@@ -17,3 +17,13 @@ jobs:
       run: npm ci
     - name: Semantic Release
       run: npm run semantic-release
+      env:
+        GITHUB_TOKEN: ${{ secrets.ADOBE_BOT_GITHUB_TOKEN }}
+        CORALOGIX_TAGGER_API_KEY: ${{ secrets.CORALOGIX_TAGGER_API_KEY }}
+        SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
+        # Deployment variables
+        HLX_FASTLY_AUTH: ${{ secrets.HLX_FASTLY_AUTH }}
+        HLX_CLOUDFLARE_EMAIL: ${{ secrets.HLX_CLOUDFLARE_EMAIL }}
+        HLX_CLOUDFLARE_ACCOUNT: ${{ secrets.HLX_CLOUDFLARE_ACCOUNT }}
+        HLX_CLOUDFLARE_AUTH: ${{ secrets.HLX_CLOUDFLARE_AUTH }}
+        IAB_SPIDER_LIST: ${{ secrets.IAB_SPIDER_LIST }}

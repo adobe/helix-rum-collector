@@ -215,6 +215,23 @@ describe('Test index', () => {
     assert.equal(404, resp.status);
   }); // .timeout(5000);
 
+  it('responds to OPTIONS request with proper CORS headers', async () => {
+    const headers = new Map();
+    headers.set('origin', 'https://example.com');
+    headers.set('access-control-request-method', 'POST');
+    headers.set('access-control-request-headers', 'content-type');
+
+    const req = { headers };
+    req.method = 'OPTIONS';
+    req.url = 'http://foo.bar.org';
+
+    const resp = await methods.main(req);
+    assert.equal(204, resp.status);
+    assert.equal('*', resp.headers.get('access-control-allow-origin'));
+    assert.equal('GET, POST, OPTIONS', resp.headers.get('access-control-allow-methods'));
+    assert.equal('Content-Type', resp.headers.get('access-control-allow-headers'));
+  });
+
   it('responds to helix-rum-js', async () => {
     const headers = new Map();
 

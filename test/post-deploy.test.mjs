@@ -127,7 +127,7 @@ import assert from 'assert';
       const response = await fetch(`https://${domain}/`, {
         method: 'OPTIONS',
       });
-      assert.strictEqual(response.status, 200);
+      assert.strictEqual(response.status, 204);
       assert.strictEqual(response.headers.get('access-control-allow-origin'), '*');
       assert.strictEqual(response.headers.get('x-frame-options'), 'DENY');
     });

@@ -1,6 +1,6 @@
 {
   "name": "@adobe/helix-rum-collector",
-  "version": "2.34.9",
+  "version": "2.34.12",
   "private": true,
   "description": "Collect Real User Monitoring Data for Helix",
   "main": "src/index.mjs",
@@ -10,7 +10,7 @@
     "predeploy": "node tools/spider-list.js",
     "test": "node --test --experimental-test-coverage --test-reporter=lcov --test-reporter-destination=lcov.info --test-reporter=spec --test-reporter-destination=stdout --test-reporter=junit --test-reporter-destination=junit.xml --test-skip-pattern=Post-Deploy",
     "pretest": "node tools/spider-list.js",
-    "test-postdeploy": "TEST_INTEGRATION=true node --test --experimental-test-coverage --test-reporter=lcov --test-reporter-destination=lcov.info --test-reporter=spec --test-reporter-destination=stdout --test-reporter=junit --test-reporter-destination=junit.xml --test-name-pattern=Post-Deploy",
+    "test-postdeploy": "TEST_INTEGRATION=true node --test --test-reporter=spec --test-reporter-destination=stdout --test-reporter=junit --test-reporter-destination=junit.xml --test-name-pattern=Post-Deploy",
     "prelint": "node tools/spider-list.js",
     "lint": "./node_modules/.bin/eslint .",
     "semantic-release": "semantic-release"

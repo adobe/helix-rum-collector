@@ -41,9 +41,9 @@ jobs:
     - name: Wait for service to be updated
       run: sleep 45
     - name: Post-Deployment Integration Test
-      run: npm run test-postdeploy && mv lcov.info lcov-pd.info
+      run: npm run test-postdeploy
     - name: Upload coverage to Codecov
       uses: codecov/codecov-action@v5
       with:
         token: ${{ secrets.CODECOV_TOKEN }}
-        files: lcov-junit.info,lcov-pd.info
+        files: lcov-junit.info
