@@ -24,11 +24,12 @@ import { respondUnpkg } from './unpkg.mjs';
 const REGISTRY_TIMEOUT_MS = 5000;
 
 function respondError(message, status, e, req) {
-  const headers = new Headers();
   const msg = e && e.message ? `${message}: ${e.message}` : message;
-
-  headers.set('Content-Type', 'text/plain; charset=utf-8');
-  headers.set('X-Error', msg);
+  const headers = {
+    'Content-Type': 'text/plain; charset=utf-8',
+    'X-Frame-Options': 'DENY',
+    'X-Error': msg,
+  };
 
   const response = new Response(`${msg}\n`, {
     status,
@@ -49,7 +50,12 @@ function getRandomID() {
 }
 
 function respondInfo(ctx) {
-  return new Response(`{"platform": "${ctx?.runtime?.name}", "version": "${ctx?.func?.version}"}`);
+  return new Response(`{"platform": "${ctx?.runtime?.name}", "version": "${ctx?.func?.version}"}`, {
+    headers: {
+      'Content-Type': 'application/json',
+      'X-Frame-Options': 'DENY',
+    },
+  });
 }
 
 export function respondCORS() {
@@ -58,6 +64,7 @@ export function respondCORS() {
       'Access-Control-Allow-Origin': '*',
       'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
       'Access-Control-Allow-Headers': 'Content-Type',
+      'X-Frame-Options': 'DENY',
     },
     status: 204,
   });
@@ -111,7 +118,13 @@ async function respondPackage(req) {
       respondRegistry('unpkg', req, successTracker, unpkgDelay),
     ]);
   } catch (error) {
-    return new Response(error.errors, { status: 500 });
+    return new Response(error.errors, {
+      status: 500,
+      headers: {
+        'Content-Type': 'text/plain; charset=utf-8',
+        'X-Frame-Options': 'DENY',
+      },
+    });
   }
 }
 
@@ -158,9 +171,11 @@ export async function main(req, ctx) {
       ? JSON.parse(new URL(req.url).searchParams.get('data'))
       : await req.json();
 
-    const headers = new Headers();
-    headers.set('Content-Type', 'text/plain; charset=utf-8');
-    headers.set('Cross-Origin-Resource-Policy', 'cross-origin');
+    const headers = {
+      'Content-Type': 'text/plain; charset=utf-8',
+      'Cross-Origin-Resource-Policy': 'cross-origin',
+      'X-Frame-Options': 'DENY',
+    };
 
     const {
       weight = 1,
