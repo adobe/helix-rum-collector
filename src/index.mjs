@@ -20,6 +20,7 @@ import { S3Logger } from './s3-logger.mjs';
 import { respondRobots } from './robots.mjs';
 import { respondJsdelivr } from './jsdelivr.mjs';
 import { respondUnpkg } from './unpkg.mjs';
+import { respondDNTStatus, respondDNTPolicy } from './dnt.mjs';
 
 const REGISTRY_TIMEOUT_MS = 5000;
 
@@ -133,6 +134,14 @@ export async function main(req, ctx) {
     }
     if (req.method === 'GET' && pathname.startsWith('/info.json')) {
       return respondInfo(ctx);
+    }
+
+    // Handle DNT (Do Not Track) endpoints
+    if (req.method === 'GET' && pathname === '/.well-known/dnt/') {
+      return respondDNTStatus(req);
+    }
+    if (req.method === 'GET' && pathname === '/.well-known/dnt-policy.txt') {
+      return respondDNTPolicy(req);
     }
 
     // Block access to sensitive files
