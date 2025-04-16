@@ -172,6 +172,32 @@ describe('Test index', () => {
     assert(t.includes('Disallow: /'));
   });
 
+  it('responds to /.well-known/dnt/ endpoint', async () => {
+    const headers = new Map();
+
+    const req = { headers };
+    req.method = 'GET';
+    req.url = 'http://x.y/.well-known/dnt/';
+
+    const resp = await methods.main(req);
+    assert.equal(200, resp.status);
+    assert.equal('application/tracking-status+json', resp.headers.get('Content-Type'));
+    assert.equal('N', resp.headers.get('Tk')); // Check Tk header is set to N (Not tracking)
+  });
+
+  it('responds to /.well-known/dnt-policy.txt endpoint', async () => {
+    const headers = new Map();
+
+    const req = { headers };
+    req.method = 'GET';
+    req.url = 'http://x.y/.well-known/dnt-policy.txt';
+
+    const resp = await methods.main(req);
+    assert.equal(200, resp.status);
+    assert.equal('text/plain', resp.headers.get('Content-Type'));
+    assert.equal('N', resp.headers.get('Tk')); // Check Tk header is set to N (Not tracking)
+  });
+
   async function verifyInput(data, errPrefix) {
     const headers = new Map();
 
