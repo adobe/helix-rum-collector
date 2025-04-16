@@ -15,7 +15,8 @@ export function respondRobots() {
 User-agent: *
 Disallow: /`, {
     headers: {
-      'content-type': 'text/plain',
+    'Content-Type': 'text/plain',
+    'X-Frame-Options': 'DENY',
     },
   });
 }

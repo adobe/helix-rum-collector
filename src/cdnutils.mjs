@@ -63,6 +63,7 @@ export function cleanupHeaders(resp, addHeaders) {
   }
 
   newHeaders.set('Cross-Origin-Resource-Policy', 'cross-origin');
+  newHeaders.set('X-Frame-Options', 'DENY');
   newHeaders.set('x-compress-hint', 'on');
 
   const result = new Response(resp.body, {
@@ -103,6 +104,7 @@ export async function cleanupResponse(resp, req, newHeaders) {
       status: resp.status,
       headers: {
         'Content-Type': 'text/plain',
+        'X-Frame-Options': 'DENY',
         'x-error': `Error: ${resp.status} from backend`,
       },
     });
@@ -114,7 +116,14 @@ export async function cleanupResponse(resp, req, newHeaders) {
 
 export function prohibitDirectoryRequest(req) {
   if (req?.url.endsWith('/')) {
-    return new Response('Directory listing is not permitted', { status: 404 });
+    return new Response('Directory listing is not permitted', {
+      status: 404,
+      headers: {
+        'Content-Type': 'text/plain',
+        'x-error': 'Error: Directory listing is not permitted',
+        'X-Frame-Options': 'DENY',
+      },
+    });
   }
   return undefined;
 }
