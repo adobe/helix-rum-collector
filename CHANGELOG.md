@@ -1,3 +1,15 @@
+# [2.35.0](https://github.com/adobe/helix-rum-collector/compare/v2.34.12...v2.35.0) (2025-04-16)
+
+
+### Bug Fixes
+
+* **respondError:** simplify error message handling ([76d0d7b](https://github.com/adobe/helix-rum-collector/commit/76d0d7b55b17b19c04649769d695fef9e28e9761))
+
+
+### Features
+
+* **security:** add X-Frame-Options header to responses ([ea053c7](https://github.com/adobe/helix-rum-collector/commit/ea053c7e5869dfd1c67eb4b62900f0b4cb880cc3))
+
 ## [2.34.12](https://github.com/adobe/helix-rum-collector/compare/v2.34.11...v2.34.12) (2025-04-16)
 
 
