@@ -36,6 +36,7 @@ import assert from 'assert';
         method: 'POST',
       });
       assert.strictEqual(response.status, 400);
+      assert.strictEqual(response.headers.get('x-frame-options'), 'DENY');
     });
 
     it('RUM collection with masked timestamp (t) returns 201', async function test() {
@@ -59,6 +60,7 @@ import assert from 'assert';
         }),
       });
       assert.strictEqual(response.status, 201);
+      assert.strictEqual(response.headers.get('x-frame-options'), 'DENY');
     });
 
     it('RUM collection returns 201', async function test() {
@@ -81,6 +83,7 @@ import assert from 'assert';
         }),
       });
       assert.strictEqual(response.status, 201);
+      assert.strictEqual(response.headers.get('x-frame-options'), 'DENY');
     });
 
     it('RUM collection with empty string id returns 201', async function test() {
@@ -103,6 +106,7 @@ import assert from 'assert';
         }),
       });
       assert.strictEqual(response.status, 201);
+      assert.strictEqual(response.headers.get('x-frame-options'), 'DENY');
     });
 
     it('RUM collection via GET returns 201', async function test() {
@@ -113,6 +117,7 @@ import assert from 'assert';
         method: 'GET',
       });
       assert.strictEqual(response.status, 201);
+      assert.strictEqual(response.headers.get('x-frame-options'), 'DENY');
     });
 
     it('CORS headers are set', async function test() {
@@ -124,6 +129,7 @@ import assert from 'assert';
       });
       assert.strictEqual(response.status, 204);
       assert.strictEqual(response.headers.get('access-control-allow-origin'), '*');
+      assert.strictEqual(response.headers.get('x-frame-options'), 'DENY');
     });
 
     it('robots.txt denies everything', async function test() {
@@ -136,6 +142,7 @@ import assert from 'assert';
       assert.strictEqual(response.status, 200);
       // eslint-disable-next-line no-unused-expressions
       assert.strictEqual(response.headers.get('content-type'), 'text/plain');
+      assert.strictEqual(response.headers.get('x-frame-options'), 'DENY');
     });
 
     it('web vitals module is being served', async function test() {
@@ -148,6 +155,7 @@ import assert from 'assert';
       assert.strictEqual(response.status, 200);
       // eslint-disable-next-line no-unused-expressions
       assert.match(response.headers.get('content-type'), /^text\/javascript/);
+      assert.strictEqual(response.headers.get('x-frame-options'), 'DENY');
     });
 
     it('web vitals module is being served without redirect', async function test() {
@@ -160,6 +168,7 @@ import assert from 'assert';
       assert.strictEqual(response.status, 200);
       // eslint-disable-next-line no-unused-expressions
       assert.match(response.headers.get('content-type'), /^text\/javascript/);
+      assert.strictEqual(response.headers.get('x-frame-options'), 'DENY');
     });
 
     it('rum js module is being served without redirect', async function test() {
@@ -172,6 +181,7 @@ import assert from 'assert';
       assert.strictEqual(response.status, 200);
       // eslint-disable-next-line no-unused-expressions
       assert.match(response.headers.get('content-type'), /^text\/javascript/);
+      assert.strictEqual(response.headers.get('x-frame-options'), 'DENY');
     });
 
     it('rum js module is served with compression', async function test() {
@@ -188,6 +198,7 @@ import assert from 'assert';
       // eslint-disable-next-line no-unused-expressions
       assert.match(response.headers.get('content-type'), /^text\/javascript/);
       assert.match(response.headers.get('content-encoding'), /^(br|gzip|deflate)$/);
+      assert.strictEqual(response.headers.get('x-frame-options'), 'DENY');
     });
 
     it('rum enhancer is served with the correct cache-control', async function test() {
@@ -199,6 +210,7 @@ import assert from 'assert';
       assert.strictEqual(respRange.status, 200);
       const ccHeader = respRange.headers.get('cache-control').split(',');
       assert(ccHeader.find((header) => header.trim() === 'max-age=3600'), 'Should have a max cache age of 3600');
+      assert.strictEqual(respRange.headers.get('x-frame-options'), 'DENY');
 
       const respSpecific = await fetch(`https://${domain}/.rum/@adobe/helix-rum-enhancer@2.33.0/src/index.js`);
       assert.strictEqual(respSpecific.status, 200);
@@ -206,6 +218,7 @@ import assert from 'assert';
       const maHeader = ccHeaderSp.find((header) => header.trim().startsWith('max-age='));
       const maxAge = Number(maHeader.split('=')[1]);
       assert(maxAge > 3600, 'Should have a max cache age greater than 3600');
+      assert.strictEqual(respSpecific.headers.get('x-frame-options'), 'DENY');
     });
 
     it.skip('rum js module is being served with default replacements', async function test() {
@@ -220,6 +233,7 @@ import assert from 'assert';
       assert.match(response.headers.get('content-type'), /^text\/javascript/);
       const text = await response.text();
       assert.include(text, 'adobe-helix-rum-js-1.0.0');
+      assert.strictEqual(response.headers.get('x-frame-options'), 'DENY');
     });
 
     it('Missing id returns 400', async function test() {
@@ -241,6 +255,7 @@ import assert from 'assert';
         }),
       });
       assert.strictEqual(response.status, 400);
+      assert.strictEqual(response.headers.get('x-frame-options'), 'DENY');
     });
 
     it('Non-numeric weight returns 400', async function test() {
@@ -263,6 +278,7 @@ import assert from 'assert';
         }),
       });
       assert.strictEqual(response.status, 400);
+      assert.strictEqual(response.headers.get('x-frame-options'), 'DENY');
     });
 
     it('Non-object root returns 400', async function test() {
@@ -277,6 +293,7 @@ import assert from 'assert';
         body: JSON.stringify([]),
       });
       assert.strictEqual(response.status, 400);
+      assert.strictEqual(response.headers.get('x-frame-options'), 'DENY');
     });
 
     it('Sensitive files return 404 - package.json', async function test() {
@@ -290,6 +307,7 @@ import assert from 'assert';
       assert.strictEqual(response.status, 404, `Expected 404 for ${url}`);
       const text = await response.text();
       assert.match(text, /Not Found/);
+      assert.strictEqual(response.headers.get('x-frame-options'), 'DENY');
     });
 
     it('Sensitive files return 404 - CHANGELOG.md', async function test() {
@@ -303,6 +321,7 @@ import assert from 'assert';
       assert.strictEqual(response.status, 404, `Expected 404 for ${url}`);
       const text = await response.text();
       assert.match(text, /Not Found/);
+      assert.strictEqual(response.headers.get('x-frame-options'), 'DENY');
     });
 
     it('Reject paths that are double-encoded', async function test() {
@@ -314,6 +333,7 @@ import assert from 'assert';
       assert.strictEqual(resp.status, 400);
       const respTxt = await resp.text();
       assert(respTxt.startsWith('Invalid path'));
+      assert.strictEqual(resp.headers.get('x-frame-options'), 'DENY');
     });
 
     it('Reject paths that contain partially encoded ".."', async function test() {
@@ -325,6 +345,7 @@ import assert from 'assert';
       assert.strictEqual(resp.status, 400);
       const respTxt = await resp.text();
       assert(respTxt.startsWith('Invalid path'));
+      assert.strictEqual(resp.headers.get('x-frame-options'), 'DENY');
     });
 
     it('Non-existent files in .rum directory return 404', async function test() {
@@ -335,6 +356,7 @@ import assert from 'assert';
       const resp = await fetch(`https://${domain}/.rum/@adobe/helix-rum-js@%5E2/dist/rum-standalone.js/favicon.ico`);
       const respTxt = await resp.text();
       assert.strictEqual(resp.status, 404, `Expected 404 but got ${resp.status}. Response body: ${respTxt}`);
+      assert.strictEqual(resp.headers.get('x-frame-options'), 'DENY');
     });
   });
 });
