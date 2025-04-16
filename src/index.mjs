@@ -24,10 +24,11 @@ import { respondUnpkg } from './unpkg.mjs';
 const REGISTRY_TIMEOUT_MS = 5000;
 
 function respondError(message, status, e, req) {
+  const msg = e && e.message ? `${message}: ${e.message}` : message;
   const headers = {
     'Content-Type': 'text/plain; charset=utf-8',
     'X-Frame-Options': 'DENY',
-    'X-Error': e && e.message ? `${message}: ${e.message}` : message,
+    'X-Error': msg,
   };
 
   const response = new Response(`${msg}\n`, {
