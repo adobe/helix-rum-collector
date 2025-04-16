@@ -1,3 +1,10 @@
+## [2.34.11](https://github.com/adobe/helix-rum-collector/compare/v2.34.10...v2.34.11) (2025-04-16)
+
+
+### Bug Fixes
+
+* trigger release ([4945cef](https://github.com/adobe/helix-rum-collector/commit/4945cef72c8afaab9d04fd271e715d7f3f86d3c8))
+
 ## [2.34.10](https://github.com/adobe/helix-rum-collector/compare/v2.34.9...v2.34.10) (2025-04-16)
 
 
