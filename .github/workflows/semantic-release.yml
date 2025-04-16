@@ -17,3 +17,7 @@ jobs:
       run: npm ci
     - name: Semantic Release
       run: npm run semantic-release
+      env:
+        GITHUB_TOKEN: ${{ secrets.ADOBE_BOT_GITHUB_TOKEN }}
+        CORALOGIX_TAGGER_API_KEY: ${{ secrets.CORALOGIX_TAGGER_API_KEY }}
+        SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
