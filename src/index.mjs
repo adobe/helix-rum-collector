@@ -184,6 +184,7 @@ export async function main(req, ctx) {
       'Content-Type': 'text/plain; charset=utf-8',
       'Cross-Origin-Resource-Policy': 'cross-origin',
       'X-Frame-Options': 'DENY',
+      Tk: 'N',
     };
 
     const {
