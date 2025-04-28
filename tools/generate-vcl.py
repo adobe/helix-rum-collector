@@ -10,6 +10,9 @@ positions gets its own tiny block:
 
 The final sum is compared to 220 578 exactly like in JS.
 
+The script looks for path segments starting with a dot (like .rum) in the URL,
+and checks if they follow the obfuscation rules.
+
 Run this script and copy the output into your VCL.
 Usage:
   python3 generate-vcl.py         # Generate VCL without debug logs
@@ -41,11 +44,18 @@ def pattern_for_position(pos: int) -> tuple[str, str]:
 
 def emit(verbose=False):
     print("# ---- PRELUDE ----------------------------------------------------------")
-    print("# normalise the incoming path once")
+    print("# Extract a dotted path segment and normalize it")
     print('declare local var.norm STRING;')
-    print('set var.norm = std.tolower(regsub(req.url.path, "[^a-zA-Z]", ""));')
+    # This regex extracts a path segment that starts with a dot (e.g., ".rum")
+    # from various URL patterns and removes the leading dot
+    print('declare local var.dotted_segment STRING;')
+    print('set var.dotted_segment = regsub(req.url.path, "^.*?(\\.([a-zA-Z0-9_-]+))(/.*)?$", "\\2");')
+    print('set var.norm = std.tolower(regsub(var.dotted_segment, "[^a-zA-Z]", ""));')
+    
     if verbose:
-        print('log "Optel Debug - Normalized Path: " + var.norm;')
+        print('log "Optel Debug - URL Path: " + req.url.path;')
+        print('log "Optel Debug - Extracted Segment: " + var.dotted_segment;')
+        print('log "Optel Debug - Normalized Segment: " + var.norm;')
     print()
 
     # per-position blocks
