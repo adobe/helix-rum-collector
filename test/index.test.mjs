@@ -203,6 +203,22 @@ describe('Test index', () => {
     assert(t.includes('webVitals'));
   }); // .timeout(5000);
 
+  it('responds to web-vitals anywhere', async () => {
+    const headers = new Map();
+
+    const req = { headers };
+    req.method = 'GET';
+    req.url = 'http://x.y/foo/.optel/web-vitals';
+
+    const resp = await methods.main(req);
+
+    assert.equal(200, resp.status);
+    assert(resp.ok);
+
+    const t = await resp.text();
+    assert(t.includes('webVitals'));
+  });
+
   it('responds to web-vitals dir list', async () => {
     const headers = new Map();
 
@@ -250,6 +266,25 @@ describe('Test index', () => {
     const t = await resp.text();
     assert(t.includes('export function sampleRUM'));
   }); // .timeout(5000);
+
+  it('responds to helix-rum-js anywhere', async () => {
+    const headers = new Map();
+
+    const req = { headers };
+    req.method = 'GET';
+    req.url = 'http://x.y/foo/.optel/@adobe/helix-rum-js';
+
+    const resp = await methods.main(req);
+
+    assert.equal(200, resp.status);
+    assert(resp.ok);
+    assert(!resp.headers.has('server'));
+    assert(!resp.headers.has('cf-cache-status'));
+    assert(!resp.headers.has('cr-ray'));
+
+    const t = await resp.text();
+    assert(t.includes('export function sampleRUM'));
+  });
 
   it('responds to helix-rum-js dir list', async () => {
     const headers = new Map();
