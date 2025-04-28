@@ -20,6 +20,7 @@ import { S3Logger } from './s3-logger.mjs';
 import { respondRobots } from './robots.mjs';
 import { respondJsdelivr } from './jsdelivr.mjs';
 import { respondUnpkg } from './unpkg.mjs';
+import { isOptelPath } from './utils.mjs';
 
 const REGISTRY_TIMEOUT_MS = 5000;
 
@@ -155,18 +156,23 @@ export async function main(req, ctx) {
     }
 
     const isDirList = (pathname.endsWith('/'));
-    if (req.method === 'GET' && pathname.startsWith('/.rum/web-vitals')) {
-      if (isDirList) {
-        return respondError('Directory listing is not allowed', 404, undefined, req);
+    const optelre = /\/\.([^/]+)\/(web-vitals|@adobe\/(helix-)?([^/]+))/;
+    const [, optel, webVitals, /* helix prefix */, packageName] = pathname.match(optelre) || [];
+    if (req.method === 'GET' && optel && isOptelPath(optel)) {
+      if (webVitals) {
+        if (isDirList) {
+          return respondError('Directory listing is not allowed', 404, undefined, req);
+        }
+        return respondPackage(req);
       }
-      return respondPackage(req);
-    }
-    if (req.method === 'GET' && pathname.startsWith('/.rum/@adobe/helix-rum')) {
-      if (isDirList) {
-        return respondError('Directory listing is not allowed', 404, undefined, req);
+      if (packageName && packageName.startsWith(optel)) {
+        if (isDirList) {
+          return respondError('Directory listing is not allowed', 404, undefined, req);
+        }
+        return respondPackage(req);
       }
-      return respondPackage(req);
     }
+
     const body = req.method === 'GET'
       ? JSON.parse(new URL(req.url).searchParams.get('data'))
       : await req.json();
