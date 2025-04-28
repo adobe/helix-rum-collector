@@ -282,6 +282,7 @@ describe('isOptelPath', () => {
   });
 
   it('should return false for invalid Optel paths', () => {
+    assert.strictEqual(isOptelPath(-1), false);
     assert.strictEqual(isOptelPath('random'), false);
     assert.strictEqual(isOptelPath('otel'), false);
     assert.strictEqual(isOptelPath('operationtelemetry'), false);
