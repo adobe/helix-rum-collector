@@ -272,7 +272,7 @@ describe('Test index', () => {
 
     const req = { headers };
     req.method = 'GET';
-    req.url = 'http://x.y/foo/.optel/@adobe/helix-rum-js';
+    req.url = 'http://x.y/foo/.optel/@adobe/optel-js';
 
     const resp = await methods.main(req);
 
