@@ -469,4 +469,11 @@ describe('Test index', () => {
     const resp = await methods.main(req, {});
     assert.equal(400, resp.status);
   });
+
+  it('reject urls that contain ":"', async () => {
+    const url = 'https://a.b.com/.rum/@adobe/helix-rum-js@%5E1/://test';
+    const req = { url, method: 'GET' };
+    const resp = await methods.main(req, {});
+    assert.equal(400, resp.status);
+  });
 });
