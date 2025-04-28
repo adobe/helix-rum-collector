@@ -22,6 +22,7 @@ import {
   maskTime,
   sourceTargetValidator,
   bloatControl,
+  isOptelPath,
 } from '../src/utils.mjs';
 
 import knownUserAgents from './fixtures/user-agents.json' with { type: 'json' };
@@ -244,5 +245,57 @@ Pellentesque viverra id magna vel varius. Lorem ipsum dolor sit amet, consectetu
     assert.strictEqual(isValidId('a'), true);
     assert.strictEqual(isValidId('aAsaAF13'), true);
     assert.strictEqual(isValidId('aAs-aA-F13-'), true);
+  });
+});
+
+describe('isOptelPath', () => {
+  it('should return true for valid Optel paths', () => {
+    assert.strictEqual(isOptelPath('rum'), true);
+    assert.strictEqual(isOptelPath('optel'), true);
+    assert.strictEqual(isOptelPath('operationaltelemetry'), true);
+  });
+
+  it('should return true for valid, but weird Optel paths', () => {
+    assert.strictEqual(isOptelPath('operjtidnaltelemetry'), true);
+    assert.strictEqual(isOptelPath('oqxej'), true);
+    assert.strictEqual(isOptelPath('operatiolaltelemctry'), true);
+    assert.strictEqual(isOptelPath('olerationaltelemutxy'), true);
+    assert.strictEqual(isOptelPath('operetionaltelemetgy'), true);
+    assert.strictEqual(isOptelPath('oopen'), true);
+    assert.strictEqual(isOptelPath('otorationaltelemetwy'), true);
+    assert.strictEqual(isOptelPath('kdqhzywfyg'), true);
+    assert.strictEqual(isOptelPath('onerateonaltelgmetry'), true);
+    assert.strictEqual(isOptelPath('hyyefnlzakcn'), true);
+    assert.strictEqual(isOptelPath('nlaztgsi'), true);
+  });
+
+  it('should ignore case for valid Optel paths', () => {
+    assert.strictEqual(isOptelPath('RUM'), true);
+    assert.strictEqual(isOptelPath('OPTEL'), true);
+    assert.strictEqual(isOptelPath('OPERATIONALTELEMETRY'), true);
+  });
+
+  it('should ignore leading and trailing non-letter characters', () => {
+    assert.strictEqual(isOptelPath('---rum---'), true);
+    assert.strictEqual(isOptelPath('***optel***'), true);
+    assert.strictEqual(isOptelPath('///operationaltelemetry///'), true);
+  });
+
+  it('should return false for invalid Optel paths', () => {
+    assert.strictEqual(isOptelPath('random'), false);
+    assert.strictEqual(isOptelPath('otel'), false);
+    assert.strictEqual(isOptelPath('operationtelemetry'), false);
+  });
+
+  it('should ignore case for invalid Optel paths', () => {
+    assert.strictEqual(isOptelPath('RANDOM'), false);
+    assert.strictEqual(isOptelPath('OTEL'), false);
+    assert.strictEqual(isOptelPath('OPERATIONTELEMETRY'), false);
+  });
+
+  it('should ignore leading and trailing non-letter characters for invalid Optel paths', () => {
+    assert.strictEqual(isOptelPath('---random---'), false);
+    assert.strictEqual(isOptelPath('***otel***'), false);
+    assert.strictEqual(isOptelPath('///operationtelemetry///'), false);
   });
 });

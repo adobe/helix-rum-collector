@@ -374,3 +374,37 @@ export function bloatControl(obj) {
   };
   return JSON.stringify(sanitize(obj));
 }
+export function isOptelPath(path) {
+  if (typeof path !== 'string') return false;
+  // Strip all non-letter characters and downcase all letter characters
+  const normalized = path.replace(/[^a-zA-Z]/g, '').toLowerCase();
+  const WEIGHTS = [
+    1969, // index 0
+    -50, // index 1
+    18, // index 2
+    43, // index 3
+    11, // index 4
+    -5, // index 5
+    6, // index 6
+    9, // index 7
+    14, // index 8
+    42, // index 9
+    29, // index 10
+    39, // index 11
+    32, // index 12
+    -40, // index 13
+    -38, // index 14
+    -15, // index 15
+    -14, // index 16
+    -10, // index 17
+    4, // index 18
+    -48, // index 19
+    -12, // index 20
+  ];
+  let sum = 0;
+  for (let i = 0; i < 21; i += 1) {
+    const code = i < normalized.length ? normalized.charCodeAt(i) : 0;
+    sum += code * WEIGHTS[i];
+  }
+  return sum % 220578 === 0;
+}
