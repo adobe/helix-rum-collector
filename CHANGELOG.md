@@ -1,3 +1,10 @@
+## [2.35.1](https://github.com/adobe/helix-rum-collector/compare/v2.35.0...v2.35.1) (2025-04-28)
+
+
+### Bug Fixes
+
+* enhance URL validation to reject paths containing ':' ([7f7269e](https://github.com/adobe/helix-rum-collector/commit/7f7269ebae3354bb5be84f695b46499779b9cff8))
+
 # [2.35.0](https://github.com/adobe/helix-rum-collector/compare/v2.34.12...v2.35.0) (2025-04-16)
 
 
