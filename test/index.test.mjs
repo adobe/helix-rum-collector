@@ -208,7 +208,7 @@ describe('Test index', () => {
 
     const req = { headers };
     req.method = 'GET';
-    req.url = 'http://x.y/foo/.optel/web-vitals';
+    req.url = 'http://x.y/foo/.optel/web-vitals/dist/web-vitals.iife.js';
 
     const resp = await methods.main(req);
 
