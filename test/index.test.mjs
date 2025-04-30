@@ -192,7 +192,7 @@ describe('Test index', () => {
 
     const req = { headers };
     req.method = 'GET';
-    req.url = 'http://x.y/.rum/web-vitals';
+    req.url = 'http://x.y/.rum/web-vitals/dist/web-vitals.iife.js';
 
     const resp = await methods.main(req);
 
@@ -230,6 +230,18 @@ describe('Test index', () => {
 
     assert.equal(404, resp.status);
   }); // .timeout(5000);
+
+  it('rejects web-vitals fake path', async () => {
+    const headers = new Map();
+
+    const req = { headers };
+    req.method = 'GET';
+    req.url = 'http://x.y/.rum/web-vitalsxyz/demo.html';
+
+    const resp = await methods.main(req);
+
+    assert.equal(400, resp.status);
+  });
 
   it('responds to OPTIONS request with proper CORS headers', async () => {
     const headers = new Map();
@@ -321,7 +333,7 @@ describe('Test index', () => {
 
     const req = { headers };
     req.method = 'GET';
-    req.url = 'http://x.y/.rum/web-vitals?pkgreg=unpkg';
+    req.url = 'http://x.y/.rum/web-vitals/dist/web-vitals.iife.js?pkgreg=unpkg';
 
     const resp = await main(req);
 

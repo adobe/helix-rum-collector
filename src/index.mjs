@@ -157,7 +157,7 @@ export async function main(req, ctx) {
     }
 
     const isDirList = (pathname.endsWith('/'));
-    const optelre = /\/\.([^/]+)\/(web-vitals|@adobe\/(helix-)?([^/]+))/;
+    const optelre = /\/\.([^/]+)\/(web-vitals[@/]|@adobe\/(helix-)?([^/]+))/;
     const [, optel, webVitals, /* helix prefix */, packageName] = pathname.match(optelre) || [];
     if (req.method === 'GET' && optel && isOptelPath(optel)) {
       if (webVitals) {

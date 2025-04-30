@@ -1,3 +1,11 @@
+## [2.35.2](https://github.com/adobe/helix-rum-collector/compare/v2.35.1...v2.35.2) (2025-04-30)
+
+
+### Bug Fixes
+
+* **index:** improve web-vitals path matching with regex ([7bb5463](https://github.com/adobe/helix-rum-collector/commit/7bb5463d6100e2f07b2fe42ea7a9b5aeade0de2f))
+* **index:** stricter path sanitation ([23a1f41](https://github.com/adobe/helix-rum-collector/commit/23a1f4117cffe31b8b8da5eaa91d57bb3e8ad649))
+
 ## [2.35.1](https://github.com/adobe/helix-rum-collector/compare/v2.35.0...v2.35.1) (2025-04-28)
 
 
