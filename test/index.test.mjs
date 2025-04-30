@@ -215,6 +215,18 @@ describe('Test index', () => {
     assert.equal(404, resp.status);
   }); // .timeout(5000);
 
+  it('rejects web-vitals fake path', async () => {
+    const headers = new Map();
+
+    const req = { headers };
+    req.method = 'GET';
+    req.url = 'http://x.y/.rum/web-vitalsxyz/demo.html';
+
+    const resp = await methods.main(req);
+
+    assert.equal(400, resp.status);
+  });
+
   it('responds to OPTIONS request with proper CORS headers', async () => {
     const headers = new Map();
     headers.set('origin', 'https://example.com');
