@@ -192,7 +192,7 @@ describe('Test index', () => {
 
     const req = { headers };
     req.method = 'GET';
-    req.url = 'http://x.y/.rum/web-vitals';
+    req.url = 'http://x.y/.rum/web-vitals/dist/web-vitals.iife.js';
 
     const resp = await methods.main(req);
 
@@ -286,7 +286,7 @@ describe('Test index', () => {
 
     const req = { headers };
     req.method = 'GET';
-    req.url = 'http://x.y/.rum/web-vitals?pkgreg=unpkg';
+    req.url = 'http://x.y/.rum/web-vitals/dist/web-vitals.iife.js?pkgreg=unpkg';
 
     const resp = await main(req);
 

@@ -156,7 +156,7 @@ export async function main(req, ctx) {
     }
 
     const isDirList = (pathname.endsWith('/'));
-    if (req.method === 'GET' && pathname.startsWith('/.rum/web-vitals')) {
+    if (req.method === 'GET' && pathname.startsWith('/.rum/web-vitals/')) {
       if (isDirList) {
         return respondError('Directory listing is not allowed', 404, undefined, req);
       }
