@@ -48,16 +48,16 @@
     "@adobe/helix-deploy-plugin-edge": "1.0.10",
     "@adobe/semantic-release-coralogix": "1.1.35",
     "@semantic-release/changelog": "6.0.3",
-    "@semantic-release/exec": "7.0.3",
+    "@semantic-release/exec": "7.1.0",
     "@semantic-release/git": "10.0.1",
-    "@typescript-eslint/parser": "8.32.0",
+    "@typescript-eslint/parser": "8.32.1",
     "codecov": "3.8.3",
     "eslint": "8.57.1",
     "eslint-plugin-header": "3.1.1",
     "eslint-plugin-import": "2.31.0",
     "esmock": "2.7.0",
     "jsdoc-to-markdown": "9.1.1",
-    "semantic-release": "24.2.3",
+    "semantic-release": "24.2.4",
     "semantic-release-slack-bot": "4.0.2"
   }
 }
