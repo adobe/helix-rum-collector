@@ -104,7 +104,12 @@ async function respondRegistry(regName, req, successTracker, timeout) {
   });
 }
 
-async function respondPackage(req) {
+async function respondPackage(req, isHelix) {
+  // if (isHelix) {
+  //   return respondHelix(req);
+  //   // TODO fail over to jsd/unpkg if helix fails
+  // }
+
   const useJsdelivr = Math.random() < 0.5; // 50% chance to use jsdelivr
   const jsdDelay = useJsdelivr ? undefined : REGISTRY_TIMEOUT_MS;
   const unpkgDelay = useJsdelivr ? REGISTRY_TIMEOUT_MS : undefined;
@@ -166,7 +171,7 @@ export async function main(req, ctx) {
       if (isDirList) {
         return respondError('Directory listing is not allowed', 404, undefined, req);
       }
-      return respondPackage(req);
+      return respondPackage(req, true);
     }
     const body = req.method === 'GET'
       ? JSON.parse(new URL(req.url).searchParams.get('data'))
