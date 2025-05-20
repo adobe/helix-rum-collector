@@ -106,6 +106,7 @@ async function respondRegistry(regName, req, successTracker, timeout) {
 }
 
 async function respondPackage(req, isHelix) {
+  let errmsg = '';
   if (isHelix) {
     try {
       const resp = await respondHelixPkgReg(req);
@@ -113,11 +114,14 @@ async function respondPackage(req, isHelix) {
         return resp;
       } else {
         console.log('Helix package registry response: ', resp);
+        errmsg = `Helix package registry response: ${JSON.stringify(resp)}`;
       }
     } catch (e) {
       console.error('Error from Helix package registry: ', e);
+      errmsg = `Error from Helix package registry: ${e.message}`;
     }
     console.log('Falling back to jsdelivr/unpkg');
+    errmsg = 'Falling back to jsdelivr/unpkg';
   }
 
   const useJsdelivr = Math.random() < 0.5; // 50% chance to use jsdelivr
@@ -128,10 +132,12 @@ async function respondPackage(req, isHelix) {
   // if one of the requests has succeeded, to avoid unneccessary requests.
   const successTracker = {};
   try {
-    return await Promise.any([
+    const resp = await Promise.any([
       respondRegistry('jsdelivr', req, successTracker, jsdDelay),
       respondRegistry('unpkg', req, successTracker, unpkgDelay),
     ]);
+    resp.headers.set('x-rum-error', errmsg);
+    return resp;
   } catch (error) {
     return new Response(error.errors, {
       status: 500,
