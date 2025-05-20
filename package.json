@@ -8,7 +8,7 @@
     "fastly-build": "hedy --build --verbose",
     "deploy": "hedy --build --verbose --deploy --fastly-auth $HLX_FASTLY_AUTH --compute-service-id ${HLX_FASTLY_SVC:-5Qir8H8bLeaRuldIp9TWq4} --cloudflare-email $HLX_CLOUDFLARE_EMAIL --cloudflare-account-id $HLX_CLOUDFLARE_ACCOUNT --cloudflare-auth $HLX_CLOUDFLARE_AUTH --name ${HLX_CLOUDFLARE_NAME:-helix-rum-collector-prod}",
     "predeploy": "node tools/spider-list.js",
-    "test": "node --test --experimental-test-coverage --test-reporter=lcov --test-reporter-destination=lcov.info --test-reporter=spec --test-reporter-destination=stdout --test-reporter=junit --test-reporter-destination=junit.xml --test-skip-pattern=Post-Deploy",
+    "test": "node --test --experimental-test-coverage --test-coverage-exclude='test/**' --test-reporter=lcov --test-reporter-destination=lcov.info --test-reporter=spec --test-reporter-destination=stdout --test-reporter=junit --test-reporter-destination=junit.xml --test-skip-pattern=Post-Deploy",
     "pretest": "node tools/spider-list.js",
     "test-postdeploy": "TEST_INTEGRATION=true node --test --test-reporter=spec --test-reporter-destination=stdout --test-reporter=junit --test-reporter-destination=junit.xml --test-name-pattern=Post-Deploy",
     "prelint": "node tools/spider-list.js",
