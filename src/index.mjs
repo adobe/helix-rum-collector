@@ -18,6 +18,7 @@ import { CoralogixErrorLogger } from './coralogix-error-logger.mjs';
 import { ConsoleLogger } from './console-logger.mjs';
 import { S3Logger } from './s3-logger.mjs';
 import { respondRobots } from './robots.mjs';
+import { respondHelixPkgReg } from './hlxpkgreg.mjs';
 import { respondJsdelivr } from './jsdelivr.mjs';
 import { respondUnpkg } from './unpkg.mjs';
 
@@ -104,7 +105,26 @@ async function respondRegistry(regName, req, successTracker, timeout) {
   });
 }
 
-async function respondPackage(req) {
+async function respondPackage(req, isHelix) {
+  let errmsg = '';
+  if (isHelix) {
+    // If Helix can serve the package, then always try that first
+    try {
+      const resp = await respondHelixPkgReg(req);
+      if (resp.status === 200) {
+        return resp;
+      } else {
+        console.log('Helix package registry response: ', resp);
+        errmsg = `Helix package registry response: ${JSON.stringify(resp)}`;
+      }
+    } catch (e) {
+      console.error('Error from Helix package registry: ', e);
+      errmsg = `Error from Helix package registry: ${e.message}`;
+    }
+    console.log('Falling back to jsdelivr/unpkg');
+  }
+
+  // We're going to serve from a non-Helix package registry
   const useJsdelivr = Math.random() < 0.5; // 50% chance to use jsdelivr
   const jsdDelay = useJsdelivr ? undefined : REGISTRY_TIMEOUT_MS;
   const unpkgDelay = useJsdelivr ? REGISTRY_TIMEOUT_MS : undefined;
@@ -113,10 +133,12 @@ async function respondPackage(req) {
   // if one of the requests has succeeded, to avoid unneccessary requests.
   const successTracker = {};
   try {
-    return await Promise.any([
+    const resp = await Promise.any([
       respondRegistry('jsdelivr', req, successTracker, jsdDelay),
       respondRegistry('unpkg', req, successTracker, unpkgDelay),
     ]);
+    resp.headers.set('x-hlx-error', errmsg);
+    return resp;
   } catch (error) {
     return new Response(error.errors, {
       status: 500,
@@ -166,7 +188,7 @@ export async function main(req, ctx) {
       if (isDirList) {
         return respondError('Directory listing is not allowed', 404, undefined, req);
       }
-      return respondPackage(req);
+      return respondPackage(req, true);
     }
     const body = req.method === 'GET'
       ? JSON.parse(new URL(req.url).searchParams.get('data'))
