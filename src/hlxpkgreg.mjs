@@ -10,10 +10,7 @@
  * governing permissions and limitations under the License.
  */
 /* eslint-env serviceworker */
-import { cleanupResponse, prohibitDirectoryRequest } from './cdnutils.mjs';
-
-const redirectHeaders = [301, 302, 307, 308];
-const rangeChars = ['^', '~'];
+import { cleanupResponse } from './cdnutils.mjs';
 
 // TODO do we need to check for the fact that there is a newer version at all?
 // E.g. when requesting ~1.2.3 we should not be served version 1.1.6 if that is
