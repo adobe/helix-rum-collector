@@ -1,3 +1,10 @@
+## [2.36.1](https://github.com/adobe/helix-rum-collector/compare/v2.36.0...v2.36.1) (2025-05-20)
+
+
+### Bug Fixes
+
+* **package:** update test command to exclude coverage for test files ([#509](https://github.com/adobe/helix-rum-collector/issues/509)) ([2676de1](https://github.com/adobe/helix-rum-collector/commit/2676de1d90e4cfb7c484b8289895def62024002e))
+
 # [2.36.0](https://github.com/adobe/helix-rum-collector/compare/v2.35.2...v2.36.0) (2025-05-20)
 
 
