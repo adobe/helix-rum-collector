@@ -12,6 +12,7 @@
 // Pass the current time to facilitate unit testing
 import { isSpider } from './spiders.mjs';
 import { bots } from './bots.mjs';
+import { cleanPath } from './privacy.js';
 
 export function isReasonableWeight(weight) {
   return [1, // debug
@@ -252,25 +253,6 @@ export function getMaskedUserAgent(headers) {
   return 'undefined';
 }
 
-function cleanJWT(str) {
-  // sometimes we see JWTs in URLs or source or target values. These
-  // are always two segments of base64-encoded JSON and a signature,
-  // separated by three dots. When we find this, we replace the string
-  // with a generic placeholder.
-  if (str && typeof str.replace === 'function') {
-    return str.replace(/eyJ[a-zA-Z0-9]+\.eyJ[a-zA-Z0-9]+\.[a-zA-Z0-9]+/g, '<jwt>');
-  }
-  return str;
-}
-
-function cleanCode(str) {
-  // Use a regex to replace everything after 'trip/' with an empty string
-  if (str && typeof str.replace === 'function') {
-    return str.replace(/(trip\/)[A-Z0-9]{5,7}\/[A-Z]+/, '$1');
-  }
-  return str;
-}
-
 export function cleanurl(url) {
   // if URL does not parse, return it as is
   try {
@@ -280,11 +262,10 @@ export function cleanurl(url) {
     u.username = '';
     u.password = '';
     u.hash = '';
-    u.pathname = cleanJWT(u.pathname);
-    u.pathname = cleanCode(u.pathname);
+    u.pathname = cleanPath(u.pathname);
     return u.toString().replace(/@/g, '');
   } catch (e) {
-    return cleanCode(cleanJWT(url));
+    return cleanPath(url);
   }
 }
 
