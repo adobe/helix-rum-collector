@@ -121,7 +121,6 @@ async function respondPackage(req, isHelix) {
       errmsg = `Error from Helix package registry: ${e.message}`;
     }
     console.log('Falling back to jsdelivr/unpkg');
-    errmsg = 'Falling back to jsdelivr/unpkg';
   }
 
   const useJsdelivr = Math.random() < 0.5; // 50% chance to use jsdelivr
