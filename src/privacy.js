@@ -31,13 +31,14 @@ const filters = {
   jwt: withInputValidation((str, replaceWith) => str.replace(/eyJ[a-zA-Z0-9]+\.eyJ[a-zA-Z0-9]+\.[a-zA-Z0-9]+/g, replaceWith)),
 
   pnr: withInputValidation((str, replaceWith) => {
-    // Split the path into segments, preserving leading/trailing slashes
-    const hasLeadingSlash = str.startsWith('/');
-    const hasTrailingSlash = str.endsWith('/');
-    const segments = str.split('/').filter(Boolean);
+    // Split the path into segments, preserving empty segments for slashes
+    const segments = str.split('/');
 
     // Process each segment
     const processedSegments = segments.map((segment) => {
+      // Skip empty segments (these represent slashes)
+      if (!segment) return segment;
+
       // Check if segment matches PNR pattern (5-7 alphanumeric characters)
       const pnrMatch = segment.match(/^([A-Z0-9]{5,7})$/);
 
@@ -76,7 +77,7 @@ const filters = {
     });
 
     // Reconstruct the path with proper slashes
-    return `${hasLeadingSlash ? '/' : ''}${processedSegments.join('/')}${hasTrailingSlash ? '/' : ''}`;
+    return processedSegments.join('/');
   }),
 };
 
