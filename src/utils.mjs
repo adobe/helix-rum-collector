@@ -263,6 +263,11 @@ function cleanJWT(str) {
   return str;
 }
 
+function cleanCode(str) {
+  // Use a regex to replace everything after 'trip/' with an empty string
+  return str.replace(/(trip\/)[A-Z0-9]{5,7}\/[A-Z]+/, '$1');
+}
+
 export function cleanurl(url) {
   // if URL does not parse, return it as is
   try {
@@ -273,9 +278,10 @@ export function cleanurl(url) {
     u.password = '';
     u.hash = '';
     u.pathname = cleanJWT(u.pathname);
+    u.pathname = cleanCode(u.pathname);
     return u.toString().replace(/@/g, '');
   } catch (e) {
-    return cleanJWT(url);
+    return cleanCode(cleanJWT(url));
   }
 }
 
