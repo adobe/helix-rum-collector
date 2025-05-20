@@ -265,7 +265,10 @@ function cleanJWT(str) {
 
 function cleanCode(str) {
   // Use a regex to replace everything after 'trip/' with an empty string
-  return (str && str.replace(/(trip\/)[A-Z0-9]{5,7}\/[A-Z]+/, '$1')) || '';
+  if (str && typeof str.replace === 'function') {
+    return str.replace(/(trip\/)[A-Z0-9]{5,7}\/[A-Z]+/, '$1');
+  }
+  return str;
 }
 
 export function cleanurl(url) {
