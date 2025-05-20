@@ -52,7 +52,7 @@ export function isValidCheckpoint(checkpoint) {
     // 'formviews', // no data in last 30 days
     // 'formready', // no data in last 30 days
     // 'formabondoned', // no data in last 30 days
-    'noscript',
+    // 'noscript', // insufficient use
     // 'formfieldchange', // no data in last 30 days
     // 'formfieldfocus', // no data in last 30 days
     // 'nullsearch', // killed, not in the explorer
