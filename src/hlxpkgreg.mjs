@@ -20,21 +20,31 @@ import { cleanupResponse } from './cdnutils.mjs';
 // higher than 0.x
 function getReleaseVersion(verstr) {
   const trimmed = verstr.trim();
+  const prefix = trimmed[0];
   const va = trimmed.split('.');
   const orgva = va.slice(); // keep original version too
   if (va.length === 1) {
     va.push('0'); // Always have at least 2 version components
   }
 
-  switch (trimmed[0]) { // prefix
+  const wildcardCC = 'public, max-age=3600';
+  switch (prefix) { // prefix
     case '~':
       // ignore micro
-      return `${va[0].substring(1)}-${va[1]}-x`;
+      return { ver: `${va[0].substring(1)}-${va[1]}-x`, cc: wildcardCC };
     case '^':
       // ignore micro and minor
-      return `${va[0].substring(1)}-x`;
+      return { ver: `${va[0].substring(1)}-x`, cc: wildcardCC };
     default:
-      return orgva.join('-');
+      if (prefix >= '0' && prefix <= '9') {
+        // exact version
+        return {
+          ver: orgva.join('-'),
+          cc: 'public, max-age=31536000, immutable',
+        };
+      } else {
+        return null;
+      }
   }
 }
 
@@ -51,15 +61,19 @@ export async function respondHelixPkgReg(req) {
   }
 
   const relver = getReleaseVersion(pkgver);
-  const beurl = new URL(`https://release-${relver}--${pkgname}--adobe.aem.live/${paths.slice(1).join('/')}`);
+  if (!relver) {
+    return { status: 500, body: 'Unsupported version' };
+  }
+  const beurl = new URL(`https://release-${relver.ver}--${pkgname}--adobe.aem.live/${paths.slice(1).join('/')}`);
   const bereq = new Request(beurl.href);
   console.log('fetching', bereq.url);
   const beresp = await fetch(bereq, {
-    backend: 'hlxpkgreg', // TODO add this backend to the config
+    backend: 'hlxpkgreg',
   });
   console.log('fetched', bereq.url, beresp.status, beresp.headers.get('ETag'), beresp.headers.get('Content-Length'));
 
   const ccMap = new Map();
+  ccMap.set('cache-control', relver.cc);
   ccMap.set('x-rum-trace', 'hlx'); // Trace the backend used
   return cleanupResponse(beresp, req, ccMap);
 }

@@ -108,6 +108,7 @@ async function respondRegistry(regName, req, successTracker, timeout) {
 async function respondPackage(req, isHelix) {
   let errmsg = '';
   if (isHelix) {
+    // If Helix can serve the package, then always try that first
     try {
       const resp = await respondHelixPkgReg(req);
       if (resp.status === 200) {
@@ -123,6 +124,7 @@ async function respondPackage(req, isHelix) {
     console.log('Falling back to jsdelivr/unpkg');
   }
 
+  // We're going to server from a non-Helix package registry
   const useJsdelivr = Math.random() < 0.5; // 50% chance to use jsdelivr
   const jsdDelay = useJsdelivr ? undefined : REGISTRY_TIMEOUT_MS;
   const unpkgDelay = useJsdelivr ? REGISTRY_TIMEOUT_MS : undefined;
@@ -135,7 +137,7 @@ async function respondPackage(req, isHelix) {
       respondRegistry('jsdelivr', req, successTracker, jsdDelay),
       respondRegistry('unpkg', req, successTracker, unpkgDelay),
     ]);
-    resp.headers.set('x-rum-error', errmsg);
+    resp.headers.set('x-hlx-error', errmsg);
     return resp;
   } catch (error) {
     return new Response(error.errors, {
