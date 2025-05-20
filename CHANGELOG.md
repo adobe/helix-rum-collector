@@ -1,3 +1,16 @@
+# [2.37.0](https://github.com/adobe/helix-rum-collector/compare/v2.36.1...v2.37.0) (2025-05-20)
+
+
+### Bug Fixes
+
+* enhance cleanCode function to handle empty strings gracefully ([4947256](https://github.com/adobe/helix-rum-collector/commit/4947256b36968e4504bec195349a8741c93572af))
+* improve cleanCode function to ensure it returns the original string when no valid replacement is found ([3c3354a](https://github.com/adobe/helix-rum-collector/commit/3c3354a50520162960595d18fb71d4871d6f8b7b))
+
+
+### Features
+
+* add cleanCode function to sanitize trip paths in URLs ([a798f76](https://github.com/adobe/helix-rum-collector/commit/a798f76e14ea3df6b7a925e597a44e20409ce178))
+
 ## [2.36.1](https://github.com/adobe/helix-rum-collector/compare/v2.36.0...v2.36.1) (2025-05-20)
 
 
