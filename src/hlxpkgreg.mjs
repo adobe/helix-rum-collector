@@ -15,23 +15,30 @@ import { cleanupResponse, prohibitDirectoryRequest } from './cdnutils.mjs';
 const redirectHeaders = [301, 302, 307, 308];
 const rangeChars = ['^', '~'];
 
+// TODO do we need to check for the fact that there is a newer version at all?
+// E.g. when requesting ~1.2.3 we should not be served version 1.1.6 if that is
+// the latest version. We should only serve 1.2.3, 1.2.4, 1.2.5 etc, whatever is the
+// newest.
+// Let's not handle version 0.x specially, as the supported packages all have versions
+// higher than 0.x
 function getReleaseVersion(verstr) {
   const trimmed = verstr.trim();
-  const prefix = trimmed[0];
   const va = trimmed.split('.');
   const orgva = va.slice(); // keep original version too
   if (va.length === 1) {
     va.push('0'); // Always have at least 2 version components
   }
 
-  if (prefix === '~') {
-    // ignore micro
-    return `${va[0].substring(1)}-${va[1]}-x`;
-  } else if (prefix === '^') {
-    // ignore micro and minor
-    return `${va[0].substring(1)}-x`;
+  switch (trimmed[0]) { // prefix
+    case '~':
+      // ignore micro
+      return `${va[0].substring(1)}-${va[1]}-x`;
+    case '^':
+      // ignore micro and minor
+      return `${va[0].substring(1)}-x`;
+    default:
+      return orgva.join('-');
   }
-  return orgva.join('-');
 }
 
 export async function respondHelixPkgReg(req) {
@@ -40,8 +47,12 @@ export async function respondHelixPkgReg(req) {
 
   const [pkgname, pkgver] = paths[0].split('@');
   if (pkgname !== 'helix-rum-js' && pkgname !== 'helix-rum-enhancer') {
-    return null; // TODO Make sure the other registries are used
+    return { status: 500, body: 'Unsupported package' };
   }
+  if (!pkgver) {
+    return { status: 500, body: 'No version' };
+  }
+
   const relver = getReleaseVersion(pkgver);
   const beurl = new URL(`https://release-${relver}--${pkgname}--adobe.aem.live/${paths.slice(1).join('/')}`);
   const bereq = new Request(beurl.href);

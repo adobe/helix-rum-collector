@@ -27,7 +27,7 @@ describe('Test Helix Package Registry Handler', () => {
     assert(text.includes('export function sampleRUM'), 'Contents should export sampleRUM function');
   });
 
-  async function testWildcarding(inurl, usedurl) {
+  async function testWildcarding(inurl, usedurl, message) {
     const req = {
       url: inurl,
     };
@@ -42,7 +42,7 @@ describe('Test Helix Package Registry Handler', () => {
             headers: new Headers(),
           };
         }
-        throw new Error(`Unexpected URL: ${v.url} was expecting ${usedurl}`);
+        throw new Error(`${message}Unexpected URL: ${v.url} was expecting ${usedurl}`);
       };
 
       const resp = await respondHelixPkgReg(req);
@@ -56,6 +56,7 @@ describe('Test Helix Package Registry Handler', () => {
     await testWildcarding(
       'http://foo.bar.org/.rum/@adobe/helix-rum-js@2.10.5/src/index.js',
       'https://release-2-10-5--helix-rum-js--adobe.aem.live/src/index.js',
+      'Exact version should be served. ',
     );
   });
 
@@ -63,16 +64,19 @@ describe('Test Helix Package Registry Handler', () => {
     await testWildcarding(
       'http://foo.bar.org/.rum/@adobe/helix-rum-js@~2.10.5/src/index.js',
       'https://release-2-10-x--helix-rum-js--adobe.aem.live/src/index.js',
+      'Approximately equivalent version with micro version wildcard should be served. ',
     );
 
     await testWildcarding(
       'http://foo.bar.org/.rum/@adobe/helix-rum-js@~2.10/src/index.js',
       'https://release-2-10-x--helix-rum-js--adobe.aem.live/src/index.js',
+      'Approximately equivalent version with micro version wildcard should be served. ',
     );
 
     await testWildcarding(
       'http://foo.bar.org/.rum/@adobe/helix-rum-js@~2/src/index.js',
       'https://release-2-0-x--helix-rum-js--adobe.aem.live/src/index.js',
+      'Approximately equivalent version with micro version wildcard should be served. ',
     );
   });
 
@@ -80,24 +84,34 @@ describe('Test Helix Package Registry Handler', () => {
     await testWildcarding(
       'http://foo.bar.org/.rum/@adobe/helix-rum-enhancer@^2.10.5/src/index.js',
       'https://release-2-x--helix-rum-enhancer--adobe.aem.live/src/index.js',
+      'Compatible version with minor version wildcard should be served. ',
     );
 
     await testWildcarding(
       'http://foo.bar.org/.rum/@adobe/helix-rum-enhancer@^2.10/src/index.js',
       'https://release-2-x--helix-rum-enhancer--adobe.aem.live/src/index.js',
+      'Compatible version with minor version wildcard should be served. ',
     );
 
     await testWildcarding(
       'http://foo.bar.org/.rum/@adobe/helix-rum-enhancer@^2/src/index.js',
       'https://release-2-x--helix-rum-enhancer--adobe.aem.live/src/index.js',
+      'Compatible version with minor version wildcard should be served. ',
     );
   });
 
-  it('servers an unknown version', async () => {
-  });
   it('serves no version at all', async () => {
+    const req = {};
+    req.url = 'http://foo.bar.org/.rum/@adobe/helix-rum-js/src/index.js';
+    const resp = await respondHelixPkgReg(req);
+    assert(resp.status === 500, 'No version should return 500');
   });
+
   it('serves an unknown helix package', async () => {
+    const req = {};
+    req.url = 'http://foo.bar.org/.rum/@adobe/helix-rum-aaaarrr@2.10.5/src/index.js';
+    const resp = await respondHelixPkgReg(req);
+    assert(resp.status === 500, 'Unknown package should return 500');
   });
 
   // it('cleans up response', async () => {

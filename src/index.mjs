@@ -18,6 +18,7 @@ import { CoralogixErrorLogger } from './coralogix-error-logger.mjs';
 import { ConsoleLogger } from './console-logger.mjs';
 import { S3Logger } from './s3-logger.mjs';
 import { respondRobots } from './robots.mjs';
+import { respondHelixPkgReg } from './hlxpkgreg.mjs';
 import { respondJsdelivr } from './jsdelivr.mjs';
 import { respondUnpkg } from './unpkg.mjs';
 
@@ -105,10 +106,19 @@ async function respondRegistry(regName, req, successTracker, timeout) {
 }
 
 async function respondPackage(req, isHelix) {
-  // if (isHelix) {
-  //   return respondHelix(req);
-  //   // TODO fail over to jsd/unpkg if helix fails
-  // }
+  if (isHelix) {
+    try {
+      const resp = await respondHelixPkgReg(req);
+      if (resp.status === 200) {
+        return resp;
+      } else {
+        console.log('Helix package registry response: ', resp);
+      }
+    } catch (e) {
+      console.error('Error from Helix package registry: ', e);
+    }
+    console.log('Falling back to jsdelivr/unpkg');
+  }
 
   const useJsdelivr = Math.random() < 0.5; // 50% chance to use jsdelivr
   const jsdDelay = useJsdelivr ? undefined : REGISTRY_TIMEOUT_MS;
