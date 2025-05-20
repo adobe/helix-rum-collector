@@ -129,37 +129,62 @@ describe('Test Helix Package Registry Handler', () => {
     const resp = await respondHelixPkgReg(req);
     assert(resp.status === 500, 'Unknown package should return 500');
   });
-  // it('cleans up response', async () => {
-  //   const req = {};
-  //   req.url = 'http://foo.bar.org/.rum/@adobe/helix-rum-js?generation=42';
 
-  //   const storedFetch = global.fetch;
-  //   try {
-  //     // Mock the global fetch function
-  //     global.fetch = (v, opts) => {
-  //       assert.equal('jsdelivr', opts.backend);
-  //       if (v.url === 'https://cdn.jsdelivr.net/npm/@adobe/helix-rum-js') {
-  //         const headers = new Headers();
-  //         headers.append('foo', 'bar');
-  //         headers.append('x-jsd-version', 'eek');
-  //         headers.append('x-jsd-version-type', 'eek');
-  //         headers.append('x-served-by', 'eek');
-  //         headers.append('x-cache', 'eek');
+  async function testWildcarding(inurl, usedurl, cacheControl, message) {
+    const req = {
+      url: inurl,
+    };
 
-  //         const resp = {
-  //           headers,
-  //           ok: true,
-  //           status: 200,
-  //         };
-  //         return resp;
-  //       }
-  //       return undefined;
-  //     };
+    const storedFetch = global.fetch;
+    try {
+      global.fetch = (v, opts) => {
+        assert.equal('hlxpkgreg', opts.backend);
+        if (v.url === usedurl) {
+          return {
+            status: 200,
+            headers: new Headers(),
+            url: v.url,
+          };
+        }
+        throw new Error(`${message}Unexpected URL: ${v.url} was expecting ${usedurl}`);
+      };
 
-  //     const resp = await respondHelixPkgReg(req);
-  //     console.log('response', resp);
-  //   } finally {
-  //     global.fetch = storedFetch;
-  //   }
-  // });
+      const resp = await respondHelixPkgReg(req);
+      assert.equal(200, resp.status);
+      assert.equal(cacheControl, resp.headers.get('cache-control'));
+    } finally {
+      global.fetch = storedFetch;
+    }
+  }
+
+  it('cleans up response', async () => {
+    const req = {};
+    req.url = 'http://foo.bar.org/.rum/@adobe/helix-rum-js@2.10.5/src/index.js';
+
+    const testHeaders = new Headers();
+    testHeaders.append('my-custom-header', 'hihi');
+    testHeaders.append('server', 'noway');
+
+    const storedFetch = global.fetch;
+    try {
+      global.fetch = (v, opts) => {
+        assert.equal('hlxpkgreg', opts.backend);
+        if (v.url === 'https://release-2-10-5--helix-rum-js--adobe.aem.live/src/index.js') {
+          return {
+            status: 200,
+            headers: testHeaders,
+            url: v.url,
+          };
+        }
+        return null;
+      };
+
+      const resp = await respondHelixPkgReg(req);
+      assert.equal(200, resp.status);
+      assert.equal('hihi', resp.headers.get('my-custom-header'));
+      assert(resp.headers.get('server') === null, 'Server header should be removed');
+    } finally {
+      global.fetch = storedFetch;
+    }
+  });
 });
