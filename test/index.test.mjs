@@ -261,7 +261,41 @@ describe('Test index', () => {
 
     const t = await resp.text();
     assert(t.includes('export function sampleRUM'));
-  }); // .timeout(5000);
+  });
+
+  it('serves helix-rum-enhancer from Helix backend', async () => {
+    const headers = new Map();
+
+    const req = { headers };
+    req.method = 'GET';
+    req.url = 'http://x.y/.rum/@adobe/helix-rum-enhancer@2.34.2/src/index.js';
+
+    const resp = await methods.main(req);
+
+    assert.equal(200, resp.status);
+    assert(resp.ok);
+    assert.equal('hlx', resp.headers.get('x-rum-trace'));
+
+    const t = await resp.text();
+    assert(t.includes('function initEnhancer()'));
+  });
+
+  it('serves helix-rum-enhancer with wilcard from Helix backend', async () => {
+    const headers = new Map();
+
+    const req = { headers };
+    req.method = 'GET';
+    req.url = 'http://x.y/.rum/@adobe/helix-rum-enhancer@~2.34.1/src/index.js';
+
+    const resp = await methods.main(req);
+
+    assert.equal(200, resp.status);
+    assert(resp.ok);
+    assert.equal('hlx', resp.headers.get('x-rum-trace'));
+
+    const t = await resp.text();
+    assert(t.includes('function initEnhancer()'));
+  });
 
   it('responds to helix-rum-js dir list', async () => {
     const headers = new Map();
@@ -362,6 +396,11 @@ describe('Test index', () => {
   it('No double request on success', async () => {
     const called = [];
     const { main } = await esmock('../src/index.mjs', {
+      '../src/hlxpkgreg.mjs': {
+        respondHelixPkgReg: async () => {
+          throw new Error('kaboom');
+        },
+      },
       '../src/unpkg.mjs': {
         respondUnpkg: async () => {
           called.push('unpkg');
