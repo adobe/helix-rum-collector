@@ -1,3 +1,10 @@
+# [2.36.0](https://github.com/adobe/helix-rum-collector/compare/v2.35.2...v2.36.0) (2025-05-20)
+
+
+### Features
+
+* remove noscript checkpoint ([a676a17](https://github.com/adobe/helix-rum-collector/commit/a676a17d827c00d0d6dc65ead6eac446ac9c7612))
+
 ## [2.35.2](https://github.com/adobe/helix-rum-collector/compare/v2.35.1...v2.35.2) (2025-04-30)
 
 
