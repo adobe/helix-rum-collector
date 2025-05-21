@@ -48,8 +48,8 @@ const filters = {
         // Calculate linguistic signals
         // 1. Check vowel ratio to identify pronounceable words like "GAMERS" and "CIRCLE"
         const vowels = (pnr.match(/[AEIOU]/g) || []).length;
-        const letters = pnr.match(/[A-Z]/g).length;
-        const vowelRatio = vowels / letters;
+        const letters = (pnr.match(/[A-Z]/g) || []).length;
+        const vowelRatio = letters > 0 ? vowels / letters : 0;
 
         // 2. Check for numbers in the middle (common in PNRs but not in words)
         const hasMiddleNumbers = /[A-Z][0-9]+[A-Z]/.test(pnr);
