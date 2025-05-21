@@ -138,6 +138,27 @@ Pellentesque viverra id magna vel varius. Lorem ipsum dolor sit amet, consectetu
     assert.equal(cleanurl(123), 123);
     assert.equal(cleanurl(''), '');
     assert.equal(cleanurl(null), null);
+
+    // PNR cleaning tests
+    // Positive cases - should be replaced
+    assert.equal(cleanurl('https://airline.com/manage/K26JNFQ/seat-map'), 'https://airline.com/manage/%3Cpnr%3E/seat-map');
+    assert.equal(cleanurl('https://airline.com/booking/LVQHQC/details'), 'https://airline.com/booking/%3Cpnr%3E/details');
+    assert.equal(cleanurl('https://airline.com/check-in/OV7GCC/status'), 'https://airline.com/check-in/%3Cpnr%3E/status');
+    // Multiple PNRs in same URL
+    assert.equal(cleanurl('https://airline.com/compare/SW7O2L/XYZ987'), 'https://airline.com/compare/%3Cpnr%3E/%3Cpnr%3E');
+
+    // Negative cases - should not be replaced
+    // Too short (4 chars)
+    assert.equal(cleanurl('https://example.com/path/ABC1/seat-map'), 'https://example.com/path/ABC1/seat-map');
+    // Too long (8 chars)
+    assert.equal(cleanurl('https://test.com/path/ABC12345/seat-map'), 'https://test.com/path/ABC12345/seat-map');
+    // Contains lowercase
+    assert.equal(cleanurl('https://demo.com/path/abc123/seat-map'), 'https://demo.com/path/abc123/seat-map');
+    // Contains special characters
+    assert.equal(cleanurl('https://site.com/path/ABC-123/seat-map'), 'https://site.com/path/ABC-123/seat-map');
+    // Common words that might look like PNRs but have low entropy
+    assert.equal(cleanurl('https://game.com/path/GAMERS/test'), 'https://game.com/path/GAMERS/test');
+    assert.equal(cleanurl('https://web.com/shape/CIRCLE/'), 'https://web.com/shape/CIRCLE/');
   });
 
   it('Get Forwarded Host', () => {
