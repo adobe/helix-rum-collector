@@ -12,11 +12,12 @@
 /* eslint-env serviceworker */
 import { cleanupResponse } from './cdnutils.mjs';
 
-// TODO do we need to check for the fact that there is a newer version at all?
-// E.g. when requesting ~1.2.3 we should not be served version 1.1.6 if that is
-// the latest version. We should only serve 1.2.3, 1.2.4, 1.2.5 etc, whatever is the
-// newest.
-// Let's not handle version 0.x specially, as the supported packages all have versions
+// Note we don't check for the fact that an older version could potentially be returned
+// if a compatible version with a version that is not yet released is requested. For
+// example if ~1.2.3 is requested but the latest released version is 1.2.1 then just 1-2-x
+// is used which will return 1.2.1 as that what it's mapped to. So the precondition to using
+// this function is that the version string input should be at least a released version.
+// We also don't handle version 0.x specially, as the supported packages all have versions
 // higher than 0.x
 function getReleaseVersion(verstr) {
   const trimmed = verstr.trim();
