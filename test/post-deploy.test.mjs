@@ -235,13 +235,13 @@ import assert from 'assert';
       }
 
       const startTime = Date.now();
-      const respRange = await fetch(`https://${domain}/.rum/@adobe/helix-rum-js@~2.11.0/src/index.js`);
+      const respRange = await fetch(`https://${domain}/.rum/@adobe/helix-rum-js@~2.11.4/dist/rum-standalone.js`);
       assert.strictEqual(respRange.status, 200);
       assert.strictEqual('hlx', respRange.headers.get('x-rum-trace'));
       assert(Date.now() - startTime < 1000, 'Response took too long');
 
       const startTime2 = Date.now();
-      const respSpecific = await fetch(`https://${domain}/.rum/@adobe/helix-rum-js@2.11.0/src/index.js`);
+      const respSpecific = await fetch(`https://${domain}/.rum/@adobe/helix-rum-js@2.11.4/dist/rum-standalone.js`);
       assert.strictEqual(respSpecific.status, 200);
       assert.strictEqual('hlx', respSpecific.headers.get('x-rum-trace'));
       assert(Date.now() - startTime2 < 1000, 'Response took too long');

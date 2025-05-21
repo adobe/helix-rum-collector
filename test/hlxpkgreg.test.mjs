@@ -18,7 +18,7 @@ import { respondHelixPkgReg } from '../src/hlxpkgreg.mjs';
 describe('Test Helix Package Registry Handler', () => {
   it('serves a package', async () => {
     const req = {};
-    req.url = 'http://foo.bar.org/.rum/@adobe/helix-rum-js@2.10.5/src/index.js';
+    req.url = 'http://foo.bar.org/.rum/@adobe/helix-rum-js@2.11.4/dist/rum-standalone.js';
 
     const resp = await respondHelixPkgReg(req);
     const text = await resp.text();
@@ -26,7 +26,7 @@ describe('Test Helix Package Registry Handler', () => {
     assert.equal('hlx', resp.headers.get('x-rum-trace'));
     assert(resp.headers.get('x-cache') === null, 'x-cache header should be removed');
     assert(resp.headers.get('server') === null, 'server header should be removed');
-    assert(text.includes('export function sampleRUM'), 'Contents should export sampleRUM function');
+    assert(text.includes('function sampleRUM'), 'Contents should contain sampleRUM function');
   });
 
   async function testWildcarding(inurl, usedurl, cacheControl, message) {
@@ -58,8 +58,8 @@ describe('Test Helix Package Registry Handler', () => {
 
   it('serves an exact package', async () => {
     await testWildcarding(
-      'http://foo.bar.org/.rum/@adobe/helix-rum-js@2.10.5/src/index.js',
-      'https://release-2-10-5--helix-rum-js--adobe.aem.live/src/index.js',
+      'http://foo.bar.org/.rum/@adobe/helix-rum-js@2.11.4/dist/rum-standalone.js',
+      'https://release-2-11-4--helix-rum-js--adobe.aem.live/dist/rum-standalone.js',
       'public, max-age=31536000, immutable',
       'Exact version should be served. ',
     );
@@ -67,22 +67,22 @@ describe('Test Helix Package Registry Handler', () => {
 
   it('serves an approximately equivalent package', async () => {
     await testWildcarding(
-      'http://foo.bar.org/.rum/@adobe/helix-rum-js@~2.10.5/src/index.js',
-      'https://release-2-10-x--helix-rum-js--adobe.aem.live/src/index.js',
+      'http://foo.bar.org/.rum/@adobe/helix-rum-js@~2.11.4/dist/rum-standalone.js',
+      'https://release-2-11-x--helix-rum-js--adobe.aem.live/dist/rum-standalone.js',
       'public, max-age=3600',
       'Approximately equivalent version with micro version wildcard should be served. ',
     );
 
     await testWildcarding(
-      'http://foo.bar.org/.rum/@adobe/helix-rum-js@~2.10/src/index.js',
-      'https://release-2-10-x--helix-rum-js--adobe.aem.live/src/index.js',
+      'http://foo.bar.org/.rum/@adobe/helix-rum-js@~2.11/dist/rum-standalone.js',
+      'https://release-2-11-x--helix-rum-js--adobe.aem.live/dist/rum-standalone.js',
       'public, max-age=3600',
       'Approximately equivalent version with micro version wildcard should be served. ',
     );
 
     await testWildcarding(
-      'http://foo.bar.org/.rum/@adobe/helix-rum-js@~2/src/index.js',
-      'https://release-2-0-x--helix-rum-js--adobe.aem.live/src/index.js',
+      'http://foo.bar.org/.rum/@adobe/helix-rum-js@~2/dist/rum-standalone.js',
+      'https://release-2-0-x--helix-rum-js--adobe.aem.live/dist/rum-standalone.js',
       'public, max-age=3600',
       'Approximately equivalent version with micro version wildcard should be served. ',
     );
@@ -113,7 +113,7 @@ describe('Test Helix Package Registry Handler', () => {
 
   it('version at all', async () => {
     const req = {};
-    req.url = 'http://foo.bar.org/.rum/@adobe/helix-rum-js/src/index.js';
+    req.url = 'http://foo.bar.org/.rum/@adobe/helix-rum-js/dist/rum-standalone.js';
     const resp = await respondHelixPkgReg(req);
     assert(resp.status === 500, 'No version should return 500');
   });
@@ -134,7 +134,7 @@ describe('Test Helix Package Registry Handler', () => {
 
   it('cleans up response', async () => {
     const req = {};
-    req.url = 'http://foo.bar.org/.rum/@adobe/helix-rum-js@2.10.5/src/index.js';
+    req.url = 'http://foo.bar.org/.rum/@adobe/helix-rum-js@2.11.4/dist/rum-standalone.js';
 
     const testHeaders = new Headers();
     testHeaders.append('my-custom-header', 'hihi');
@@ -144,7 +144,7 @@ describe('Test Helix Package Registry Handler', () => {
     try {
       global.fetch = (v, opts) => {
         assert.equal('hlxpkgreg', opts.backend);
-        if (v.url === 'https://release-2-10-5--helix-rum-js--adobe.aem.live/src/index.js') {
+        if (v.url === 'https://release-2-11-4--helix-rum-js--adobe.aem.live/dist/rum-standalone.js') {
           return {
             status: 200,
             headers: testHeaders,
