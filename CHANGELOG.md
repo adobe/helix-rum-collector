@@ -1,3 +1,10 @@
+## [2.38.1](https://github.com/adobe/helix-rum-collector/compare/v2.38.0...v2.38.1) (2025-05-21)
+
+
+### Reverts
+
+* Revert "Merge pull request [#511](https://github.com/adobe/helix-rum-collector/issues/511) from adobe/more-privacy-filters" ([c02450e](https://github.com/adobe/helix-rum-collector/commit/c02450e95c52790067d46ba0db388b32f4a93502))
+
 # [2.38.0](https://github.com/adobe/helix-rum-collector/compare/v2.37.0...v2.38.0) (2025-05-21)
 
 
