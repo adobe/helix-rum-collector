@@ -44,7 +44,7 @@ export function isValidCheckpoint(checkpoint) {
     'experiment',
     'formsubmit',
     '404',
-    'convert',
+    // 'convert', // not valuable
     'search',
     'unsupported',
     'genai:prompt:generate',
