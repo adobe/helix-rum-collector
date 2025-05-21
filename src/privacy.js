@@ -28,7 +28,7 @@ const withInputValidation = (fn) => (str, replaceWith) => {
 };
 
 const filters = {
-  jwt: withInputValidation((str, replaceWith) => str.replace(/eyJ[a-zA-Z0-9]+\.eyJ[a-zA-Z0-9]+\.[a-zA-Z0-9]+/g, replaceWith)),
+  jwt: withInputValidation((str, replaceWith) => str.replace(/eyJ[a-zA-Z0-9_-]+\.eyJ[a-zA-Z0-9_-]+\.[a-zA-Z0-9_-]+/g, replaceWith)),
 
   pnr: withInputValidation((str, replaceWith) => {
     // Split the path into segments, preserving empty segments for slashes
