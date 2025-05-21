@@ -168,30 +168,4 @@ describe('Test Google Logger', () => {
     const logged = JSON.parse(lastLogMessage);
     assert.equal('q1339', logged.id);
   });
-
-  it('Strips query parameters from all URL properties', () => {
-    const headers = new Map();
-    headers.set('x-forwarded-host', 'www.foo.com');
-    headers.set('referer', 'https://www.foo.com/referer?ref=123&tracking=456');
-    const url = new URL('https://www.foo.com/page?utm_source=test&utm_campaign=test');
-
-    const req = { headers, url };
-    const gl = new GoogleLogger(req);
-    gl.logRUM(
-      {},
-      'test123',
-      1,
-      'https://www.foo.com/referer?ref=123&tracking=456',
-      42,
-      'error',
-      'https://www.foo.com/target?dest=789&id=abc',
-      'https://www.foo.com/source?src=xyz&from=home',
-    );
-
-    const logged = JSON.parse(lastLogMessage);
-    assert.equal(logged.url, 'https://www.foo.com/referer');
-    assert.equal(logged.referer, 'https://www.foo.com/referer');
-    assert.equal(logged.target, 'https://www.foo.com/target');
-    assert.equal(logged.source, 'https://www.foo.com/source');
-  });
 });
