@@ -300,7 +300,7 @@ describe('Test unpkg handler', () => {
     const redirectsMade = [];
     try {
       global.fetch = (v) => {
-        if (v.url === 'https://unpkg.com/@adobe/helix-rum-js@2/src') {
+        if (v.url === 'https://unpkg.com/npm/@adobe/helix-rum-js@2/src') {
           redirectsMade.push('a');
           return {
             status: 302,
