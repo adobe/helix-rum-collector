@@ -1,3 +1,11 @@
+## [2.38.2](https://github.com/adobe/helix-rum-collector/compare/v2.38.1...v2.38.2) (2025-05-21)
+
+
+### Bug Fixes
+
+* **privacy:** and improve vowel ratio calculation in privacy.js ([7bc44aa](https://github.com/adobe/helix-rum-collector/commit/7bc44aaaabcf4102d5442956bb9a139a8f5b0da6))
+* **privacy:** update JWT regex pattern for improved matching ([1696a27](https://github.com/adobe/helix-rum-collector/commit/1696a271859e1a4cb476fbf7fa93b624fe308025))
+
 ## [2.38.1](https://github.com/adobe/helix-rum-collector/compare/v2.38.0...v2.38.1) (2025-05-21)
 
 
