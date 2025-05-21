@@ -136,7 +136,8 @@ export async function main(req, ctx) {
 
   // Reject double-encoded URLs (which contain %25 as that is the percent sign)
   // Also reject paths that contain '..' but decode the URL first as it might be encoded
-  if (pathname.includes('%') || decodeURI(pathname).includes('..')
+  if ((pathname.includes('%') && !(pathname.includes('%5E') || pathname.includes('%5e')))
+    || decodeURI(pathname).includes('..')
     || decodeURI(pathname).includes(':')) {
     return respondError('Invalid path', 400, undefined, req);
   }
