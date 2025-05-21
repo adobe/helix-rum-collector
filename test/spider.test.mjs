@@ -14,6 +14,9 @@ import assert from 'assert';
 import { it, describe } from 'node:test';
 import { isSpider } from '../src/spiders.mjs';
 
+const hasIabSpiderList = !!process.env.IAB_SPIDER_LIST;
+const testOrSkip = hasIabSpiderList ? it : it.skip;
+
 describe('Test IAB Spider List', () => {
   it('isSpider is a function', () => {
     assert.equal(typeof isSpider, 'function');
@@ -23,7 +26,7 @@ describe('Test IAB Spider List', () => {
     assert.equal(isSpider('Mozilla/5.0 (Windows NT 10.0; rv:78.0) Gecko/20100101 Firefox/78.0'), false);
   });
 
-  it('Googlebot is a spider', () => {
+  testOrSkip('Googlebot is a spider', () => {
     assert.equal(isSpider('Mozilla/5.0 (compatible; Googlebot/2.1; +http://www.google.com/bot.html)'), true);
   });
 });
