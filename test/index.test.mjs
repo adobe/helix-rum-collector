@@ -282,12 +282,12 @@ describe('Test index', () => {
     assert(t.includes('function initEnhancer()'));
   });
 
-  it('serves helix-rum-enhancer with wilcard from Helix backend', async () => {
+  it('serves helix-rum-enhancer with encoded wilcard from Helix backend', async () => {
     const headers = new Map();
 
     const req = { headers };
     req.method = 'GET';
-    req.url = 'http://x.y/.rum/@adobe/helix-rum-enhancer@~2.34.1/src/index.js';
+    req.url = 'http://x.y/.rum/@adobe/helix-rum-enhancer@%5E2/src/index.js';
 
     const startTime = Date.now();
     const resp = await methods.main(req);

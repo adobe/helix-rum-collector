@@ -104,10 +104,10 @@ describe('Test Helix Package Registry Handler', () => {
     );
 
     await testWildcarding(
-      'http://foo.bar.org/.rum/@adobe/helix-rum-enhancer@^2/src/index.js',
+      'http://foo.bar.org/.rum/@adobe/helix-rum-enhancer@%5E2/src/index.js',
       'https://release-2-x--helix-rum-enhancer--adobe.aem.live/src/index.js',
       'public, max-age=3600',
-      'Compatible version with minor version wildcard should be served. ',
+      'Compatible version with minor version encoded wildcard should be served. ',
     );
   });
 

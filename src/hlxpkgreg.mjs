@@ -50,7 +50,7 @@ function getReleaseVersion(verstr) {
 
 export async function respondHelixPkgReg(req) {
   const url = new URL(req.url);
-  const paths = url.pathname.split('/').slice(3);
+  const paths = decodeURI(url.pathname).split('/').slice(3);
 
   const [pkgname, pkgver] = paths[0].split('@');
   if (pkgname !== 'helix-rum-js' && pkgname !== 'helix-rum-enhancer') {
