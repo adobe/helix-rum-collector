@@ -1,3 +1,16 @@
+# [2.38.0](https://github.com/adobe/helix-rum-collector/compare/v2.37.0...v2.38.0) (2025-05-21)
+
+
+### Bug Fixes
+
+* update URL handling in loggers to use cleanurl and add privacy.js for path sanitization ([0137263](https://github.com/adobe/helix-rum-collector/commit/013726321134c82cab09fdf2faa32b9f488dddc5))
+* update user agent assertion and correct URL format in index tests ([14db69a](https://github.com/adobe/helix-rum-collector/commit/14db69a92e9a4837b337681ad620876a75d91f22))
+
+
+### Features
+
+* enhance privacy.js with PNR cleaning functionality and Shannon entropy calculation ([8ede4ee](https://github.com/adobe/helix-rum-collector/commit/8ede4ee6a7979791ae8bde59e0508896528133be))
+
 # [2.37.0](https://github.com/adobe/helix-rum-collector/compare/v2.36.1...v2.37.0) (2025-05-20)
 
 
