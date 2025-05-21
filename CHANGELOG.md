@@ -1,3 +1,10 @@
+# [2.39.0](https://github.com/adobe/helix-rum-collector/compare/v2.38.2...v2.39.0) (2025-05-21)
+
+
+### Features
+
+* remove convert checkpoint ([4019320](https://github.com/adobe/helix-rum-collector/commit/4019320615c13f812b0466e2ae673fa1ba6071b4))
+
 ## [2.38.2](https://github.com/adobe/helix-rum-collector/compare/v2.38.1...v2.38.2) (2025-05-21)
 
 
