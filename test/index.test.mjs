@@ -46,12 +46,12 @@ describe('Test index', () => {
     assert.equal('text/plain; charset=utf-8', resp.headers.get('Content-Type'));
 
     const logged = JSON.parse(lastLogMessage);
-    assert.equal(logged.checkpoint, 'error');
-    assert.equal(logged.url, 'http://blahblah/');
-    assert.equal(logged.user_agent, 'desktop:chromeos:blink');
-    assert.equal(logged.weight, 1);
-    assert.equal(logged.host, 'somehost');
-    assert.equal(logged.hostname, 'blahblah');
+    assert.equal('error', logged.checkpoint);
+    assert.equal('http://blahblah/', logged.url);
+    assert.equal('desktop:chromeos:blink', logged.user_agent);
+    assert.equal(1, logged.weight);
+    assert.equal('somehost', logged.host);
+    assert.equal('blahblah', logged.hostname);
   });
 
   it('main GET generates ID', async () => {
@@ -116,15 +116,15 @@ describe('Test index', () => {
     const logged = JSON.parse(lastLogMessage);
     assert.equal('foobar', logged.id);
     assert(logged.time.toString().endsWith('.003'));
-    assert.equal(logged.url, 'http://a.b.c/');
+    assert.equal('http://a.b.c/', logged.url);
     assert.equal(10, logged.weight);
     assert.equal(42, logged.generation);
-    assert.equal(logged.target, 'https://t/');
-    assert.equal(logged.source, '1.2.3.4');
+    assert.equal('https://t/', logged.target);
+    assert.equal('1.2.3.4', logged.source);
     assert.equal(undefined, logged.a);
     assert.equal(123, logged.INP);
-    assert.equal(logged.host, 'www.foobar.com');
-    assert.equal(logged.user_agent, 'mobile');
+    assert.equal('www.foobar.com', logged.host);
+    assert.equal('mobile', logged.user_agent);
   });
 
   it('error handling', async () => {
@@ -469,7 +469,7 @@ describe('Test index', () => {
     assert.equal(logged.length, 1);
 
     const ld = JSON.parse(logged[0]);
-    assert.equal(ld.url, 'http://www.acme.org/');
+    assert.equal(ld.url, 'http://www.acme.org');
     assert.equal(ld.weight, 1);
     assert.equal(ld.id, 'xyz123');
     assert.equal(ld.checkpoint, 'top');

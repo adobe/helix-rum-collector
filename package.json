@@ -1,6 +1,6 @@
 {
   "name": "@adobe/helix-rum-collector",
-  "version": "2.38.0",
+  "version": "2.38.1",
   "private": true,
   "description": "Collect Real User Monitoring Data for Helix",
   "main": "src/index.mjs",
