@@ -54,15 +54,15 @@ export async function respondHelixPkgReg(req) {
 
   const [pkgname, pkgver] = paths[0].split('@');
   if (pkgname !== 'helix-rum-js' && pkgname !== 'helix-rum-enhancer') {
-    return { status: 500, body: 'Unsupported package' };
+    return { status: 500, statusText: 'Unsupported package' };
   }
   if (!pkgver) {
-    return { status: 500, body: 'No version' };
+    return { status: 500, statusText: 'No version' };
   }
 
   const relver = getReleaseVersion(pkgver);
   if (!relver) {
-    return { status: 500, body: 'Unsupported version' };
+    return { status: 500, statusText: 'Unsupported version' };
   }
   const beurl = new URL(`https://release-${relver.ver}--${pkgname}--adobe.aem.live/${paths.slice(1).join('/')}`);
   const bereq = new Request(beurl.href);

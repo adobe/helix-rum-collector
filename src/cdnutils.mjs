@@ -20,6 +20,7 @@ const removedHeaders = [
   'server',
   'timing-allow-origin',
   'x-cache',
+  'x-cache-hits',
   'x-jsd-version-type',
   'x-jsd-version',
   'x-served-by',

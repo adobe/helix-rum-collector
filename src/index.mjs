@@ -115,7 +115,7 @@ async function respondPackage(req, isHelix) {
         return resp;
       } else {
         console.log('Helix package registry response: ', resp);
-        errmsg = `Helix package registry response: ${JSON.stringify(resp)}`;
+        errmsg = `Helix package registry response: ${resp.status} ${resp.statusText}`;
       }
     } catch (e) {
       console.error('Error from Helix package registry: ', e);
@@ -137,7 +137,7 @@ async function respondPackage(req, isHelix) {
       respondRegistry('jsdelivr', req, successTracker, jsdDelay),
       respondRegistry('unpkg', req, successTracker, unpkgDelay),
     ]);
-    resp.headers.set('x-hlx-error', errmsg);
+    resp.headers.set('x-error', errmsg);
     return resp;
   } catch (error) {
     return new Response(error.errors, {

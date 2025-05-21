@@ -270,11 +270,13 @@ describe('Test index', () => {
     req.method = 'GET';
     req.url = 'http://x.y/.rum/@adobe/helix-rum-enhancer@2.34.2/src/index.js';
 
+    const startTime = Date.now();
     const resp = await methods.main(req);
 
     assert.equal(200, resp.status);
     assert(resp.ok);
     assert.equal('hlx', resp.headers.get('x-rum-trace'));
+    assert(Date.now() - startTime < 1000, 'Response took too long');
 
     const t = await resp.text();
     assert(t.includes('function initEnhancer()'));
@@ -287,14 +289,38 @@ describe('Test index', () => {
     req.method = 'GET';
     req.url = 'http://x.y/.rum/@adobe/helix-rum-enhancer@~2.34.1/src/index.js';
 
+    const startTime = Date.now();
     const resp = await methods.main(req);
 
     assert.equal(200, resp.status);
     assert(resp.ok);
     assert.equal('hlx', resp.headers.get('x-rum-trace'));
+    assert(Date.now() - startTime < 1000, 'Response took too long');
 
     const t = await resp.text();
     assert(t.includes('function initEnhancer()'));
+  });
+
+  it('serves older helix-rum-enhancer with wilcard from package registry', async () => {
+    const headers = new Map();
+
+    const req = { headers };
+    req.method = 'GET';
+    req.url = 'http://x.y/.rum/@adobe/helix-rum-enhancer@^1/src/index.js';
+
+    const startTime = Date.now();
+    const resp = await methods.main(req);
+
+    assert.equal(200, resp.status);
+    assert(resp.ok);
+    assert(
+      resp.headers.get('x-rum-trace').startsWith('be-'),
+      `Expected non-helix backend here ${resp.headers.get('x-rum-trace')}`,
+    );
+    assert(Date.now() - startTime < 1000, 'Response took too long');
+
+    const t = await resp.text();
+    assert(t.includes('new PerformanceObserver'));
   });
 
   it('responds to helix-rum-js dir list', async () => {

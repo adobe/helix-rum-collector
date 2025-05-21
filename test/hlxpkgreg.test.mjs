@@ -24,6 +24,8 @@ describe('Test Helix Package Registry Handler', () => {
     const text = await resp.text();
     assert.equal(200, resp.status);
     assert.equal('hlx', resp.headers.get('x-rum-trace'));
+    assert(resp.headers.get('x-cache') === null, 'x-cache header should be removed');
+    assert(resp.headers.get('server') === null, 'server header should be removed');
     assert(text.includes('export function sampleRUM'), 'Contents should export sampleRUM function');
   });
 
