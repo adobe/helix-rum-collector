@@ -13,7 +13,7 @@
 /* eslint-env mocha */
 import assert from 'assert';
 import { it, describe } from 'node:test';
-import { cleanPath } from '../src/privacy.js';
+import { cleanPath } from '../src/privacy.mjs';
 
 describe('Privacy Functions', () => {
   describe('cleanPath', () => {
