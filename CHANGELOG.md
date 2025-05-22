@@ -1,3 +1,10 @@
+# [2.40.0](https://github.com/adobe/helix-rum-collector/compare/v2.39.0...v2.40.0) (2025-05-22)
+
+
+### Features
+
+* **pkg:** serve AEM optel packages from aem.live ([55601c0](https://github.com/adobe/helix-rum-collector/commit/55601c09072664d380c1723709414940345a71e3))
+
 # [2.39.0](https://github.com/adobe/helix-rum-collector/compare/v2.38.2...v2.39.0) (2025-05-21)
 
 
