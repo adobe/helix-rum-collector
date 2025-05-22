@@ -37,6 +37,11 @@ describe('Privacy Functions', () => {
       assert.strictEqual(cleanPath(path), '/content/<pnr>/page');
     });
 
+    it('agressively masks low-entropy PNRs if the path looks suspicious', () => {
+      const path = '/trip/AB123C/page';
+      assert.strictEqual(cleanPath(path), '/trip/<pnr>/page');
+    });
+
     it('handles PNRs with only numbers (no letters)', () => {
       const path = '/content/12345/page';
       const result = cleanPath(path);
