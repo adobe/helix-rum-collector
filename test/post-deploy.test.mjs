@@ -392,6 +392,18 @@ import assert from 'assert';
       assert.strictEqual(resp.headers.get('x-frame-options'), 'DENY');
     });
 
+    it('Reject paths that contain partially encoded ". ."', async function test() {
+      if (!process.env.TEST_INTEGRATION) {
+        this.skip();
+      }
+
+      const resp = await fetch(`https://${domain}/.rum/web-vitals/.%09./web-vitalsxyz/demo.html?pkgreg=unpkg`);
+      assert.strictEqual(resp.status, 400);
+      const respTxt = await resp.text();
+      assert(respTxt.startsWith('Invalid path'));
+      assert.strictEqual(resp.headers.get('x-frame-options'), 'DENY');
+    });
+
     it('Non-existent files in .rum directory return 404', async function test() {
       if (!process.env.TEST_INTEGRATION) {
         this.skip();

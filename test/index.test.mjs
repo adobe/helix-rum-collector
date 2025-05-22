@@ -548,9 +548,50 @@ describe('Test index', () => {
   });
 
   it('reject urls that contain ":"', async () => {
-    const url = 'https://a.b.com/.rum/@adobe/helix-rum-js@%5E1/://test';
-    const req = { url, method: 'GET' };
+    const headers = new Map();
+    const req = {
+      headers,
+      method: 'GET',
+      url: 'http://foo.bar.org/foo:bar',
+    };
+
     const resp = await methods.main(req, {});
-    assert.equal(400, resp.status);
+    assert.strictEqual(resp.status, 400);
+  });
+
+  it('allows semantic versioning with %5E', async () => {
+    const headers = new Map();
+    const req = {
+      headers,
+      method: 'GET',
+      url: 'http://foo.bar.org/.rum/@adobe/helix-rum-js@%5E2.0.0/dist/rum.js',
+    };
+
+    const resp = await methods.main(req, {});
+    assert.notStrictEqual(resp.status, 400, 'Should not be rejected by URL validation');
+  });
+
+  it('rejects paths with both %5E and other percent encodings', async () => {
+    const headers = new Map();
+    const req = {
+      headers,
+      method: 'GET',
+      url: 'http://foo.bar.org/.rum/@adobe/helix-rum-js@%5E2.0.0/dist/rum%20js',
+    };
+
+    const resp = await methods.main(req, {});
+    assert.strictEqual(resp.status, 400);
+  });
+
+  it('rejects double-encoded paths even with %5E', async () => {
+    const headers = new Map();
+    const req = {
+      headers,
+      method: 'GET',
+      url: 'http://foo.bar.org/.rum/@adobe/helix-rum-js@%5E2.0.0/dist/%252e%252e/secrets',
+    };
+
+    const resp = await methods.main(req, {});
+    assert.strictEqual(resp.status, 400);
   });
 });
