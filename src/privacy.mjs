@@ -9,7 +9,7 @@
  * OF ANY KIND, either express or implied. See the License for the specific language
  * governing permissions and limitations under the License.
  */
-
+import { bigramFreqs } from './path-bigrams.js';
 // Helper function to calculate Shannon entropy
 function shannonEntropy(input) {
   const freq = {};
@@ -20,6 +20,21 @@ function shannonEntropy(input) {
       const p = n / len;
       return sum - p * Math.log2(p);
     }, 0);
+}
+
+const A_CODE = 'a'.charCodeAt(0);
+
+export function bigramScore(text) {
+  const letters = text.toLowerCase().replace(/[^a-z]/g, '');
+  if (letters.length < 2) return 0;
+
+  let sum = 0;
+  for (let i = 0; i < letters.length - 1; i += 1) {
+    const a = letters.charCodeAt(i) - A_CODE;
+    const b = letters.charCodeAt(i + 1) - A_CODE;
+    sum += bigramFreqs[a * 26 + b];
+  }
+  return sum; // now sums probabilities, not counts
 }
 
 const withInputValidation = (fn) => (str, replaceWith) => {
