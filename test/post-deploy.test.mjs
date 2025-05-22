@@ -374,7 +374,7 @@ import assert from 'assert';
       }
 
       const resp = await fetch(`https://${domain}/.rum/@adobe/helix-rum-js@%5E1/src/.%252e%252f.%252e%252f.%252e%252ffavicon.ico`);
-      assert.strictEqual(resp.status, 400);
+      assert.strictEqual(resp.status, 404);
       const respTxt = await resp.text();
       assert(respTxt.startsWith('Invalid path'));
       assert.strictEqual(resp.headers.get('x-frame-options'), 'DENY');
@@ -386,6 +386,18 @@ import assert from 'assert';
       }
 
       const resp = await fetch(`https://${domain}/.rum/@adobe/helix-rum-js@^1/src/.%2e%2f.%2e%2f.%2e%2ffavicon.ico`);
+      assert.strictEqual(resp.status, 400);
+      const respTxt = await resp.text();
+      assert(respTxt.startsWith('Invalid path'));
+      assert.strictEqual(resp.headers.get('x-frame-options'), 'DENY');
+    });
+
+    it('Reject paths that contain partially encoded ". ."', async function test() {
+      if (!process.env.TEST_INTEGRATION) {
+        this.skip();
+      }
+
+      const resp = await fetch(`https://${domain}/.rum/web-vitals/.%09./web-vitalsxyz/demo.html?pkgreg=unpkg`);
       assert.strictEqual(resp.status, 400);
       const respTxt = await resp.text();
       assert(respTxt.startsWith('Invalid path'));
