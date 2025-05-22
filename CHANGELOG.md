@@ -1,3 +1,14 @@
+## [2.40.1](https://github.com/adobe/helix-rum-collector/compare/v2.40.0...v2.40.1) (2025-05-22)
+
+
+### Bug Fixes
+
+* enhance URL validation by excluding specific encoded characters and paths with '..' ([e02e79d](https://github.com/adobe/helix-rum-collector/commit/e02e79d2ec2859d48dafa7cfb7617c032476e700))
+* enhance URL validation to allow semantic versioning with %5E and reject other encodings ([cf7beeb](https://github.com/adobe/helix-rum-collector/commit/cf7beeb747710ba984c5ed9d4cd35e8d36ce7ed0))
+* simplify URL validation by rejecting any encoded characters and paths with '..' ([bb82bb8](https://github.com/adobe/helix-rum-collector/commit/bb82bb8a355e03e17baebc46cd0d548d0545858b))
+* update test to assert 400 status for invalid favicon path ([e9d3692](https://github.com/adobe/helix-rum-collector/commit/e9d3692a462db3d71907bcdacd86560d89c7a6ec))
+* update test to assert 404 status for non-existent favicon and add case for rejecting partially encoded paths ([035636f](https://github.com/adobe/helix-rum-collector/commit/035636f50c70580f7a3a169dd428a4ef519a36e8))
+
 # [2.40.0](https://github.com/adobe/helix-rum-collector/compare/v2.39.0...v2.40.0) (2025-05-22)
 
 
