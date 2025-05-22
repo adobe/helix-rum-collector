@@ -175,13 +175,21 @@ import assert from 'assert';
       if (!process.env.TEST_INTEGRATION) {
         this.skip();
       }
+
+      const startTime = Date.now();
       const response = await fetch(`https://${domain}/.rum/@adobe/helix-rum-js@^1/src/index.js`, {
         method: 'GET',
       });
       assert.strictEqual(response.status, 200);
+      assert(Date.now() - startTime < 1000, 'Response took too long');
+
       // eslint-disable-next-line no-unused-expressions
       assert.match(response.headers.get('content-type'), /^text\/javascript/);
       assert.strictEqual(response.headers.get('x-frame-options'), 'DENY');
+      assert(
+        response.headers.get('x-rum-trace').startsWith('be-'),
+        'This request cannot be served by the helix backend, so should use the package registries',
+      );
     });
 
     it('rum js module is served with compression', async function test() {
@@ -219,6 +227,42 @@ import assert from 'assert';
       const maxAge = Number(maHeader.split('=')[1]);
       assert(maxAge > 3600, 'Should have a max cache age greater than 3600');
       assert.strictEqual(respSpecific.headers.get('x-frame-options'), 'DENY');
+    });
+
+    it('rum js is served from helix backend', async function test() {
+      if (!process.env.TEST_INTEGRATION) {
+        this.skip();
+      }
+
+      const startTime = Date.now();
+      const respRange = await fetch(`https://${domain}/.rum/@adobe/helix-rum-js@~2.11.4/dist/rum-standalone.js`);
+      assert.strictEqual(respRange.status, 200);
+      assert.strictEqual('hlx', respRange.headers.get('x-rum-trace'));
+      assert(Date.now() - startTime < 1000, 'Response took too long');
+
+      const startTime2 = Date.now();
+      const respSpecific = await fetch(`https://${domain}/.rum/@adobe/helix-rum-js@2.11.4/dist/rum-standalone.js`);
+      assert.strictEqual(respSpecific.status, 200);
+      assert.strictEqual('hlx', respSpecific.headers.get('x-rum-trace'));
+      assert(Date.now() - startTime2 < 1000, 'Response took too long');
+    });
+
+    it('rum enhancer is served from helix backend', async function test() {
+      if (!process.env.TEST_INTEGRATION) {
+        this.skip();
+      }
+
+      const startTime = Date.now();
+      const respRange = await fetch(`https://${domain}/.rum/@adobe/helix-rum-enhancer@%5E2/src/index.js`);
+      assert.strictEqual(respRange.status, 200);
+      assert.strictEqual('hlx', respRange.headers.get('x-rum-trace'));
+      assert(Date.now() - startTime < 1000, 'Response took too long');
+
+      const startTime2 = Date.now();
+      const respSpecific = await fetch(`https://${domain}/.rum/@adobe/helix-rum-enhancer@2.34.3/src/index.js`);
+      assert.strictEqual(respSpecific.status, 200);
+      assert.strictEqual('hlx', respSpecific.headers.get('x-rum-trace'));
+      assert(Date.now() - startTime2 < 1000, 'Response took too long');
     });
 
     it.skip('rum js module is being served with default replacements', async function test() {
