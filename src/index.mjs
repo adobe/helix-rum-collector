@@ -156,11 +156,13 @@ export async function main(req, ctx) {
   }
   const { pathname } = new URL(req.url);
 
-  // Reject double-encoded URLs (which contain %25 as that is the percent sign)
-  // Also reject paths that contain '..' but decode the URL first as it might be encoded
-  if ((pathname.includes('%') && !(pathname.includes('%5E') || pathname.includes('%5e')))
-    || decodeURI(pathname).includes('..')
-    || decodeURI(pathname).includes(':')) {
+  // Reject all encoded characters except %5E (^) when used for semantic versioning
+  // i.e. allow patterns like @package@%5E2.0.0 but reject any other % encoding
+  const validVersionPattern = /%5[Ee](?:\d|$)/;
+  const hasInvalidEncoding = pathname.includes('%')
+    && !pathname.split('/').every((segment) => !segment.includes('%') || validVersionPattern.test(segment));
+
+  if (hasInvalidEncoding || decodeURI(pathname).includes('..') || decodeURI(pathname).includes(':')) {
     return respondError('Invalid path', 400, undefined, req);
   }
 
