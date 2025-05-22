@@ -374,7 +374,7 @@ import assert from 'assert';
       }
 
       const resp = await fetch(`https://${domain}/.rum/@adobe/helix-rum-js@%5E1/src/.%252e%252f.%252e%252f.%252e%252ffavicon.ico`);
-      assert.strictEqual(resp.status, 404);
+      assert.strictEqual(resp.status, 400);
       const respTxt = await resp.text();
       assert(respTxt.startsWith('Invalid path'));
       assert.strictEqual(resp.headers.get('x-frame-options'), 'DENY');
