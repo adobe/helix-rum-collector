@@ -16,7 +16,7 @@ import { it, describe } from 'node:test';
 import { cleanPath } from '../src/privacy.mjs';
 
 // List of common words
-const commonWords = [
+export const commonWords = [
   'other', 'there', 'which', 'their', 'about', 'write', 'would', 'these', 'thing', 'could',
   'number', 'sound', 'people', 'water', 'first', 'place', 'after', 'little', 'round', 'year',
   'bring', 'every', 'great', 'think', 'right', 'state', 'three', 'small', 'again', 'point',
@@ -56,7 +56,7 @@ const commonWords = [
 ];
 
 // List of quasi-PNRs
-const quasiPNRs = [
+export const quasiPNRs = [
   'TRCSER', 'ZTJSPR', 'UDDKHA', 'YBNMBR', 'LPLVVK', 'BNCHHG', 'XCFHVB', 'XDOHND', 'ZXMPQM', 'PUYVBI',
   'XUNFOI', 'JWBVZZ', 'YXCCIL', 'QSCRHF', 'VTRQED', 'SRSBUT', 'ARAFZH', 'WNGYXY', 'XMRZQX', 'SDHIXX',
   'TVPJBU', 'ZHXLDF', 'PAJQJZ', 'FDNCXL', 'SMJLSM', 'HQOQFT', 'TMYBBD', 'AYNYXR', 'AYCWUK', 'NGTMNK',
