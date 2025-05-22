@@ -63,32 +63,28 @@ const filters = {
       }
       if (pnrMatch) {
         const pnr = pnrMatch[0];
+
+        // Calculate Shannon entropy - measures randomness
         const entropy = shannonEntropy(pnr);
-        // Calculate linguistic signals
-        // 1. Check vowel ratio to identify pronounceable words like "GAMERS" and "CIRCLE"
-        const vowels = (pnr.match(/[AEIOU]/g) || []).length;
-        const letters = (pnr.match(/[A-Z]/g) || []).length;
-        const vowelRatio = letters > 0 ? vowels / letters : 0;
 
-        // 2. Check for numbers in the middle (common in PNRs but not in words)
-        const hasMiddleNumbers = /[A-Z][0-9]+[A-Z]/.test(pnr);
+        // Calculate bigram score - measures linguistic naturalness
+        const bgScore = bigramScore(pnr);
 
-        // 3. Base threshold we'll adjust
-        let entropyThreshold = 2.2;
+        // Segments with high entropy and low bigram score are likely PNRs
+        // High entropy = more random/unpredictable
+        // Low bigram score = less likely to be natural language
 
-        // Adjust threshold based on signals
-        // Higher vowel ratio → increase threshold (less likely to mask)
-        if (vowelRatio >= 0.3) {
-          entropyThreshold += 0.5; // Looks more like an English word, substantial increase
-        }
+        // Entropy threshold - higher values indicate more randomness
+        const entropyThreshold = 2.0;
 
-        // Numbers in middle → decrease threshold (more likely to mask)
-        if (hasMiddleNumbers) {
-          entropyThreshold -= 0.3; // Looks more like a PNR
-        }
+        // Bigram score threshold - lower values indicate less natural text
+        // Most natural English words will have higher bigram scores
+        const bigramThreshold = 0.01;
 
-        // Apply the dynamically adjusted threshold
-        if (entropy >= entropyThreshold) {
+        // Classify as PNR if:
+        // 1. Entropy is high (random) OR
+        // 2. Bigram score is low (unnatural language pattern)
+        if (entropy >= entropyThreshold || bgScore <= bigramThreshold) {
           return replaceWith;
         }
       }
