@@ -1,3 +1,10 @@
+## [2.40.2](https://github.com/adobe/helix-rum-collector/compare/v2.40.1...v2.40.2) (2025-05-22)
+
+
+### Bug Fixes
+
+* **privacy:** filter pnrs more agressively based on suspicious path patterns ([bc3b996](https://github.com/adobe/helix-rum-collector/commit/bc3b996f3ecbe33a5ac1f5ae67d36b9808c49ee3))
+
 ## [2.40.1](https://github.com/adobe/helix-rum-collector/compare/v2.40.0...v2.40.1) (2025-05-22)
 
 
