@@ -35,13 +35,17 @@ const filters = {
     const segments = str.split('/');
 
     // Process each segment
-    const processedSegments = segments.map((segment) => {
+    const processedSegments = segments.map((segment, index) => {
       // Skip empty segments (these represent slashes)
       if (!segment) return segment;
 
       // Check if segment matches PNR pattern (5-7 alphanumeric characters)
       const pnrMatch = segment.match(/^([A-Z0-9]{5,7})$/);
 
+      const previousSegment = index > 0 ? segments[index - 1] : null;
+      if (previousSegment === 'trip' && pnrMatch) {
+        return replaceWith;
+      }
       if (pnrMatch) {
         const pnr = pnrMatch[0];
         const entropy = shannonEntropy(pnr);
@@ -70,7 +74,7 @@ const filters = {
 
         // Apply the dynamically adjusted threshold
         if (entropy >= entropyThreshold) {
-          return segment.replace(pnr, replaceWith);
+          return replaceWith;
         }
       }
       return segment;
