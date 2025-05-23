@@ -1,3 +1,10 @@
+## [2.40.3](https://github.com/adobe/helix-rum-collector/compare/v2.40.2...v2.40.3) (2025-05-23)
+
+
+### Bug Fixes
+
+* apply cleanurl to referer in ConsoleLogger, GoogleLogger, and S3Logger ([5e7f567](https://github.com/adobe/helix-rum-collector/commit/5e7f567f36f37cb5b06098dd9af76ef3f475cbf0))
+
 ## [2.40.2](https://github.com/adobe/helix-rum-collector/compare/v2.40.1...v2.40.2) (2025-05-22)
 
 
