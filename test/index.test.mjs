@@ -534,7 +534,7 @@ describe('Test index', () => {
     assert.equal(logged.length, 1);
 
     const ld = JSON.parse(logged[0]);
-    assert.equal(ld.url, 'http://www.acme.org');
+    assert.equal(ld.url, 'http://www.acme.org/');
     assert.equal(ld.weight, 1);
     assert.equal(ld.id, 'xyz123');
     assert.equal(ld.checkpoint, 'top');
