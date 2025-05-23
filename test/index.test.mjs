@@ -521,7 +521,7 @@ describe('Test index', () => {
     const req = {};
     req.headers = new Map();
     req.method = 'POST';
-    req.url = 'http://www.acme.org';
+    req.url = 'http://www.acme.org?this-should-not-be-logged=true';
     req.json = () => ({
       id: 'xyz123',
       checkpoint: 'top',
