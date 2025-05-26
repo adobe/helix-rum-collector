@@ -22,3 +22,5 @@ junit.xml
 src/spiders.mjs
 .idea/
 lcov.info
+models/pii-detection/model.bst
+models/pii-detection/assets/model_metadata.json
