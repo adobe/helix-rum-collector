@@ -94,16 +94,6 @@ This will:
 3. Convert the model to JavaScript format
 4. Save the output to `src/xgboost-model.mjs`
 
-### Generate Compressed Version
-
-To also generate a compressed version of the model:
-
-```bash
-./run.sh --compress
-```
-
-This will additionally create `src/model_trees_compressed.json.gz` with a gzipped version of the model trees.
-
 ### Specify Model Version
 
 To specify a custom model version:
@@ -115,7 +105,6 @@ To specify a custom model version:
 ## Output Files
 
 - **`src/xgboost-model.mjs`**: JavaScript ESM module containing the full model
-- **`src/model_trees_compressed.json.gz`**: (Optional) Compressed version of the model trees
 
 ## Model File Structure
 

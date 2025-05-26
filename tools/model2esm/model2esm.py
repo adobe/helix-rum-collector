@@ -7,7 +7,6 @@ Converts BigQuery ML exported XGBoost models to JavaScript for use in helix-rum-
 import json
 import sys
 import os
-import gzip
 from pathlib import Path
 from datetime import datetime
 import argparse
@@ -69,15 +68,8 @@ def convert_tree(node, feature_names):
         'no': convert_tree(node['children'][1], feature_names)
     }
 
-def compress_trees(trees_json):
-    """Compress the trees JSON using gzip"""
-    json_str = json.dumps(trees_json, separators=(',', ':'))
-    compressed = gzip.compress(json_str.encode('utf-8'))
-    return compressed
-
 def main():
     parser = argparse.ArgumentParser(description='Convert XGBoost model to JavaScript ESM module')
-    parser.add_argument('--compress', action='store_true', help='Generate compressed version of the model')
     parser.add_argument('--version', default='1.1.1.2', help='Model version (default: 1.1.1.2)')
     args = parser.parse_args()
     
@@ -157,17 +149,6 @@ export const model = {{
     # Check file size
     size_mb = os.path.getsize(output_path) / 1024 / 1024
     print(f"File size: {size_mb:.1f} MB")
-    
-    # Generate compressed version if requested
-    if args.compress:
-        compressed_data = compress_trees(converted_trees)
-        compressed_path = SRC_DIR / "model_trees_compressed.json.gz"
-        with open(compressed_path, 'wb') as f:
-            f.write(compressed_data)
-        compressed_size_mb = len(compressed_data) / 1024 / 1024
-        print(f"Compressed model saved to {compressed_path}")
-        print(f"Compressed size: {compressed_size_mb:.1f} MB")
-        print(f"Compression ratio: {size_mb / compressed_size_mb:.1f}x")
 
 if __name__ == "__main__":
     main()
