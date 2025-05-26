@@ -14,3 +14,4 @@ universal/*
 as-pect.config.js
 vendor
 bin
+src/xgboost-model.mjs
