@@ -10,9 +10,12 @@
  * governing permissions and limitations under the License.
  */
 
+/* eslint-disable camelcase */
+
 /**
  * Feature extraction functions for PII detection
  * Based on BigQuery ML model v1.1.1.2
+ * Note: Uses snake_case for feature names to match SQL model
  */
 
 export function calculateEntropy(str) {
@@ -40,7 +43,7 @@ export function calculateIndexOfCoincidence(str) {
   let total = 0;
   for (const char of str.toLowerCase()) {
     freq[char] = (freq[char] || 0) + 1;
-    total++;
+    total += 1;
   }
 
   let sum = 0;
