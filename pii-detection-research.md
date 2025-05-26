@@ -82,6 +82,8 @@ Develop a regression model to distinguish "normal" URL segments from potential P
 | v1 (original) | 93.5% | 97.0% | 95.1% | 95.2% | 98.5% | 50k |
 | v1.1 (query fix) | 94.9% | 98.1% | 96.4% | 96.5% | 98.5% | 50k |
 | **v1.1.1 (boosted trees)** | **99.2%** | **99.6%** | **99.4%** | **99.4%** | **99.99%** | **50k** |
+| v1.1.1.2 (boosted 150k) | 99.1% | 99.6% | 99.4% | 99.4% | 99.95% | 150k |
+| v1.1.1.3 (boosted 250k) | 99.0% | 99.7% | 99.3% | 99.3% | 99.94% | 250k |
 | v1.1.1.1 (boosted 500k) | 97.9% | 99.7% | 98.8% | 98.8% | 99.75% | 500k |
 | v1.1.2 (DNN)* | - | - | - | - | - | 50k |
 | v1.1.3 (bigram vector) | 93.5% | 97.5% | 95.4% | 95.5% | 98.7% | 50k |
@@ -155,32 +157,36 @@ Develop a regression model to distinguish "normal" URL segments from potential P
 
 ### Key Discovery: Smaller Datasets Perform Better
 
-Analysis of training vs evaluation loss reveals:
+Analysis of training vs evaluation loss reveals a clear inverse relationship between dataset size and performance:
 
 | Model | Dataset | Train Loss | Eval Loss | Gap | Gap % | F1 Score |
 |-------|---------|------------|-----------|-----|-------|----------|
-| v1.1.1 | 50k | 0.0132 | 0.0220 | 0.0089 | 67.3% | 99.4% |
-| v1.1.1.1 | 500k | 0.0454 | 0.0466 | 0.0012 | 2.7% | 98.8% |
+| v1.1.1 | 50k | 0.0132 | 0.0220 | 0.0089 | 67.3% | 99.42% |
+| v1.1.1.2 | 150k | 0.0178 | 0.0248 | 0.0069 | 38.8% | 99.38% |
+| v1.1.1.3 | 250k | 0.0243 | 0.0273 | 0.0030 | 12.2% | 99.32% |
+| v1.1.1.1 | 500k | 0.0454 | 0.0466 | 0.0012 | 2.7% | 98.78% |
 
 ### Insights:
 
-1. **v1.1.1 (50k) shows significant overfitting (67% gap) BUT achieves better test performance**
-   - The overfitting captures subtle PII patterns
-   - The 50k sample from one day was highly representative
-   - "Good overfitting" on high-quality data
+1. **Performance decreases linearly with dataset size**
+   - 50k → 150k: -0.04% F1 (minimal impact)
+   - 150k → 250k: -0.06% F1 (still acceptable)
+   - 250k → 500k: -0.54% F1 (significant drop)
 
-2. **v1.1.1.1 (500k) generalizes well (2.7% gap) BUT performs worse**
-   - Year-to-date data introduces noise and distribution shifts
-   - Seasonal variations dilute the signal
-   - Model learns average patterns across diverse data
+2. **Overfitting decreases as dataset grows**
+   - 50k: 67.3% gap (high overfitting, best performance)
+   - 150k: 38.8% gap (moderate overfitting, excellent performance)
+   - 250k: 12.2% gap (low overfitting, good performance)
+   - 500k: 2.7% gap (minimal overfitting, worst performance)
 
-3. **Optimal dataset size appears to be between 50k-200k records**
-   - Large enough to capture patterns
-   - Small enough to avoid noise
-   - Focused temporal window (1-7 days) preferred over long ranges
+3. **The sweet spot is v1.1.1.2 (150k records)**
+   - 99.38% F1 score (only 0.04% below the best)
+   - 38.8% overfitting (more reasonable than 67.3%)
+   - 3-day temporal window maintains data consistency
+   - Best balance of performance and generalization
 
-### Recommendations for Future Models:
-- Target 100k-150k records for optimal balance
-- Sample from specific time windows rather than long periods
-- Prioritize data quality and temporal consistency over quantity
-- Accept moderate overfitting if test performance remains strong
+### Final Recommendations:
+- **Production model: v1.1.1 (50k)** if maximum accuracy is critical
+- **Alternative: v1.1.1.2 (150k)** for better generalization with minimal performance loss
+- Avoid datasets larger than 250k as performance degrades significantly
+- Focus on high-quality, temporally consistent data over quantity
