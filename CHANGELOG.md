@@ -1,3 +1,10 @@
+## [2.40.5](https://github.com/adobe/helix-rum-collector/compare/v2.40.4...v2.40.5) (2025-05-28)
+
+
+### Bug Fixes
+
+* update iconUrl in .releaserc.js to use the correct AEM domain ([8a50d38](https://github.com/adobe/helix-rum-collector/commit/8a50d383b0ee06bac95aea5bea86814ba31a9dab))
+
 ## [2.40.4](https://github.com/adobe/helix-rum-collector/compare/v2.40.3...v2.40.4) (2025-05-28)
 
 
