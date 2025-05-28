@@ -1,3 +1,10 @@
+## [2.40.4](https://github.com/adobe/helix-rum-collector/compare/v2.40.3...v2.40.4) (2025-05-28)
+
+
+### Bug Fixes
+
+* **hlx:** add CORS headers to helix-rum-enhancer responses and update tests ([5366729](https://github.com/adobe/helix-rum-collector/commit/5366729b291f24f9620e90c7725430117d5b473a))
+
 ## [2.40.3](https://github.com/adobe/helix-rum-collector/compare/v2.40.2...v2.40.3) (2025-05-23)
 
 
