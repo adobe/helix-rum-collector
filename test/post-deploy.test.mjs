@@ -414,5 +414,35 @@ import assert from 'assert';
       assert.strictEqual(resp.status, 404, `Expected 404 but got ${resp.status}. Response body: ${respTxt}`);
       assert.strictEqual(resp.headers.get('x-frame-options'), 'DENY');
     });
+
+    it('CORS headers are set for helix-rum-enhancer cwv plugin', async function test() {
+      if (!process.env.TEST_INTEGRATION) {
+        this.skip();
+      }
+      const response = await fetch(`https://${domain}/.rum/@adobe/helix-rum-enhancer@%5E2/src/plugins/cwv.js`, {
+        method: 'GET',
+      });
+      assert.strictEqual(response.status, 200);
+      assert.strictEqual(response.headers.get('access-control-allow-origin'), '*');
+      assert.strictEqual(response.headers.get('access-control-allow-methods'), 'GET, HEAD, OPTIONS');
+      assert.strictEqual(response.headers.get('access-control-allow-headers'), '*');
+      assert.strictEqual(response.headers.get('access-control-expose-headers'), '*');
+      assert.strictEqual(response.headers.get('x-frame-options'), 'DENY');
+    });
+
+    it('CORS headers are set for helix-rum-enhancer webcomponent plugin', async function test() {
+      if (!process.env.TEST_INTEGRATION) {
+        this.skip();
+      }
+      const response = await fetch(`https://${domain}/.rum/@adobe/helix-rum-enhancer@%5E2/src/plugins/webcomponent.js`, {
+        method: 'GET',
+      });
+      assert.strictEqual(response.status, 200);
+      assert.strictEqual(response.headers.get('access-control-allow-origin'), '*');
+      assert.strictEqual(response.headers.get('access-control-allow-methods'), 'GET, HEAD, OPTIONS');
+      assert.strictEqual(response.headers.get('access-control-allow-headers'), '*');
+      assert.strictEqual(response.headers.get('access-control-expose-headers'), '*');
+      assert.strictEqual(response.headers.get('x-frame-options'), 'DENY');
+    });
   });
 });
