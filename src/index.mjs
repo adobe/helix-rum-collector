@@ -232,18 +232,21 @@ export async function main(req, ctx) {
     });
 
     try {
-      if (ctx?.runtime?.name === 'compute-at-edge') {
+      const ref = referer || referrer;
+      if (typeof ref === 'string' && ref.startsWith('https://www.ups.com')) {
+        // temp ignore
+      } else if (ctx?.runtime?.name === 'compute-at-edge') {
         const c = new CoralogixLogger(req);
-        c.logRUM(cwv, id, weight, referer || referrer, generation, checkpoint, target, source, t);
+        c.logRUM(cwv, id, weight, ref, generation, checkpoint, target, source, t);
 
         const s = new S3Logger(req);
-        s.logRUM(cwv, id, weight, referer || referrer, generation, checkpoint, target, source, t);
+        s.logRUM(cwv, id, weight, ref, generation, checkpoint, target, source, t);
 
         const g = new GoogleLogger(req);
-        g.logRUM(cwv, id, weight, referer || referrer, generation, checkpoint, target, source, t);
+        g.logRUM(cwv, id, weight, ref, generation, checkpoint, target, source, t);
       } else {
         const l = new ConsoleLogger(req, ctx?.altConsole);
-        l.logRUM(cwv, id, weight, referer || referrer, generation, checkpoint, target, source, t);
+        l.logRUM(cwv, id, weight, ref, generation, checkpoint, target, source, t);
       }
     } catch (err) {
       return respondError(`Could not collect RUM: ${err.message}`, 500, err, req);
