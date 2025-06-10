@@ -10,8 +10,8 @@
  * governing permissions and limitations under the License.
  */
 /* eslint-env mocha */
-import { describe, it } from 'node:test';
 import assert from 'assert';
+import { describe, it } from 'node:test';
 
 [
   {
@@ -398,6 +398,18 @@ import assert from 'assert';
       }
 
       const resp = await fetch(`https://${domain}/.rum/web-vitals/.%09./web-vitalsxyz/demo.html?pkgreg=unpkg`);
+      assert.strictEqual(resp.status, 400);
+      const respTxt = await resp.text();
+      assert(respTxt.startsWith('Invalid path'));
+      assert.strictEqual(resp.headers.get('x-frame-options'), 'DENY');
+    });
+
+    it('Reject paths that contain partially encoded ". ." with additional characters', async function test() {
+      if (!process.env.TEST_INTEGRATION) {
+        this.skip();
+      }
+
+      const resp = await fetch(`https://${domain}/.rum/web-vitals/.%09.%2Fweb-vitalsxyz%2FDEMO.html%23%5E?pkgreg=unpkg`);
       assert.strictEqual(resp.status, 400);
       const respTxt = await resp.text();
       assert(respTxt.startsWith('Invalid path'));
