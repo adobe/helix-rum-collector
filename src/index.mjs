@@ -12,14 +12,14 @@
 
 /* eslint-env serviceworker */
 
-import { GoogleLogger } from './google-logger.mjs';
-import { CoralogixLogger } from './coralogix-logger.mjs';
-import { CoralogixErrorLogger } from './coralogix-error-logger.mjs';
 import { ConsoleLogger } from './console-logger.mjs';
-import { S3Logger } from './s3-logger.mjs';
-import { respondRobots } from './robots.mjs';
+import { CoralogixErrorLogger } from './coralogix-error-logger.mjs';
+import { CoralogixLogger } from './coralogix-logger.mjs';
+import { GoogleLogger } from './google-logger.mjs';
 import { respondHelixPkgReg } from './hlxpkgreg.mjs';
 import { respondJsdelivr } from './jsdelivr.mjs';
+import { respondRobots } from './robots.mjs';
+import { S3Logger } from './s3-logger.mjs';
 import { respondUnpkg } from './unpkg.mjs';
 
 const REGISTRY_TIMEOUT_MS = 5000;
@@ -159,8 +159,15 @@ export async function main(req, ctx) {
   // Reject all encoded characters except %5E (^) when used for semantic versioning
   // i.e. allow patterns like @package@%5E2.0.0 but reject any other % encoding
   const validVersionPattern = /%5[Ee](?:\d|$)/;
+
+  console.log(pathname, pathname.split('/'));
+
   const hasInvalidEncoding = pathname.includes('%')
-    && !pathname.split('/').every((segment) => !segment.includes('%') || validVersionPattern.test(segment));
+    && !pathname
+      .split('/')
+      .every((segment) => !segment.includes('%')
+        || (segment.match(/%/g).length === 1 // exactly one % sign is allowed
+          && validVersionPattern.test(segment))); // and only if it's the ^ character
 
   if (hasInvalidEncoding || decodeURI(pathname).includes('..') || decodeURI(pathname).includes(':')) {
     return respondError('Invalid path', 400, undefined, req);
