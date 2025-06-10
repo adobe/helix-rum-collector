@@ -11,7 +11,7 @@
  */
 /* eslint-env mocha */
 import assert from 'assert';
-import { it, describe, before } from 'node:test';
+import { before, describe, it } from 'node:test';
 // eslint-disable-next-line import/no-extraneous-dependencies
 import esmock from 'esmock';
 import { lastLogMessage } from '../src/logger.mjs';
@@ -577,6 +577,18 @@ describe('Test index', () => {
       headers,
       method: 'GET',
       url: 'http://foo.bar.org/.rum/@adobe/helix-rum-js@%5E2.0.0/dist/rum%20js',
+    };
+
+    const resp = await methods.main(req, {});
+    assert.strictEqual(resp.status, 400);
+  });
+
+  it('rejects paths with both %5E and other percent encodings elsewhere', async () => {
+    const headers = new Map();
+    const req = {
+      headers,
+      method: 'GET',
+      url: 'http://foo.bar.org/.rum/web-vitals/.%09.%2Fweb-vitalsxyz%2FDEMO.html%23%5E',
     };
 
     const resp = await methods.main(req, {});
