@@ -1,3 +1,10 @@
+## [2.40.6](https://github.com/adobe/helix-rum-collector/compare/v2.40.5...v2.40.6) (2025-06-10)
+
+
+### Bug Fixes
+
+* **index:** Improve version character validation in URL segments ([1e008a5](https://github.com/adobe/helix-rum-collector/commit/1e008a583452f54319bce9dfddf8e9638cd4ecfc))
+
 ## [2.40.5](https://github.com/adobe/helix-rum-collector/compare/v2.40.4...v2.40.5) (2025-05-28)
 
 
