@@ -160,8 +160,6 @@ export async function main(req, ctx) {
   // i.e. allow patterns like @package@%5E2.0.0 but reject any other % encoding
   const validVersionPattern = /%5[Ee](?:\d|$)/;
 
-  console.log(pathname, pathname.split('/'));
-
   const hasInvalidEncoding = pathname.includes('%')
     && !pathname
       .split('/')
