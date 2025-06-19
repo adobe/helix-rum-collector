@@ -46,7 +46,7 @@ export class CoralogixLogger {
 
     let severity = 3;
     if (checkpoint === 'error') severity = 4;
-    if (!isReasonableWeight(weight)) severity = 4;
+    if (weight !== 1) return; // Only log to Coralogix if weight is 1
     if (!isValidCheckpoint(checkpoint)) severity = 4;
     if (!isValidId(id)) severity = 4;
 

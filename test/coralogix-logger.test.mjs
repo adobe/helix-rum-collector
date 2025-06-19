@@ -16,6 +16,36 @@ import { lastLogMessage } from '../src/logger.mjs';
 import { CoralogixLogger } from '../src/coralogix-logger.mjs';
 
 describe('Test Coralogix Logger', () => {
+  it('Test log ignored with unmatching weight', () => {
+    const headers = new Map();
+    headers.set('x-forwarded-host', 'www.foo.com');
+    headers.set('user-agent', 'Mozilla/5.0 (compatible; HubSpot Crawler; +https://www.hubspot.com)');
+    const method = 'GET';
+    const url = new URL('http://www.foo.com/testing123');
+
+    const req = { headers, method, url };
+
+    const cl = new CoralogixLogger(req);
+
+    const now = Date.now();
+
+    lastLogMessage.length = 0; // Clear the last log message
+    const myJSON = { foo: 'bar', zoo: 777 };
+    cl.logRUM(
+      myJSON,
+      '123',
+      3,
+      undefined,
+      42,
+      12345,
+      'http://www.foo.com/testing123',
+      'http://www.foo.com/somesource',
+      999,
+      now,
+    );
+    assert.equal(lastLogMessage.length, 0, 'No log should be created with weight != 1');
+  });
+
   it('Test log RUM', () => {
     const headers = new Map();
     headers.set('x-forwarded-host', 'www.foo.com');
@@ -32,7 +62,7 @@ describe('Test Coralogix Logger', () => {
     cl.logRUM(
       myJSON,
       '123',
-      3,
+      1,
       undefined,
       42,
       12345,
@@ -68,7 +98,7 @@ describe('Test Coralogix Logger', () => {
     assert.equal(12345, loggedJSON.rum.checkpoint);
     assert.equal('http://www.foo.com/testing123', loggedJSON.rum.target);
     assert.equal('http://www.foo.com/somesource', loggedJSON.rum.source);
-    assert.equal(3, loggedJSON.rum.weight);
+    assert.equal(1, loggedJSON.rum.weight);
     assert.equal('bar', loggedJSON.rum.foo);
     assert.equal(777, loggedJSON.rum.zoo);
   });
