@@ -13,7 +13,6 @@ import { Logger } from './logger.mjs';
 import {
   bloatControl,
   cleanurl, getMaskedTime, getMaskedUserAgent, getSubsystem,
-  isReasonableWeight,
   isValidCheckpoint,
   isValidId,
 } from './utils.mjs';
