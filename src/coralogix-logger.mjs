@@ -41,7 +41,7 @@ export class CoralogixLogger {
     now = Date.now(),
   ) {
     const maskedUA = getMaskedUserAgent(this.req.headers);
-    // Only log to Coralogix if weight is 1, or if its an unknown bot
+    // Only log to Coralogix if weight is 1, or if its an unknown agent or unknown bot
     if (weight !== 1 && maskedUA !== 'bot' && maskedUA !== 'undefined') return;
 
     const maskedNow = getMaskedTime(timePadding);
