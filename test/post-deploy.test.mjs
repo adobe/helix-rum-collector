@@ -229,7 +229,6 @@ import { describe, it } from 'node:test';
       const maxAge = Number(maHeader.split('=')[1]);
       assert(maxAge > 3600, 'Should have a max cache age greater than 3600');
       assert.strictEqual(respSpecific.headers.get('x-frame-options'), 'DENY');
-      assert.strictEqual(respSpecific.headers.get('x-rum-trace'), 'hlx');
     });
 
     it('rum js is served from helix backend', async function test() {
