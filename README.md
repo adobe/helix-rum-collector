@@ -42,7 +42,6 @@ The payload of a typical request looks like this:
 
 - `POST`
 
-
 ### Supported Headers
 
 - `User-Agent`
