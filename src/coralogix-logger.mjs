@@ -13,7 +13,6 @@ import { Logger } from './logger.mjs';
 import {
   bloatControl,
   cleanurl, getMaskedTime, getMaskedUserAgent, getSubsystem,
-  isReasonableWeight,
   isValidCheckpoint,
   isValidId,
 } from './utils.mjs';
@@ -41,12 +40,13 @@ export class CoralogixLogger {
     timePadding,
     now = Date.now(),
   ) {
-    console.log(`logging to Coralogix: ${typeof this.logger}`);
-    const maskedNow = getMaskedTime(timePadding);
+    const maskedUA = getMaskedUserAgent(this.req.headers);
+    // Only log to Coralogix if weight is 1, or if its an unknown agent or unknown bot
+    if (weight !== 1 && maskedUA !== 'bot' && maskedUA !== 'undefined') return;
 
+    const maskedNow = getMaskedTime(timePadding);
     let severity = 3;
     if (checkpoint === 'error') severity = 4;
-    if (!isReasonableWeight(weight)) severity = 4;
     if (!isValidCheckpoint(checkpoint)) severity = 4;
     if (!isValidId(id)) severity = 4;
 
@@ -83,7 +83,7 @@ export class CoralogixLogger {
           target: cleanurl(target),
           source: cleanurl(source),
           weight,
-          user_agent: getMaskedUserAgent(this.req.headers),
+          user_agent: maskedUA,
           ...json,
         },
       }),
