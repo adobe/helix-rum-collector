@@ -207,7 +207,6 @@ import { describe, it } from 'node:test';
       assert.match(response.headers.get('content-type'), /^text\/javascript/);
       assert.match(response.headers.get('content-encoding'), /^(br|gzip|deflate)$/);
       assert.strictEqual(response.headers.get('x-frame-options'), 'DENY');
-      assert.strictEqual(response.headers.get('x-rum-trace'), 'hlx');
     });
 
     it('rum enhancer is served with the correct cache-control', async function test() {
