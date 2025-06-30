@@ -1,3 +1,10 @@
+## [2.40.7](https://github.com/adobe/helix-rum-collector/compare/v2.40.6...v2.40.7) (2025-06-30)
+
+
+### Bug Fixes
+
+* **coralogix:** only log to Coralogix if weight === 1 or is user agent is unknown or unknown bot ([#524](https://github.com/adobe/helix-rum-collector/issues/524)) ([0f2e059](https://github.com/adobe/helix-rum-collector/commit/0f2e059be2691bc6246716ea7dc9400dc127e866))
+
 ## [2.40.6](https://github.com/adobe/helix-rum-collector/compare/v2.40.5...v2.40.6) (2025-06-10)
 
 
