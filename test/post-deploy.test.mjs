@@ -219,6 +219,7 @@ import { describe, it } from 'node:test';
       const ccHeader = respRange.headers.get('cache-control').split(',');
       assert(ccHeader.find((header) => header.trim() === 'max-age=3600'), 'Should have a max cache age of 3600');
       assert.strictEqual(respRange.headers.get('x-frame-options'), 'DENY');
+      assert.strictEqual(respRange.headers.get('x-rum-trace'), 'hlx');
 
       const respSpecific = await fetch(`https://${domain}/.rum/@adobe/helix-rum-enhancer@2.33.0/src/index.js`);
       assert.strictEqual(respSpecific.status, 200);
@@ -278,6 +279,7 @@ import { describe, it } from 'node:test';
       const text = await response.text();
       assert.include(text, 'adobe-helix-rum-js-1.0.0');
       assert.strictEqual(response.headers.get('x-frame-options'), 'DENY');
+      assert.strictEqual(response.headers.get('x-rum-trace'), 'hlx');
     });
 
     it('Missing id returns 400', async function test() {
@@ -440,6 +442,7 @@ import { describe, it } from 'node:test';
       assert.strictEqual(response.headers.get('access-control-allow-headers'), '*');
       assert.strictEqual(response.headers.get('access-control-expose-headers'), '*');
       assert.strictEqual(response.headers.get('x-frame-options'), 'DENY');
+      assert.strictEqual(response.headers.get('x-rum-trace'), 'hlx');
     });
 
     it('CORS headers are set for helix-rum-enhancer webcomponent plugin', async function test() {
@@ -455,6 +458,7 @@ import { describe, it } from 'node:test';
       assert.strictEqual(response.headers.get('access-control-allow-headers'), '*');
       assert.strictEqual(response.headers.get('access-control-expose-headers'), '*');
       assert.strictEqual(response.headers.get('x-frame-options'), 'DENY');
+      assert.strictEqual(response.headers.get('x-rum-trace'), 'hlx');
     });
   });
 });
