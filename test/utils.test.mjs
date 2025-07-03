@@ -18,6 +18,7 @@ import {
   getForwardedHost,
   getMaskedUserAgent,
   getSubsystem,
+  isValidCheckpoint,
   isValidId,
   maskTime,
   sourceTargetValidator,
