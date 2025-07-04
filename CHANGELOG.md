@@ -1,3 +1,11 @@
+# [2.41.0](https://github.com/adobe/helix-rum-collector/compare/v2.40.7...v2.41.0) (2025-07-04)
+
+
+### Features
+
+* **a11y:** add support for a new accessibility checkpoint ([bb1efb3](https://github.com/adobe/helix-rum-collector/commit/bb1efb3eba32729997bbf5f88deb6aeaeee287b4))
+* **a11y:** add support for a new accessibilty checkpoint ([3378f75](https://github.com/adobe/helix-rum-collector/commit/3378f753e339923349f036ce58732830d448bcba))
+
 ## [2.40.7](https://github.com/adobe/helix-rum-collector/compare/v2.40.6...v2.40.7) (2025-06-30)
 
 
