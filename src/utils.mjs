@@ -41,6 +41,7 @@ export function isValidCheckpoint(checkpoint) {
     // 'lcp', // not needed anymore, helix-specific
     'missingresource',
     'audience',
+    'a11y',
     'experiment',
     'formsubmit',
     '404',
@@ -78,6 +79,7 @@ export function isValidCheckpoint(checkpoint) {
 }
 
 export const sourceTargetValidator = {
+  a11y: (source = '') => source === 'on' || source === 'off',
   audience: (source = '', target = '') => source.match(/^[\w-]+$/)
     && target.match(/^[\w-:]+$/)
     && ['default', ...target.split(':')].includes(source),

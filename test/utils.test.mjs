@@ -18,6 +18,7 @@ import {
   getForwardedHost,
   getMaskedUserAgent,
   getSubsystem,
+  isValidCheckpoint,
   isValidId,
   maskTime,
   sourceTargetValidator,
@@ -226,6 +227,27 @@ Pellentesque viverra id magna vel varius. Lorem ipsum dolor sit amet, consectetu
         assert.ok(!sourceTargetValidator.experiment('foo', 'bar:baz'));
         assert.ok(!sourceTargetValidator.experiment('foo bar', 'baz qux'));
         assert.ok(!sourceTargetValidator.experiment('foo!', 'bar?'));
+      });
+    });
+
+    describe('a11y', () => {
+      it('validates the checkpoint', () => {
+        assert.ok(isValidCheckpoint('a11y'));
+      });
+
+      it('has a validator for the "a11y" checkpoint', () => {
+        assert.ok(sourceTargetValidator.a11y);
+      });
+
+      it('validates that source is on or off', () => {
+        assert.ok(sourceTargetValidator.a11y('on'));
+        assert.ok(sourceTargetValidator.a11y('off'));
+        assert.ok(sourceTargetValidator.a11y('on', 'ignored'));
+        assert.ok(sourceTargetValidator.a11y('off', 'ignored'));
+
+        assert.ok(!sourceTargetValidator.a11y('true'));
+        assert.ok(!sourceTargetValidator.a11y(''));
+        assert.ok(!sourceTargetValidator.a11y());
       });
     });
   });
