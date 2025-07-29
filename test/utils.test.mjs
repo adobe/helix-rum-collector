@@ -239,13 +239,19 @@ Pellentesque viverra id magna vel varius. Lorem ipsum dolor sit amet, consectetu
         assert.ok(sourceTargetValidator.a11y);
       });
 
-      it('validates that source is on or off', () => {
-        assert.ok(sourceTargetValidator.a11y('on'));
+      it('validates that source is off, on, low, medium, or high', () => {
         assert.ok(sourceTargetValidator.a11y('off'));
+        assert.ok(sourceTargetValidator.a11y('on'));
+        assert.ok(sourceTargetValidator.a11y('low'));
+        assert.ok(sourceTargetValidator.a11y('medium'));
+        assert.ok(sourceTargetValidator.a11y('high'));
         assert.ok(sourceTargetValidator.a11y('on', 'ignored'));
         assert.ok(sourceTargetValidator.a11y('off', 'ignored'));
 
         assert.ok(!sourceTargetValidator.a11y('true'));
+        assert.ok(!sourceTargetValidator.a11y('false'));
+        assert.ok(!sourceTargetValidator.a11y('enabled'));
+        assert.ok(!sourceTargetValidator.a11y('disabled'));
         assert.ok(!sourceTargetValidator.a11y(''));
         assert.ok(!sourceTargetValidator.a11y());
       });

@@ -79,7 +79,7 @@ export function isValidCheckpoint(checkpoint) {
 }
 
 export const sourceTargetValidator = {
-  a11y: (source = '') => source === 'on' || source === 'off',
+  a11y: (source = '') => ['off', 'on', 'low', 'medium', 'high'].includes(source),
   audience: (source = '', target = '') => source.match(/^[\w-]+$/)
     && target.match(/^[\w-:]+$/)
     && ['default', ...target.split(':')].includes(source),
