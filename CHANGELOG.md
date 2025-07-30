@@ -1,3 +1,11 @@
+# [2.42.0](https://github.com/adobe/helix-rum-collector/compare/v2.41.0...v2.42.0) (2025-07-30)
+
+
+### Features
+
+* allow the new a11y sources ([62e13e5](https://github.com/adobe/helix-rum-collector/commit/62e13e5f49e414e47eedf2460f231f2fea83ef12)), closes [adobe/helix-rum-enhancer#456](https://github.com/adobe/helix-rum-enhancer/issues/456)
+* allow the new a11y soures ([3308c2a](https://github.com/adobe/helix-rum-collector/commit/3308c2a65db90d7fc1a302b9e19d9da4b704a618))
+
 # [2.41.0](https://github.com/adobe/helix-rum-collector/compare/v2.40.7...v2.41.0) (2025-07-04)
 
 
