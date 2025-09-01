@@ -1,3 +1,11 @@
+# [2.43.0](https://github.com/adobe/helix-rum-collector/compare/v2.42.0...v2.43.0) (2025-09-01)
+
+
+### Features
+
+* add Do Not Track (DNT) functionality ([c4b7683](https://github.com/adobe/helix-rum-collector/commit/c4b76835b13bfd4d72d8ec7f77c2928f5351702d))
+* **security:** add Tk header to response for tracking compliance ([043972b](https://github.com/adobe/helix-rum-collector/commit/043972b526d6a8053d316ee80ef951a412d38b92))
+
 # [2.42.0](https://github.com/adobe/helix-rum-collector/compare/v2.41.0...v2.42.0) (2025-07-30)
 
 
