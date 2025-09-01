@@ -66,6 +66,7 @@ export function cleanupHeaders(resp, addHeaders) {
   newHeaders.set('Cross-Origin-Resource-Policy', 'cross-origin');
   newHeaders.set('X-Frame-Options', 'DENY');
   newHeaders.set('x-compress-hint', 'on');
+  newHeaders.set('Tk', 'N');
 
   const result = new Response(resp.body, {
     headers: newHeaders,
@@ -107,6 +108,7 @@ export async function cleanupResponse(resp, req, newHeaders) {
         'Content-Type': 'text/plain',
         'X-Frame-Options': 'DENY',
         'x-error': `Error: ${resp.status} from backend`,
+        Tk: 'N',
       },
     });
   } catch (e) {
@@ -123,6 +125,7 @@ export function prohibitDirectoryRequest(req) {
         'Content-Type': 'text/plain',
         'x-error': 'Error: Directory listing is not permitted',
         'X-Frame-Options': 'DENY',
+        Tk: 'N',
       },
     });
   }

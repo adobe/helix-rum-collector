@@ -17,6 +17,7 @@ Disallow: /`, {
     headers: {
       'Content-Type': 'text/plain',
       'X-Frame-Options': 'DENY',
+      Tk: 'N',
     },
   });
 }

@@ -31,6 +31,7 @@ function respondError(message, status, e, req) {
     'Content-Type': 'text/plain; charset=utf-8',
     'X-Frame-Options': 'DENY',
     'X-Error': msg,
+    Tk: 'N',
   };
 
   const response = new Response(`${msg}\n`, {
@@ -56,6 +57,7 @@ function respondInfo(ctx) {
     headers: {
       'Content-Type': 'application/json',
       'X-Frame-Options': 'DENY',
+      Tk: 'N',
     },
   });
 }
@@ -67,6 +69,7 @@ export function respondCORS() {
       'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
       'Access-Control-Allow-Headers': 'Content-Type',
       'X-Frame-Options': 'DENY',
+      Tk: 'N',
     },
     status: 204,
   });
