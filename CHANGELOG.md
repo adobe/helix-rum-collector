@@ -1,3 +1,149 @@
+# [2.43.0](https://github.com/adobe/helix-rum-collector/compare/v2.42.0...v2.43.0) (2025-09-01)
+
+
+### Features
+
+* add Do Not Track (DNT) functionality ([c4b7683](https://github.com/adobe/helix-rum-collector/commit/c4b76835b13bfd4d72d8ec7f77c2928f5351702d))
+* **security:** add Tk header to response for tracking compliance ([043972b](https://github.com/adobe/helix-rum-collector/commit/043972b526d6a8053d316ee80ef951a412d38b92))
+
+# [2.42.0](https://github.com/adobe/helix-rum-collector/compare/v2.41.0...v2.42.0) (2025-07-30)
+
+
+### Features
+
+* allow the new a11y sources ([62e13e5](https://github.com/adobe/helix-rum-collector/commit/62e13e5f49e414e47eedf2460f231f2fea83ef12)), closes [adobe/helix-rum-enhancer#456](https://github.com/adobe/helix-rum-enhancer/issues/456)
+* allow the new a11y soures ([3308c2a](https://github.com/adobe/helix-rum-collector/commit/3308c2a65db90d7fc1a302b9e19d9da4b704a618))
+
+# [2.41.0](https://github.com/adobe/helix-rum-collector/compare/v2.40.7...v2.41.0) (2025-07-04)
+
+
+### Features
+
+* **a11y:** add support for a new accessibility checkpoint ([bb1efb3](https://github.com/adobe/helix-rum-collector/commit/bb1efb3eba32729997bbf5f88deb6aeaeee287b4))
+* **a11y:** add support for a new accessibilty checkpoint ([3378f75](https://github.com/adobe/helix-rum-collector/commit/3378f753e339923349f036ce58732830d448bcba))
+
+## [2.40.7](https://github.com/adobe/helix-rum-collector/compare/v2.40.6...v2.40.7) (2025-06-30)
+
+
+### Bug Fixes
+
+* **coralogix:** only log to Coralogix if weight === 1 or is user agent is unknown or unknown bot ([#524](https://github.com/adobe/helix-rum-collector/issues/524)) ([0f2e059](https://github.com/adobe/helix-rum-collector/commit/0f2e059be2691bc6246716ea7dc9400dc127e866))
+
+## [2.40.6](https://github.com/adobe/helix-rum-collector/compare/v2.40.5...v2.40.6) (2025-06-10)
+
+
+### Bug Fixes
+
+* **index:** Improve version character validation in URL segments ([1e008a5](https://github.com/adobe/helix-rum-collector/commit/1e008a583452f54319bce9dfddf8e9638cd4ecfc))
+
+## [2.40.5](https://github.com/adobe/helix-rum-collector/compare/v2.40.4...v2.40.5) (2025-05-28)
+
+
+### Bug Fixes
+
+* update iconUrl in .releaserc.js to use the correct AEM domain ([8a50d38](https://github.com/adobe/helix-rum-collector/commit/8a50d383b0ee06bac95aea5bea86814ba31a9dab))
+
+## [2.40.4](https://github.com/adobe/helix-rum-collector/compare/v2.40.3...v2.40.4) (2025-05-28)
+
+
+### Bug Fixes
+
+* **hlx:** add CORS headers to helix-rum-enhancer responses and update tests ([5366729](https://github.com/adobe/helix-rum-collector/commit/5366729b291f24f9620e90c7725430117d5b473a))
+
+## [2.40.3](https://github.com/adobe/helix-rum-collector/compare/v2.40.2...v2.40.3) (2025-05-23)
+
+
+### Bug Fixes
+
+* apply cleanurl to referer in ConsoleLogger, GoogleLogger, and S3Logger ([5e7f567](https://github.com/adobe/helix-rum-collector/commit/5e7f567f36f37cb5b06098dd9af76ef3f475cbf0))
+
+## [2.40.2](https://github.com/adobe/helix-rum-collector/compare/v2.40.1...v2.40.2) (2025-05-22)
+
+
+### Bug Fixes
+
+* **privacy:** filter pnrs more agressively based on suspicious path patterns ([bc3b996](https://github.com/adobe/helix-rum-collector/commit/bc3b996f3ecbe33a5ac1f5ae67d36b9808c49ee3))
+
+## [2.40.1](https://github.com/adobe/helix-rum-collector/compare/v2.40.0...v2.40.1) (2025-05-22)
+
+
+### Bug Fixes
+
+* enhance URL validation by excluding specific encoded characters and paths with '..' ([e02e79d](https://github.com/adobe/helix-rum-collector/commit/e02e79d2ec2859d48dafa7cfb7617c032476e700))
+* enhance URL validation to allow semantic versioning with %5E and reject other encodings ([cf7beeb](https://github.com/adobe/helix-rum-collector/commit/cf7beeb747710ba984c5ed9d4cd35e8d36ce7ed0))
+* simplify URL validation by rejecting any encoded characters and paths with '..' ([bb82bb8](https://github.com/adobe/helix-rum-collector/commit/bb82bb8a355e03e17baebc46cd0d548d0545858b))
+* update test to assert 400 status for invalid favicon path ([e9d3692](https://github.com/adobe/helix-rum-collector/commit/e9d3692a462db3d71907bcdacd86560d89c7a6ec))
+* update test to assert 404 status for non-existent favicon and add case for rejecting partially encoded paths ([035636f](https://github.com/adobe/helix-rum-collector/commit/035636f50c70580f7a3a169dd428a4ef519a36e8))
+
+# [2.40.0](https://github.com/adobe/helix-rum-collector/compare/v2.39.0...v2.40.0) (2025-05-22)
+
+
+### Features
+
+* **pkg:** serve AEM optel packages from aem.live ([55601c0](https://github.com/adobe/helix-rum-collector/commit/55601c09072664d380c1723709414940345a71e3))
+
+# [2.39.0](https://github.com/adobe/helix-rum-collector/compare/v2.38.2...v2.39.0) (2025-05-21)
+
+
+### Features
+
+* remove convert checkpoint ([4019320](https://github.com/adobe/helix-rum-collector/commit/4019320615c13f812b0466e2ae673fa1ba6071b4))
+
+## [2.38.2](https://github.com/adobe/helix-rum-collector/compare/v2.38.1...v2.38.2) (2025-05-21)
+
+
+### Bug Fixes
+
+* **privacy:** and improve vowel ratio calculation in privacy.js ([7bc44aa](https://github.com/adobe/helix-rum-collector/commit/7bc44aaaabcf4102d5442956bb9a139a8f5b0da6))
+* **privacy:** update JWT regex pattern for improved matching ([1696a27](https://github.com/adobe/helix-rum-collector/commit/1696a271859e1a4cb476fbf7fa93b624fe308025))
+
+## [2.38.1](https://github.com/adobe/helix-rum-collector/compare/v2.38.0...v2.38.1) (2025-05-21)
+
+
+### Reverts
+
+* Revert "Merge pull request [#511](https://github.com/adobe/helix-rum-collector/issues/511) from adobe/more-privacy-filters" ([c02450e](https://github.com/adobe/helix-rum-collector/commit/c02450e95c52790067d46ba0db388b32f4a93502))
+
+# [2.38.0](https://github.com/adobe/helix-rum-collector/compare/v2.37.0...v2.38.0) (2025-05-21)
+
+
+### Bug Fixes
+
+* update URL handling in loggers to use cleanurl and add privacy.js for path sanitization ([0137263](https://github.com/adobe/helix-rum-collector/commit/013726321134c82cab09fdf2faa32b9f488dddc5))
+* update user agent assertion and correct URL format in index tests ([14db69a](https://github.com/adobe/helix-rum-collector/commit/14db69a92e9a4837b337681ad620876a75d91f22))
+
+
+### Features
+
+* enhance privacy.js with PNR cleaning functionality and Shannon entropy calculation ([8ede4ee](https://github.com/adobe/helix-rum-collector/commit/8ede4ee6a7979791ae8bde59e0508896528133be))
+
+# [2.37.0](https://github.com/adobe/helix-rum-collector/compare/v2.36.1...v2.37.0) (2025-05-20)
+
+
+### Bug Fixes
+
+* enhance cleanCode function to handle empty strings gracefully ([4947256](https://github.com/adobe/helix-rum-collector/commit/4947256b36968e4504bec195349a8741c93572af))
+* improve cleanCode function to ensure it returns the original string when no valid replacement is found ([3c3354a](https://github.com/adobe/helix-rum-collector/commit/3c3354a50520162960595d18fb71d4871d6f8b7b))
+
+
+### Features
+
+* add cleanCode function to sanitize trip paths in URLs ([a798f76](https://github.com/adobe/helix-rum-collector/commit/a798f76e14ea3df6b7a925e597a44e20409ce178))
+
+## [2.36.1](https://github.com/adobe/helix-rum-collector/compare/v2.36.0...v2.36.1) (2025-05-20)
+
+
+### Bug Fixes
+
+* **package:** update test command to exclude coverage for test files ([#509](https://github.com/adobe/helix-rum-collector/issues/509)) ([2676de1](https://github.com/adobe/helix-rum-collector/commit/2676de1d90e4cfb7c484b8289895def62024002e))
+
+# [2.36.0](https://github.com/adobe/helix-rum-collector/compare/v2.35.2...v2.36.0) (2025-05-20)
+
+
+### Features
+
+* remove noscript checkpoint ([a676a17](https://github.com/adobe/helix-rum-collector/commit/a676a17d827c00d0d6dc65ead6eac446ac9c7612))
+
 ## [2.35.2](https://github.com/adobe/helix-rum-collector/compare/v2.35.1...v2.35.2) (2025-04-30)
 
 

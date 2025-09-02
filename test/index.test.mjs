@@ -11,7 +11,7 @@
  */
 /* eslint-env mocha */
 import assert from 'assert';
-import { it, describe, before } from 'node:test';
+import { before, describe, it } from 'node:test';
 // eslint-disable-next-line import/no-extraneous-dependencies
 import esmock from 'esmock';
 import { lastLogMessage } from '../src/logger.mjs';
@@ -172,6 +172,32 @@ describe('Test index', () => {
     assert(t.includes('Disallow: /'));
   });
 
+  it('responds to /.well-known/dnt/ endpoint', async () => {
+    const headers = new Map();
+
+    const req = { headers };
+    req.method = 'GET';
+    req.url = 'http://x.y/.well-known/dnt/';
+
+    const resp = await methods.main(req);
+    assert.equal(200, resp.status);
+    assert.equal('application/tracking-status+json', resp.headers.get('Content-Type'));
+    assert.equal('N', resp.headers.get('Tk')); // Check Tk header is set to N (Not tracking)
+  });
+
+  it('responds to /.well-known/dnt-policy.txt endpoint', async () => {
+    const headers = new Map();
+
+    const req = { headers };
+    req.method = 'GET';
+    req.url = 'http://x.y/.well-known/dnt-policy.txt';
+
+    const resp = await methods.main(req);
+    assert.equal(200, resp.status);
+    assert.equal('text/plain', resp.headers.get('Content-Type'));
+    assert.equal('N', resp.headers.get('Tk')); // Check Tk header is set to N (Not tracking)
+  });
+
   async function verifyInput(data, errPrefix) {
     const headers = new Map();
 
@@ -277,7 +303,67 @@ describe('Test index', () => {
 
     const t = await resp.text();
     assert(t.includes('export function sampleRUM'));
-  }); // .timeout(5000);
+  });
+
+  it('serves helix-rum-enhancer from Helix backend', async () => {
+    const headers = new Map();
+
+    const req = { headers };
+    req.method = 'GET';
+    req.url = 'http://x.y/.rum/@adobe/helix-rum-enhancer@2.34.2/src/index.js';
+
+    const startTime = Date.now();
+    const resp = await methods.main(req);
+
+    assert.equal(200, resp.status);
+    assert(resp.ok);
+    assert.equal('hlx', resp.headers.get('x-rum-trace'));
+    assert(Date.now() - startTime < 1000, 'Response took too long');
+
+    const t = await resp.text();
+    assert(t.includes('function initEnhancer()'));
+  });
+
+  it('serves helix-rum-enhancer with encoded wilcard from Helix backend', async () => {
+    const headers = new Map();
+
+    const req = { headers };
+    req.method = 'GET';
+    req.url = 'http://x.y/.rum/@adobe/helix-rum-enhancer@%5E2/src/index.js';
+
+    const startTime = Date.now();
+    const resp = await methods.main(req);
+
+    assert.equal(200, resp.status);
+    assert(resp.ok);
+    assert.equal('hlx', resp.headers.get('x-rum-trace'));
+    assert(Date.now() - startTime < 1000, 'Response took too long');
+
+    const t = await resp.text();
+    assert(t.includes('function initEnhancer()'));
+  });
+
+  it('serves older helix-rum-enhancer with wilcard from package registry', async () => {
+    const headers = new Map();
+
+    const req = { headers };
+    req.method = 'GET';
+    req.url = 'http://x.y/.rum/@adobe/helix-rum-enhancer@^1/src/index.js';
+
+    const startTime = Date.now();
+    const resp = await methods.main(req);
+
+    assert.equal(200, resp.status);
+    assert(resp.ok);
+    assert(
+      resp.headers.get('x-rum-trace').startsWith('be-'),
+      `Expected non-helix backend here ${resp.headers.get('x-rum-trace')}`,
+    );
+    assert(Date.now() - startTime < 1000, 'Response took too long');
+
+    const t = await resp.text();
+    assert(t.includes('new PerformanceObserver'));
+  });
 
   it('responds to helix-rum-js anywhere', async () => {
     const headers = new Map();
@@ -397,6 +483,11 @@ describe('Test index', () => {
   it('No double request on success', async () => {
     const called = [];
     const { main } = await esmock('../src/index.mjs', {
+      '../src/hlxpkgreg.mjs': {
+        respondHelixPkgReg: async () => {
+          throw new Error('kaboom');
+        },
+      },
       '../src/unpkg.mjs': {
         respondUnpkg: async () => {
           called.push('unpkg');
@@ -491,7 +582,7 @@ describe('Test index', () => {
     const req = {};
     req.headers = new Map();
     req.method = 'POST';
-    req.url = 'http://www.acme.org';
+    req.url = 'http://www.acme.org?this-should-not-be-logged=true';
     req.json = () => ({
       id: 'xyz123',
       checkpoint: 'top',
@@ -504,7 +595,7 @@ describe('Test index', () => {
     assert.equal(logged.length, 1);
 
     const ld = JSON.parse(logged[0]);
-    assert.equal(ld.url, 'http://www.acme.org');
+    assert.equal(ld.url, 'http://www.acme.org/');
     assert.equal(ld.weight, 1);
     assert.equal(ld.id, 'xyz123');
     assert.equal(ld.checkpoint, 'top');
@@ -518,9 +609,62 @@ describe('Test index', () => {
   });
 
   it('reject urls that contain ":"', async () => {
-    const url = 'https://a.b.com/.rum/@adobe/helix-rum-js@%5E1/://test';
-    const req = { url, method: 'GET' };
+    const headers = new Map();
+    const req = {
+      headers,
+      method: 'GET',
+      url: 'http://foo.bar.org/foo:bar',
+    };
+
     const resp = await methods.main(req, {});
-    assert.equal(400, resp.status);
+    assert.strictEqual(resp.status, 400);
+  });
+
+  it('allows semantic versioning with %5E', async () => {
+    const headers = new Map();
+    const req = {
+      headers,
+      method: 'GET',
+      url: 'http://foo.bar.org/.rum/@adobe/helix-rum-js@%5E2.0.0/dist/rum.js',
+    };
+
+    const resp = await methods.main(req, {});
+    assert.notStrictEqual(resp.status, 400, 'Should not be rejected by URL validation');
+  });
+
+  it('rejects paths with both %5E and other percent encodings', async () => {
+    const headers = new Map();
+    const req = {
+      headers,
+      method: 'GET',
+      url: 'http://foo.bar.org/.rum/@adobe/helix-rum-js@%5E2.0.0/dist/rum%20js',
+    };
+
+    const resp = await methods.main(req, {});
+    assert.strictEqual(resp.status, 400);
+  });
+
+  it('rejects paths with both %5E and other percent encodings elsewhere', async () => {
+    const headers = new Map();
+    const req = {
+      headers,
+      method: 'GET',
+      url: 'http://foo.bar.org/.rum/web-vitals/.%09.%2Fweb-vitalsxyz%2FDEMO.html%23%5E',
+    };
+
+    const resp = await methods.main(req, {});
+    assert.strictEqual(resp.status, 400);
+  });
+
+  it('rejects double-encoded paths even with %5E', async () => {
+    const headers = new Map();
+    const req = {
+      headers,
+      method: 'GET',
+      url: 'http://foo.bar.org/.rum/@adobe/helix-rum-js@%5E2.0.0/dist/%252e%252e/secrets',
+    };
+
+    const resp = await methods.main(req, {});
+    assert.strictEqual(resp.status, 400);
   });
 });

@@ -41,10 +41,11 @@ export function isValidCheckpoint(checkpoint) {
     // 'lcp', // not needed anymore, helix-specific
     'missingresource',
     'audience',
+    'a11y',
     'experiment',
     'formsubmit',
     '404',
-    'convert',
+    // 'convert', // not valuable
     'search',
     'unsupported',
     'genai:prompt:generate',
@@ -52,7 +53,7 @@ export function isValidCheckpoint(checkpoint) {
     // 'formviews', // no data in last 30 days
     // 'formready', // no data in last 30 days
     // 'formabondoned', // no data in last 30 days
-    'noscript',
+    // 'noscript', // insufficient use
     // 'formfieldchange', // no data in last 30 days
     // 'formfieldfocus', // no data in last 30 days
     // 'nullsearch', // killed, not in the explorer
@@ -78,6 +79,7 @@ export function isValidCheckpoint(checkpoint) {
 }
 
 export const sourceTargetValidator = {
+  a11y: (source = '') => ['off', 'on', 'low', 'medium', 'high'].includes(source),
   audience: (source = '', target = '') => source.match(/^[\w-]+$/)
     && target.match(/^[\w-:]+$/)
     && ['default', ...target.split(':')].includes(source),
@@ -263,6 +265,14 @@ function cleanJWT(str) {
   return str;
 }
 
+function cleanCode(str) {
+  // Use a regex to replace everything after 'trip/' with an empty string
+  if (str && typeof str.replace === 'function') {
+    return str.replace(/(trip\/)[A-Z0-9]{5,7}\/[A-Z]+/, '$1');
+  }
+  return str;
+}
+
 export function cleanurl(url) {
   // if URL does not parse, return it as is
   try {
@@ -273,9 +283,10 @@ export function cleanurl(url) {
     u.password = '';
     u.hash = '';
     u.pathname = cleanJWT(u.pathname);
+    u.pathname = cleanCode(u.pathname);
     return u.toString().replace(/@/g, '');
   } catch (e) {
-    return cleanJWT(url);
+    return cleanCode(cleanJWT(url));
   }
 }
 

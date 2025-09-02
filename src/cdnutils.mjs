@@ -20,6 +20,7 @@ const removedHeaders = [
   'server',
   'timing-allow-origin',
   'x-cache',
+  'x-cache-hits',
   'x-jsd-version-type',
   'x-jsd-version',
   'x-served-by',
@@ -49,7 +50,7 @@ export function cleanupHeaders(resp, addHeaders) {
     addHeaders.forEach((value, key) => newHeaders.set(key, value));
   }
 
-  const cacheControl = resp.headers.get('cache-control');
+  const cacheControl = newHeaders.get('cache-control');
   if (!cacheControl || cacheControl === 'null') {
     // Ensure that cacheControl has a value, if not set, use 1 hour
     newHeaders.set('cache-control', 'public, max-age=3600');

@@ -12,15 +12,17 @@
 
 /* eslint-env serviceworker */
 
-import { GoogleLogger } from './google-logger.mjs';
-import { CoralogixLogger } from './coralogix-logger.mjs';
-import { CoralogixErrorLogger } from './coralogix-error-logger.mjs';
 import { ConsoleLogger } from './console-logger.mjs';
-import { S3Logger } from './s3-logger.mjs';
-import { respondRobots } from './robots.mjs';
+import { CoralogixErrorLogger } from './coralogix-error-logger.mjs';
+import { CoralogixLogger } from './coralogix-logger.mjs';
+import { GoogleLogger } from './google-logger.mjs';
+import { respondHelixPkgReg } from './hlxpkgreg.mjs';
 import { respondJsdelivr } from './jsdelivr.mjs';
+import { respondRobots } from './robots.mjs';
+import { S3Logger } from './s3-logger.mjs';
 import { respondUnpkg } from './unpkg.mjs';
 import { isOptelPath } from './utils.mjs';
+import { respondDNTStatus, respondDNTPolicy } from './dnt.mjs';
 
 const REGISTRY_TIMEOUT_MS = 5000;
 
@@ -105,7 +107,26 @@ async function respondRegistry(regName, req, successTracker, timeout) {
   });
 }
 
-async function respondPackage(req) {
+async function respondPackage(req, isHelix) {
+  let errmsg = '';
+  if (isHelix) {
+    // If Helix can serve the package, then always try that first
+    try {
+      const resp = await respondHelixPkgReg(req);
+      if (resp.status === 200) {
+        return resp;
+      } else {
+        console.log('Helix package registry response: ', resp);
+        errmsg = `Helix package registry response: ${resp.status} ${resp.statusText}`;
+      }
+    } catch (e) {
+      console.error('Error from Helix package registry: ', e);
+      errmsg = `Error from Helix package registry: ${e.message}`;
+    }
+    console.log('Falling back to jsdelivr/unpkg');
+  }
+
+  // We're going to serve from a non-Helix package registry
   const useJsdelivr = Math.random() < 0.5; // 50% chance to use jsdelivr
   const jsdDelay = useJsdelivr ? undefined : REGISTRY_TIMEOUT_MS;
   const unpkgDelay = useJsdelivr ? REGISTRY_TIMEOUT_MS : undefined;
@@ -114,10 +135,12 @@ async function respondPackage(req) {
   // if one of the requests has succeeded, to avoid unneccessary requests.
   const successTracker = {};
   try {
-    return await Promise.any([
+    const resp = await Promise.any([
       respondRegistry('jsdelivr', req, successTracker, jsdDelay),
       respondRegistry('unpkg', req, successTracker, unpkgDelay),
     ]);
+    resp.headers.set('x-error', errmsg);
+    return resp;
   } catch (error) {
     return new Response(error.errors, {
       status: 500,
@@ -135,10 +158,18 @@ export async function main(req, ctx) {
   }
   const { pathname } = new URL(req.url);
 
-  // Reject double-encoded URLs (which contain %25 as that is the percent sign)
-  // Also reject paths that contain '..' but decode the URL first as it might be encoded
-  if (pathname.includes('%25') || decodeURI(pathname).includes('..')
-    || pathname.includes('%3A') || decodeURI(pathname).includes(':')) {
+  // Reject all encoded characters except %5E (^) when used for semantic versioning
+  // i.e. allow patterns like @package@%5E2.0.0 but reject any other % encoding
+  const validVersionPattern = /%5[Ee](?:\d|$)/;
+
+  const hasInvalidEncoding = pathname.includes('%')
+    && !pathname
+      .split('/')
+      .every((segment) => !segment.includes('%')
+        || (segment.match(/%/g).length === 1 // exactly one % sign is allowed
+          && validVersionPattern.test(segment))); // and only if it's the ^ character
+
+  if (hasInvalidEncoding || decodeURI(pathname).includes('..') || decodeURI(pathname).includes(':')) {
     return respondError('Invalid path', 400, undefined, req);
   }
 
@@ -148,6 +179,14 @@ export async function main(req, ctx) {
     }
     if (req.method === 'GET' && pathname.startsWith('/info.json')) {
       return respondInfo(ctx);
+    }
+
+    // Handle DNT (Do Not Track) endpoints
+    if (req.method === 'GET' && pathname === '/.well-known/dnt/') {
+      return respondDNTStatus(req);
+    }
+    if (req.method === 'GET' && pathname === '/.well-known/dnt-policy.txt') {
+      return respondDNTPolicy(req);
     }
 
     // Block access to sensitive files
@@ -172,6 +211,7 @@ export async function main(req, ctx) {
         }
         return respondPackage(req);
       }
+      return respondPackage(req, true);
     }
 
     const body = req.method === 'GET'
@@ -182,6 +222,7 @@ export async function main(req, ctx) {
       'Content-Type': 'text/plain; charset=utf-8',
       'Cross-Origin-Resource-Policy': 'cross-origin',
       'X-Frame-Options': 'DENY',
+      Tk: 'N',
     };
 
     const {
