@@ -89,7 +89,7 @@ describe('Test unpkg handler', () => {
       // Mock the global fetch function
       global.fetch = (v, opts) => {
         assert.equal('unpkg.com', opts.backend);
-        if (v.url === 'https://unpkg.com/@adobe/helix-rum-js@^1') {
+        if (v.url === 'https://unpkg.com/@adobe/helix-rum-js@%5E1') {
           const resp = {
             ok: true,
             url: v.url,

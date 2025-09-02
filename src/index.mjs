@@ -199,7 +199,7 @@ export async function main(req, ctx) {
     const optelre = /\/\.([^/]+)\/(web-vitals[@/]|@adobe\/(helix-)?([^/]+))/;
     const [, optel, webVitals, /* helix prefix */, packageName] = pathname.match(optelre) || [];
     if (req.method === 'GET' && optel && isOptelPath(optel)) {
-      if (webVitals) {
+      if (webVitals && webVitals.startsWith('web-vitals')) {
         if (isDirList) {
           return respondError('Directory listing is not allowed', 404, undefined, req);
         }

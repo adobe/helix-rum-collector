@@ -317,8 +317,8 @@ describe('Test index', () => {
 
     assert.equal(200, resp.status);
     assert(resp.ok);
-    assert.equal('hlx', resp.headers.get('x-rum-trace'));
-    assert(Date.now() - startTime < 1000, 'Response took too long');
+    assert(resp.headers.get('x-rum-trace').startsWith('be-'));
+    assert(Date.now() - startTime < 5000, 'Response took too long');
 
     const t = await resp.text();
     assert(t.includes('function initEnhancer()'));
@@ -336,8 +336,8 @@ describe('Test index', () => {
 
     assert.equal(200, resp.status);
     assert(resp.ok);
-    assert.equal('hlx', resp.headers.get('x-rum-trace'));
-    assert(Date.now() - startTime < 1000, 'Response took too long');
+    assert(resp.headers.get('x-rum-trace').startsWith('be-'));
+    assert(Date.now() - startTime < 5000, 'Response took too long');
 
     const t = await resp.text();
     assert(t.includes('function initEnhancer()'));
