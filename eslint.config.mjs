@@ -9,26 +9,29 @@
  * OF ANY KIND, either express or implied. See the License for the specific language
  * governing permissions and limitations under the License.
  */
-module.exports = {
-  root: true,
-  parser: '@typescript-eslint/parser',
-  extends: '@adobe/helix',
-  parserOptions: {
-    ecmaVersion: '2020',
-    sourceType: 'module',
-  },
-  env: {
-    es2020: true,
-  },
-  rules: {
-    // keep named exports over default exports for classes
-    'import/prefer-default-export': [0],
-    'no-console': 0,
-    'import/no-unresolved': [2, { ignore: ['^fastly:'] }],
-  },
-  overrides: [
-    {
-      files: ['src/**/*.mjs', 'test/**/*.mjs'],
+import { recommended } from '@adobe/eslint-config-helix';
+import parser from '@typescript-eslint/parser';
+
+export default [
+  recommended,
+  {
+    files: ['**/*.js', '**/*.mjs'],
+    languageOptions: {
+      ecmaVersion: 2020,
+      sourceType: 'module',
+      parser,
     },
-  ],
-};
+    rules: {
+      // keep named exports over default exports for classes
+      'import/prefer-default-export': 0,
+      'no-console': 0,
+      'import/no-unresolved': [2, { ignore: ['^fastly:'] }],
+    },
+  },
+  {
+    files: ['src/**/*.mjs', 'test/**/*.mjs'],
+  },
+  {
+    ignores: ['node_modules/**', 'bin/**', 'coverage/**', '*.log'],
+  },
+];
