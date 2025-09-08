@@ -17,29 +17,29 @@ module.exports = {
     ['@semantic-release/changelog', {
       changelogFile: 'CHANGELOG.md',
     }],
-    ["@semantic-release/npm", {
+    ['@semantic-release/npm', {
       npmPublish: false,
     }],
     ['@semantic-release/git', {
       assets: ['package.json', 'package-lock.json', 'CHANGELOG.md'],
-      message: 'chore(release): ${nextRelease.version} [skip ci]\n\n${nextRelease.notes}'
+      message: 'chore(release): ${nextRelease.version} [skip ci]\n\n${nextRelease.notes}', // eslint-disable-line no-template-curly-in-string
     }],
     ['@semantic-release/exec', {
-      publishCmd: `npm run deploy`
+      publishCmd: 'npm run deploy',
     }],
     ['@adobe/semantic-release-coralogix', {
       iconUrl: 'https://www.aem.live/media_13916754ab1f54a7a0b88dcb62cf6902d58148b1c.png',
-      applications: ['helix-rum-collector']
+      applications: ['helix-rum-collector'],
     }],
     '@semantic-release/github',
     [
-      "semantic-release-slack-bot",
+      'semantic-release-slack-bot',
       {
         notifyOnSuccess: false,
         notifyOnFail: false,
         markdownReleaseNotes: true,
-      }
-    ]
+      },
+    ],
   ],
-  branches: ['main']
+  branches: ['main'],
 };

@@ -9,7 +9,9 @@
  * OF ANY KIND, either express or implied. See the License for the specific language
  * governing permissions and limitations under the License.
  */
+// eslint-disable-next-line import/no-extraneous-dependencies
 import { recommended } from '@adobe/eslint-config-helix';
+// eslint-disable-next-line import/no-extraneous-dependencies, import/no-unresolved
 import parser from '@typescript-eslint/parser';
 
 export default [
@@ -20,6 +22,9 @@ export default [
       ecmaVersion: 2020,
       sourceType: 'module',
       parser,
+      globals: {
+        addEventListener: 'readonly',
+      },
     },
     rules: {
       // keep named exports over default exports for classes
