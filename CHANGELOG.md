@@ -1,3 +1,10 @@
+## [2.43.1](https://github.com/adobe/helix-rum-collector/compare/v2.43.0...v2.43.1) (2025-09-12)
+
+
+### Bug Fixes
+
+* add GITHUB_TOKEN to CI deployment step to prevent API rate limiting ([5586d96](https://github.com/adobe/helix-rum-collector/commit/5586d96714fc4b4e97f50c92591a1a1ae8421947))
+
 # [2.43.0](https://github.com/adobe/helix-rum-collector/compare/v2.42.0...v2.43.0) (2025-09-01)
 
 
