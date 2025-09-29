@@ -89,7 +89,7 @@ describe('Test unpkg handler', () => {
       // Mock the global fetch function
       global.fetch = (v, opts) => {
         assert.equal('unpkg.com', opts.backend);
-        if (v.url === 'https://unpkg.com/@adobe/helix-rum-js@^1') {
+        if (v.url === 'https://unpkg.com/@adobe/helix-rum-js@%5E1') {
           const resp = {
             ok: true,
             url: v.url,
@@ -300,7 +300,7 @@ describe('Test unpkg handler', () => {
     const redirectsMade = [];
     try {
       global.fetch = (v) => {
-        if (v.url === 'https://unpkg.com/@adobe/helix-rum-js@2/src') {
+        if (v.url === 'https://unpkg.com/npm/@adobe/helix-rum-js@2/src') {
           redirectsMade.push('a');
           return {
             status: 302,
