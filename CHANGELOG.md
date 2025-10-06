@@ -1,3 +1,10 @@
+# [2.44.0](https://github.com/adobe/helix-rum-collector/compare/v2.43.1...v2.44.0) (2025-10-06)
+
+
+### Features
+
+* **utils:** remove deprecated checkpoints from isValidCheckpoint list ([dc8bc49](https://github.com/adobe/helix-rum-collector/commit/dc8bc49fe4358e235af1882ef0201641cefd5a34))
+
 ## [2.43.1](https://github.com/adobe/helix-rum-collector/compare/v2.43.0...v2.43.1) (2025-09-12)
 
 
