@@ -25,7 +25,6 @@ export function isValidCheckpoint(checkpoint) {
   const knowncheckpoints = [
     'loadresource',
     'cwv',
-    'cwv2', // ekrem
     'click',
     'top',
     // 'lazy', // killed, not used in minirum anymore
@@ -48,7 +47,6 @@ export function isValidCheckpoint(checkpoint) {
     // 'convert', // not valuable
     'search',
     'unsupported',
-    'genai:prompt:generate',
     'fill', // when a form field is filled
     // 'formviews', // no data in last 30 days
     // 'formready', // no data in last 30 days
