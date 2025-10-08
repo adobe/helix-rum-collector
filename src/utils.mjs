@@ -46,7 +46,7 @@ export function isValidCheckpoint(checkpoint) {
     '404',
     // 'convert', // not valuable
     'search',
-    'unsupported',
+    // 'unsupported',
     'fill', // when a form field is filled
     // 'formviews', // no data in last 30 days
     // 'formready', // no data in last 30 days
