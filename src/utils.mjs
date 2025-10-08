@@ -41,7 +41,6 @@ export function isValidCheckpoint(checkpoint) {
     'missingresource',
     'audience',
     'a11y',
-    'experiment',
     'formsubmit',
     '404',
     // 'convert', // not valuable
