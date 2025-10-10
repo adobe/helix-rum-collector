@@ -264,9 +264,9 @@ function cleanJWT(str) {
 }
 
 function cleanCode(str) {
-  // Use a regex to replace everything after and including the & char with an empty string
-  if (str && typeof str.replace === 'function' && str.includes('&')) {
-    return str.replace(/(&).+/, '');
+  // Use a regex to replace everything after and including the & and = chars with an empty string
+  if (str && typeof str.replace === 'function' && str.includes('&') && str.includes('=')) {
+    return str.replace(/(&.+=.+).+/, '');
   }
   // Use a regex to replace everything after 'trip/' with an empty string
   if (str && typeof str.replace === 'function') {
