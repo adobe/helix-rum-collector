@@ -1,3 +1,10 @@
+## [2.44.1](https://github.com/adobe/helix-rum-collector/compare/v2.44.0...v2.44.1) (2025-10-10)
+
+
+### Bug Fixes
+
+* remove anything after & in url in case there is no ? char ([7e8e79b](https://github.com/adobe/helix-rum-collector/commit/7e8e79bf3b89214930f64c90e951bbd0ce412271))
+
 # [2.44.0](https://github.com/adobe/helix-rum-collector/compare/v2.43.1...v2.44.0) (2025-10-06)
 
 
