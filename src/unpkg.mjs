@@ -12,6 +12,7 @@
 /* eslint-env serviceworker */
 
 import { cleanupResponse, prohibitDirectoryRequest } from './cdnutils.mjs';
+import { isOptelPath } from './utils.mjs';
 
 const redirectHeaders = [301, 302, 307, 308];
 const rangeChars = ['^', '~'];
@@ -19,7 +20,12 @@ const rangeChars = ['^', '~'];
 export async function respondUnpkg(req) {
   const url = new URL(req.url);
   const paths = url.pathname.split('/');
-  const beurl = new URL(paths.slice(2).join('/'), 'https://unpkg.com');
+  const prefixIndex = paths.findIndex((p) => p.startsWith('.') && isOptelPath(p));
+  const prefixValue = prefixIndex === -1 ? null : paths[prefixIndex].substring(1);
+  const beurl = new URL(paths.slice(prefixIndex + 1)
+    .map((s) => s.replace(prefixValue, 'helix-rum').replace('helix-helix-', 'helix-'))
+    .join('/'), 'https://unpkg.com');
+  console.log('fetching', beurl.href);
   const bereq = new Request(beurl.href);
   const beresp = await fetch(bereq, {
     backend: 'unpkg.com',
