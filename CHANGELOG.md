@@ -1,3 +1,10 @@
+## [2.44.2](https://github.com/adobe/helix-rum-collector/compare/v2.44.1...v2.44.2) (2025-11-02)
+
+
+### Bug Fixes
+
+* update unpkg test to handle URL-encoded characters ([38c27a3](https://github.com/adobe/helix-rum-collector/commit/38c27a38063f5d9fe17911c5ddc33d5da7a83c1f)), closes [#560](https://github.com/adobe/helix-rum-collector/issues/560)
+
 ## [2.44.1](https://github.com/adobe/helix-rum-collector/compare/v2.44.0...v2.44.1) (2025-10-10)
 
 
