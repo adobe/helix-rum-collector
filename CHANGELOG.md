@@ -1,3 +1,10 @@
+## [2.44.3](https://github.com/adobe/helix-rum-collector/compare/v2.44.2...v2.44.3) (2025-11-20)
+
+
+### Bug Fixes
+
+* filtering out endpoints with PII data ([#570](https://github.com/adobe/helix-rum-collector/issues/570)) ([a267b45](https://github.com/adobe/helix-rum-collector/commit/a267b45467aeb6807affd2599c6ea4a93e1f135d))
+
 ## [2.44.2](https://github.com/adobe/helix-rum-collector/compare/v2.44.1...v2.44.2) (2025-11-02)
 
 
