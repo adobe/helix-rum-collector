@@ -93,9 +93,10 @@ export function cleanPath(path, withFilters = ['jwt', 'pnr']) {
   if (!path) return path;
 
   return withFilters
-    .filter(key => typeof filters[key] === 'function' &&
-       withFilters.includes(key))
+    .filter((key) => typeof filters[key] === 'function'
+       && withFilters.includes(key))
     .reduce(
       (result, key) => filters[key](result, `<${key}>`),
-      path);
+      path,
+    );
 }
