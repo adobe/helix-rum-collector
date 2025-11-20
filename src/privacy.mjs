@@ -28,6 +28,9 @@ const withInputValidation = (fn) => (str, replaceWith) => {
 };
 
 const filters = {
+  // sometimes we see JWTs in URLs or source or target values. These are always
+  // two segments of base64-encoded JSON and a signature, separated by three dots.
+  // When we find this, we replace the string with a generic placeholder.
   jwt: withInputValidation((str, replaceWith) => str.replace(/eyJ[a-zA-Z0-9_-]+\.eyJ[a-zA-Z0-9_-]+\.[a-zA-Z0-9_-]+/g, replaceWith)),
 
   uuid: withInputValidation((str, replaceWith) => str.replace(/([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12})|([0-9a-fA-F]{32})/g, replaceWith)),
