@@ -30,6 +30,10 @@ const withInputValidation = (fn) => (str, replaceWith) => {
 const filters = {
   jwt: withInputValidation((str, replaceWith) => str.replace(/eyJ[a-zA-Z0-9_-]+\.eyJ[a-zA-Z0-9_-]+\.[a-zA-Z0-9_-]+/g, replaceWith)),
 
+  uuid : withInputValidation((str, replaceWith) => str.replace(/[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}/g, replaceWith)),
+
+  email: withInputValidation((str, replaceWith) => str.replace(/[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/g, replaceWith)),
+
   pnr: withInputValidation((str, replaceWith) => {
     // Split the path into segments, preserving empty segments for slashes
     const segments = str.split('/');
@@ -85,11 +89,13 @@ const filters = {
   }),
 };
 
-export function cleanPath(path) {
+export function cleanPath(path, useFilters = Object.keys(filters)) {
   if (!path) return path;
 
-  return Object.entries(filters).reduce(
-    (result, [key, filter]) => filter(result, `<${key}>`),
+  return useFilters
+  .filter(([key]) => typeof filters[key] === 'function')
+  .reduce(
+    (result, key) => filters[key](result, `<${key}>`),
     path,
   );
 }

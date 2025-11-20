@@ -12,6 +12,7 @@
 // Pass the current time to facilitate unit testing
 import { isSpider } from './spiders.mjs';
 import { bots } from './bots.mjs';
+import { cleanPath } from './privacy.mjs';
 
 export function isReasonableWeight(weight) {
   return [1, // debug
@@ -275,6 +276,21 @@ function cleanCode(str) {
   return str;
 }
 
+function cleanTemporarily(str) {
+  if (new Date().toISOString().startsWith('2026-03-01')) {
+    return str;
+  } else {
+      return [
+        [/\/api\/fetchmasterdata.+/i, '/api/fetchmasterdata'],
+        [/\/api\/masterdatafetch.+/i, '/api/masterdatafetch'],
+        [/\/api\/mdm.+/i, '/api/mdm'],
+        [/\/api\/employer.+/i, '/api/employers'],
+      ].reduce((acc, [regex, replacement]) => {
+        return acc.replace(regex, replacement);
+      }, str);
+    }
+}
+
 export function cleanurl(url) {
   // if URL does not parse, return it as is
   try {
@@ -284,11 +300,12 @@ export function cleanurl(url) {
     u.username = '';
     u.password = '';
     u.hash = '';
-    u.pathname = cleanJWT(u.pathname);
+    u.pathname = cleanPath(u.pathname, ['jwt','uuid']);
     u.pathname = cleanCode(u.pathname);
+    u.pathname = cleanTemporarily(u.pathname);
     return u.toString().replace(/@/g, '');
   } catch (e) {
-    return cleanCode(cleanJWT(url));
+    return cleanCode(cleanPath(url, ['jwt','uuid']));
   }
 }
 
