@@ -285,14 +285,14 @@ export function cleanurl(url) {
     u.username = '';
     u.password = '';
     u.hash = '';
-    u.pathname = cleanPath(u.pathname, ['jwt', 'uuid']);
+    u.pathname = cleanPath(u.pathname, ['jwt', 'uuid', 'email']);
     u.pathname = cleanCode(u.pathname);
     if (new Date() < new Date(2026, 2, 1)) {
       u.pathname = cleanTemporarily(u.pathname);
     }
     return u.toString().replace(/@/g, '');
   } catch (e) {
-    return cleanCode(cleanPath(url, ['jwt', 'uuid']));
+    return cleanCode(cleanPath(url, ['jwt', 'uuid', 'email']));
   }
 }
 
