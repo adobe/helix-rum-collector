@@ -267,6 +267,7 @@ function cleanCode(str) {
 
 function cleanTemporarily(str) {
   if (new Date().toISOString().startsWith('2026-03-01')) {
+    // tests will start failing after this date
     return str;
   } else {
     return [
@@ -274,6 +275,8 @@ function cleanTemporarily(str) {
       [/\/api\/masterdatafetch.+/i, '/api/masterdatafetch'],
       [/\/api\/mdm.+/i, '/api/mdm'],
       [/\/api\/employer.+/i, '/api/employer'],
+      [/\/api\/perfios.+/i, '/api/perfios'],
+      [/\/kyccallback.+/i, '/kyccallback'],
     ].reduce((acc, [regex, replacement]) => acc.replace(regex, replacement), str);
   }
 }
