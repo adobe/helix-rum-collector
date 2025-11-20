@@ -266,19 +266,14 @@ function cleanCode(str) {
 }
 
 function cleanTemporarily(str) {
-  if (new Date().toISOString().startsWith('2026-03-01')) {
-    // tests will start failing after this date
-    return str;
-  } else {
-    return [
-      [/\/api\/fetchmasterdata.+/i, '/api/fetchmasterdata'],
-      [/\/api\/masterdatafetch.+/i, '/api/masterdatafetch'],
-      [/\/api\/mdm.+/i, '/api/mdm'],
-      [/\/api\/employer.+/i, '/api/employer'],
-      [/\/api\/perfios.+/i, '/api/perfios'],
-      [/\/kyccallback.+/i, '/kyccallback'],
-    ].reduce((acc, [regex, replacement]) => acc.replace(regex, replacement), str);
-  }
+  return [
+    [/\/api\/fetchmasterdata.+/i, '/api/fetchmasterdata'],
+    [/\/api\/masterdatafetch.+/i, '/api/masterdatafetch'],
+    [/\/api\/mdm.+/i, '/api/mdm'],
+    [/\/api\/employer.+/i, '/api/employer'],
+    [/\/api\/perfios.+/i, '/api/perfios'],
+    [/\/kyccallback.+/i, '/kyccallback'],
+  ].reduce((acc, [regex, replacement]) => acc.replace(regex, replacement), str);
 }
 
 export function cleanurl(url) {
@@ -292,7 +287,9 @@ export function cleanurl(url) {
     u.hash = '';
     u.pathname = cleanPath(u.pathname, ['jwt', 'uuid']);
     u.pathname = cleanCode(u.pathname);
-    u.pathname = cleanTemporarily(u.pathname);
+    if (new Date() < new Date(2026, 2, 1)) {
+      u.pathname = cleanTemporarily(u.pathname);
+    }
     return u.toString().replace(/@/g, '');
   } catch (e) {
     return cleanCode(cleanPath(url, ['jwt', 'uuid']));
