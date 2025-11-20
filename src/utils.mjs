@@ -253,17 +253,6 @@ export function getMaskedUserAgent(headers) {
   return 'undefined';
 }
 
-function cleanJWT(str) {
-  // sometimes we see JWTs in URLs or source or target values. These
-  // are always two segments of base64-encoded JSON and a signature,
-  // separated by three dots. When we find this, we replace the string
-  // with a generic placeholder.
-  if (str && typeof str.replace === 'function') {
-    return str.replace(/eyJ[a-zA-Z0-9]+\.eyJ[a-zA-Z0-9]+\.[a-zA-Z0-9]+/g, '<jwt>');
-  }
-  return str;
-}
-
 function cleanCode(str) {
   // Use a regex to replace everything after and including the & and = chars with an empty string
   if (str && typeof str.replace === 'function' && str.includes('&') && str.includes('=')) {
@@ -280,15 +269,13 @@ function cleanTemporarily(str) {
   if (new Date().toISOString().startsWith('2026-03-01')) {
     return str;
   } else {
-      return [
-        [/\/api\/fetchmasterdata.+/i, '/api/fetchmasterdata'],
-        [/\/api\/masterdatafetch.+/i, '/api/masterdatafetch'],
-        [/\/api\/mdm.+/i, '/api/mdm'],
-        [/\/api\/employer.+/i, '/api/employers'],
-      ].reduce((acc, [regex, replacement]) => {
-        return acc.replace(regex, replacement);
-      }, str);
-    }
+    return [
+      [/\/api\/fetchmasterdata.+/i, '/api/fetchmasterdata'],
+      [/\/api\/masterdatafetch.+/i, '/api/masterdatafetch'],
+      [/\/api\/mdm.+/i, '/api/mdm'],
+      [/\/api\/employer.+/i, '/api/employer'],
+    ].reduce((acc, [regex, replacement]) => acc.replace(regex, replacement), str);
+  }
 }
 
 export function cleanurl(url) {
@@ -300,12 +287,12 @@ export function cleanurl(url) {
     u.username = '';
     u.password = '';
     u.hash = '';
-    u.pathname = cleanPath(u.pathname, ['jwt','uuid']);
+    u.pathname = cleanPath(u.pathname, ['jwt', 'uuid']);
     u.pathname = cleanCode(u.pathname);
     u.pathname = cleanTemporarily(u.pathname);
     return u.toString().replace(/@/g, '');
   } catch (e) {
-    return cleanCode(cleanPath(url, ['jwt','uuid']));
+    return cleanCode(cleanPath(url, ['jwt', 'uuid']));
   }
 }
 
