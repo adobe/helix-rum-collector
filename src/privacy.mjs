@@ -28,7 +28,14 @@ const withInputValidation = (fn) => (str, replaceWith) => {
 };
 
 const filters = {
+  // sometimes we see JWTs in URLs or source or target values. These are always
+  // two segments of base64-encoded JSON and a signature, separated by three dots.
+  // When we find this, we replace the string with a generic placeholder.
   jwt: withInputValidation((str, replaceWith) => str.replace(/eyJ[a-zA-Z0-9_-]+\.eyJ[a-zA-Z0-9_-]+\.[a-zA-Z0-9_-]+/g, replaceWith)),
+
+  uuid: withInputValidation((str, replaceWith) => str.replace(/([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12})|([0-9a-fA-F]{32})/g, replaceWith)),
+
+  email: withInputValidation((str, replaceWith) => str.replace(/[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/g, replaceWith)),
 
   pnr: withInputValidation((str, replaceWith) => {
     // Split the path into segments, preserving empty segments for slashes
@@ -85,11 +92,14 @@ const filters = {
   }),
 };
 
-export function cleanPath(path) {
+export function cleanPath(path, withFilters = ['jwt', 'pnr']) {
   if (!path) return path;
 
-  return Object.entries(filters).reduce(
-    (result, [key, filter]) => filter(result, `<${key}>`),
-    path,
-  );
+  return withFilters
+    .filter((key) => typeof filters[key] === 'function'
+       && withFilters.includes(key))
+    .reduce(
+      (result, key) => filters[key](result, `<${key}>`),
+      path,
+    );
 }

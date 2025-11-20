@@ -22,3 +22,4 @@ junit.xml
 src/spiders.mjs
 .idea/
 lcov.info
+.vscode

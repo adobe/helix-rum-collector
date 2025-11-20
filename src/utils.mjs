@@ -12,6 +12,7 @@
 // Pass the current time to facilitate unit testing
 import { isSpider } from './spiders.mjs';
 import { bots } from './bots.mjs';
+import { cleanPath } from './privacy.mjs';
 
 export function isReasonableWeight(weight) {
   return [1, // debug
@@ -252,17 +253,6 @@ export function getMaskedUserAgent(headers) {
   return 'undefined';
 }
 
-function cleanJWT(str) {
-  // sometimes we see JWTs in URLs or source or target values. These
-  // are always two segments of base64-encoded JSON and a signature,
-  // separated by three dots. When we find this, we replace the string
-  // with a generic placeholder.
-  if (str && typeof str.replace === 'function') {
-    return str.replace(/eyJ[a-zA-Z0-9]+\.eyJ[a-zA-Z0-9]+\.[a-zA-Z0-9]+/g, '<jwt>');
-  }
-  return str;
-}
-
 function cleanCode(str) {
   // Use a regex to replace everything after and including the & and = chars with an empty string
   if (str && typeof str.replace === 'function' && str.includes('&') && str.includes('=')) {
@@ -275,6 +265,17 @@ function cleanCode(str) {
   return str;
 }
 
+function cleanTemporarily(str) {
+  return [
+    [/\/api\/fetchmasterdata.+/i, '/api/fetchmasterdata'],
+    [/\/api\/masterdatafetch.+/i, '/api/masterdatafetch'],
+    [/\/api\/mdm.+/i, '/api/mdm'],
+    [/\/api\/employer.+/i, '/api/employer'],
+    [/\/api\/perfios.+/i, '/api/perfios'],
+    [/\/kyccallback.+/i, '/kyccallback'],
+  ].reduce((acc, [regex, replacement]) => acc.replace(regex, replacement), str);
+}
+
 export function cleanurl(url) {
   // if URL does not parse, return it as is
   try {
@@ -284,11 +285,14 @@ export function cleanurl(url) {
     u.username = '';
     u.password = '';
     u.hash = '';
-    u.pathname = cleanJWT(u.pathname);
+    u.pathname = cleanPath(u.pathname, ['jwt', 'uuid', 'email']);
     u.pathname = cleanCode(u.pathname);
+    if (new Date() < new Date(2026, 2, 1)) {
+      u.pathname = cleanTemporarily(u.pathname);
+    }
     return u.toString().replace(/@/g, '');
   } catch (e) {
-    return cleanCode(cleanJWT(url));
+    return cleanCode(cleanPath(url, ['jwt', 'uuid', 'email']));
   }
 }
 

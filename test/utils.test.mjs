@@ -130,17 +130,59 @@ Pellentesque viverra id magna vel varius. Lorem ipsum dolor sit amet, consectetu
   });
 
   it('Cleaning of URLs', () => {
+    // Basic URL cleaning - fragments, query strings, credentials
     assert.equal('http://foo.bar.com/test', cleanurl('http://foo.bar.com/test#my-fragment'));
     assert.equal('http://foo.bar.com/test', cleanurl('http://foo.bar.com/test?foo=bar'));
     assert.equal('http://foo.bar.com/test', cleanurl('http://foo.bar.com/test?foo=bar#with-fragment'));
     assert.equal('http://foo.bar.com:9091/test', cleanurl('http://someone:something@foo.bar.com:9091/test'));
     assert.equal('http://foo.bar.com/test/loc=en_us', cleanurl('http://foo.bar.com/test/loc=en_us&tracknum=12345'));
     assert.equal('http://foo.bar.com/test/loc=en_us&tracknum', cleanurl('http://foo.bar.com/test/loc=en_us&tracknum'));
-    // jwt tokens in URLs are discarded
+
+    // JWT tokens in URLs are masked
     assert.equal(cleanurl('https://www.example.com/eyJmYWtlIjogdHJ1ZX0.eyJmYWtlIjogdHJ1ZX0.c3VwZXJmYWtl/auth'), 'https://www.example.com/%3Cjwt%3E/auth');
+
+    // UUID masking in URLs (standard format with dashes)
+    assert.equal(cleanurl('https://www.example.com/user/550e8400-e29b-41d4-a716-446655440000/profile'), 'https://www.example.com/user/%3Cuuid%3E/profile');
+    assert.equal(cleanurl('https://api.example.com/orders/123E4567-E89B-12D3-A456-426614174000/items'), 'https://api.example.com/orders/%3Cuuid%3E/items');
+
+    // UUID masking in URLs (32 hex chars without dashes)
+    assert.equal(cleanurl('https://www.example.com/resource/550e8400e29b41d4a716446655440000/data'), 'https://www.example.com/resource/%3Cuuid%3E/data');
+    assert.equal(cleanurl('https://api.example.com/ABCDEF1234567890abcdef1234567890'), 'https://api.example.com/%3Cuuid%3E');
+
+    // Combined: UUID with query strings and fragments
+    assert.equal(cleanurl('https://example.com/user/550e8400-e29b-41d4-a716-446655440000?foo=bar#section'), 'https://example.com/user/%3Cuuid%3E');
+
+    // cleanTemporarily function - API paths cleaned until 2026-03-01
+    assert.equal(cleanurl('https://api.example.com/api/fetchmasterdata?id=12345&token=abc'), 'https://api.example.com/api/fetchmasterdata');
+    assert.equal(cleanurl('https://api.example.com/api/masterdatafetch/users/all'), 'https://api.example.com/api/masterdatafetch');
+    assert.equal(cleanurl('https://api.example.com/api/mdm/endpoint/data'), 'https://api.example.com/api/mdm');
+    assert.equal(cleanurl('https://api.example.com/api/employer/12345/details'), 'https://api.example.com/api/employer');
+
+    // perfios and kyccallback endpoints (often have UUIDs)
+    assert.equal(cleanurl('https://api.example.com/api/perfios.550e8400-e29b-41d4-a716-446655440000'), 'https://api.example.com/api/perfios');
+    assert.equal(cleanurl('https://api.example.com/api/perfios.123E4567-E89B-12D3-A456-426614174000/data'), 'https://api.example.com/api/perfios');
+    assert.equal(cleanurl('https://api.example.com/kyccallback.550e8400-e29b-41d4-a716-446655440000'), 'https://api.example.com/kyccallback');
+    assert.equal(cleanurl('https://api.example.com/kyccallback.550e8400e29b41d4a716446655440000/status'), 'https://api.example.com/kyccallback');
+    assert.equal(cleanurl('https://api.example.com/kyccallback'), 'https://api.example.com/kyccallback');
+
+    assert.equal(cleanurl('https://api.example.com/API/FetchMasterData?foo=bar'), 'https://api.example.com/API/FetchMasterData');
+    assert.equal(cleanurl('https://api.example.com/api/MasterDataFetch/something'), 'https://api.example.com/api/masterdatafetch');
+    assert.equal(cleanurl('https://api.example.com/API/Perfios/123e4567-e89b-12d3-a456-426614174000'), 'https://api.example.com/api/perfios');
+    assert.equal(cleanurl('https://api.example.com/KYCCallback/data'), 'https://api.example.com/kyccallback');
+
+    // Edge cases
     assert.equal(cleanurl(123), 123);
     assert.equal(cleanurl(''), '');
     assert.equal(cleanurl(null), null);
+
+    // Multiple UUIDs in a single URL
+    assert.equal(cleanurl('https://example.com/from/123e4567-e89b-12d3-a456-426614174000/to/550e8400-e29b-41d4-a716-446655440000'), 'https://example.com/from/%3Cuuid%3E/to/%3Cuuid%3E');
+
+    // UUID + JWT in same URL
+    assert.equal(cleanurl('https://example.com/550e8400-e29b-41d4-a716-446655440000/eyJmYWtlIjogdHJ1ZX0.eyJmYWtlIjogdHJ1ZX0.c3VwZXJmYWtl/data'), 'https://example.com/%3Cuuid%3E/%3Cjwt%3E/data');
+
+    // Trip codes are cleaned
+    assert.equal(cleanurl('https://booking.com/trip/AB123C/DETAILS'), 'https://booking.com/trip/');
   });
 
   it('Get Forwarded Host', () => {
