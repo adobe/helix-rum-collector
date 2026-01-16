@@ -63,8 +63,9 @@ const BACKENDS = [
 ];
 
 function getBackendSuffix(url) {
-  // if the hostname in url matches one of the domains in BACKENDS, return the provider
   const { hostname } = url;
+
+  console.log('*** hostname', hostname, ' url ', url);
   const backend = BACKENDS.find((b) => b.proddomain === hostname || b.cidomain === hostname);
   if (backend) {
     return `-${backend.provider}`;
