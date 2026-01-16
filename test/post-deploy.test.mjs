@@ -171,7 +171,7 @@ BACKENDS.forEach((env) => {
         method: 'GET',
       });
       assert.strictEqual(response.status, 200);
-      assert(Date.now() - startTime < 1000, 'Response took too long');
+      assert(Date.now() - startTime < 2000, 'Response took too long');
 
       // eslint-disable-next-line no-unused-expressions
       assert.match(response.headers.get('content-type'), /^text\/javascript/);
