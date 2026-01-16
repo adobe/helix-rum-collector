@@ -27,16 +27,6 @@ import { describe, it } from 'node:test';
 ].forEach((env) => {
   const domain = !process.env.CI ? env.proddomain : env.cidomain;
   describe(`Helix RUM Collector Post-Deploy Validation on ${env.provider}`, () => {
-    it('Check correct backend is used to serve packages', async function test() {
-      if (!process.env.TEST_INTEGRATION) {
-        this.skip();
-      }
-
-      const response = await fetch(`https://${domain}/.rum/@adobe/helix-rum-enhancer@2.33.0/src/index.js`);
-      assert.strictEqual(response.status, 200);
-      assert.strictEqual(response.headers.get('x-rum-trace'), `***-${env.provider}`);
-    });
-
     it('Missing body returns 400', async function test() {
       if (!process.env.TEST_INTEGRATION) {
         this.skip();
@@ -229,7 +219,7 @@ import { describe, it } from 'node:test';
       const ccHeader = respRange.headers.get('cache-control').split(',');
       assert(ccHeader.find((header) => header.trim() === 'max-age=3600'), 'Should have a max cache age of 3600');
       assert.strictEqual(respRange.headers.get('x-frame-options'), 'DENY');
-      assert.strictEqual(respRange.headers.get('x-rum-trace'), 'hlx');
+      assert.strictEqual(respRange.headers.get('x-rum-trace'), `hlx-${env.provider}`);
 
       const respSpecific = await fetch(`https://${domain}/.rum/@adobe/helix-rum-enhancer@2.33.0/src/index.js`);
       assert.strictEqual(respSpecific.status, 200);
@@ -248,13 +238,13 @@ import { describe, it } from 'node:test';
       const startTime = Date.now();
       const respRange = await fetch(`https://${domain}/.rum/@adobe/helix-rum-js@~2.11.4/dist/rum-standalone.js`);
       assert.strictEqual(respRange.status, 200);
-      assert.strictEqual('hlx', respRange.headers.get('x-rum-trace'));
+      assert.strictEqual(`hlx-${env.provider}`, respRange.headers.get('x-rum-trace'));
       assert(Date.now() - startTime < 1000, 'Response took too long');
 
       const startTime2 = Date.now();
       const respSpecific = await fetch(`https://${domain}/.rum/@adobe/helix-rum-js@2.11.4/dist/rum-standalone.js`);
       assert.strictEqual(respSpecific.status, 200);
-      assert.strictEqual('hlx', respSpecific.headers.get('x-rum-trace'));
+      assert.strictEqual(`hlx-${env.provider}`, respSpecific.headers.get('x-rum-trace'));
       assert(Date.now() - startTime2 < 1000, 'Response took too long');
     });
 
@@ -266,13 +256,13 @@ import { describe, it } from 'node:test';
       const startTime = Date.now();
       const respRange = await fetch(`https://${domain}/.rum/@adobe/helix-rum-enhancer@%5E2/src/index.js`);
       assert.strictEqual(respRange.status, 200);
-      assert.strictEqual('hlx', respRange.headers.get('x-rum-trace'));
+      assert.strictEqual(`hlx-${env.provider}`, respRange.headers.get('x-rum-trace'));
       assert(Date.now() - startTime < 1000, 'Response took too long');
 
       const startTime2 = Date.now();
       const respSpecific = await fetch(`https://${domain}/.rum/@adobe/helix-rum-enhancer@2.34.3/src/index.js`);
       assert.strictEqual(respSpecific.status, 200);
-      assert.strictEqual('hlx', respSpecific.headers.get('x-rum-trace'));
+      assert.strictEqual(`hlx-${env.provider}`, respSpecific.headers.get('x-rum-trace'));
       assert(Date.now() - startTime2 < 1000, 'Response took too long');
     });
 
@@ -452,7 +442,7 @@ import { describe, it } from 'node:test';
       assert.strictEqual(response.headers.get('access-control-allow-headers'), '*');
       assert.strictEqual(response.headers.get('access-control-expose-headers'), '*');
       assert.strictEqual(response.headers.get('x-frame-options'), 'DENY');
-      assert.strictEqual(response.headers.get('x-rum-trace'), 'hlx');
+      assert.strictEqual(response.headers.get('x-rum-trace'), `hlx-${env.provider}`);
     });
 
     it('CORS headers are set for helix-rum-enhancer webcomponent plugin', async function test() {
@@ -468,7 +458,7 @@ import { describe, it } from 'node:test';
       assert.strictEqual(response.headers.get('access-control-allow-headers'), '*');
       assert.strictEqual(response.headers.get('access-control-expose-headers'), '*');
       assert.strictEqual(response.headers.get('x-frame-options'), 'DENY');
-      assert.strictEqual(response.headers.get('x-rum-trace'), 'hlx');
+      assert.strictEqual(response.headers.get('x-rum-trace'), `hlx-${env.provider}`);
     });
   });
 });
