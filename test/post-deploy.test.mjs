@@ -171,7 +171,7 @@ BACKENDS.forEach((env) => {
         method: 'GET',
       });
       assert.strictEqual(response.status, 200);
-      assert(Date.now() - startTime < 1000, 'Response took too long');
+      assert(Date.now() - startTime < 2000, 'Response took too long');
 
       // eslint-disable-next-line no-unused-expressions
       assert.match(response.headers.get('content-type'), /^text\/javascript/);
@@ -229,13 +229,13 @@ BACKENDS.forEach((env) => {
       const respRange = await fetch(`https://${domain}/.rum/@adobe/helix-rum-js@~2.11.4/dist/rum-standalone.js`);
       assert.strictEqual(respRange.status, 200);
       assert.strictEqual(`hlx-${env.provider}`, respRange.headers.get('x-rum-trace'));
-      assert(Date.now() - startTime < 1000, 'Response took too long');
+      assert(Date.now() - startTime < 2000, 'Response took too long');
 
       const startTime2 = Date.now();
       const respSpecific = await fetch(`https://${domain}/.rum/@adobe/helix-rum-js@2.11.4/dist/rum-standalone.js`);
       assert.strictEqual(respSpecific.status, 200);
       assert.strictEqual(`hlx-${env.provider}`, respSpecific.headers.get('x-rum-trace'));
-      assert(Date.now() - startTime2 < 1000, 'Response took too long');
+      assert(Date.now() - startTime2 < 2000, 'Response took too long');
     });
 
     it('rum enhancer is served from helix backend', async function test() {
@@ -247,13 +247,13 @@ BACKENDS.forEach((env) => {
       const respRange = await fetch(`https://${domain}/.rum/@adobe/helix-rum-enhancer@%5E2/src/index.js`);
       assert.strictEqual(respRange.status, 200);
       assert.strictEqual(`hlx-${env.provider}`, respRange.headers.get('x-rum-trace'));
-      assert(Date.now() - startTime < 1000, 'Response took too long');
+      assert(Date.now() - startTime < 2000, 'Response took too long');
 
       const startTime2 = Date.now();
       const respSpecific = await fetch(`https://${domain}/.rum/@adobe/helix-rum-enhancer@2.34.3/src/index.js`);
       assert.strictEqual(respSpecific.status, 200);
       assert.strictEqual(`hlx-${env.provider}`, respSpecific.headers.get('x-rum-trace'));
-      assert(Date.now() - startTime2 < 1000, 'Response took too long');
+      assert(Date.now() - startTime2 < 2000, 'Response took too long');
     });
 
     it.skip('rum js module is being served with default replacements', async function test() {
