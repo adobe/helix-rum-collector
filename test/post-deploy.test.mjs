@@ -12,19 +12,9 @@
 /* eslint-env mocha */
 import assert from 'assert';
 import { describe, it } from 'node:test';
+import { BACKENDS } from '../src/utils.mjs';
 
-[
-  {
-    provider: 'cloudflare',
-    proddomain: 'rum.hlx-cloudflare.page',
-    cidomain: 'helix3--helix-rum-collector-ci.helix-runtime.workers.dev',
-  },
-  {
-    provider: 'fastly',
-    proddomain: 'rum.hlx3.page',
-    cidomain: 'helix-rum-collector-ci.edgecompute.app',
-  },
-].forEach((env) => {
+BACKENDS.forEach((env) => {
   const domain = !process.env.CI ? env.proddomain : env.cidomain;
   describe(`Helix RUM Collector Post-Deploy Validation on ${env.provider}`, () => {
     it('Missing body returns 400', async function test() {

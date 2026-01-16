@@ -11,6 +11,7 @@
  */
 /* eslint-env serviceworker */
 import { cleanupResponse } from './cdnutils.mjs';
+import { BACKENDS } from './utils.mjs';
 
 // Note we don't check for the fact that an older version could potentially be returned
 // if a compatible version with a version that is not yet released is requested. For
@@ -49,23 +50,9 @@ function getReleaseVersion(verstr) {
   }
 }
 
-const BACKENDS = [
-  {
-    provider: 'cloudflare',
-    proddomain: 'rum.hlx-cloudflare.page',
-    cidomain: 'helix3--helix-rum-collector-ci.helix-runtime.workers.dev',
-  },
-  {
-    provider: 'fastly',
-    proddomain: 'rum.hlx3.page',
-    cidomain: 'helix-rum-collector-ci.edgecompute.app',
-  },
-];
-
 function getBackendSuffix(url) {
   const { hostname } = url;
 
-  console.log('*** hostname', hostname, ' url ', url);
   const backend = BACKENDS.find((b) => b.proddomain === hostname || b.cidomain === hostname);
   if (backend) {
     return `-${backend.provider}`;
@@ -90,7 +77,6 @@ export async function respondHelixPkgReg(req) {
     return { status: 500, statusText: 'Unsupported version' };
   }
   const backend = getBackendSuffix(url);
-  /* */ console.log('*** backend', backend);
   const beurl = new URL(`https://release-${relver.ver}--${pkgname}--adobe.aem${backend}.live/${paths.slice(1).join('/')}`);
   const bereq = new Request(beurl.href);
   console.log('fetching', bereq.url);
