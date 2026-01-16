@@ -49,6 +49,29 @@ function getReleaseVersion(verstr) {
   }
 }
 
+const BACKENDS = [
+  {
+    provider: 'cloudflare',
+    proddomain: 'rum.hlx-cloudflare.page',
+    cidomain: 'helix3--helix-rum-collector-ci.helix-runtime.workers.dev',
+  },
+  {
+    provider: 'fastly',
+    proddomain: 'rum.hlx3.page',
+    cidomain: 'helix-rum-collector-ci.edgecompute.app',
+  },
+];
+
+function getBackendSuffix(url) {
+  // if the hostname in url matches one of the domains in BACKENDS, return the provider
+  const { hostname } = url;
+  const backend = BACKENDS.find((b) => b.proddomain === hostname || b.cidomain === hostname);
+  if (backend) {
+    return `-${backend.provider}`;
+  }
+  return '';
+}
+
 export async function respondHelixPkgReg(req) {
   const url = new URL(req.url);
   const paths = decodeURI(url.pathname).split('/').slice(3);
@@ -65,7 +88,9 @@ export async function respondHelixPkgReg(req) {
   if (!relver) {
     return { status: 500, statusText: 'Unsupported version' };
   }
-  const beurl = new URL(`https://release-${relver.ver}--${pkgname}--adobe.aem.live/${paths.slice(1).join('/')}`);
+  const backend = getBackendSuffix(url);
+  /* */ console.log('*** backend', backend);
+  const beurl = new URL(`https://release-${relver.ver}--${pkgname}--adobe.aem${backend}.live/${paths.slice(1).join('/')}`);
   const bereq = new Request(beurl.href);
   console.log('fetching', bereq.url);
   const beresp = await fetch(bereq, {
