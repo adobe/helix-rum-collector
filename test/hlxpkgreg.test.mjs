@@ -29,6 +29,32 @@ describe('Test Helix Package Registry Handler', () => {
     assert(text.includes('function sampleRUM'), 'Contents should contain sampleRUM function');
   });
 
+  it('serves a package from fastly', async () => {
+    const req = {};
+    req.url = 'http://rum.hlx3.page/.rum/@adobe/helix-rum-js@2.11.4/dist/rum-standalone.js';
+
+    const resp = await respondHelixPkgReg(req);
+    const text = await resp.text();
+    assert.equal(200, resp.status);
+    assert.equal('hlx-fastly', resp.headers.get('x-rum-trace'));
+    assert(resp.headers.get('x-cache') === null, 'x-cache header should be removed');
+    assert(resp.headers.get('server') === null, 'server header should be removed');
+    assert(text.includes('function sampleRUM'), 'Contents should contain sampleRUM function');
+  });
+
+  it('serves a package from cloudflare', async () => {
+    const req = {};
+    req.url = 'http://rum.hlx-cloudflare.page/.rum/@adobe/helix-rum-js@2.11.4/dist/rum-standalone.js';
+
+    const resp = await respondHelixPkgReg(req);
+    const text = await resp.text();
+    assert.equal(200, resp.status);
+    assert.equal('hlx-cloudflare', resp.headers.get('x-rum-trace'));
+    assert(resp.headers.get('x-cache') === null, 'x-cache header should be removed');
+    assert(resp.headers.get('server') === null, 'server header should be removed');
+    assert(text.includes('function sampleRUM'), 'Contents should contain sampleRUM function');
+  });
+
   async function testWildcarding(inurl, usedurl, cacheControl, message) {
     const req = {
       url: inurl,
