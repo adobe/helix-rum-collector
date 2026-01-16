@@ -11,6 +11,7 @@
  */
 /* eslint-env serviceworker */
 import { cleanupResponse } from './cdnutils.mjs';
+import { BACKENDS } from './utils.mjs';
 
 // Note we don't check for the fact that an older version could potentially be returned
 // if a compatible version with a version that is not yet released is requested. For
@@ -49,6 +50,16 @@ function getReleaseVersion(verstr) {
   }
 }
 
+function getBackendSuffix(url) {
+  const { hostname } = url;
+
+  const backend = BACKENDS.find((b) => b.proddomain === hostname || b.cidomain === hostname);
+  if (backend) {
+    return `-${backend.provider}`;
+  }
+  return '';
+}
+
 export async function respondHelixPkgReg(req) {
   const url = new URL(req.url);
   const paths = decodeURI(url.pathname).split('/').slice(3);
@@ -65,7 +76,8 @@ export async function respondHelixPkgReg(req) {
   if (!relver) {
     return { status: 500, statusText: 'Unsupported version' };
   }
-  const beurl = new URL(`https://release-${relver.ver}--${pkgname}--adobe.aem.live/${paths.slice(1).join('/')}`);
+  const backend = getBackendSuffix(url);
+  const beurl = new URL(`https://release-${relver.ver}--${pkgname}--adobe.aem${backend}.live/${paths.slice(1).join('/')}`);
   const bereq = new Request(beurl.href);
   console.log('fetching', bereq.url);
   const beresp = await fetch(bereq, {
@@ -79,6 +91,6 @@ export async function respondHelixPkgReg(req) {
   ccMap.set('access-control-allow-methods', 'GET, HEAD, OPTIONS');
   ccMap.set('access-control-allow-headers', '*');
   ccMap.set('access-control-expose-headers', '*');
-  ccMap.set('x-rum-trace', 'hlx'); // Trace the backend used
+  ccMap.set('x-rum-trace', `hlx${backend}`); // Trace the backend used
   return cleanupResponse(beresp, req, ccMap);
 }

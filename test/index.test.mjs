@@ -308,6 +308,30 @@ describe('Test index', () => {
     assert(t.includes('function initEnhancer()'));
   });
 
+  it('reverts to jsdelivr/unpkg if helix backend times out', async () => {
+    const { main } = await esmock('../src/index.mjs', {
+      '../src/hlxpkgreg.mjs': {
+        respondHelixPkgReg: async () => {
+          // sleep for 10 seconds
+          await new Promise(() => {
+            setTimeout(() => {}, 10000);
+          });
+        },
+      },
+    });
+
+    const headers = new Map();
+    const req = { headers };
+    req.method = 'GET';
+    req.url = 'http://x.y/.rum/@adobe/helix-rum-js@^1/src/index.js';
+
+    const resp = await main(req);
+    assert.equal(200, resp.status);
+    assert(resp.ok);
+    const backend = resp.headers.get('x-rum-trace');
+    assert(backend === 'be-j' || backend === 'be-u');
+  });
+
   it('serves helix-rum-enhancer with encoded wilcard from Helix backend', async () => {
     const headers = new Map();
 
