@@ -27,6 +27,16 @@ import { describe, it } from 'node:test';
 ].forEach((env) => {
   const domain = !process.env.CI ? env.proddomain : env.cidomain;
   describe(`Helix RUM Collector Post-Deploy Validation on ${env.provider}`, () => {
+    it('Check correct backend is used to serve packages', async function test() {
+      if (!process.env.TEST_INTEGRATION) {
+        this.skip();
+      }
+
+      const response = await fetch(`https://${domain}/.rum/@adobe/helix-rum-enhancer@2.33.0/src/index.js`);
+      assert.strictEqual(response.status, 200);
+      assert.strictEqual(response.headers.get('x-rum-trace'), `***-${env.provider}`);
+    });
+
     it('Missing body returns 400', async function test() {
       if (!process.env.TEST_INTEGRATION) {
         this.skip();

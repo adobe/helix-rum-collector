@@ -105,6 +105,6 @@ export async function respondHelixPkgReg(req) {
   ccMap.set('access-control-allow-methods', 'GET, HEAD, OPTIONS');
   ccMap.set('access-control-allow-headers', '*');
   ccMap.set('access-control-expose-headers', '*');
-  ccMap.set('x-rum-trace', 'hlx'); // Trace the backend used
+  ccMap.set('x-rum-trace', `hlx${backend}`); // Trace the backend used
   return cleanupResponse(beresp, req, ccMap);
 }
