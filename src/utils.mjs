@@ -14,6 +14,19 @@ import { isSpider } from './spiders.mjs';
 import { bots } from './bots.mjs';
 import { cleanPath } from './privacy.mjs';
 
+export const BACKENDS = [
+  {
+    provider: 'cloudflare',
+    proddomain: 'rum.hlx-cloudflare.page',
+    cidomain: 'helix3--helix-rum-collector-ci.helix-runtime.workers.dev',
+  },
+  {
+    provider: 'fastly',
+    proddomain: 'rum.hlx3.page',
+    cidomain: 'helix-rum-collector-ci.edgecompute.app',
+  },
+];
+
 export function isReasonableWeight(weight) {
   return [1, // debug
     10, // low

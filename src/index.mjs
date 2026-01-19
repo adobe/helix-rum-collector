@@ -111,7 +111,17 @@ async function respondPackage(req, isHelix) {
   if (isHelix) {
     // If Helix can serve the package, then always try that first
     try {
-      const resp = await respondHelixPkgReg(req);
+      const timeout = new Promise((_, reject) => {
+        setTimeout(() => {
+          reject(new Error('Timeout'));
+        }, REGISTRY_TIMEOUT_MS);
+      });
+
+      const resp = await Promise.race([
+        respondHelixPkgReg(req),
+        timeout,
+      ]);
+
       if (resp.status === 200) {
         return resp;
       } else {
