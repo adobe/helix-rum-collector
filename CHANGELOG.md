@@ -1,3 +1,10 @@
+## [2.44.4](https://github.com/adobe/helix-rum-collector/compare/v2.44.3...v2.44.4) (2026-01-19)
+
+
+### Bug Fixes
+
+* Helix backend request stay with worker and add timeout ([#590](https://github.com/adobe/helix-rum-collector/issues/590)) ([499c29d](https://github.com/adobe/helix-rum-collector/commit/499c29d7f93771f51e091f0b9e83a24f541d1cee))
+
 ## [2.44.3](https://github.com/adobe/helix-rum-collector/compare/v2.44.2...v2.44.3) (2025-11-20)
 
 
