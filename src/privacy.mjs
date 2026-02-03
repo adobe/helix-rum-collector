@@ -33,7 +33,19 @@ const filters = {
   // When we find this, we replace the string with a generic placeholder.
   jwt: withInputValidation((str, replaceWith) => str.replace(/eyJ[a-zA-Z0-9_-]+\.eyJ[a-zA-Z0-9_-]+\.[a-zA-Z0-9_-]+/g, replaceWith)),
 
-  uuid: withInputValidation((str, replaceWith) => str.replace(/([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12})|([0-9a-fA-F]{32})/g, replaceWith)),
+  uuid: withInputValidation((str, replaceWith) => {
+    // Split by segments and process each
+    return str.split('/').map((segment) => {
+      // Preserve segments that start with dm-aid-- or urn:aaid:aem: (encoded or unencoded)
+      if (segment.startsWith('dm-aid--') || 
+          segment.startsWith('urn:aaid:aem:') || 
+          segment.startsWith('urn%3Aaaid%3Aaem%3A')) {
+        return segment;
+      }
+      // Mask UUIDs in all other segments
+      return segment.replace(/([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12})|([0-9a-fA-F]{32})/g, replaceWith);
+    }).join('/');
+  }),
 
   email: withInputValidation((str, replaceWith) => str.replace(/[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/g, replaceWith)),
 

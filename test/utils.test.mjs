@@ -170,15 +170,37 @@ Pellentesque viverra id magna vel varius. Lorem ipsum dolor sit amet, consectetu
     assert.equal(cleanurl('https://api.example.com/API/Perfios/123e4567-e89b-12d3-a456-426614174000'), 'https://api.example.com/api/perfios');
     assert.equal(cleanurl('https://api.example.com/KYCCallback/data'), 'https://api.example.com/kyccallback');
 
+    // AEM Asset identifiers - should be preserved
+    // Test 1: AEM Assets with URN identifier (base path)
+    assert.equal(cleanurl('https://assets.adobe.com/adobe/assets/urn:aaid:aem:12345678-1234-1234-1234-123456789abc'), 'https://assets.adobe.com/adobe/assets/urn:aaid:aem:12345678-1234-1234-1234-123456789abc');
+    
+    // Test 2: AEM Assets with URN identifier (with subpath, query and fragment stripped)
+    assert.equal(cleanurl('https://assets.adobe.com/adobe/assets/urn:aaid:aem:12345678-1234-1234-1234-123456789abc/metadata?version=1#fragment'), 'https://assets.adobe.com/adobe/assets/urn:aaid:aem:12345678-1234-1234-1234-123456789abc/metadata');
+    
+    // Test 3: Dynamic Media deliver with dm-aid
+    assert.equal(cleanurl('https://media.adobe.com/adobe/dynamicmedia/deliver/dm-aid--550e8400-e29b-41d4-a716-446655440000/image.jpg'), 'https://media.adobe.com/adobe/dynamicmedia/deliver/dm-aid--550e8400-e29b-41d4-a716-446655440000/image.jpg');
+    
+    // Test 4: AEM Assets path with regular UUID (should be masked)
+    assert.equal(cleanurl('https://assets.adobe.com/adobe/assets/550e8400-e29b-41d4-a716-446655440000/metadata'), 'https://assets.adobe.com/adobe/assets/%3Cuuid%3E/metadata');
+    
+    // Test 5: Non-AEM path with UUID (should be masked)
+    assert.equal(cleanurl('https://example.com/user/profile/550e8400-e29b-41d4-a716-446655440000/data'), 'https://example.com/user/profile/%3Cuuid%3E/data');
+    
+    // Test 6: URL-encoded URN identifier (should be preserved)
+    assert.equal(cleanurl('https://assets.adobe.com/adobe/assets/urn%3Aaaid%3Aaem%3A12345678-1234-1234-1234-123456789abc'), 'https://assets.adobe.com/adobe/assets/urn%3Aaaid%3Aaem%3A12345678-1234-1234-1234-123456789abc');
+    
+    // Test 7: URL-encoded URN identifier with subpath (should be preserved)
+    assert.equal(cleanurl('https://assets.adobe.com/adobe/assets/urn%3Aaaid%3Aaem%3A12345678-1234-1234-1234-123456789abc/metadata'), 'https://assets.adobe.com/adobe/assets/urn%3Aaaid%3Aaem%3A12345678-1234-1234-1234-123456789abc/metadata');
+
     // Edge cases
     assert.equal(cleanurl(123), 123);
     assert.equal(cleanurl(''), '');
     assert.equal(cleanurl(null), null);
 
-    // Multiple UUIDs in a single URL
+    // Multiple UUIDs in a single URL (non-AEM)
     assert.equal(cleanurl('https://example.com/from/123e4567-e89b-12d3-a456-426614174000/to/550e8400-e29b-41d4-a716-446655440000'), 'https://example.com/from/%3Cuuid%3E/to/%3Cuuid%3E');
 
-    // UUID + JWT in same URL
+    // UUID + JWT in same URL (non-AEM)
     assert.equal(cleanurl('https://example.com/550e8400-e29b-41d4-a716-446655440000/eyJmYWtlIjogdHJ1ZX0.eyJmYWtlIjogdHJ1ZX0.c3VwZXJmYWtl/data'), 'https://example.com/%3Cuuid%3E/%3Cjwt%3E/data');
 
     // Trip codes are cleaned
