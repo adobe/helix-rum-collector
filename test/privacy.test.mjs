@@ -217,22 +217,22 @@ describe('Privacy Functions', () => {
       [
         // Test 1: AEM Assets with URN identifier (base path)
         ['/adobe/assets/urn:aaid:aem:12345678-1234-1234-1234-123456789abc', '/adobe/assets/urn:aaid:aem:12345678-1234-1234-1234-123456789abc'],
-        
+
         // Test 2: AEM Assets with URN identifier (with subpath)
         ['/adobe/assets/urn:aaid:aem:12345678-1234-1234-1234-123456789abc/metadata', '/adobe/assets/urn:aaid:aem:12345678-1234-1234-1234-123456789abc/metadata'],
-        
+
         // Test 3: Dynamic Media deliver with dm-aid
         ['/adobe/dynamicmedia/deliver/dm-aid--550e8400-e29b-41d4-a716-446655440000/image.jpg', '/adobe/dynamicmedia/deliver/dm-aid--550e8400-e29b-41d4-a716-446655440000/image.jpg'],
-        
+
         // Test 4: AEM Assets path with regular UUID (should be masked)
         ['/adobe/assets/550e8400-e29b-41d4-a716-446655440000/metadata', '/adobe/assets/<uuid>/metadata'],
-        
+
         // Test 5: Non-AEM path with UUID (should be masked)
         ['/user/profile/550e8400-e29b-41d4-a716-446655440000/data', '/user/profile/<uuid>/data'],
-        
+
         // Test 6: URL-encoded URN identifier (should be preserved)
         ['/adobe/assets/urn%3Aaaid%3Aaem%3A12345678-1234-1234-1234-123456789abc', '/adobe/assets/urn%3Aaaid%3Aaem%3A12345678-1234-1234-1234-123456789abc'],
-        
+
         // Test 7: URL-encoded URN identifier with subpath (should be preserved)
         ['/adobe/assets/urn%3Aaaid%3Aaem%3A12345678-1234-1234-1234-123456789abc/metadata', '/adobe/assets/urn%3Aaaid%3Aaem%3A12345678-1234-1234-1234-123456789abc/metadata'],
       ].forEach(([input, expected]) => {
