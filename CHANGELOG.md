@@ -1,3 +1,10 @@
+## [2.44.5](https://github.com/adobe/helix-rum-collector/compare/v2.44.4...v2.44.5) (2026-02-06)
+
+
+### Bug Fixes
+
+* preparing for relase with dummy commit ([#598](https://github.com/adobe/helix-rum-collector/issues/598)) ([1b48a41](https://github.com/adobe/helix-rum-collector/commit/1b48a41b8e5c7e7eb54e5b9ab821b0a968ea961f))
+
 ## [2.44.4](https://github.com/adobe/helix-rum-collector/compare/v2.44.3...v2.44.4) (2026-01-19)
 
 
