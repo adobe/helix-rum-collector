@@ -278,17 +278,6 @@ function cleanCode(str) {
   return str;
 }
 
-function cleanTemporarily(str) {
-  return [
-    [/\/api\/fetchmasterdata.+/i, '/api/fetchmasterdata'],
-    [/\/api\/masterdatafetch.+/i, '/api/masterdatafetch'],
-    [/\/api\/mdm.+/i, '/api/mdm'],
-    [/\/api\/employer.+/i, '/api/employer'],
-    [/\/api\/perfios.+/i, '/api/perfios'],
-    [/\/kyccallback.+/i, '/kyccallback'],
-  ].reduce((acc, [regex, replacement]) => acc.replace(regex, replacement), str);
-}
-
 export function cleanurl(url) {
   // if URL does not parse, return it as is
   try {
@@ -300,9 +289,6 @@ export function cleanurl(url) {
     u.hash = '';
     u.pathname = cleanPath(u.pathname, ['jwt', 'uuid', 'email']);
     u.pathname = cleanCode(u.pathname);
-    if (new Date() < new Date(2026, 2, 1)) {
-      u.pathname = cleanTemporarily(u.pathname);
-    }
     return u.toString().replace(/@/g, '');
   } catch (e) {
     return cleanCode(cleanPath(url, ['jwt', 'uuid', 'email']));

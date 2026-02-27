@@ -152,24 +152,6 @@ Pellentesque viverra id magna vel varius. Lorem ipsum dolor sit amet, consectetu
     // Combined: UUID with query strings and fragments
     assert.equal(cleanurl('https://example.com/user/550e8400-e29b-41d4-a716-446655440000?foo=bar#section'), 'https://example.com/user/%3Cuuid%3E');
 
-    // cleanTemporarily function - API paths cleaned until 2026-03-01
-    assert.equal(cleanurl('https://api.example.com/api/fetchmasterdata?id=12345&token=abc'), 'https://api.example.com/api/fetchmasterdata');
-    assert.equal(cleanurl('https://api.example.com/api/masterdatafetch/users/all'), 'https://api.example.com/api/masterdatafetch');
-    assert.equal(cleanurl('https://api.example.com/api/mdm/endpoint/data'), 'https://api.example.com/api/mdm');
-    assert.equal(cleanurl('https://api.example.com/api/employer/12345/details'), 'https://api.example.com/api/employer');
-
-    // perfios and kyccallback endpoints (often have UUIDs)
-    assert.equal(cleanurl('https://api.example.com/api/perfios.550e8400-e29b-41d4-a716-446655440000'), 'https://api.example.com/api/perfios');
-    assert.equal(cleanurl('https://api.example.com/api/perfios.123E4567-E89B-12D3-A456-426614174000/data'), 'https://api.example.com/api/perfios');
-    assert.equal(cleanurl('https://api.example.com/kyccallback.550e8400-e29b-41d4-a716-446655440000'), 'https://api.example.com/kyccallback');
-    assert.equal(cleanurl('https://api.example.com/kyccallback.550e8400e29b41d4a716446655440000/status'), 'https://api.example.com/kyccallback');
-    assert.equal(cleanurl('https://api.example.com/kyccallback'), 'https://api.example.com/kyccallback');
-
-    assert.equal(cleanurl('https://api.example.com/API/FetchMasterData?foo=bar'), 'https://api.example.com/API/FetchMasterData');
-    assert.equal(cleanurl('https://api.example.com/api/MasterDataFetch/something'), 'https://api.example.com/api/masterdatafetch');
-    assert.equal(cleanurl('https://api.example.com/API/Perfios/123e4567-e89b-12d3-a456-426614174000'), 'https://api.example.com/api/perfios');
-    assert.equal(cleanurl('https://api.example.com/KYCCallback/data'), 'https://api.example.com/kyccallback');
-
     // AEM Asset identifiers - should be preserved
     // Test 1: AEM Assets with URN identifier (base path)
     assert.equal(cleanurl('https://assets.adobe.com/adobe/assets/urn:aaid:aem:12345678-1234-1234-1234-123456789abc'), 'https://assets.adobe.com/adobe/assets/urn:aaid:aem:12345678-1234-1234-1234-123456789abc');
