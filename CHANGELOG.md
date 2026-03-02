@@ -1,3 +1,10 @@
+## [2.44.6](https://github.com/adobe/helix-rum-collector/compare/v2.44.5...v2.44.6) (2026-03-02)
+
+
+### Bug Fixes
+
+* remove cleanTemporarily and date-gated API path cleaning ([#607](https://github.com/adobe/helix-rum-collector/issues/607)) ([04661d8](https://github.com/adobe/helix-rum-collector/commit/04661d86c100d9844654063f2aee59bd3c4431f7))
+
 ## [2.44.5](https://github.com/adobe/helix-rum-collector/compare/v2.44.4...v2.44.5) (2026-02-06)
 
 
