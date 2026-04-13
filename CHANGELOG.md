@@ -1,3 +1,10 @@
+## [2.44.7](https://github.com/adobe/helix-rum-collector/compare/v2.44.6...v2.44.7) (2026-04-13)
+
+
+### Bug Fixes
+
+* split one-liner control flow for max-statements-per-line rule ([b7dad63](https://github.com/adobe/helix-rum-collector/commit/b7dad6346037d1bbb854db28942f14f07f4bca1a))
+
 ## [2.44.6](https://github.com/adobe/helix-rum-collector/compare/v2.44.5...v2.44.6) (2026-03-02)
 
 
