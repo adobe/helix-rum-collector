@@ -44,7 +44,7 @@ jobs:
     - name: Post-Deployment Integration Test
       run: npm run test-postdeploy
     - name: Upload coverage to Codecov
-      uses: codecov/codecov-action@v5
+      uses: codecov/codecov-action@v6
       with:
         token: ${{ secrets.CODECOV_TOKEN }}
         files: lcov-junit.info
