@@ -13,7 +13,9 @@
 // Helper function to calculate Shannon entropy
 function shannonEntropy(input) {
   const freq = {};
-  for (const ch of input) freq[ch] = (freq[ch] || 0) + 1;
+  for (const ch of input) {
+    freq[ch] = (freq[ch] || 0) + 1;
+  }
   const len = input.length;
   return Object.values(freq)
     .reduce((sum, n) => {
@@ -23,7 +25,9 @@ function shannonEntropy(input) {
 }
 
 const withInputValidation = (fn) => (str, replaceWith) => {
-  if (!str || typeof str.replace !== 'function') return str;
+  if (!str || typeof str.replace !== 'function') {
+    return str;
+  }
   return fn(str, replaceWith);
 };
 
@@ -53,7 +57,9 @@ const filters = {
     // Process each segment
     const processedSegments = segments.map((segment, index) => {
       // Skip empty segments (these represent slashes)
-      if (!segment) return segment;
+      if (!segment) {
+        return segment;
+      }
 
       // Check if segment matches PNR pattern (5-7 alphanumeric characters)
       const pnrMatch = segment.match(/^([A-Z0-9]{5,7})$/);
@@ -102,7 +108,9 @@ const filters = {
 };
 
 export function cleanPath(path, withFilters = ['jwt', 'pnr']) {
-  if (!path) return path;
+  if (!path) {
+    return path;
+  }
 
   return withFilters
     .filter((key) => typeof filters[key] === 'function'
