@@ -42,13 +42,21 @@ export class CoralogixLogger {
   ) {
     const maskedUA = getMaskedUserAgent(this.req.headers);
     // Only log to Coralogix if weight is 1, or if its an unknown agent or unknown bot
-    if (weight !== 1 && maskedUA !== 'bot' && maskedUA !== 'undefined') return;
+    if (weight !== 1 && maskedUA !== 'bot' && maskedUA !== 'undefined') {
+      return;
+    }
 
     const maskedNow = getMaskedTime(timePadding);
     let severity = 3;
-    if (checkpoint === 'error') severity = 4;
-    if (!isValidCheckpoint(checkpoint)) severity = 4;
-    if (!isValidId(id)) severity = 4;
+    if (checkpoint === 'error') {
+      severity = 4;
+    }
+    if (!isValidCheckpoint(checkpoint)) {
+      severity = 4;
+    }
+    if (!isValidId(id)) {
+      severity = 4;
+    }
 
     const data = {
       timestamp: now,
