@@ -45,7 +45,7 @@
   },
   "homepage": "https://github.com/adobe/helix-rum-collector#readme",
   "devDependencies": {
-    "@adobe/eslint-config-helix": "3.0.25",
+    "@adobe/eslint-config-helix": "3.0.26",
     "@adobe/helix-deploy": "13.5.8",
     "@adobe/helix-deploy-plugin-edge": "1.2.3",
     "@adobe/semantic-release-coralogix": "1.1.41",
