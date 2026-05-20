@@ -259,10 +259,10 @@ export async function main(req, ctx) {
 
     const effectiveReq = ua
       ? {
-          url: req.url,
-          method: req.method,
-          headers: { get: (k) => (k === 'user-agent' ? ua : req.headers.get(k)) },
-        }
+        url: req.url,
+        method: req.method,
+        headers: { get: (k) => (k === 'user-agent' ? ua : req.headers.get(k)) },
+      }
       : req;
 
     try {
