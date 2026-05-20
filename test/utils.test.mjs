@@ -111,6 +111,12 @@ Pellentesque viverra id magna vel varius. Lorem ipsum dolor sit amet, consectetu
     });
   });
 
+  it('Classifies webdriver-annotated UA as bot', () => {
+    const realUA = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36';
+    const webdriverUA = `${realUA} +http://navigator.webdriver`;
+    assert.equal('bot', getMaskedUserAgent(getUserAgentHeaders(webdriverUA)));
+  });
+
   it('Mask user agent CloudFront', () => {
     const hm1 = new Map();
     hm1.set('CloudFront-Is-Desktop-Viewer', 'true');
