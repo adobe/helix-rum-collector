@@ -1,3 +1,16 @@
+# [2.45.0](https://github.com/adobe/helix-rum-collector/compare/v2.44.7...v2.45.0) (2026-05-20)
+
+
+### Bug Fixes
+
+* add missing has() to effectiveReq headers and cover ua branches ([934cb31](https://github.com/adobe/helix-rum-collector/commit/934cb3199f2777f9f3851a99682218a6c58436eb))
+* correct indentation in effectiveReq ternary ([9651bfc](https://github.com/adobe/helix-rum-collector/commit/9651bfcecd0b2ddded12a99c0b1a8378c7cd7632))
+
+
+### Features
+
+* use client-supplied ua field for webdriver bot classification ([0bf954c](https://github.com/adobe/helix-rum-collector/commit/0bf954c086a2fbd83bf1792e942cd73c7034e3bd))
+
 ## [2.44.7](https://github.com/adobe/helix-rum-collector/compare/v2.44.6...v2.44.7) (2026-04-13)
 
 
