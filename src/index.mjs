@@ -261,7 +261,10 @@ export async function main(req, ctx) {
       ? {
         url: req.url,
         method: req.method,
-        headers: { get: (k) => (k === 'user-agent' ? ua : req.headers.get(k)) },
+        headers: {
+          get: (k) => (k === 'user-agent' ? ua : req.headers.get(k)),
+          has: (k) => req.headers.has(k),
+        },
       }
       : req;
 
