@@ -272,6 +272,25 @@ BACKENDS.forEach((env) => {
       assert.strictEqual(response.headers.get('x-rum-trace'), 'hlx');
     });
 
+    it('RUM collection with webdriver ua field returns 201', async function test() {
+      if (!process.env.TEST_INTEGRATION) {
+        this.skip();
+      }
+      const response = await fetch(`https://${domain}`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          id: 'webdriver-bot-test',
+          weight: 1,
+          ua: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36 +http://navigator.webdriver',
+        }),
+      });
+      assert.strictEqual(response.status, 201);
+      assert.strictEqual(response.headers.get('x-frame-options'), 'DENY');
+    });
+
     it('Missing id returns 400', async function test() {
       if (!process.env.TEST_INTEGRATION) {
         this.skip();
