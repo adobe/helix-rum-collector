@@ -1,3 +1,10 @@
+# [2.46.0](https://github.com/adobe/helix-rum-collector/compare/v2.45.0...v2.46.0) (2026-05-29)
+
+
+### Features
+
+* preserve port for loopback hosts in cluster hostname ([33f25f7](https://github.com/adobe/helix-rum-collector/commit/33f25f79490aa80546d5b3c7e2b17265d2ac6233))
+
 # [2.45.0](https://github.com/adobe/helix-rum-collector/compare/v2.44.7...v2.45.0) (2026-05-20)
 
 
