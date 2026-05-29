@@ -295,6 +295,26 @@ export function cleanurl(url) {
   }
 }
 
+/**
+ * Determine the hostname to record for a measured page. Normally this is the
+ * URL's hostname without the port, which keeps clustering cardinality low for
+ * production traffic. For loopback / local development hosts the port is the
+ * only thing that distinguishes one local app from another (e.g. a SLICC dev
+ * server on localhost:5710 vs another tool on localhost:3000), so for those we
+ * preserve it by returning the host (hostname:port). IPv6 loopback and
+ * `*.localhost` names are treated the same way.
+ * @param {string} url the URL to extract the hostname from
+ * @returns {string} the hostname, including the port for loopback hosts
+ */
+export function getHostname(url) {
+  const { hostname, host } = new URL(url);
+  const isLoopback = hostname === 'localhost'
+    || hostname === '127.0.0.1'
+    || hostname === '[::1]'
+    || hostname.endsWith('.localhost');
+  return isLoopback ? host : hostname;
+}
+
 export function getForwardedHost(fhh) {
   const hosts = fhh.split(',');
 

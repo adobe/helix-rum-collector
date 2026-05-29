@@ -16,6 +16,7 @@ import {
   cleanurl,
   extractAdobeRoutingInfo,
   getForwardedHost,
+  getHostname,
   getMaskedUserAgent,
   getSubsystem,
   isValidCheckpoint,
@@ -193,6 +194,27 @@ Pellentesque viverra id magna vel varius. Lorem ipsum dolor sit amet, consectetu
 
     // Trip codes are cleaned
     assert.equal(cleanurl('https://booking.com/trip/AB123C/DETAILS'), 'https://booking.com/trip/');
+  });
+
+  it('Get Hostname (port preserved for loopback hosts)', () => {
+    // production hosts: port is stripped to keep clustering cardinality low
+    assert.equal('www.example.com', getHostname('https://www.example.com/some/path'));
+    assert.equal('www.example.com', getHostname('https://www.example.com:8443/some/path'));
+    assert.equal('main--site--owner.aem.live', getHostname('https://main--site--owner.aem.live/'));
+
+    // loopback hosts: port preserved so local dev apps stay distinguishable
+    assert.equal('localhost:5710', getHostname('http://localhost:5710/index.html'));
+    assert.equal('localhost:3000', getHostname('http://localhost:3000/'));
+    assert.equal('127.0.0.1:5710', getHostname('http://127.0.0.1:5710/'));
+    assert.equal('[::1]:5710', getHostname('http://[::1]:5710/'));
+    assert.equal('tefal.localhost:8080', getHostname('http://tefal.localhost:8080/'));
+
+    // loopback host without an explicit (or with a default) port: nothing to add
+    assert.equal('localhost', getHostname('http://localhost/'));
+    assert.equal('localhost', getHostname('http://localhost:80/'));
+
+    // invalid URLs throw, exactly as the previous `new URL(...).hostname` did
+    assert.throws(() => getHostname('not a url'));
   });
 
   it('Get Forwarded Host', () => {

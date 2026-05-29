@@ -54,6 +54,27 @@ describe('Test index', () => {
     assert.equal('blahblah', logged.hostname);
   });
 
+  it('main GET preserves port for localhost in cluster hostname', async () => {
+    const headers = new Map();
+    headers.set('host', 'somehost');
+    headers.set('user-agent', 'Mozilla/5.0 (X11; CrOS x86_64 14541.0.0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/116.0.0.0 Safari/537.36');
+
+    const req = { headers };
+    req.method = 'GET';
+    req.url = 'http://foo.bar.org?data={"referer":"http://localhost:5710/index.html", "checkpoint": "error"}';
+
+    const ctx = { runtime: { name: 'compute-at-edge' } };
+
+    const resp = await methods.main(req, ctx);
+    assert.equal(201, resp.status);
+
+    const logged = JSON.parse(lastLogMessage);
+    assert.equal('http://localhost:5710/index.html', logged.url);
+    // a bare hostname would lose the port, collapsing every local dev app into
+    // a single `localhost` bucket — the port is what keeps them distinguishable
+    assert.equal('localhost:5710', logged.hostname);
+  });
+
   it('main GET generates ID', async () => {
     const headers = new Map();
     const req = { headers };
