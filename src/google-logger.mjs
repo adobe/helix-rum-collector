@@ -13,6 +13,7 @@ import { Logger } from './logger.mjs';
 import {
   bloatControl,
   cleanurl,
+  getHostname,
   getMaskedTime,
   getMaskedUserAgent,
   getSubsystem,
@@ -58,12 +59,12 @@ export class GoogleLogger {
 
     const hn = (url) => {
       try {
-        return (new URL(url)).hostname;
+        return getHostname(url);
       } catch (e) {
         if (this.req.headers.has('referer')) {
-          return new URL(this.req.headers.get('referer')).hostname;
+          return getHostname(this.req.headers.get('referer'));
         }
-        return new URL(this.req.url).hostname;
+        return getHostname(this.req.url);
       }
     };
 
