@@ -460,6 +460,36 @@
     "expected": "bot:ai:diffbot"
   },
   {
+    "desc": "Ai2Bot-Dolma",
+    "ua": "Ai2Bot-Dolma",
+    "expected": "bot:ai:ai2bot-dolma"
+  },
+  {
+    "desc": "Claude-Web",
+    "ua": "Claude-Web (+https://www.anthropic.com/claude-web)",
+    "expected": "bot:ai:claude-web"
+  },
+  {
+    "desc": "FacebookBot",
+    "ua": "FacebookBot",
+    "expected": "bot:ai:facebookbot"
+  },
+  {
+    "desc": "Applebot-Extended (AI, not search)",
+    "ua": "Applebot-Extended/0.1",
+    "expected": "bot:ai:applebot-extended"
+  },
+  {
+    "desc": "Meta-ExternalAgent",
+    "ua": "Meta-ExternalAgent (+https://developers.facebook.com/docs/sharing/webmasters/)",
+    "expected": "bot:ai:meta-externalagent"
+  },
+  {
+    "desc": "YouBot",
+    "ua": "YouBot",
+    "expected": "bot:ai:youbot"
+  },
+  {
     "desc": "bingbot (search subtype)",
     "ua": "bingbot",
     "expected": "bot:search:bingbot"
@@ -473,6 +503,11 @@
     "desc": "DuckDuckBot (search subtype)",
     "ua": "DuckDuckBot",
     "expected": "bot:search:duckduckbot"
+  },
+  {
+    "desc": "Applebot (search subtype)",
+    "ua": "Applebot/0.1",
+    "expected": "bot:search:applebot"
   },
   {
     "desc": "CCBot (archive subtype)",
