@@ -2,7 +2,7 @@
   {
     "desc": "Baiduspider",
     "ua": "Mozilla/5.0 (compatible; Baiduspider/2.0; +http://www.baidu.com/search/spider.html)",
-    "expected": "bot"
+    "expected": "bot:search:baiduspider"
   },
   {
     "desc": "HubSpot Crawler",
@@ -348,5 +348,135 @@
     "desc": "Windows desktop",
     "ua": "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:134.0) Gecko/20100101 Firefox/134.0",
     "expected": "desktop:windows:gecko"
+  },
+  {
+    "desc": "GPTBot",
+    "ua": "GPTBot",
+    "expected": "bot:ai:gptbot"
+  },
+  {
+    "desc": "ChatGPT-User",
+    "ua": "ChatGPT-User (+https://openai.com/bot)",
+    "expected": "bot:ai:chatgpt-user"
+  },
+  {
+    "desc": "OAI-SearchBot",
+    "ua": "OAI-SearchBot",
+    "expected": "bot:ai:oai-searchbot"
+  },
+  {
+    "desc": "OAI-AdsBot",
+    "ua": "OAI-AdsBot",
+    "expected": "bot:ai:oai-adsbot"
+  },
+  {
+    "desc": "ClaudeBot",
+    "ua": "ClaudeBot",
+    "expected": "bot:ai:claudebot"
+  },
+  {
+    "desc": "Claude-User",
+    "ua": "Claude-User (+https://www.anthropic.com)",
+    "expected": "bot:ai:claude-user"
+  },
+  {
+    "desc": "Claude-SearchBot",
+    "ua": "Claude-SearchBot",
+    "expected": "bot:ai:claude-searchbot"
+  },
+  {
+    "desc": "anthropic-ai",
+    "ua": "anthropic-ai (+https://www.anthropic.com/product)",
+    "expected": "bot:ai:anthropic-ai"
+  },
+  {
+    "desc": "PerplexityBot",
+    "ua": "PerplexityBot",
+    "expected": "bot:ai:perplexitybot"
+  },
+  {
+    "desc": "Perplexity-User",
+    "ua": "Perplexity-User (+https://www.perplexity.ai/bot)",
+    "expected": "bot:ai:perplexity-user"
+  },
+  {
+    "desc": "DuckAssistBot",
+    "ua": "DuckAssistBot",
+    "expected": "bot:ai:duckassistbot"
+  },
+  {
+    "desc": "Amazonbot",
+    "ua": "Amazonbot",
+    "expected": "bot:ai:amazonbot"
+  },
+  {
+    "desc": "MistralAI-User",
+    "ua": "MistralAI-User (+https://mistral.ai)",
+    "expected": "bot:ai:mistralai-user"
+  },
+  {
+    "desc": "DeepSeekBot",
+    "ua": "DeepSeekBot",
+    "expected": "bot:ai:deepseekbot"
+  },
+  {
+    "desc": "Bytespider",
+    "ua": "Bytespider",
+    "expected": "bot:ai:bytespider"
+  },
+  {
+    "desc": "cohere-ai",
+    "ua": "cohere-ai (+https://cohere.com)",
+    "expected": "bot:ai:cohere-ai"
+  },
+  {
+    "desc": "Google-Extended (no subtype)",
+    "ua": "Google-Extended (+http://www.google.com/bot.html)",
+    "expected": "bot:ai"
+  },
+  {
+    "desc": "meta-externalfetcher",
+    "ua": "meta-externalfetcher (+https://www.facebook.com/externalhit_uatext.php)",
+    "expected": "bot:ai:meta-externalfetcher"
+  },
+  {
+    "desc": "meta-webindexer",
+    "ua": "meta-webindexer (+https://www.facebook.com/externalhit_uatext.php)",
+    "expected": "bot:ai:meta-webindexer"
+  },
+  {
+    "desc": "Bravebot",
+    "ua": "Bravebot",
+    "expected": "bot:ai:bravebot"
+  },
+  {
+    "desc": "AI2Bot",
+    "ua": "AI2Bot",
+    "expected": "bot:ai:ai2bot"
+  },
+  {
+    "desc": "Diffbot",
+    "ua": "Diffbot",
+    "expected": "bot:ai:diffbot"
+  },
+  {
+    "desc": "bingbot (search subtype)",
+    "ua": "bingbot",
+    "expected": "bot:search:bingbot"
+  },
+  {
+    "desc": "YandexBot (search subtype)",
+    "ua": "YandexBot",
+    "expected": "bot:search:yandexbot"
+  },
+  {
+    "desc": "DuckDuckBot (search subtype)",
+    "ua": "DuckDuckBot",
+    "expected": "bot:search:duckduckbot"
+  },
+  {
+    "desc": "CCBot (archive subtype)",
+    "ua": "CCBot",
+    "expected": "bot:archive:ccbot"
   }
 ]
