@@ -1,3 +1,10 @@
+# [2.47.0](https://github.com/adobe/helix-rum-collector/compare/v2.46.0...v2.47.0) (2026-06-03)
+
+
+### Features
+
+* add bot subtype classification for AI and search agents ([#636](https://github.com/adobe/helix-rum-collector/issues/636)) ([09446d7](https://github.com/adobe/helix-rum-collector/commit/09446d733b6d9888bfa0b5d6b52029c0f1551c8a))
+
 # [2.46.0](https://github.com/adobe/helix-rum-collector/compare/v2.45.0...v2.46.0) (2026-05-29)
 
 
