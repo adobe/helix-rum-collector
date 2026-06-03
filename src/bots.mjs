@@ -202,18 +202,52 @@ export const bots = {
     {
       user_agent: 'Ai2Bot-Dolma',
       regex: 'Ai2Bot-Dolma',
+      subtype: 'ai2bot-dolma',
     },
     {
       user_agent: 'GPTBot',
       regex: 'GPTBot',
+      subtype: 'gptbot',
+    },
+    {
+      user_agent: 'ChatGPT-User',
+      regex: 'ChatGPT-User',
+      subtype: 'chatgpt-user',
+    },
+    {
+      user_agent: 'OAI-SearchBot',
+      regex: 'OAI-SearchBot',
+      subtype: 'oai-searchbot',
+    },
+    {
+      user_agent: 'OAI-AdsBot',
+      regex: 'OAI-AdsBot',
+      subtype: 'oai-adsbot',
     },
     {
       user_agent: 'Claude-Web',
       regex: 'Claude-Web',
+      subtype: 'claude-web',
+    },
+    {
+      user_agent: 'Claude-User',
+      regex: 'Claude-User',
+      subtype: 'claude-user',
+    },
+    {
+      user_agent: 'ClaudeBot',
+      regex: 'ClaudeBot',
+      subtype: 'claudebot',
+    },
+    {
+      user_agent: 'Claude-SearchBot',
+      regex: 'Claude-SearchBot',
+      subtype: 'claude-searchbot',
     },
     {
       user_agent: 'anthropic-ai',
       regex: 'anthropic-ai',
+      subtype: 'anthropic-ai',
     },
     {
       user_agent: 'Google-Extended',
@@ -222,22 +256,87 @@ export const bots = {
     {
       user_agent: 'FacebookBot',
       regex: 'FacebookBot',
+      subtype: 'facebookbot',
     },
     {
       user_agent: 'Applebot-Extended',
       regex: 'Applebot.*Extended',
+      subtype: 'applebot-extended',
     },
     {
       user_agent: 'Meta-ExternalAgent',
       regex: 'Meta-ExternalAgent',
+      subtype: 'meta-externalagent',
     },
     {
       user_agent: 'PerplexityBot',
       regex: 'PerplexityBot',
+      subtype: 'perplexitybot',
+    },
+    {
+      user_agent: 'Perplexity-User',
+      regex: 'Perplexity-User',
+      subtype: 'perplexity-user',
     },
     {
       user_agent: 'YouBot',
       regex: 'YouBot',
+      subtype: 'youbot',
+    },
+    {
+      user_agent: 'cohere-ai',
+      regex: 'cohere-ai',
+      subtype: 'cohere-ai',
+    },
+    {
+      user_agent: 'Bytespider',
+      regex: 'Bytespider',
+      subtype: 'bytespider',
+    },
+    {
+      user_agent: 'DuckAssistBot',
+      regex: 'DuckAssistBot',
+      subtype: 'duckassistbot',
+    },
+    {
+      user_agent: 'Amazonbot',
+      regex: 'Amazonbot',
+      subtype: 'amazonbot',
+    },
+    {
+      user_agent: 'MistralAI-User',
+      regex: 'MistralAI-User',
+      subtype: 'mistralai-user',
+    },
+    {
+      user_agent: 'DeepSeekBot',
+      regex: 'DeepSeekBot',
+      subtype: 'deepseekbot',
+    },
+    {
+      user_agent: 'meta-externalfetcher',
+      regex: 'meta-externalfetcher',
+      subtype: 'meta-externalfetcher',
+    },
+    {
+      user_agent: 'meta-webindexer',
+      regex: 'meta-webindexer',
+      subtype: 'meta-webindexer',
+    },
+    {
+      user_agent: 'Bravebot',
+      regex: 'Bravebot',
+      subtype: 'bravebot',
+    },
+    {
+      user_agent: 'AI2Bot',
+      regex: 'AI2Bot',
+      subtype: 'ai2bot',
+    },
+    {
+      user_agent: 'Diffbot',
+      regex: 'Diffbot',
+      subtype: 'diffbot',
     },
   ],
   Search: [
@@ -252,6 +351,7 @@ export const bots = {
     {
       user_agent: 'YandexRenderResourcesBot/1.0',
       regex: 'Yandex',
+      subtype: 'yandexbot',
     },
     {
       user_agent: 'MS-Search Crawler',
@@ -260,6 +360,7 @@ export const bots = {
     {
       user_agent: 'Bingbot/2.0 various versions',
       regex: 'bingbot',
+      subtype: 'bingbot',
     },
     {
       user_agent: 'Googlebot/2.1',
@@ -268,6 +369,17 @@ export const bots = {
     {
       user_agent: 'Applebot/0.1',
       regex: 'Applebot',
+      subtype: 'applebot',
+    },
+    {
+      user_agent: 'DuckDuckBot',
+      regex: 'DuckDuckBot',
+      subtype: 'duckduckbot',
+    },
+    {
+      user_agent: 'Baiduspider',
+      regex: 'Baiduspider',
+      subtype: 'baiduspider',
     },
     {
       user_agent: 'AddSearchBot/1.0',
@@ -346,6 +458,7 @@ export const bots = {
       // per se, so it's not included in the AI category
       user_agent: 'CCBot',
       regex: 'CCBot',
+      subtype: 'ccbot',
     },
   ],
   Translation: [

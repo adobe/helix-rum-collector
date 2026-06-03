@@ -180,12 +180,14 @@ function getDesktopOS(userAgent) {
  * @returns {Enumerator('', ':search', ':seo', ':social', ':ai', ':security')} the bot type
  */
 function getBotType(userAgent) {
-  const type = Object
-    .entries(bots)
-    .find(([, botList]) => (botList
-      .map(({ regex }) => new RegExp(regex, 'i'))
-      .find((re) => re.test(userAgent))));
-  return type ? `:${type[0].toLowerCase()}` : '';
+  for (const [category, botList] of Object.entries(bots)) {
+    const matched = botList.find(({ regex }) => new RegExp(regex, 'i').test(userAgent));
+    if (matched) {
+      const subtype = matched.subtype ? `:${matched.subtype}` : '';
+      return `:${category.toLowerCase()}${subtype}`;
+    }
+  }
+  return '';
 }
 
 function getBrowserEngine(userAgent) {
