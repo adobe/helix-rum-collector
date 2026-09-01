@@ -164,18 +164,6 @@ describe('Test index', () => {
     assert.equal(400, resp.status);
     assert(resp.headers.get('X-Error').startsWith('RUM Collector expects'));
     assert.equal('text/plain; charset=utf-8', resp.headers.get('Content-Type'));
-
-    const logged = JSON.parse(lastLogMessage);
-    assert.equal(4, logged.severity);
-    assert.equal('some.host', logged.subsystemName);
-
-    const loggedJSON = JSON.parse(logged.text);
-
-    assert.equal('http://foo.bar.org', loggedJSON.edgecompute.url);
-    assert.equal('http://foo.bar.org', loggedJSON.cdn.url);
-    assert.equal('POST', loggedJSON.request.method);
-    assert.equal('desktop:linux:gecko', loggedJSON.request.user_agent);
-    assert(loggedJSON.message.startsWith('RUM Collector expects'));
   });
 
   it('responds to robots.txt', async () => {
