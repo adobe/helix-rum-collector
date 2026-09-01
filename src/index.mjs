@@ -272,7 +272,7 @@ export async function main(req, ctx) {
         l.logRUM(cwv, id, weight, referer || referrer, generation, checkpoint, target, source, t);
       }
     } catch (err) {
-      return respondError(`Could not collect RUM: ${err.message}`, 500, err);
+      return respondError('Could not collect RUM', 500, err);
     }
 
     const response = new Response('rum collected.', {
