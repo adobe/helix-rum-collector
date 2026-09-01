@@ -1,3 +1,27 @@
+# [3.0.0](https://github.com/adobe/helix-rum-collector/compare/v2.47.0...v3.0.0) (2026-09-01)
+
+
+### Bug Fixes
+
+* **logging:** address review feedback ([a92359c](https://github.com/adobe/helix-rum-collector/commit/a92359cf6e39facaea38e6f7d5251f02c18aec53))
+
+
+### Features
+
+* **logging:** remove Coralogix logging target ([07760cf](https://github.com/adobe/helix-rum-collector/commit/07760cf07359947bd7d428b9d8afb31d2d4e0f64))
+
+
+### BREAKING CHANGES
+
+* **logging:** RUM events and errors are no longer forwarded to
+Coralogix. Removes CoralogixLogger and CoralogixErrorLogger, drops the
+Coralogix real-time log endpoint from the request handlers, and drops
+the CORALOGIX_TAGGER_API_KEY secret from the release workflow. Logging
+now goes to S3 and Google BigQuery only.
+
+Co-Authored-By: Claude Opus 5 (1M context) <noreply@anthropic.com>
+Signed-off-by: Lars Trieloff <lars@trieloff.net>
+
 # [2.47.0](https://github.com/adobe/helix-rum-collector/compare/v2.46.0...v2.47.0) (2026-06-03)
 
 
