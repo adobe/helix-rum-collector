@@ -164,18 +164,39 @@ describe('Test index', () => {
     assert.equal(400, resp.status);
     assert(resp.headers.get('X-Error').startsWith('RUM Collector expects'));
     assert.equal('text/plain; charset=utf-8', resp.headers.get('Content-Type'));
+  });
 
-    const logged = JSON.parse(lastLogMessage);
-    assert.equal(4, logged.severity);
-    assert.equal('some.host', logged.subsystemName);
+  it('blocks access to sensitive files', async () => {
+    for (const path of ['/package.json', '/PACKAGE.JSON', '/foo/changelog.md']) {
+      const req = { headers: new Map() };
+      req.method = 'GET';
+      req.url = `http://foo.bar.org${path}`;
 
-    const loggedJSON = JSON.parse(logged.text);
+      // eslint-disable-next-line no-await-in-loop
+      const resp = await methods.main(req);
+      assert.equal(404, resp.status);
+      assert.equal('Not Found', resp.headers.get('X-Error'));
+    }
+  });
 
-    assert.equal('http://foo.bar.org', loggedJSON.edgecompute.url);
-    assert.equal('http://foo.bar.org', loggedJSON.cdn.url);
-    assert.equal('POST', loggedJSON.request.method);
-    assert.equal('desktop:linux:gecko', loggedJSON.request.user_agent);
-    assert(loggedJSON.message.startsWith('RUM Collector expects'));
+  it('responds with 500 if logging fails', async () => {
+    const headers = new Map();
+    headers.set('host', 'somehost');
+    headers.set('user-agent', 'Mozilla/5.0 (X11; CrOS x86_64 14541.0.0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/116.0.0.0 Safari/537.36');
+
+    const req = { headers };
+    req.method = 'GET';
+    req.url = 'http://foo.bar.org?data={"checkpoint":"top"}';
+
+    const altConsole = {
+      log: () => {
+        throw new Error('logging is broken');
+      },
+    };
+
+    const resp = await methods.main(req, { altConsole });
+    assert.equal(500, resp.status);
+    assert.equal('Could not collect RUM: logging is broken', resp.headers.get('X-Error'));
   });
 
   it('responds to robots.txt', async () => {

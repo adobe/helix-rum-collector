@@ -13,8 +13,6 @@
 /* eslint-env serviceworker */
 
 import { ConsoleLogger } from './console-logger.mjs';
-import { CoralogixErrorLogger } from './coralogix-error-logger.mjs';
-import { CoralogixLogger } from './coralogix-logger.mjs';
 import { GoogleLogger } from './google-logger.mjs';
 import { respondHelixPkgReg } from './hlxpkgreg.mjs';
 import { respondJsdelivr } from './jsdelivr.mjs';
@@ -25,7 +23,7 @@ import { respondDNTStatus, respondDNTPolicy } from './dnt.mjs';
 
 const REGISTRY_TIMEOUT_MS = 5000;
 
-function respondError(message, status, e, req) {
+function respondError(message, status, e) {
   const msg = e && e.message ? `${message}: ${e.message}` : message;
   const headers = {
     'Content-Type': 'text/plain; charset=utf-8',
@@ -38,12 +36,6 @@ function respondError(message, status, e, req) {
     headers,
   });
   console.error('Loggable error:', msg, e && e.stack);
-  try {
-    const c = new CoralogixErrorLogger(req);
-    c.logError(status, message);
-  } catch (err) {
-    console.error(`error logging error: ${err.message}`);
-  }
   return response;
 }
 
@@ -179,7 +171,7 @@ export async function main(req, ctx) {
           && validVersionPattern.test(segment))); // and only if it's the ^ character
 
   if (hasInvalidEncoding || decodeURI(pathname).includes('..') || decodeURI(pathname).includes(':')) {
-    return respondError('Invalid path', 400, undefined, req);
+    return respondError('Invalid path', 400, undefined);
   }
 
   try {
@@ -201,19 +193,19 @@ export async function main(req, ctx) {
     // Block access to sensitive files
     if (pathname.toLowerCase().includes('package.json')
       || pathname.toLowerCase().includes('changelog.md')) {
-      return respondError('Not Found', 404, undefined, req);
+      return respondError('Not Found', 404, undefined);
     }
 
     const isDirList = (pathname.endsWith('/'));
     if (req.method === 'GET' && pathname.match(/^\/\.rum\/web-vitals[@/]/)) {
       if (isDirList) {
-        return respondError('Directory listing is not allowed', 404, undefined, req);
+        return respondError('Directory listing is not allowed', 404, undefined);
       }
       return respondPackage(req);
     }
     if (req.method === 'GET' && pathname.startsWith('/.rum/@adobe/helix-rum')) {
       if (isDirList) {
-        return respondError('Directory listing is not allowed', 404, undefined, req);
+        return respondError('Directory listing is not allowed', 404, undefined);
       }
       return respondPackage(req, true);
     }
@@ -241,13 +233,13 @@ export async function main(req, ctx) {
     } = body;
 
     if (!id && id !== '') {
-      return respondError('id field is required', 400, undefined, req);
+      return respondError('id field is required', 400, undefined);
     }
     if (!weight || typeof weight !== 'number') {
-      return respondError('weight must be a number', 400, undefined, req);
+      return respondError('weight must be a number', 400, undefined);
     }
     if (typeof cwv !== 'object') {
-      return respondError('cwv must be an object', 400, undefined, req);
+      return respondError('cwv must be an object', 400, undefined);
     }
 
     // Remove any properties that aren't allowed metrics
@@ -270,9 +262,6 @@ export async function main(req, ctx) {
 
     try {
       if (ctx?.runtime?.name === 'compute-at-edge') {
-        const c = new CoralogixLogger(effectiveReq);
-        c.logRUM(cwv, id, weight, referer || referrer, generation, checkpoint, target, source, t);
-
         const s = new S3Logger(effectiveReq);
         s.logRUM(cwv, id, weight, referer || referrer, generation, checkpoint, target, source, t);
 
@@ -283,7 +272,7 @@ export async function main(req, ctx) {
         l.logRUM(cwv, id, weight, referer || referrer, generation, checkpoint, target, source, t);
       }
     } catch (err) {
-      return respondError(`Could not collect RUM: ${err.message}`, 500, err, req);
+      return respondError('Could not collect RUM', 500, err);
     }
 
     const response = new Response('rum collected.', {
@@ -293,7 +282,7 @@ export async function main(req, ctx) {
 
     return response;
   } catch (e) {
-    return respondError(`RUM Collector expects POST body as JSON, got ${req.method}`, 400, e, req);
+    return respondError(`RUM Collector expects POST body as JSON, got ${req.method}`, 400, e);
   }
 }
 
