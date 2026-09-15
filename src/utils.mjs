@@ -58,7 +58,7 @@ export function isValidCheckpoint(checkpoint) {
     'experiment',
     'formsubmit',
     '404',
-    '4xx',
+    '4xx', // for 403, 429, etc
     // 'convert', // not valuable
     'search',
     // 'unsupported',
