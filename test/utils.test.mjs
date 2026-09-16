@@ -269,6 +269,11 @@ Pellentesque viverra id magna vel varius. Lorem ipsum dolor sit amet, consectetu
     }));
   });
 
+  it('validates the 4xx checkpoint and rejects 5xx', () => {
+    assert.strictEqual(isValidCheckpoint('4xx'), true);
+    assert.strictEqual(isValidCheckpoint('5xx'), false);
+  });
+
   describe('Source & Target validators', () => {
     describe('audience', () => {
       it('has a validator for the "audience" checkpoint', () => {
