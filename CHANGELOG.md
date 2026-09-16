@@ -1,3 +1,10 @@
+# [3.1.0](https://github.com/adobe/helix-rum-collector/compare/v3.0.0...v3.1.0) (2026-09-16)
+
+
+### Features
+
+* 4xx checkpoint ([93eae6f](https://github.com/adobe/helix-rum-collector/commit/93eae6f8b4244a21148fa36d6e22c8515b7bc6a1))
+
 # [3.0.0](https://github.com/adobe/helix-rum-collector/compare/v2.47.0...v3.0.0) (2026-09-01)
 
 
