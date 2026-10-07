@@ -1,3 +1,10 @@
+## [3.1.1](https://github.com/adobe/helix-rum-collector/compare/v3.1.0...v3.1.1) (2026-10-07)
+
+
+### Bug Fixes
+
+* block README files in RUM package paths ([2bf61be](https://github.com/adobe/helix-rum-collector/commit/2bf61be9b89e3841acd256621410b90b48194d35))
+
 # [3.1.0](https://github.com/adobe/helix-rum-collector/compare/v3.0.0...v3.1.0) (2026-09-16)
 
 
