@@ -167,7 +167,13 @@ describe('Test index', () => {
   });
 
   it('blocks access to sensitive files', async () => {
-    for (const path of ['/package.json', '/PACKAGE.JSON', '/foo/changelog.md']) {
+    for (const path of [
+      '/package.json',
+      '/PACKAGE.JSON',
+      '/foo/changelog.md',
+      '/.rum/@adobe/helix-rum-enhancer@^2/README.md',
+      '/.rum/web-vitals@2.1.3/Readme.MD',
+    ]) {
       const req = { headers: new Map() };
       req.method = 'GET';
       req.url = `http://foo.bar.org${path}`;
