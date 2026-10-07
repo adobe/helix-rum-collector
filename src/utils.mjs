@@ -239,6 +239,31 @@ export function getMaskedUserAgent(headers) {
   }
   const lcUA = userAgent.toLowerCase();
 
+  // Beacon-level automation markers appended to the `ua` body field by the RUM
+  // client libraries. These are NOT crawler user agents, and each means something
+  // different, so they stay distinguishable from crawlers and from each other:
+  //
+  //   +http://navigator.webdriver  helix-rum-js, on every beacon of the pageview:
+  //                                navigator.webdriver was true (self-declaring automation)
+  //   +http://event.untrusted      helix-rum-enhancer, on a single click:
+  //                                event.isTrusted === false (script-synthesised click)
+  //   +http://event.hidden         helix-rum-enhancer, on a single click:
+  //                                fired while the tab was not visible
+  //
+  // They still classify as `bot`, so every existing bot filter keeps matching; the
+  // suffix is additive. Collapsing all three into a bare `bot` (the previous
+  // behaviour) pooled them with unclassified crawlers and discarded the distinction
+  // rum-distiller needs to re-classify a bundle from its own click events.
+  if (lcUA.includes('+http://navigator.webdriver')) {
+    return 'bot:webdriver';
+  }
+  if (lcUA.includes('+http://event.untrusted')) {
+    return 'bot:untrusted';
+  }
+  if (lcUA.includes('+http://event.hidden')) {
+    return 'bot:hidden';
+  }
+
   if (lcUA.includes('bot')
     || lcUA.includes('spider')
     || lcUA.includes('crawler')
