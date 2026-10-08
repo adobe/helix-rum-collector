@@ -112,10 +112,34 @@ Pellentesque viverra id magna vel varius. Lorem ipsum dolor sit amet, consectetu
     });
   });
 
-  it('Classifies webdriver-annotated UA as bot', () => {
+  describe('Classifies beacon-level automation markers', () => {
     const realUA = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36';
-    const webdriverUA = `${realUA} +http://navigator.webdriver`;
-    assert.equal('bot', getMaskedUserAgent(getUserAgentHeaders(webdriverUA)));
+
+    it('webdriver-annotated UA is bot:webdriver', () => {
+      assert.equal('bot:webdriver', getMaskedUserAgent(getUserAgentHeaders(`${realUA} +http://navigator.webdriver`)));
+    });
+
+    it('untrusted-click UA is bot:untrusted', () => {
+      assert.equal('bot:untrusted', getMaskedUserAgent(getUserAgentHeaders(`${realUA} +http://event.untrusted`)));
+    });
+
+    it('hidden-click UA is bot:hidden', () => {
+      assert.equal('bot:hidden', getMaskedUserAgent(getUserAgentHeaders(`${realUA} +http://event.hidden`)));
+    });
+
+    it('all three still classify as bot, so existing bot filters keep matching', () => {
+      ['+http://navigator.webdriver', '+http://event.untrusted', '+http://event.hidden'].forEach((marker) => {
+        assert.ok(getMaskedUserAgent(getUserAgentHeaders(`${realUA} ${marker}`)).startsWith('bot'));
+      });
+    });
+
+    it('does not shadow a real crawler category', () => {
+      assert.equal('bot:search', getMaskedUserAgent(getUserAgentHeaders('Mozilla/5.0 (compatible; Googlebot/2.1; +http://www.google.com/bot.html)')));
+    });
+
+    it('leaves an unmarked human UA alone', () => {
+      assert.equal('desktop:windows:blink', getMaskedUserAgent(getUserAgentHeaders(realUA)));
+    });
   });
 
   it('Mask user agent CloudFront', () => {
