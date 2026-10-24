@@ -1,3 +1,11 @@
+# [3.2.0](https://github.com/adobe/helix-rum-collector/compare/v3.1.1...v3.2.0) (2026-10-24)
+
+
+### Features
+
+* classify automation markers as bot:webdriver / bot:untrusted / bot:hidden ([972cc79](https://github.com/adobe/helix-rum-collector/commit/972cc797adbde0501d8fcd5f2f1f0d3348cd47fb))
+* classify automation markers as bot:webdriver / bot:untrusted / bot:hidden ([ee9c602](https://github.com/adobe/helix-rum-collector/commit/ee9c602932d349e6bdc5cfa61fc7de63f312fffa))
+
 ## [3.1.1](https://github.com/adobe/helix-rum-collector/compare/v3.1.0...v3.1.1) (2026-10-07)
 
 
