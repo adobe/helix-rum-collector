@@ -47,7 +47,55 @@ describe('Test index - ua body field', () => {
 
     assert.equal(201, resp.status);
     const logged = JSON.parse(lastLogMessage);
-    assert.equal('bot', logged.user_agent);
+    assert.equal('bot:webdriver', logged.user_agent);
+  });
+
+  it('beacon with an untrusted-click marker logs bot:untrusted', async () => {
+    const headers = new Map();
+    headers.set('host', 'www.example.com');
+    headers.set('user-agent', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36');
+
+    const json = () => ({
+      weight: 1,
+      id: 'untrusted-click-test',
+      checkpoint: 'click',
+      ua: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36 +http://event.untrusted',
+    });
+
+    const req = { headers, json };
+    req.method = 'POST';
+    req.url = 'http://www.example.com/.rum/1';
+
+    const ctx = { runtime: { name: 'compute-at-edge' } };
+    const resp = await methods.main(req, ctx);
+
+    assert.equal(201, resp.status);
+    const logged = JSON.parse(lastLogMessage);
+    assert.equal('bot:untrusted', logged.user_agent);
+  });
+
+  it('beacon with a hidden-click marker logs bot:hidden', async () => {
+    const headers = new Map();
+    headers.set('host', 'www.example.com');
+    headers.set('user-agent', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36');
+
+    const json = () => ({
+      weight: 1,
+      id: 'hidden-click-test',
+      checkpoint: 'click',
+      ua: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36 +http://event.hidden',
+    });
+
+    const req = { headers, json };
+    req.method = 'POST';
+    req.url = 'http://www.example.com/.rum/1';
+
+    const ctx = { runtime: { name: 'compute-at-edge' } };
+    const resp = await methods.main(req, ctx);
+
+    assert.equal(201, resp.status);
+    const logged = JSON.parse(lastLogMessage);
+    assert.equal('bot:hidden', logged.user_agent);
   });
 
   it('beacon without ua field uses real user-agent header', async () => {
