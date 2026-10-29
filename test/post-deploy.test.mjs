@@ -45,6 +45,36 @@ BACKENDS.forEach((env) => {
       assert.strictEqual(response.headers.get('x-frame-options'), 'DENY');
     });
 
+    it('Oversized chunked body without content-length returns 413', async function test() {
+      if (!process.env.TEST_INTEGRATION) {
+        this.skip();
+      }
+
+      // a streamed body is sent with Transfer-Encoding: chunked and no Content-Length
+      const chunk = new TextEncoder().encode(' '.repeat(1024));
+      let sent = 0;
+      const body = new ReadableStream({
+        pull(controller) {
+          if (sent >= 64) {
+            controller.close();
+            return;
+          }
+          sent += 1;
+          controller.enqueue(chunk);
+        },
+      });
+      const response = await fetch(`https://${domain}`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body,
+        duplex: 'half',
+      });
+      assert.strictEqual(response.status, 413);
+      assert.strictEqual(response.headers.get('x-frame-options'), 'DENY');
+    });
+
     it('RUM collection with masked timestamp (t) returns 201', async function test() {
       if (!process.env.TEST_INTEGRATION) {
         this.skip();
