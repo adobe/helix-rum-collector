@@ -1,3 +1,10 @@
+# [3.3.0](https://github.com/adobe/helix-rum-collector/compare/v3.2.0...v3.3.0) (2026-10-29)
+
+
+### Features
+
+* reject request bodies larger than 4kb ([705d232](https://github.com/adobe/helix-rum-collector/commit/705d23265c8d803453cd02052207ad1f67aa5de4))
+
 # [3.2.0](https://github.com/adobe/helix-rum-collector/compare/v3.1.1...v3.2.0) (2026-10-24)
 
 
