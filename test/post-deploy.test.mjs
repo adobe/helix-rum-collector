@@ -29,6 +29,22 @@ BACKENDS.forEach((env) => {
       assert.strictEqual(response.headers.get('x-frame-options'), 'DENY');
     });
 
+    it('Oversized body returns 413', async function test() {
+      if (!process.env.TEST_INTEGRATION) {
+        this.skip();
+      }
+
+      const response = await fetch(`https://${domain}`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ id: 'too-large', weight: 1, pad: 'x'.repeat(5000) }),
+      });
+      assert.strictEqual(response.status, 413);
+      assert.strictEqual(response.headers.get('x-frame-options'), 'DENY');
+    });
+
     it('RUM collection with masked timestamp (t) returns 201', async function test() {
       if (!process.env.TEST_INTEGRATION) {
         this.skip();

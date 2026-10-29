@@ -15,6 +15,7 @@ import { before, describe, it } from 'node:test';
 // eslint-disable-next-line import/no-extraneous-dependencies
 import esmock from 'esmock';
 import { lastLogMessage } from '../src/logger.mjs';
+import { postRequest } from './request-utils.mjs';
 
 const methods = {};
 
@@ -105,7 +106,7 @@ describe('Test index', () => {
     headers.set('user-agent', 'Opera/9.80 (MAUI Runtime; Opera Mini/4.4.39030/191.315; U; en) Presto/2.12.423 Version/12.16');
     headers.set('x-forwarded-host', 'www.foobar.com');
 
-    const json = () => JSON.parse(`{
+    const body = (`{
       "weight": 10,
       "id": "foobar",
       "cwv": {
@@ -120,9 +121,7 @@ describe('Test index', () => {
       "t": "3"
     }`);
 
-    const req = { headers, json };
-    req.method = 'POST';
-    req.url = 'http://foo.bar.org';
+    const req = postRequest('http://foo.bar.org', headers, body);
 
     const event = {
       request: req,
@@ -153,17 +152,82 @@ describe('Test index', () => {
     headers.set('host', 'some.host');
     headers.set('user-agent', 'Mozilla/5.0 (X11; Linux i686; rv:10.0) Gecko/20100101 Firefox/10.0');
 
-    const json = () => JSON.parse('{"malformed"}');
+    const body = '{"malformed"}';
 
-    const req = { headers, json };
-    req.method = 'POST';
-    req.url = 'http://foo.bar.org';
+    const req = postRequest('http://foo.bar.org', headers, body);
 
     const resp = await methods.main(req);
 
     assert.equal(400, resp.status);
     assert(resp.headers.get('X-Error').startsWith('RUM Collector expects'));
     assert.equal('text/plain; charset=utf-8', resp.headers.get('Content-Type'));
+  });
+
+  it('rejects missing POST body', async () => {
+    const resp = await methods.main(postRequest('http://foo.bar.org'));
+    assert.equal(400, resp.status);
+    assert(resp.headers.get('X-Error').startsWith('RUM Collector expects'));
+  });
+
+  /**
+   * Creates a valid JSON beacon of exactly `size` bytes.
+   */
+  function beaconOfSize(size) {
+    const json = JSON.stringify({ id: 'big', checkpoint: 'top', pad: '' });
+    return json.replace('"pad":""', `"pad":"${'x'.repeat(size - json.length)}"`);
+  }
+
+  it('accepts POST body at the size limit', async () => {
+    const body = beaconOfSize(methods.MAX_BODY_SIZE);
+    assert.equal(4096, body.length);
+    const resp = await methods.main(postRequest('http://foo.bar.org', new Map(), body), { runtime: { name: 'compute-at-edge' } });
+    assert.equal(201, resp.status);
+    assert.equal('big', JSON.parse(lastLogMessage).id);
+  });
+
+  it('rejects POST body over the size limit', async () => {
+    const body = beaconOfSize(methods.MAX_BODY_SIZE + 1);
+    const resp = await methods.main(postRequest('http://foo.bar.org', new Map(), body));
+    assert.equal(413, resp.status);
+    assert(resp.headers.get('X-Error').startsWith('Payload Too Large'));
+    assert.equal('DENY', resp.headers.get('X-Frame-Options'));
+  });
+
+  it('rejects POST body over the size limit based on content-length', async () => {
+    const headers = new Map();
+    headers.set('content-length', '1000000');
+    let pulled = false;
+    const req = {
+      method: 'POST',
+      url: 'http://foo.bar.org',
+      headers,
+      get body() {
+        pulled = true;
+        return null;
+      },
+    };
+    const resp = await methods.main(req);
+    assert.equal(413, resp.status);
+    assert.equal(false, pulled, 'body must not be read');
+  });
+
+  it('rejects streamed POST body over the size limit without content-length', async () => {
+    let chunks = 0;
+    const stream = new ReadableStream({
+      pull(controller) {
+        chunks += 1;
+        if (chunks > 100) {
+          controller.close();
+          return;
+        }
+        controller.enqueue(new TextEncoder().encode(' '.repeat(1024)));
+      },
+    });
+    const req = postRequest('http://foo.bar.org', new Map(), stream);
+    assert.equal(null, req.headers.get('content-length'));
+    const resp = await methods.main(req);
+    assert.equal(413, resp.status);
+    assert(chunks < 10, `should stop reading early, but read ${chunks} chunks`);
   });
 
   it('blocks access to sensitive files', async () => {
@@ -561,7 +625,7 @@ describe('Test index', () => {
   it('Core Web Vitals', async () => {
     const headers = new Map();
 
-    const json = () => JSON.parse(`{
+    const body = (`{
       "id": "myid1",
       "cwv": {
         "CLS": 0.06,
@@ -575,9 +639,7 @@ describe('Test index', () => {
       "t": "3"
     }`);
 
-    const req = { headers, json };
-    req.method = 'POST';
-    req.url = 'http://foo.bar.org';
+    const req = postRequest('http://foo.bar.org', headers, body);
 
     const resp = await methods.main(req, { runtime: { name: 'compute-at-edge' } });
     assert.equal(201, resp.status);
@@ -616,11 +678,7 @@ describe('Test index', () => {
       log: (...args) => logged.push(args),
     };
 
-    const req = {};
-    req.headers = new Map();
-    req.method = 'POST';
-    req.url = 'http://www.acme.org?this-should-not-be-logged=true';
-    req.json = () => ({
+    const req = postRequest('http://www.acme.org?this-should-not-be-logged=true', new Map(), {
       id: 'xyz123',
       checkpoint: 'top',
     });
