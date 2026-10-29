@@ -13,6 +13,7 @@
 import assert from 'assert';
 import { before, describe, it } from 'node:test';
 import { lastLogMessage } from '../src/logger.mjs';
+import { postRequest } from './request-utils.mjs';
 
 const methods = {};
 
@@ -31,16 +32,14 @@ describe('Test index - ua body field', () => {
     headers.set('host', 'www.example.com');
     headers.set('user-agent', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36');
 
-    const json = () => ({
+    const body = ({
       weight: 1,
       id: 'webdriver-test',
       checkpoint: 'top',
       ua: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36 +http://navigator.webdriver',
     });
 
-    const req = { headers, json };
-    req.method = 'POST';
-    req.url = 'http://www.example.com/.rum/1';
+    const req = postRequest('http://www.example.com/.rum/1', headers, body);
 
     const ctx = { runtime: { name: 'compute-at-edge' } };
     const resp = await methods.main(req, ctx);
@@ -55,16 +54,14 @@ describe('Test index - ua body field', () => {
     headers.set('host', 'www.example.com');
     headers.set('user-agent', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36');
 
-    const json = () => ({
+    const body = ({
       weight: 1,
       id: 'untrusted-click-test',
       checkpoint: 'click',
       ua: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36 +http://event.untrusted',
     });
 
-    const req = { headers, json };
-    req.method = 'POST';
-    req.url = 'http://www.example.com/.rum/1';
+    const req = postRequest('http://www.example.com/.rum/1', headers, body);
 
     const ctx = { runtime: { name: 'compute-at-edge' } };
     const resp = await methods.main(req, ctx);
@@ -79,16 +76,14 @@ describe('Test index - ua body field', () => {
     headers.set('host', 'www.example.com');
     headers.set('user-agent', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36');
 
-    const json = () => ({
+    const body = ({
       weight: 1,
       id: 'hidden-click-test',
       checkpoint: 'click',
       ua: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36 +http://event.hidden',
     });
 
-    const req = { headers, json };
-    req.method = 'POST';
-    req.url = 'http://www.example.com/.rum/1';
+    const req = postRequest('http://www.example.com/.rum/1', headers, body);
 
     const ctx = { runtime: { name: 'compute-at-edge' } };
     const resp = await methods.main(req, ctx);
@@ -103,15 +98,13 @@ describe('Test index - ua body field', () => {
     headers.set('host', 'www.example.com');
     headers.set('user-agent', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36');
 
-    const json = () => ({
+    const body = ({
       weight: 1,
       id: 'normal-browser-test',
       checkpoint: 'top',
     });
 
-    const req = { headers, json };
-    req.method = 'POST';
-    req.url = 'http://www.example.com/.rum/1';
+    const req = postRequest('http://www.example.com/.rum/1', headers, body);
 
     const ctx = { runtime: { name: 'compute-at-edge' } };
     const resp = await methods.main(req, ctx);

@@ -23,6 +23,57 @@ import { respondDNTStatus, respondDNTPolicy } from './dnt.mjs';
 
 const REGISTRY_TIMEOUT_MS = 5000;
 
+/**
+ * Maximum accepted size of a request body in bytes. RUM beacons are tiny
+ * (typically a few hundred bytes), so anything larger is rejected early
+ * to avoid wasting resources on reading and parsing it.
+ */
+export const MAX_BODY_SIZE = 4 * 1024;
+
+class PayloadTooLargeError extends Error {}
+
+/**
+ * Reads the request body as text, but never more than `limit` bytes.
+ * Rejects early based on the Content-Length header, and also enforces
+ * the limit while streaming, in case the header is missing or wrong.
+ * @param {Request} req the request
+ * @param {number} limit the maximum number of bytes to read
+ * @returns {Promise<string>} the request body
+ * @throws {PayloadTooLargeError} if the body exceeds the limit
+ */
+async function readBody(req, limit) {
+  const tooLarge = () => new PayloadTooLargeError(`Request body exceeds ${limit} bytes`);
+  if (Number(req.headers.get('content-length')) > limit) {
+    throw tooLarge();
+  }
+  if (!req.body) {
+    return '';
+  }
+  const reader = req.body.getReader();
+  const chunks = [];
+  let size = 0;
+  while (true) {
+    // eslint-disable-next-line no-await-in-loop
+    const { done, value } = await reader.read();
+    if (done) {
+      break;
+    }
+    size += value.byteLength;
+    if (size > limit) {
+      reader.cancel().catch(() => {});
+      throw tooLarge();
+    }
+    chunks.push(value);
+  }
+  const buf = new Uint8Array(size);
+  let offset = 0;
+  chunks.forEach((chunk) => {
+    buf.set(chunk, offset);
+    offset += chunk.byteLength;
+  });
+  return new TextDecoder().decode(buf);
+}
+
 function respondError(message, status, e) {
   const msg = e && e.message ? `${message}: ${e.message}` : message;
   const headers = {
@@ -212,7 +263,7 @@ export async function main(req, ctx) {
     }
     const body = req.method === 'GET'
       ? JSON.parse(new URL(req.url).searchParams.get('data'))
-      : await req.json();
+      : JSON.parse(await readBody(req, MAX_BODY_SIZE));
 
     const headers = {
       'Content-Type': 'text/plain; charset=utf-8',
@@ -283,6 +334,9 @@ export async function main(req, ctx) {
 
     return response;
   } catch (e) {
+    if (e instanceof PayloadTooLargeError) {
+      return respondError('Payload Too Large', 413, e);
+    }
     return respondError(`RUM Collector expects POST body as JSON, got ${req.method}`, 400, e);
   }
 }
