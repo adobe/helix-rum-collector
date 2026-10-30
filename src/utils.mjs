@@ -232,11 +232,7 @@ export function getMaskedUserAgent(headers) {
     return 'bot:monitoring';
   }
 
-  const userAgent = headers.get('user-agent');
-
-  if (!userAgent) {
-    return 'undefined';
-  }
+  const userAgent = headers.get('user-agent') || '';
   const lcUA = userAgent.toLowerCase();
 
   // Beacon-level automation markers appended to the `ua` body field by the RUM
@@ -262,6 +258,14 @@ export function getMaskedUserAgent(headers) {
   }
   if (lcUA.includes('+http://event.hidden')) {
     return 'bot:hidden';
+  }
+
+  // ChatGPT's cloud browser can use an ordinary Chrome UA and webdriver=false.
+  // Match its documented, quoted Signature-Agent value instead. Like a UA,
+  // this is a self-declared analytics signal, NOT verified Web Bot Auth:
+  // authenticating it requires validating Signature and Signature-Input.
+  if (headers.get('signature-agent') === '"https://chatgpt.com"') {
+    return 'bot:ai:chatgpt-agent';
   }
 
   if (lcUA.includes('bot')
