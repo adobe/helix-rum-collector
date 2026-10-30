@@ -46,6 +46,29 @@ The payload of a typical request looks like this:
 ### Supported Headers
 
 - `User-Agent`
+- `Signature-Agent` (self-declared agent classification; see below)
 - `X-Forwarded-Host`
 - `Referer`
+
+### ChatGPT cloud browser classification
+
+ChatGPT's cloud browser can send an ordinary Linux Chrome user agent and report
+`navigator.webdriver === false`. Those values alone do not distinguish it from a
+human browser, so the collector does not fingerprint Chrome versions or platforms
+to identify an AI agent.
+
+The collector classifies a request with the exact HTTP header
+`Signature-Agent: "https://chatgpt.com"` as `bot:ai:chatgpt-agent`. This header must
+reach the collector on the **RUM request**, not just the measured page request.
+It remains available when the beacon's `ua` field overrides the user agent.
+Existing beacon markers (`bot:webdriver`, `bot:untrusted`, and `bot:hidden`) keep
+their precedence; a browser without the header retains its normal classification.
+
+This is a **self-declared analytics label, not authenticated identity**. Like a
+user agent, the header can be forged. The collector does not validate the
+`Signature` or `Signature-Input` headers, and this label must not be used for
+allowlisting or other security decisions. For authenticated identification,
+validate the HTTP message signature and its freshness against OpenAI's public
+keys at `https://chatgpt.com/.well-known/http-message-signatures-directory`, as
+described in [OpenAI's cloud browser allowlisting documentation](https://help.openai.com/en/articles/11845367-chatgpt-works-cloud-browser-allowlisting).
 
