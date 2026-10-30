@@ -235,6 +235,11 @@ export const bots = {
       subtype: 'claude-user',
     },
     {
+      user_agent: 'Claude-Agent',
+      regex: 'Claude-Agent',
+      subtype: 'claude-agent',
+    },
+    {
       user_agent: 'ClaudeBot',
       regex: 'ClaudeBot',
       subtype: 'claudebot',

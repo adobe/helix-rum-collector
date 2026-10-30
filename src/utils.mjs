@@ -274,6 +274,7 @@ export function getMaskedUserAgent(headers) {
     || lcUA.includes('axios')
     || lcUA.includes('curl')
     || lcUA.includes('synthetics')
+    || lcUA.includes('claude-agent')
     || lcUA.includes('+https://')
     || lcUA.includes('+http://')
     || isSpider(lcUA)) {
