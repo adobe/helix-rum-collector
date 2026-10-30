@@ -1,3 +1,10 @@
+## [3.3.1](https://github.com/adobe/helix-rum-collector/compare/v3.3.0...v3.3.1) (2026-10-30)
+
+
+### Bug Fixes
+
+* classify Claude-Agent browsing agent as bot:ai:claude-agent ([a5e933b](https://github.com/adobe/helix-rum-collector/commit/a5e933bb0aa80900ee28090b32d5f70a7d75af85)), closes [#668](https://github.com/adobe/helix-rum-collector/issues/668)
+
 # [3.3.0](https://github.com/adobe/helix-rum-collector/compare/v3.2.0...v3.3.0) (2026-10-29)
 
 
