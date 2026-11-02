@@ -240,6 +240,16 @@ export const bots = {
       subtype: 'claude-agent',
     },
     {
+      user_agent: 'Google-Agent',
+      regex: 'Google-Agent',
+      subtype: 'google-agent',
+    },
+    {
+      user_agent: 'Manus-User',
+      regex: 'Manus-User',
+      subtype: 'manus-user',
+    },
+    {
       user_agent: 'ClaudeBot',
       regex: 'ClaudeBot',
       subtype: 'claudebot',
