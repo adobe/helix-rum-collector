@@ -390,6 +390,36 @@
     "expected": "bot:ai:claude-agent"
   },
   {
+    "desc": "Google-Agent Android",
+    "ua": "Mozilla/5.0 (Linux; Android 6.0.1; Nexus 5X Build/MMB29P) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/W.X.Y.Z Mobile Safari/537.36 (compatible; Google-Agent; +https://developers.google.com/crawling/docs/crawlers-fetchers/google-agent)",
+    "expected": "bot:ai:google-agent"
+  },
+  {
+    "desc": "Google-Agent Linux",
+    "ua": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko; compatible; Google-Agent; +https://developers.google.com/crawling/docs/crawlers-fetchers/google-agent) Chrome/W.X.Y.Z Safari/537.36",
+    "expected": "bot:ai:google-agent"
+  },
+  {
+    "desc": "Google-Agent bare user agent",
+    "ua": "Google-Agent",
+    "expected": "bot:ai:google-agent"
+  },
+  {
+    "desc": "Manus-User Linux",
+    "ua": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/W.X.Y.Z Safari/537.36; Manus-User/1.0",
+    "expected": "bot:ai:manus-user"
+  },
+  {
+    "desc": "Manus-User Mac",
+    "ua": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/W.X.Y.Z Safari/537.36; Manus-User/1.0",
+    "expected": "bot:ai:manus-user"
+  },
+  {
+    "desc": "Manus-User future version",
+    "ua": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/W.X.Y.Z Safari/537.36; Manus-User/2.0",
+    "expected": "bot:ai:manus-user"
+  },
+  {
     "desc": "Claude-SearchBot",
     "ua": "Claude-SearchBot",
     "expected": "bot:ai:claude-searchbot"
