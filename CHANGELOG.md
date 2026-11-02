@@ -1,3 +1,10 @@
+# [3.4.0](https://github.com/adobe/helix-rum-collector/compare/v3.3.1...v3.4.0) (2026-11-02)
+
+
+### Features
+
+* classify Google-Agent and Manus-User ([d708b7d](https://github.com/adobe/helix-rum-collector/commit/d708b7dff66d31eddbc8c6a7175bae739fc8fe68)), closes [#671](https://github.com/adobe/helix-rum-collector/issues/671) [#672](https://github.com/adobe/helix-rum-collector/issues/672)
+
 ## [3.3.1](https://github.com/adobe/helix-rum-collector/compare/v3.3.0...v3.3.1) (2026-10-30)
 
 
