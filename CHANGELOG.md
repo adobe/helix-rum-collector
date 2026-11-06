@@ -1,3 +1,10 @@
+## [3.4.1](https://github.com/adobe/helix-rum-collector/compare/v3.4.0...v3.4.1) (2026-11-06)
+
+
+### Bug Fixes
+
+* classify self-declared ChatGPT cloud browser requests ([f0e5096](https://github.com/adobe/helix-rum-collector/commit/f0e50963c9f4d58e0384274c8d2b48bf15f2c4f6)), closes [#669](https://github.com/adobe/helix-rum-collector/issues/669)
+
 # [3.4.0](https://github.com/adobe/helix-rum-collector/compare/v3.3.1...v3.4.0) (2026-11-02)
 
 
