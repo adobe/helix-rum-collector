@@ -142,6 +142,60 @@ Pellentesque viverra id magna vel varius. Lorem ipsum dolor sit amet, consectetu
     });
   });
 
+  describe('Classifies the self-declared ChatGPT cloud browser', () => {
+    // Observed in the cloud browser on 2026-10-30, with navigator.webdriver=false.
+    const cloudUA = 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/155.0.0.0 Safari/537.36';
+    const signatureAgent = '"https://chatgpt.com"';
+
+    it('uses Signature-Agent rather than a Chrome version or platform fingerprint', () => {
+      const headers = getUserAgentHeaders(cloudUA).set('signature-agent', signatureAgent);
+      assert.equal(getMaskedUserAgent(headers), 'bot:ai:chatgpt-agent');
+
+      headers.set('user-agent', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/180.0.0.0 Safari/537.36');
+      assert.equal(getMaskedUserAgent(headers), 'bot:ai:chatgpt-agent');
+    });
+
+    it('can classify the declaration without a user-agent, but does not authenticate it', () => {
+      assert.equal(getMaskedUserAgent(new Map([['signature-agent', signatureAgent]])), 'bot:ai:chatgpt-agent');
+    });
+
+    it('does not classify an ordinary Chrome UA as an AI agent', () => {
+      assert.equal(getMaskedUserAgent(getUserAgentHeaders(cloudUA)), 'desktop:linux:blink');
+    });
+
+    it('does not infer identity from unknown, malformed, or lookalike signature agents', () => {
+      [
+        '',
+        'https://chatgpt.com',
+        '"https://chatgpt.com/"',
+        '"http://chatgpt.com"',
+        '"https://chatgpt.com.example.org"',
+        '"https://chatgpt.com@example.org"',
+        '"https://example.org"',
+        '"https://chatgpt.com", "https://example.org"',
+      ].forEach((agent) => {
+        const headers = getUserAgentHeaders(cloudUA).set('signature-agent', agent);
+        assert.equal(getMaskedUserAgent(headers), 'desktop:linux:blink', agent);
+      });
+    });
+
+    it('does not infer identity from signature metadata alone', () => {
+      const headers = getUserAgentHeaders(cloudUA)
+        .set('signature', 'sig1=:dGVzdA==:')
+        .set('signature-input', 'sig1=("@authority" "@method");tag="web-bot-auth"');
+      assert.equal(getMaskedUserAgent(headers), 'desktop:linux:blink');
+    });
+
+    it('preserves the more specific beacon-level automation markers', () => {
+      ['webdriver', 'untrusted', 'hidden'].forEach((marker) => {
+        const token = marker === 'webdriver' ? 'navigator.webdriver' : `event.${marker}`;
+        const headers = getUserAgentHeaders(`${cloudUA} +http://${token}`)
+          .set('signature-agent', signatureAgent);
+        assert.equal(getMaskedUserAgent(headers), `bot:${marker}`);
+      });
+    });
+  });
+
   it('Mask user agent CloudFront', () => {
     const hm1 = new Map();
     hm1.set('CloudFront-Is-Desktop-Viewer', 'true');
