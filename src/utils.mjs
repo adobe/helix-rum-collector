@@ -260,14 +260,6 @@ export function getMaskedUserAgent(headers) {
     return 'bot:hidden';
   }
 
-  // ChatGPT's cloud browser can use an ordinary Chrome UA and webdriver=false.
-  // Match its documented, quoted Signature-Agent value instead. Like a UA,
-  // this is a self-declared analytics signal, NOT verified Web Bot Auth:
-  // authenticating it requires validating Signature and Signature-Input.
-  if (headers.get('signature-agent') === '"https://chatgpt.com"') {
-    return 'bot:ai:chatgpt-agent';
-  }
-
   if (lcUA.includes('bot')
     || lcUA.includes('spider')
     || lcUA.includes('crawler')
@@ -286,6 +278,19 @@ export function getMaskedUserAgent(headers) {
     || isSpider(lcUA)) {
     return `bot${getBotType(lcUA)}`;
   }
+
+  // Cloud browsers can use ordinary Chrome UAs and webdriver=false. Match exact,
+  // quoted Signature-Agent values, after preserving existing UA-based bot labels.
+  // Like a UA, this is a self-declared analytics signal, NOT verified Web Bot Auth:
+  // authenticating it requires validating Signature and Signature-Input.
+  const signatureAgent = headers.get('signature-agent');
+  if (signatureAgent === '"https://chatgpt.com"') {
+    return 'bot:ai:chatgpt-agent';
+  }
+  if (signatureAgent === '"https://muse.ai"' || signatureAgent === '"https://www.meta.com"') {
+    return 'bot:ai:meta-agent';
+  }
+
   if (lcUA.includes('mobile')
     || lcUA.includes('android')
     || lcUA.includes('opera mini')) {

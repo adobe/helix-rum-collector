@@ -114,33 +114,48 @@ describe('Test index - ua body field', () => {
     assert.equal('desktop:windows:blink', logged.user_agent);
   });
 
-  for (const runtime of ['compute-at-edge', 'cloudflare']) {
-    for (const withBodyUA of [false, true]) {
-      it(`classifies the ChatGPT Signature-Agent on ${runtime}, body ua: ${withBodyUA}`, async () => {
-        const userAgent = 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/155.0.0.0 Safari/537.36';
-        const headers = new Map([
-          ['host', 'www.example.com'],
-          ['user-agent', userAgent],
-          ['signature-agent', '"https://chatgpt.com"'],
-        ]);
-        const body = {
-          weight: 1,
-          id: 'chatgpt-cloud-browser-test',
-          checkpoint: 'top',
-          ...(withBodyUA ? { ua: userAgent } : {}),
-        };
-        const req = postRequest('http://www.example.com/.rum/1', headers, body);
-        const logs = [];
-        const ctx = {
-          runtime: { name: runtime },
-          altConsole: { log: (message) => logs.push(JSON.parse(message)) },
-        };
-        const resp = await methods.main(req, ctx);
+  [
+    ['"https://chatgpt.com"', 'bot:ai:chatgpt-agent'],
+    ['"https://muse.ai"', 'bot:ai:meta-agent'],
+    ['"https://www.meta.com"', 'bot:ai:meta-agent'],
+  ].forEach(([signatureAgent, expected]) => {
+    const windowsUA = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/155.0.0.0 Safari/537.36';
+    const linuxUA = 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/155.0.0.0 Safari/537.36';
 
-        assert.equal(resp.status, 201);
-        const logged = runtime === 'compute-at-edge' ? JSON.parse(lastLogMessage) : logs[0];
-        assert.equal(logged.user_agent, 'bot:ai:chatgpt-agent');
+    for (const runtime of ['compute-at-edge', 'cloudflare']) {
+      [
+        ['header UA', undefined, expected],
+        ['browser body UA', linuxUA, expected],
+        ['crawler body UA', 'meta-webindexer (+https://www.facebook.com/externalhit_uatext.php)', 'bot:ai:meta-webindexer'],
+        ['webdriver body UA', `${linuxUA} +http://navigator.webdriver`, 'bot:webdriver'],
+        ['untrusted body UA', `${linuxUA} +http://event.untrusted`, 'bot:untrusted'],
+        ['hidden body UA', `${linuxUA} +http://event.hidden`, 'bot:hidden'],
+      ].forEach(([scenario, ua, label]) => {
+        it(`classifies Signature-Agent ${signatureAgent} on ${runtime}: ${scenario}`, async () => {
+          const headers = new Map([
+            ['host', 'www.example.com'],
+            ['user-agent', windowsUA],
+            ['signature-agent', signatureAgent],
+          ]);
+          const body = {
+            weight: 1,
+            id: 'cloud-browser-test',
+            checkpoint: 'top',
+            ...(ua ? { ua } : {}),
+          };
+          const req = postRequest('http://www.example.com/.rum/1', headers, body);
+          const logs = [];
+          const ctx = {
+            runtime: { name: runtime },
+            altConsole: { log: (message) => logs.push(JSON.parse(message)) },
+          };
+          const resp = await methods.main(req, ctx);
+
+          assert.equal(resp.status, 201);
+          const logged = runtime === 'compute-at-edge' ? JSON.parse(lastLogMessage) : logs[0];
+          assert.equal(logged.user_agent, label);
+        });
       });
     }
-  }
+  });
 });
