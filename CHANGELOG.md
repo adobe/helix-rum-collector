@@ -1,3 +1,10 @@
+## [3.4.2](https://github.com/adobe/helix-rum-collector/compare/v3.4.1...v3.4.2) (2026-11-09)
+
+
+### Bug Fixes
+
+* classify self-declared Meta cloud browser requests ([add5390](https://github.com/adobe/helix-rum-collector/commit/add53909f4165f8931d3600e5e0463d59df5b644))
+
 ## [3.4.1](https://github.com/adobe/helix-rum-collector/compare/v3.4.0...v3.4.1) (2026-11-06)
 
 
