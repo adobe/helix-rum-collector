@@ -1,0 +1,30 @@
+name: AI Review
+
+on:
+  pull_request:
+
+concurrency:
+  group: ai-review-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
+jobs:
+  ai-review:
+    uses: adobe/helix-shared-workflows/.github/workflows/ai-review.yml@v1
+    secrets:
+      AWS_BEARER_TOKEN_BEDROCK: ${{ secrets.AWS_BEARER_TOKEN_BEDROCK }}
+    permissions:
+      contents: read
+      issues: write
+      pull-requests: write
+      statuses: write
+    with:
+      # writes junit.xml and lcov.info, which the reviewers get. Without IAB_SPIDER_LIST
+      # (a licensed list, not given to the review) the spider list is empty in both trees.
+      test: npm test
+      review-prompt: >-
+        helix-rum-collector is the RUM collection endpoint, deployed to Fastly Compute and
+        Cloudflare Workers (hedy). It takes beacons from every AEM site, so throughput,
+        robustness against malformed input, and what ends up in the logs (no personal data)
+        matter. `npm run lint` lints it and `npm run fastly-build` builds the Fastly bundle
+        without deploying. The tests run without the IAB spider list (IAB_SPIDER_LIST), so
+        tests that need it fail on both trees alike; that isn't a regression.
