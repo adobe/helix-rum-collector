@@ -9,7 +9,6 @@
  * OF ANY KIND, either express or implied. See the License for the specific language
  * governing permissions and limitations under the License.
  */
-import tsParser from '@typescript-eslint/parser';
 import { recommended } from '@adobe/eslint-config-helix';
 
 export default [
@@ -38,8 +37,7 @@ export default [
     ...recommended,
     languageOptions: {
       ...recommended.languageOptions,
-      parser: tsParser,
-      ecmaVersion: 2020,
+      ecmaVersion: 'latest',
       sourceType: 'module',
       globals: {
         ...recommended.languageOptions.globals,
