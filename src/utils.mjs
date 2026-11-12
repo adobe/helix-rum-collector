@@ -214,6 +214,65 @@ function getBrowserEngine(userAgent) {
   return engine ? `:${engine.name}` : '';
 }
 
+// RFC 8941 building blocks, restricted to what a Signature-Agent header needs.
+const SF_KEY = '[a-z*][a-z0-9_.*-]*';
+const SF_STRING = '"(?:[^"\\\\]|\\\\["\\\\])*"';
+const SF_BARE_ITEM = `(?:${SF_STRING}|[^\\s,;="()]+)`;
+const SF_PARAMS = `(?:;\\s*${SF_KEY}(?:=${SF_BARE_ITEM})?)*`;
+const SF_LEGACY_STRING = new RegExp(`^${SF_STRING}$`);
+const SF_DICT_MEMBER = new RegExp(`(${SF_KEY})(?:=(${SF_BARE_ITEM}))?(${SF_PARAMS})[ \\t]*(,[ \\t]*|$)`, 'y');
+
+function unquote(sfString) {
+  return sfString.slice(1, -1).replace(/\\(["\\])/g, '$1');
+}
+
+/**
+ * Extracts the agent URLs declared in a Signature-Agent header. Accepts the
+ * Structured Fields dictionary defined by draft-ietf-webbotauth-httpsig-protocol
+ * (`sig1="https://agent.example"`), and the legacy bare string form
+ * (`"https://agent.example"`) that earlier drafts defined and deployments still send.
+ * Dictionary members whose value is not a string, or that carry parameters, are
+ * ignored, as the draft requires. A header that does not parse yields no agents.
+ * @param {string} header the Signature-Agent header value
+ * @returns {string[]} the declared agent URLs, without quotes
+ */
+export function parseSignatureAgent(header) {
+  if (typeof header !== 'string') {
+    return [];
+  }
+  const input = header.trim();
+  if (SF_LEGACY_STRING.test(input)) {
+    return [unquote(input)];
+  }
+  const members = new Map();
+  SF_DICT_MEMBER.lastIndex = 0;
+  while (SF_DICT_MEMBER.lastIndex < input.length) {
+    const match = SF_DICT_MEMBER.exec(input);
+    // unparseable member, or a trailing comma
+    if (!match || (match[4] !== '' && SF_DICT_MEMBER.lastIndex === input.length)) {
+      return [];
+    }
+    const [, key, value, params] = match;
+    // duplicate keys: the last member wins (RFC 8941, section 4.2.2)
+    members.set(key, !params && value?.startsWith('"') ? unquote(value) : null);
+  }
+  return [...members.values()].filter((value) => value !== null);
+}
+
+// Self-declared Signature-Agent URLs, in order of precedence when a request
+// declares more than one (e.g. an agent driving another operator's browser).
+const SIGNATURE_AGENT_LABELS = [
+  ['https://chatgpt.com', 'bot:ai:chatgpt-agent'],
+  ['https://muse.ai', 'bot:ai:meta-agent'],
+  ['https://www.meta.com', 'bot:ai:meta-agent'],
+];
+
+function getSignatureAgentLabel(header) {
+  const agents = parseSignatureAgent(header);
+  const known = SIGNATURE_AGENT_LABELS.find(([url]) => agents.includes(url));
+  return known ? known[1] : undefined;
+}
+
 export function getMaskedUserAgent(headers) {
   if (!headers) {
     return 'undefined';
@@ -279,16 +338,13 @@ export function getMaskedUserAgent(headers) {
     return `bot${getBotType(lcUA)}`;
   }
 
-  // Cloud browsers can use ordinary Chrome UAs and webdriver=false. Match exact,
-  // quoted Signature-Agent values, after preserving existing UA-based bot labels.
+  // Cloud browsers can use ordinary Chrome UAs and webdriver=false. Match the exact
+  // declared Signature-Agent URL, after preserving existing UA-based bot labels.
   // Like a UA, this is a self-declared analytics signal, NOT verified Web Bot Auth:
   // authenticating it requires validating Signature and Signature-Input.
-  const signatureAgent = headers.get('signature-agent');
-  if (signatureAgent === '"https://chatgpt.com"') {
-    return 'bot:ai:chatgpt-agent';
-  }
-  if (signatureAgent === '"https://muse.ai"' || signatureAgent === '"https://www.meta.com"') {
-    return 'bot:ai:meta-agent';
+  const signatureAgentLabel = getSignatureAgentLabel(headers.get('signature-agent'));
+  if (signatureAgentLabel) {
+    return signatureAgentLabel;
   }
 
   if (lcUA.includes('mobile')

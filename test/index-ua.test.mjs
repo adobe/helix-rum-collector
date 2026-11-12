@@ -116,7 +116,9 @@ describe('Test index - ua body field', () => {
 
   [
     ['"https://chatgpt.com"', 'bot:ai:chatgpt-agent'],
+    ['sig1="https://chatgpt.com"', 'bot:ai:chatgpt-agent'],
     ['"https://muse.ai"', 'bot:ai:meta-agent'],
+    ['agent="https://muse.ai", browser="https://browser.example"', 'bot:ai:meta-agent'],
     ['"https://www.meta.com"', 'bot:ai:meta-agent'],
   ].forEach(([signatureAgent, expected]) => {
     const windowsUA = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/155.0.0.0 Safari/537.36';

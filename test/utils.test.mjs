@@ -22,6 +22,7 @@ import {
   isValidCheckpoint,
   isValidId,
   maskTime,
+  parseSignatureAgent,
   sourceTargetValidator,
   bloatControl,
 } from '../src/utils.mjs';
@@ -191,6 +192,38 @@ Pellentesque viverra id magna vel varius. Lorem ipsum dolor sit amet, consectetu
         });
       });
 
+      it('accepts the Structured Fields dictionary form of the header', () => {
+        [
+          `sig1=${signatureAgent}`,
+          `agent=${signatureAgent}`,
+          ` sig1=${signatureAgent} `,
+          `agent=${signatureAgent}, browser="https://browser.example"`,
+          `browser="https://browser.example",agent=${signatureAgent}`,
+          `sig1=${signatureAgent}, sig2=?1`,
+          `sig1="https://example.org", sig1=${signatureAgent}`,
+        ].forEach((agent) => {
+          const headers = getUserAgentHeaders(cloudUA).set('signature-agent', agent);
+          assert.equal(getMaskedUserAgent(headers), expected, agent);
+        });
+      });
+
+      it('ignores dictionary members that are not plain strings', () => {
+        [
+          `sig1=${signatureAgent};type=directory`,
+          `sig1=${signatureAgent}, sig1="https://example.org"`,
+          `sig1=${origin}`,
+          'sig1',
+          `sig1=(${signatureAgent})`,
+          `sig1=${signatureAgent},`,
+          `SIG1=${signatureAgent}`,
+          `sig1="${origin}.example.org"`,
+          `sig1=${signatureAgent} sig2="https://example.org"`,
+        ].forEach((agent) => {
+          const headers = getUserAgentHeaders(cloudUA).set('signature-agent', agent);
+          assert.equal(getMaskedUserAgent(headers), 'desktop:linux:blink', agent);
+        });
+      });
+
       it('does not infer identity from signature metadata alone', () => {
         const headers = getUserAgentHeaders(cloudUA)
           .set('signature', 'sig1=:dGVzdA==:')
@@ -227,6 +260,29 @@ Pellentesque viverra id magna vel varius. Lorem ipsum dolor sit amet, consectetu
           assert.equal(getMaskedUserAgent(headers), label);
         });
       });
+    });
+  });
+
+  describe('parseSignatureAgent', () => {
+    it('parses the legacy string form', () => {
+      assert.deepEqual(parseSignatureAgent('"https://a.example"'), ['https://a.example']);
+      assert.deepEqual(parseSignatureAgent('"https://a.example/\\"q\\""'), ['https://a.example/"q"']);
+    });
+
+    it('parses dictionary members, last duplicate wins', () => {
+      assert.deepEqual(
+        parseSignatureAgent('a="https://a.example", b="https://b.example";x=1, c=?0, d=tok, a="https://c.example"'),
+        ['https://c.example'],
+      );
+      assert.deepEqual(
+        parseSignatureAgent('agent="https://a.example",\tbrowser="https://b.example"'),
+        ['https://a.example', 'https://b.example'],
+      );
+    });
+
+    it('returns no agents for missing or malformed headers', () => {
+      [undefined, null, '', ' ', ',', 'a="x",', '"a", "b"', '"a";x=1', 'https://a.example', 'a=("x")', 'A="x"']
+        .forEach((header) => assert.deepEqual(parseSignatureAgent(header), [], String(header)));
     });
   });
 
