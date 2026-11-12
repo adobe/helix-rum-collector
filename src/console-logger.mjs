@@ -10,10 +10,11 @@
  * governing permissions and limitations under the License.
  */
 import {
-  cleanurl, getMaskedTime, getMaskedUserAgent, getSubsystem,
+  cleanurl, getMaskedTime, getMaskedUserAgent, getPageUrl, getSubsystem,
   isReasonableWeight,
   isValidCheckpoint,
   isValidId,
+  isValidPageUrl,
   sourceTargetValidator,
 } from './utils.mjs';
 
@@ -37,6 +38,11 @@ export class ConsoleLogger {
     if (sourceTargetValidator[checkpoint] && !sourceTargetValidator[checkpoint](source, target)) {
       return;
     }
+    const pageUrl = getPageUrl(referer, this.req);
+    if (!isValidPageUrl(pageUrl)) {
+      console.log('skipping RUM event with invalid page URL');
+      return;
+    }
 
     console.log('logging to Console.');
 
@@ -44,7 +50,7 @@ export class ConsoleLogger {
     const data = {
       time: now,
       host: this.subsystemName,
-      url: cleanurl(referer || (this.req.headers.has('referer') ? this.req.headers.get('referer') : this.req.url)),
+      url: cleanurl(pageUrl),
       user_agent: getMaskedUserAgent(this.req.headers),
       referer: cleanurl(this.req.headers.get('referer')),
       weight,

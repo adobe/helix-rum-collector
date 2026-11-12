@@ -21,6 +21,8 @@ import {
   getSubsystem,
   isValidCheckpoint,
   isValidId,
+  isValidPageUrl,
+  getPageUrl,
   maskTime,
   parseSignatureAgent,
   sourceTargetValidator,
@@ -553,5 +555,44 @@ Pellentesque viverra id magna vel varius. Lorem ipsum dolor sit amet, consectetu
     assert.strictEqual(isValidId('a'), true);
     assert.strictEqual(isValidId('aAsaAF13'), true);
     assert.strictEqual(isValidId('aAs-aA-F13-'), true);
+  });
+
+  it('page URL validation', () => {
+    // unhappy path
+    assert.strictEqual(isValidPageUrl(), false);
+    assert.strictEqual(isValidPageUrl(null), false);
+    assert.strictEqual(isValidPageUrl(123), false);
+    assert.strictEqual(isValidPageUrl({}), false);
+    assert.strictEqual(isValidPageUrl(''), false);
+    assert.strictEqual(isValidPageUrl(' '), false);
+    assert.strictEqual(isValidPageUrl('-1 OR 2+547-547-1=0+0+0+1'), false);
+    assert.strictEqual(isValidPageUrl('if(now()=sysdate(),sleep(15),0)'), false);
+    assert.strictEqual(isValidPageUrl('@@ph9Pz'), false);
+    assert.strictEqual(isValidPageUrl('/relative/path'), false);
+    assert.strictEqual(isValidPageUrl('www.example.com'), false);
+    assert.strictEqual(isValidPageUrl('vbscript:msgbox(1)'), false);
+    assert.strictEqual(isValidPageUrl('file:///etc/passwd'), false);
+    assert.strictEqual(isValidPageUrl('about:blank'), false);
+    assert.strictEqual(isValidPageUrl('http://'), false);
+
+    // happy path
+    assert.strictEqual(isValidPageUrl('https://www.example.com/'), true);
+    assert.strictEqual(isValidPageUrl('http://localhost:3000/page'), true);
+    assert.strictEqual(isValidPageUrl('HTTPS://WWW.EXAMPLE.COM/'), true);
+    assert.strictEqual(isValidPageUrl('https://www.example.com/?q=1#hash'), true);
+    assert.strictEqual(isValidPageUrl(new URL('https://www.example.com/')), true);
+  });
+
+  it('page URL selection', () => {
+    const headers = new Map();
+    const req = { headers, url: 'https://rum.hlx.page/.rum/1' };
+    assert.strictEqual(getPageUrl(undefined, req), 'https://rum.hlx.page/.rum/1');
+    assert.strictEqual(getPageUrl('', req), 'https://rum.hlx.page/.rum/1');
+
+    headers.set('referer', 'https://www.example.com/');
+    assert.strictEqual(getPageUrl(undefined, req), 'https://www.example.com/');
+    // an explicitly supplied URL is never replaced by the fallback, even if invalid
+    assert.strictEqual(getPageUrl('not_a_url', req), 'not_a_url');
+    assert.strictEqual(getPageUrl('https://www.other.com/', req), 'https://www.other.com/');
   });
 });

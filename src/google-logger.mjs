@@ -16,10 +16,12 @@ import {
   getHostname,
   getMaskedTime,
   getMaskedUserAgent,
+  getPageUrl,
   getSubsystem,
   isReasonableWeight,
   isValidCheckpoint,
   isValidId,
+  isValidPageUrl,
   sourceTargetValidator,
 } from './utils.mjs';
 
@@ -39,13 +41,18 @@ export class GoogleLogger {
     if (sourceTargetValidator[checkpoint] && !sourceTargetValidator[checkpoint](source, target)) {
       return;
     }
+    const pageUrl = getPageUrl(referer, this.req);
+    if (!isValidPageUrl(pageUrl)) {
+      console.log('skipping RUM event with invalid page URL');
+      return;
+    }
     console.log('logging to Google');
     const now = getMaskedTime(timePadding);
 
     const data = {
       time: now,
       host: this.subsystemName,
-      url: cleanurl(referer || (this.req.headers.has('referer') ? this.req.headers.get('referer') : this.req.url)),
+      url: cleanurl(pageUrl),
       user_agent: getMaskedUserAgent(this.req.headers),
       referer: cleanurl(this.req.headers.get('referer')),
       weight,
@@ -57,21 +64,13 @@ export class GoogleLogger {
       ...json,
     };
 
-    const hn = (url) => {
-      try {
-        return getHostname(url);
-      } catch (e) {
-        if (this.req.headers.has('referer')) {
-          return getHostname(this.req.headers.get('referer'));
-        }
-        return getHostname(this.req.url);
-      }
-    };
-
     const clusterdata = {
       ...data,
       time: now / 1000, // the cluster table uses TIMESTAMP for time, so that it can be partitioned
-      hostname: hn(data.url), // the cluster table uses hostname for clustering
+      // the cluster table uses hostname for clustering. As the page URL has been
+      // validated, the hostname is always derived from the page URL itself, and
+      // never from an unrelated fallback.
+      hostname: getHostname(pageUrl),
       url: cleanurl(data.url),
     };
 
