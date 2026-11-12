@@ -1,3 +1,11 @@
+## [3.5.1](https://github.com/adobe/helix-rum-collector/compare/v3.5.0...v3.5.1) (2026-11-12)
+
+
+### Bug Fixes
+
+* accept browser extension page URLs ([a26fbd9](https://github.com/adobe/helix-rum-collector/commit/a26fbd9293f5f9042be0fbf44463e62f39b57b13)), closes [#659](https://github.com/adobe/helix-rum-collector/issues/659)
+* reject invalid page URLs instead of attributing them via Referer fallback ([5384a40](https://github.com/adobe/helix-rum-collector/commit/5384a400252ce8572e6b21852e493ae6a8186fea)), closes [#659](https://github.com/adobe/helix-rum-collector/issues/659)
+
 # [3.5.0](https://github.com/adobe/helix-rum-collector/compare/v3.4.2...v3.5.0) (2026-11-12)
 
 
