@@ -57,13 +57,21 @@ ChatGPT's and Meta's (Muse) cloud browsers can send ordinary Chrome user agents
 values alone do not distinguish them from human browsers, so the collector does
 not fingerprint Chrome versions or platforms to identify an AI agent.
 
-The collector recognizes these exact, quoted `Signature-Agent` header values:
+The collector recognizes these exact `Signature-Agent` URLs:
 
-| Header value | Analytics label |
+| Agent URL | Analytics label |
 | --- | --- |
-| `"https://chatgpt.com"` | `bot:ai:chatgpt-agent` |
-| `"https://muse.ai"` | `bot:ai:meta-agent` |
-| `"https://www.meta.com"` | `bot:ai:meta-agent` |
+| `https://chatgpt.com` | `bot:ai:chatgpt-agent` |
+| `https://muse.ai` | `bot:ai:meta-agent` |
+| `https://www.meta.com` | `bot:ai:meta-agent` |
+
+Both header forms are accepted: the Structured Fields dictionary that
+[draft-ietf-webbotauth-httpsig-protocol](https://datatracker.ietf.org/doc/draft-ietf-webbotauth-httpsig-protocol/)
+requires (`Signature-Agent: sig1="https://chatgpt.com"`), and the legacy bare
+string that earlier drafts defined (`Signature-Agent: "https://chatgpt.com"`).
+Dictionary members that carry parameters or are not strings are ignored, as the
+draft requires. When a request declares several agents (for example an agent
+driving another operator's browser), the first match in the table above wins.
 
 This header must reach the collector on the **RUM request**, not just the measured
 page request. It remains available when the beacon's `ua` field overrides the user
