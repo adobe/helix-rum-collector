@@ -104,6 +104,56 @@ export function isValidId(id) {
   return typeof id === 'string' && /^[a-zA-Z0-9-]+$/.test(id);
 }
 
+/**
+ * Determine the URL of the measured page. An explicitly supplied URL
+ * (the `referer` / `referrer` field of the payload) always takes precedence.
+ * Only if no URL has been supplied, the HTTP `Referer` header and finally
+ * the collector request URL are used as a fallback.
+ * @param {string} referer the page URL supplied in the payload
+ * @param {Request} req the request
+ * @returns {string|URL} the page URL
+ */
+export function getPageUrl(referer, req) {
+  if (referer) {
+    return referer;
+  }
+  return req.headers.has('referer') ? req.headers.get('referer') : req.url;
+}
+
+/**
+ * URL schemes that are accepted for measured pages. Besides regular web pages,
+ * browser extension pages (e.g. the LLMO extension's popup) are instrumented
+ * with RUM; their hostname is the extension ID.
+ */
+const PAGE_URL_PROTOCOLS = [
+  'http:',
+  'https:',
+  'chrome-extension:',
+  'moz-extension:',
+  'safari-web-extension:',
+];
+
+/**
+ * Check if a page URL is acceptable for the measured page dataset. Only
+ * absolute URLs with a known scheme (see PAGE_URL_PROTOCOLS) and a hostname
+ * are accepted. Anything else (e.g. SQL injection probes, relative URLs, or
+ * random strings) would otherwise be stored with a hostname derived from an
+ * unrelated fallback, which leads to misattributed page views.
+ * @param {string|URL} url the page URL
+ * @returns {boolean} true if the URL is valid
+ */
+export function isValidPageUrl(url) {
+  if (typeof url !== 'string' && !(url instanceof URL)) {
+    return false;
+  }
+  try {
+    const { protocol, hostname } = new URL(url);
+    return PAGE_URL_PROTOCOLS.includes(protocol) && !!hostname;
+  } catch (e) {
+    return false;
+  }
+}
+
 export function maskTime(time, timePadding) {
   const msPerHour = 3600000;
 

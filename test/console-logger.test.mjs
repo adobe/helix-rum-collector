@@ -83,4 +83,24 @@ describe('Test Console Logger', () => {
     assert.equal(ld.checkpoint, 'top');
     assert.equal(ld.id, 'id123');
   });
+
+  it('Skip invalid page URLs', () => {
+    const headers = new Map();
+    headers.set('host', 'www.acme.com');
+    headers.set('referer', 'https://www.acme.com/');
+    const req = { headers, url: 'https://rum.hlx.page/.rum/1' };
+
+    const logged = [];
+    const testLogger = {
+      log: (...args) => logged.push(args),
+    };
+    const cl = new ConsoleLogger(req, testLogger);
+
+    cl.logRUM({}, 'id123', 1, '-1 OR 2+547-547-1=0+0+0+1', 42, 'top');
+    cl.logRUM({}, 'id123', 1, '@@ph9Pz', 42, 'top');
+    cl.logRUM({}, 'id123', 1, 'https://www.acme.com/page', 42, 'top');
+    assert.equal(logged.length, 1);
+    const ld = JSON.parse(logged[0]);
+    assert.equal(ld.url, 'https://www.acme.com/page');
+  });
 });

@@ -63,11 +63,12 @@ describe('Test Google Logger', () => {
     const req = { headers };
 
     const gl = new GoogleLogger(req);
+    // no page URL supplied: fall back to the Referer header
     gl.logRUM(
       {},
       '1234',
       10,
-      'not_a_url',
+      undefined,
       49,
       'error',
       'sometarget',
@@ -77,7 +78,7 @@ describe('Test Google Logger', () => {
 
     const logged = JSON.parse(lastLogMessage);
     assert.equal('a_host', logged.host);
-    assert.equal('not_a_url', logged.url);
+    assert.equal('http://somehost.com/somepage.html', logged.url);
     assert.equal('undefined', logged.user_agent);
     assert.equal('http://somehost.com/somepage.html', logged.referer);
     assert.equal(10, logged.weight);
@@ -96,13 +97,87 @@ describe('Test Google Logger', () => {
     const req = { headers, url };
 
     const gl = new GoogleLogger(req);
-    gl.logRUM({}, 'x', 1, '?', undefined, 'error');
+    // no page URL and no Referer header: fall back to the request URL
+    gl.logRUM({}, 'x', 1, undefined, undefined, 'error');
 
     const logged = JSON.parse(lastLogMessage);
-    assert.equal('?', logged.url);
+    assert.equal('https://www.blahblah.com/hihaho', logged.url);
     assert.equal('www.blahblah.com', logged.hostname);
     assert.equal('x', logged.id);
     assert.equal(1, logged.weight);
+  });
+
+  it('Skip invalid page URLs instead of attributing them to the Referer', () => {
+    const headers = new Map();
+    headers.set('x-forwarded-host', 'main--site--org.aem.live');
+    headers.set('referer', 'https://www.example.com/');
+
+    const req = { headers, url: 'https://rum.hlx.page/.rum/1' };
+    const gl = new GoogleLogger(req);
+    gl.logRUM({}, 'valid', 100, 'https://www.example.com/page', undefined, 'top');
+
+    [
+      '-1 OR 2+547-547-1=0+0+0+1',
+      'if(now()=sysdate(),sleep(15),0)',
+      '@@ph9Pz',
+      'not_a_url',
+      '?',
+      '/relative/path',
+      ' ',
+      'vbscript:msgbox(1)',
+      'data:text/html,hello',
+      'file:///etc/passwd',
+      'http://',
+    ].forEach((invalid) => {
+      gl.logRUM({}, 'invalid', 100, invalid, undefined, 'top');
+    });
+
+    const logged = JSON.parse(lastLogMessage);
+    assert.equal('valid', logged.id);
+    assert.equal('https://www.example.com/page', logged.url);
+    assert.equal('www.example.com', logged.hostname);
+  });
+
+  it('Skip invalid Referer headers when no page URL is supplied', () => {
+    const headers = new Map();
+    headers.set('referer', 'not a url');
+
+    const req = { headers, url: 'https://rum.hlx.page/.rum/1' };
+    const gl = new GoogleLogger(req);
+    gl.logRUM({}, 'sentinel', 100, 'https://www.example.com/', undefined, 'top');
+    gl.logRUM({}, 'invalid', 100, undefined, undefined, 'top');
+
+    const logged = JSON.parse(lastLogMessage);
+    assert.equal('sentinel', logged.id);
+  });
+
+  it('Keep page hostnames that differ from the collection host', () => {
+    const headers = new Map();
+    headers.set('x-forwarded-host', 'main--site--org.aem.live');
+    headers.set('referer', 'https://main--site--org.aem.live/');
+
+    const req = { headers, url: 'https://rum.hlx.page/.rum/1' };
+    const gl = new GoogleLogger(req);
+    gl.logRUM({}, 'abc', 100, 'https://www.customer.com/products', undefined, 'top');
+
+    const logged = JSON.parse(lastLogMessage);
+    assert.equal('main--site--org.aem.live', logged.host);
+    assert.equal('https://www.customer.com/products', logged.url);
+    assert.equal('www.customer.com', logged.hostname);
+  });
+
+  it('Keep browser extension pages, attributed to the extension ID', () => {
+    const headers = new Map();
+    headers.set('host', 'rum.hlx.page');
+
+    const req = { headers, url: 'https://rum.hlx.page/.rum/1' };
+    const gl = new GoogleLogger(req);
+    gl.logRUM({}, 'ext', 100, 'chrome-extension://peihfocninegcbeiinjopkkopoibmggg/popup.html', undefined, 'error', 'metrics-load-error', 'llmo-extension');
+
+    const logged = JSON.parse(lastLogMessage);
+    assert.equal('ext', logged.id);
+    assert.equal('chrome-extension://peihfocninegcbeiinjopkkopoibmggg/popup.html', logged.url);
+    assert.equal('peihfocninegcbeiinjopkkopoibmggg', logged.hostname);
   });
 
   it('Clean the fragment from the reported URL', () => {

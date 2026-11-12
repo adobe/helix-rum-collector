@@ -15,10 +15,12 @@ import {
   cleanurl,
   getMaskedTime,
   getMaskedUserAgent,
+  getPageUrl,
   getSubsystem,
   isReasonableWeight,
   isValidCheckpoint,
   isValidId,
+  isValidPageUrl,
   sourceTargetValidator,
 } from './utils.mjs';
 
@@ -38,13 +40,18 @@ export class S3Logger {
     if (sourceTargetValidator[checkpoint] && !sourceTargetValidator[checkpoint](source, target)) {
       return;
     }
+    const pageUrl = getPageUrl(referer, this.req);
+    if (!isValidPageUrl(pageUrl)) {
+      console.log('skipping RUM event with invalid page URL');
+      return;
+    }
     console.log('logging to S3');
     const now = getMaskedTime(timePadding);
 
     const data = {
       time: now,
       host: this.subsystemName,
-      url: cleanurl(referer || (this.req.headers.has('referer') ? this.req.headers.get('referer') : this.req.url)),
+      url: cleanurl(pageUrl),
       user_agent: getMaskedUserAgent(this.req.headers),
       referer: cleanurl(this.req.headers.get('referer')),
       weight,

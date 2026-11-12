@@ -81,6 +81,20 @@ describe('Test S3 Logger', () => {
     assert.equal('q123', logged.id);
   });
 
+  it('Skip invalid page URLs', () => {
+    const headers = new Map();
+    headers.set('referer', 'https://www.example.com/');
+
+    const req = { headers, url: 'https://rum.hlx.page/.rum/1' };
+    const gl = new S3Logger(req);
+    gl.logRUM({}, 'q123', 10, 'https://www.example.com/page', undefined, 'top');
+    gl.logRUM({}, 'q987', 10, 'if(now()=sysdate(),sleep(15),0)', undefined, 'top');
+
+    const logged = JSON.parse(lastLogMessage);
+    assert.equal('q123', logged.id);
+    assert.equal('https://www.example.com/page', logged.url);
+  });
+
   it('Skips invalid audience checkpoints', () => {
     const headers = new Map();
     const url = 'https://log/this';
