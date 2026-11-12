@@ -40,6 +40,10 @@ export const bots = {
       regex: 'AmazonProductDiscovery',
     },
     {
+      user_agent: 'AmazonSellerInitiatedListing/1.0',
+      regex: 'AmazonSellerInitiatedListing',
+    },
+    {
       user_agent: 'Storebot-Google/1.0',
       regex: 'Storebot-Google',
     },
@@ -248,6 +252,11 @@ export const bots = {
       user_agent: 'Manus-User',
       regex: 'Manus-User',
       subtype: 'manus-user',
+    },
+    {
+      user_agent: 'Amazon-Bedrock-AgentCore-Browser/1.0',
+      regex: 'Amazon-Bedrock-AgentCore-Browser',
+      subtype: 'agentcore-browser',
     },
     {
       user_agent: 'ClaudeBot',

@@ -420,6 +420,21 @@
     "expected": "bot:ai:manus-user"
   },
   {
+    "desc": "Amazon Bedrock AgentCore Browser default user agent",
+    "ua": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Amazon-Bedrock-AgentCore-Browser/1.0 (Chromium; +https://docs.aws.amazon.com/bedrock-agentcore/latest/devguide/browser-tool.html)",
+    "expected": "bot:ai:agentcore-browser"
+  },
+  {
+    "desc": "AmazonProductDiscoverybot",
+    "ua": "Mozilla/5.0 (X11; Linux x86_64; rv:38.0) Gecko/20100101 Firefox/38.0 (compatible; AmazonProductDiscovery/1.0; https://vendorcentral.amazon.com/support/amazonproductbot)",
+    "expected": "bot:commerce"
+  },
+  {
+    "desc": "AmazonSellerInitiatedListing",
+    "ua": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36 (compatible; AmazonSellerInitiatedListing/1.0; https://vendorcentral.amazon.com/support/amazonproductbot)",
+    "expected": "bot:commerce"
+  },
+  {
     "desc": "Claude-SearchBot",
     "ua": "Claude-SearchBot",
     "expected": "bot:ai:claude-searchbot"
