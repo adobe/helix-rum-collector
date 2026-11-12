@@ -147,6 +147,7 @@ Pellentesque viverra id magna vel varius. Lorem ipsum dolor sit amet, consectetu
     ['https://chatgpt.com', 'bot:ai:chatgpt-agent'],
     ['https://muse.ai', 'bot:ai:meta-agent'],
     ['https://www.meta.com', 'bot:ai:meta-agent'],
+    ['https://web-bot-auth.cloudflare-browser-rendering-085.workers.dev', 'bot:cloudflare-browser'],
   ].forEach(([origin, expected]) => {
     describe(`Classifies the self-declared cloud browser ${origin}`, () => {
       const cloudUA = 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/155.0.0.0 Safari/537.36';
@@ -171,9 +172,15 @@ Pellentesque viverra id magna vel varius. Lorem ipsum dolor sit amet, consectetu
         assert.equal(getMaskedUserAgent(getUserAgentHeaders(cloudUA)), 'desktop:linux:blink');
       });
 
-      it('does not infer identity from unknown, malformed, or lookalike signature agents', () => {
+      it('does not infer identity from an empty signature agent', () => {
+        ['', ' '].forEach((agent) => {
+          const headers = getUserAgentHeaders(cloudUA).set('signature-agent', agent);
+          assert.equal(getMaskedUserAgent(headers), 'desktop:linux:blink', JSON.stringify(agent));
+        });
+      });
+
+      it('classifies unknown, malformed, or lookalike signature agents as a generic bot', () => {
         [
-          '',
           origin,
           `"${origin}/"`,
           `"${origin.replace('https:', 'http:')}"`,
@@ -188,7 +195,7 @@ Pellentesque viverra id magna vel varius. Lorem ipsum dolor sit amet, consectetu
           `${signatureAgent};foo=bar`,
         ].forEach((agent) => {
           const headers = getUserAgentHeaders(cloudUA).set('signature-agent', agent);
-          assert.equal(getMaskedUserAgent(headers), 'desktop:linux:blink', agent);
+          assert.equal(getMaskedUserAgent(headers), 'bot', agent);
         });
       });
 
@@ -207,7 +214,7 @@ Pellentesque viverra id magna vel varius. Lorem ipsum dolor sit amet, consectetu
         });
       });
 
-      it('ignores dictionary members that are not plain strings', () => {
+      it('ignores dictionary members that are not plain strings, but still flags a bot', () => {
         [
           `sig1=${signatureAgent};type=directory`,
           `sig1=${signatureAgent}, sig1="https://example.org"`,
@@ -220,7 +227,7 @@ Pellentesque viverra id magna vel varius. Lorem ipsum dolor sit amet, consectetu
           `sig1=${signatureAgent} sig2="https://example.org"`,
         ].forEach((agent) => {
           const headers = getUserAgentHeaders(cloudUA).set('signature-agent', agent);
-          assert.equal(getMaskedUserAgent(headers), 'desktop:linux:blink', agent);
+          assert.equal(getMaskedUserAgent(headers), 'bot', agent);
         });
       });
 
@@ -260,6 +267,31 @@ Pellentesque viverra id magna vel varius. Lorem ipsum dolor sit amet, consectetu
           assert.equal(getMaskedUserAgent(headers), label);
         });
       });
+    });
+  });
+
+  it('classifies any other signed agent as a generic bot', () => {
+    const windowsUA = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/152.0.0.0 Safari/537.36';
+    [
+      '"https://d3sqdbcybbdvkr.cloudfront.net"',
+      'sig1="https://ecp.yusercontent.com"',
+      '"https://web-bot-auth-crawl.cloudflare-browser-rendering-085.workers.dev"',
+      '"https://web-bot-auth.cloudflare-browser-rendering-086.workers.dev"',
+    ].forEach((agent) => {
+      const headers = getUserAgentHeaders(windowsUA).set('signature-agent', agent);
+      assert.equal(getMaskedUserAgent(headers), 'bot', agent);
+    });
+  });
+
+  it('prefers a named agent over the cloud browser it drives', () => {
+    const windowsUA = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/152.0.0.0 Safari/537.36';
+    const cf = '"https://web-bot-auth.cloudflare-browser-rendering-085.workers.dev"';
+    [
+      [`browser=${cf}, agent="https://chatgpt.com"`, 'bot:ai:chatgpt-agent'],
+      [`agent="https://example.org", browser=${cf}`, 'bot:cloudflare-browser'],
+    ].forEach(([agent, expected]) => {
+      const headers = getUserAgentHeaders(windowsUA).set('signature-agent', agent);
+      assert.equal(getMaskedUserAgent(headers), expected, agent);
     });
   });
 

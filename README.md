@@ -64,6 +64,8 @@ The collector recognizes these exact `Signature-Agent` URLs:
 | `https://chatgpt.com` | `bot:ai:chatgpt-agent` |
 | `https://muse.ai` | `bot:ai:meta-agent` |
 | `https://www.meta.com` | `bot:ai:meta-agent` |
+| `https://web-bot-auth.cloudflare-browser-rendering-085.workers.dev` | `bot:cloudflare-browser` |
+| any other non-empty value, including malformed ones | `bot` |
 
 Both header forms are accepted: the Structured Fields dictionary that
 [draft-ietf-webbotauth-httpsig-protocol](https://datatracker.ietf.org/doc/draft-ietf-webbotauth-httpsig-protocol/)
@@ -73,13 +75,20 @@ Dictionary members that carry parameters or are not strings are ignored, as the
 draft requires. When a request declares several agents (for example an agent
 driving another operator's browser), the first match in the table above wins.
 
+`Signature-Agent` is only defined for automated clients, and human browsers do not
+send it, so any non-empty declaration classifies the request as a bot. Cloudflare
+Browser Run is labelled separately because its user agent is customer-configurable
+and defaults to an ordinary Chrome user agent, and its `Signature-Agent` header
+cannot be removed by the customer (see
+[Cloudflare's documentation](https://developers.cloudflare.com/browser-run/reference/automatic-request-headers/)).
+
 This header must reach the collector on the **RUM request**, not just the measured
 page request. It remains available when the beacon's `ua` field overrides the user
 agent. Existing CloudFront and monitoring classifications, beacon markers
 (`bot:webdriver`, `bot:untrusted`, and `bot:hidden`), and UA-based bot labels
 (including `bot:ai:meta-webindexer`) take precedence over these declarations.
-A browser with a missing, unknown, or malformed declaration retains its normal
-classification. No additional headers, dependencies, or network calls are needed.
+A browser with a missing or empty declaration retains its normal classification.
+No additional headers, dependencies, or network calls are needed.
 
 This is a **self-declared analytics label, not authenticated identity**. Like a
 user agent, the header can be forged. The collector does not validate the

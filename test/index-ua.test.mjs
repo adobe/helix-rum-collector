@@ -120,6 +120,8 @@ describe('Test index - ua body field', () => {
     ['"https://muse.ai"', 'bot:ai:meta-agent'],
     ['agent="https://muse.ai", browser="https://browser.example"', 'bot:ai:meta-agent'],
     ['"https://www.meta.com"', 'bot:ai:meta-agent'],
+    ['"https://web-bot-auth.cloudflare-browser-rendering-085.workers.dev"', 'bot:cloudflare-browser'],
+    ['"https://unknown-signer.example"', 'bot'],
   ].forEach(([signatureAgent, expected]) => {
     const windowsUA = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/155.0.0.0 Safari/537.36';
     const linuxUA = 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/155.0.0.0 Safari/537.36';
