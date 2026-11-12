@@ -166,6 +166,20 @@ describe('Test Google Logger', () => {
     assert.equal('www.customer.com', logged.hostname);
   });
 
+  it('Keep browser extension pages, attributed to the extension ID', () => {
+    const headers = new Map();
+    headers.set('host', 'rum.hlx.page');
+
+    const req = { headers, url: 'https://rum.hlx.page/.rum/1' };
+    const gl = new GoogleLogger(req);
+    gl.logRUM({}, 'ext', 100, 'chrome-extension://peihfocninegcbeiinjopkkopoibmggg/popup.html', undefined, 'error', 'metrics-load-error', 'llmo-extension');
+
+    const logged = JSON.parse(lastLogMessage);
+    assert.equal('ext', logged.id);
+    assert.equal('chrome-extension://peihfocninegcbeiinjopkkopoibmggg/popup.html', logged.url);
+    assert.equal('peihfocninegcbeiinjopkkopoibmggg', logged.hostname);
+  });
+
   it('Clean the fragment from the reported URL', () => {
     const headers = new Map();
     const url = 'https://www.blahblah.com/hihaho#with-a-fragment';

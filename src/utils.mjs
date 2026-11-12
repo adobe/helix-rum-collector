@@ -121,11 +121,24 @@ export function getPageUrl(referer, req) {
 }
 
 /**
+ * URL schemes that are accepted for measured pages. Besides regular web pages,
+ * browser extension pages (e.g. the LLMO extension's popup) are instrumented
+ * with RUM; their hostname is the extension ID.
+ */
+const PAGE_URL_PROTOCOLS = [
+  'http:',
+  'https:',
+  'chrome-extension:',
+  'moz-extension:',
+  'safari-web-extension:',
+];
+
+/**
  * Check if a page URL is acceptable for the measured page dataset. Only
- * absolute HTTP(S) URLs with a hostname are accepted. Anything else (e.g.
- * SQL injection probes, relative URLs, or random strings) would otherwise
- * be stored with a hostname derived from an unrelated fallback, which leads
- * to misattributed page views.
+ * absolute URLs with a known scheme (see PAGE_URL_PROTOCOLS) and a hostname
+ * are accepted. Anything else (e.g. SQL injection probes, relative URLs, or
+ * random strings) would otherwise be stored with a hostname derived from an
+ * unrelated fallback, which leads to misattributed page views.
  * @param {string|URL} url the page URL
  * @returns {boolean} true if the URL is valid
  */
@@ -135,7 +148,7 @@ export function isValidPageUrl(url) {
   }
   try {
     const { protocol, hostname } = new URL(url);
-    return ['http:', 'https:'].includes(protocol) && !!hostname;
+    return PAGE_URL_PROTOCOLS.includes(protocol) && !!hostname;
   } catch (e) {
     return false;
   }

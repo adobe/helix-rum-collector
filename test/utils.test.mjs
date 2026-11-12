@@ -574,6 +574,13 @@ Pellentesque viverra id magna vel varius. Lorem ipsum dolor sit amet, consectetu
     assert.strictEqual(isValidPageUrl('file:///etc/passwd'), false);
     assert.strictEqual(isValidPageUrl('about:blank'), false);
     assert.strictEqual(isValidPageUrl('http://'), false);
+    assert.strictEqual(isValidPageUrl('ftp://localhost:22/'), false);
+    assert.strictEqual(isValidPageUrl('gopher://localhost:22/'), false);
+    assert.strictEqual(isValidPageUrl('content://media/external/downloads/1'), false);
+    assert.strictEqual(isValidPageUrl('about:srcdoc'), false);
+    assert.strictEqual(isValidPageUrl('httmodified://www.example.com/'), false);
+    assert.strictEqual(isValidPageUrl('probe_aa7f53://www.example.com/'), false);
+    assert.strictEqual(isValidPageUrl('chrome-extension:///popup.html'), false);
 
     // happy path
     assert.strictEqual(isValidPageUrl('https://www.example.com/'), true);
@@ -581,6 +588,10 @@ Pellentesque viverra id magna vel varius. Lorem ipsum dolor sit amet, consectetu
     assert.strictEqual(isValidPageUrl('HTTPS://WWW.EXAMPLE.COM/'), true);
     assert.strictEqual(isValidPageUrl('https://www.example.com/?q=1#hash'), true);
     assert.strictEqual(isValidPageUrl(new URL('https://www.example.com/')), true);
+    // browser extension pages
+    assert.strictEqual(isValidPageUrl('chrome-extension://peihfocninegcbeiinjopkkopoibmggg/popup.html'), true);
+    assert.strictEqual(isValidPageUrl('moz-extension://0a1b2c3d-4e5f-6789-abcd-ef0123456789/popup.html'), true);
+    assert.strictEqual(isValidPageUrl('safari-web-extension://0A1B2C3D-4E5F-6789-ABCD-EF0123456789/popup.html'), true);
   });
 
   it('page URL selection', () => {
