@@ -265,12 +265,20 @@ const SIGNATURE_AGENT_LABELS = [
   ['https://chatgpt.com', 'bot:ai:chatgpt-agent'],
   ['https://muse.ai', 'bot:ai:meta-agent'],
   ['https://www.meta.com', 'bot:ai:meta-agent'],
+  // Cloudflare Browser Run (formerly Browser Rendering): customer-driven hosted Chrome
+  // with a configurable, ordinary Chrome UA. Listed last so a named agent driving it wins.
+  ['https://web-bot-auth.cloudflare-browser-rendering-085.workers.dev', 'bot:cloudflare-browser'],
 ];
 
 function getSignatureAgentLabel(header) {
+  if (typeof header !== 'string' || !header.trim()) {
+    return undefined;
+  }
   const agents = parseSignatureAgent(header);
   const known = SIGNATURE_AGENT_LABELS.find(([url]) => agents.includes(url));
-  return known ? known[1] : undefined;
+  // Signature-Agent is only defined for automated clients; human browsers never send
+  // it. Any other non-empty declaration, including unknown or malformed ones, is a bot.
+  return known ? known[1] : 'bot';
 }
 
 export function getMaskedUserAgent(headers) {
@@ -338,8 +346,9 @@ export function getMaskedUserAgent(headers) {
     return `bot${getBotType(lcUA)}`;
   }
 
-  // Cloud browsers can use ordinary Chrome UAs and webdriver=false. Match the exact
-  // declared Signature-Agent URL, after preserving existing UA-based bot labels.
+  // Cloud browsers can use ordinary Chrome UAs and webdriver=false. Any Signature-Agent
+  // declaration makes the request a bot; known agent URLs (matched exactly) get a
+  // named label. Existing UA-based bot labels take precedence.
   // Like a UA, this is a self-declared analytics signal, NOT verified Web Bot Auth:
   // authenticating it requires validating Signature and Signature-Input.
   const signatureAgentLabel = getSignatureAgentLabel(headers.get('signature-agent'));
