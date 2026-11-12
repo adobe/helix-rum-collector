@@ -1,3 +1,16 @@
+# [3.5.0](https://github.com/adobe/helix-rum-collector/compare/v3.4.2...v3.5.0) (2026-11-12)
+
+
+### Bug Fixes
+
+* accept the dictionary form of Signature-Agent ([8664756](https://github.com/adobe/helix-rum-collector/commit/8664756b330e13f842a6a7f1f4fa58454247b1a0))
+
+
+### Features
+
+* classify AmazonSellerInitiatedListing and AgentCore Browser user agents ([e8917eb](https://github.com/adobe/helix-rum-collector/commit/e8917eb7660db98beb09e2abb5855955421b1835))
+* classify any Signature-Agent declaration as a bot, label Cloudflare Browser Run ([8c4259d](https://github.com/adobe/helix-rum-collector/commit/8c4259dc311f8e766d5ab15bdebeeeb7e0529991))
+
 ## [3.4.2](https://github.com/adobe/helix-rum-collector/compare/v3.4.1...v3.4.2) (2026-11-09)
 
 
