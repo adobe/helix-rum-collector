@@ -1,3 +1,10 @@
+## [3.5.2](https://github.com/adobe/helix-rum-collector/compare/v3.5.1...v3.5.2) (2026-11-16)
+
+
+### Bug Fixes
+
+* allowlist consent checkpoint values ([ea841c1](https://github.com/adobe/helix-rum-collector/commit/ea841c113284312ec9cc34980e278e03374978a3)), closes [adobe/helix-rum-enhancer#632](https://github.com/adobe/helix-rum-enhancer/issues/632)
+
 ## [3.5.1](https://github.com/adobe/helix-rum-collector/compare/v3.5.0...v3.5.1) (2026-11-12)
 
 
