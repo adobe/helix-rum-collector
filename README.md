@@ -38,6 +38,29 @@ The payload of a typical request looks like this:
 - `cwv/LCP`: Largest Contentful Paint in milliseconds
 - `cwv/FID`: First Input Delay in milliseconds
 
+### Consent checkpoint
+
+For `checkpoint: "consent"`, both `source` and `target` are required and must be
+exact strings from these allowlists:
+
+| Field | Allowed values |
+| --- | --- |
+| `source` (CMP provider) | `onetrust`, `trustarc`, `usercentrics` |
+| `target` | `show`, `hidden`, `suppressed`, `granted`, `rejected`, `customized` |
+
+All 18 source/target combinations are accepted. `show`, `hidden`, and `suppressed`
+are banner-state fallbacks; `granted`, `rejected`, and `customized` report stored
+consent preference levels. These levels do not require interaction evidence and
+are neither click actions nor legal determinations. Derived click classifications
+such as `accept`, `reject`, and `dismiss` are not consent wire targets.
+
+Consent events with missing, non-string, or unlisted values are dropped before
+logging, without coercion, case folding, or whitespace trimming. As with other
+logger validation failures, an otherwise valid request still receives the existing
+`201` response. Valid values retain the existing privacy filtering. This restriction
+applies only to the `consent` checkpoint; future CMP providers or targets require
+an explicit update to `sourceTargetValidator.consent` and its tests.
+
 ### Supported Methods
 
 - `POST`

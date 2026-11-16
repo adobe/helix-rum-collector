@@ -96,6 +96,9 @@ export const sourceTargetValidator = {
   audience: (source = '', target = '') => source.match(/^[\w-]+$/)
     && target.match(/^[\w-:]+$/)
     && ['default', ...target.split(':')].includes(source),
+  // Banner states and stored preference levels, not derived click classifications.
+  consent: (source = '', target = '') => ['onetrust', 'trustarc', 'usercentrics'].includes(source)
+    && ['show', 'hidden', 'suppressed', 'granted', 'rejected', 'customized'].includes(target),
   experiment: (source = '', target = '') => source.match(/^[\w-]+$/)
     && target.match(/^[\w-]+$/),
 };
