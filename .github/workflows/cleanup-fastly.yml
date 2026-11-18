@@ -7,7 +7,7 @@ permissions:
 
 jobs:
   Cleanup-Fastly-Service:
-    if: github.ref == 'refs/heads/main'
+    if: vars.MAINTENANCE_ENABLED == 'true' && github.ref == 'refs/heads/main'
     environment: maintenance
     runs-on: ubuntu-latest
     steps:

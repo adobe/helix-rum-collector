@@ -13,7 +13,7 @@ jobs:
       CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
 
   deploy:
-    if: github.ref == 'refs/heads/main'
+    if: vars.CI_DEPLOY_ENABLED == 'true' && github.ref == 'refs/heads/main'
     needs: test
     environment: ci
     runs-on: ubuntu-latest

@@ -15,6 +15,7 @@ permissions:
 jobs:
   test:
     name: Test and build (no deployment)
+    timeout-minutes: 30
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v7
@@ -31,12 +32,16 @@ jobs:
       # The licensed spider list is only injected into protected deployments.
       # Its integration test already skips when the list is unavailable.
       run: npm run test && mv lcov.info lcov-junit.info
-    - name: Fastly Build
+    - name: Build edge bundle
       run: npm run fastly-build
     - name: Fastly Version
       run: npm ls @fastly/js-compute
-    - name: List Package Contents
-      run: find bin && tar -tvf bin/dist/helix3/fastly-bundle.tar.gz
+    - name: Inspect edge bundle
+      # The Fastly tarball is produced during deployment, not by hedy --build.
+      run: |
+        test -s bin/dist/helix3/helix-rum-collector-edge-bundle.cjs
+        unzip -t bin/dist/helix3/helix-rum-collector.zip
+        unzip -l bin/dist/helix3/helix-rum-collector.zip
     - name: Upload coverage to Codecov
       uses: codecov/codecov-action@v7
       with:

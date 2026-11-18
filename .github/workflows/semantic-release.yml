@@ -16,7 +16,8 @@ jobs:
       CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
 
   semantic_release:
-    if: github.ref == 'refs/heads/main'
+    # Keep releases explicitly paused during the approved credential cutover.
+    if: vars.RELEASE_ENABLED == 'true' && github.ref == 'refs/heads/main'
     needs: test
     environment: production
     runs-on: ubuntu-latest
