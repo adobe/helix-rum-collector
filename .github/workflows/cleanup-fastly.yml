@@ -1,30 +1,41 @@
 name: Cleanup Fastly
-on:  
-  pull_request:
-    types: [closed]
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
 jobs:
   Cleanup-Fastly-Service:
+    if: vars.MAINTENANCE_ENABLED == 'true' && github.ref == 'refs/heads/main'
+    environment: maintenance
     runs-on: ubuntu-latest
     steps:
-      - name: Check out repository code
-        uses: actions/checkout@v7
-      - name: Set up GitHub CLI
-        run: echo ${{ secrets.GITHUB_TOKEN }} | gh auth login --with-token
       - name: Download Fastly CLI
         run: mkdir ~/.bin && curl -L https://github.com/fastly/cli/releases/download/v0.31.0/fastly_v0.31.0_linux-386.tar.gz | tar zxv
       - name: Delete Stale Services
+        env:
+          GH_TOKEN: ${{ github.token }}
+          FASTLY_API_TOKEN: ${{ secrets.FASTLY_CLEANUP_AUTH }}
         run: |
-          repo=$(echo "${{ github.repository }}" | sed -e "s;.*/;;")
-          ./fastly service list -t ${{ secrets.FASTLY_AUTH }} | grep -E "^$repo"- | while read -r line
+          : "${FASTLY_API_TOKEN:?Configure a cleanup-only Fastly token}"
+          repo="${GITHUB_REPOSITORY##*/}"
+          error_file=$(mktemp)
+          trap 'rm -f "$error_file"' EXIT
+          ./fastly service list -t "$FASTLY_API_TOKEN" | grep -E "^$repo"- | while read -r line
           do
               read -ra parts <<< "$line"
               name=${parts[0]}
               id=${parts[1]}
-              version=${parts[3]}
-              branch=$(echo ${name} | sed -e s/^$repo-//)
-              if ! gh api repos/{owner}/{repo}/branches/$branch --silent; then
+              branch="${name#"$repo"-}"
+              if ! gh api "repos/$GITHUB_REPOSITORY/branches/$branch" --silent 2> "$error_file"; then
+                  # An authentication, rate-limit or network failure is not a missing branch.
+                  if ! grep -Fq '(HTTP 404)' "$error_file"; then
+                      echo "GitHub branch lookup failed; refusing to delete services" >&2
+                      exit 1
+                  fi
                   echo "no matching branch for $name – '$id' should be deleted";
-                  ./fastly service-version deactivate -t ${{ secrets.FASTLY_AUTH }} -s $id --version active
-                  ./fastly service delete -t ${{ secrets.FASTLY_AUTH }} -s $id
+                  ./fastly service-version deactivate -t "$FASTLY_API_TOKEN" -s "$id" --version active
+                  ./fastly service delete -t "$FASTLY_API_TOKEN" -s "$id"
               fi
           done
