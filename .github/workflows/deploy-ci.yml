@@ -1,0 +1,49 @@
+name: Deploy reviewed main to CI
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    if: github.ref == 'refs/heads/main'
+    uses: ./.github/workflows/build.yml
+    secrets:
+      CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
+
+  deploy:
+    if: github.ref == 'refs/heads/main'
+    needs: test
+    environment: ci
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v7
+      with:
+        persist-credentials: false
+    - uses: actions/setup-node@v7
+      with:
+        node-version: lts/*
+    - name: Install
+      run: npm ci
+    - name: Deploy CI workers
+      env:
+        HLX_FASTLY_AUTH: ${{ secrets.HLX_FASTLY_CI_AUTH }}
+        HLX_FASTLY_SVC: ${{ secrets.HLX_FASTLY_CI_ID }}
+        HLX_CLOUDFLARE_EMAIL: ${{ secrets.HLX_CLOUDFLARE_EMAIL }}
+        HLX_CLOUDFLARE_ACCOUNT: ${{ secrets.HLX_CLOUDFLARE_ACCOUNT }}
+        HLX_CLOUDFLARE_AUTH: ${{ secrets.HLX_CLOUDFLARE_CI_AUTH }}
+        HLX_CLOUDFLARE_NAME: helix-rum-collector-ci
+        IAB_SPIDER_LIST: ${{ secrets.IAB_SPIDER_LIST }}
+        GITHUB_TOKEN: ${{ github.token }}
+      run: |
+        # Avoid the deploy script's production-service defaults on missing input.
+        : "${HLX_FASTLY_AUTH:?Configure a CI-only Fastly token}"
+        : "${HLX_FASTLY_SVC:?Configure the CI Fastly service ID}"
+        : "${HLX_CLOUDFLARE_AUTH:?Configure a CI-only Cloudflare token}"
+        : "${HLX_CLOUDFLARE_ACCOUNT:?Configure the CI Cloudflare account}"
+        npm run deploy
+    - name: Wait for service propagation
+      run: sleep 45
+    - name: Post-Deployment Integration Test
+      run: npm run test-postdeploy
