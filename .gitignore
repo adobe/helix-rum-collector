@@ -23,3 +23,6 @@ src/spiders.mjs
 .idea/
 lcov.info
 .vscode
+
+# Generated release-local notes; never commit these to a source branch.
+/release-notes.md
