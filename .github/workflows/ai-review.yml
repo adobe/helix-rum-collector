@@ -9,7 +9,7 @@ concurrency:
 
 jobs:
   ai-review:
-    uses: adobe/helix-shared-workflows/.github/workflows/ai-review.yml@v1
+    uses: adobe/helix-shared-workflows/.github/workflows/ai-review.yml@4173f461b35d06170b137da6765ee9745589ddcf # v1.3.1
     secrets:
       AWS_BEARER_TOKEN_BEDROCK: ${{ secrets.AWS_BEARER_TOKEN_BEDROCK }}
     permissions:
