@@ -26,6 +26,8 @@ jobs:
         node-version: lts/*
     - name: Install
       run: npm ci
+    - name: Check release configuration
+      run: npm run test-release
     - name: Lint
       run: npm run lint
     - name: Unit Test

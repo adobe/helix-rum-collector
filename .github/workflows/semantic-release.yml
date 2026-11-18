@@ -20,6 +20,10 @@ jobs:
     if: vars.RELEASE_ENABLED == 'true' && github.ref == 'refs/heads/main'
     needs: test
     environment: production
+    permissions:
+      contents: write
+      issues: write
+      pull-requests: write
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v7
@@ -32,14 +36,15 @@ jobs:
       run: npm ci
     - name: Semantic Release
       run: |
-        : "${GITHUB_TOKEN:?Configure the environment-only release token}"
+        : "${GITHUB_TOKEN:?GitHub Actions must supply its job token}"
         : "${HLX_FASTLY_AUTH:?Configure the production Fastly token}"
         : "${HLX_CLOUDFLARE_AUTH:?Configure the production Cloudflare token}"
         : "${HLX_CLOUDFLARE_ACCOUNT:?Configure the production Cloudflare account}"
         : "${IAB_SPIDER_LIST:?Configure the licensed production spider list}"
+        rm -f release-notes.md
         npm run semantic-release
       env:
-        GITHUB_TOKEN: ${{ secrets.RELEASE_GITHUB_TOKEN }}
+        GITHUB_TOKEN: ${{ github.token }}
         SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
         # Environment-only secrets; no repository/organization fallback copies.
         HLX_FASTLY_AUTH: ${{ secrets.HLX_FASTLY_AUTH }}
