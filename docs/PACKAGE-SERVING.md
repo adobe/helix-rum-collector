@@ -26,3 +26,5 @@ Because nothing falls back, the release job runs `npm run verify-package-coverag
 - every approved file of every release in `src/legacy-releases.mjs`, at its exact version.
 
 If any of them would not be served verified, the deploy stops and the failing URLs are listed. Before the first deploy this requires rum-enhancer 2.53.0 (vendored web-vitals and all plugins on `release-2-x`) and the backfills, including the exact `release-1-9-0` / `release-1-23-1` branches that `^1` resolves to. Run it locally any time with `npm run verify-package-coverage`.
+
+The same check also runs **every 3 hours** (`.github/workflows/package-coverage.yml`) once releases are enabled. A library release can move an alias such as `release-2-x` to a version that no longer serves a file older loaders still request (a removed plugin, or the vendored web-vitals); the collector deploy wouldn't notice. A failing scheduled run opens an issue titled "Served RUM package files would fail verification", or comments on the open one, with the refused URLs. When a library drops a file that loaders still request, keep it in the release (or add a redirect in the collector) before releasing.

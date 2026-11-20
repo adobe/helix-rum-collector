@@ -1,0 +1,55 @@
+name: Package coverage
+# Package serving has no CDN fallback. A library release can move an alias (release-2-x) to
+# a version that no longer serves a file older loaders still request; the deploy-time
+# guard wouldn't see that. Replay the requests with real traffic on a schedule and open an
+# issue when any would not be served verified.
+on:
+  schedule:
+    - cron: '17 */3 * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  coverage:
+    # Only meaningful once verified serving is deployed (releases deploy the collector).
+    if: vars.RELEASE_ENABLED == 'true' || github.event_name == 'workflow_dispatch'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: read
+      issues: write
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: lts/*
+      - name: Install
+        run: npm ci
+      - name: Verify package coverage
+        # bash adds pipefail, so the guard's exit status isn't lost in tee.
+        shell: bash
+        run: npm run -s verify-package-coverage 2>&1 | tee coverage.txt
+      - name: Report failures in an issue
+        if: failure() && github.event_name == 'schedule'
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        run: |
+          title='Served RUM package files would fail verification'
+          {
+            printf 'The scheduled package coverage check failed: %s\n\n' "$RUN_URL"
+            printf 'These requests have real traffic and would now be refused (no fallback):\n\n```\n'
+            tail -n 200 coverage.txt
+            printf '```\n\nSee docs/PACKAGE-SERVING.md.\n'
+          } > issue.md
+          existing=$(gh issue list --repo "$GITHUB_REPOSITORY" --state open --search "\"$title\" in:title" --json number --jq '.[0].number // empty')
+          if [[ -n "$existing" ]]; then
+            gh issue comment "$existing" --repo "$GITHUB_REPOSITORY" --body-file issue.md
+          else
+            gh issue create --repo "$GITHUB_REPOSITORY" --title "$title" --body-file issue.md
+          fi

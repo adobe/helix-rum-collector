@@ -63,3 +63,24 @@ describe('Pre-deploy package coverage guard', () => {
     assert(guard < workflow.indexOf('npm run semantic-release'), 'guard must run before the deploy');
   });
 });
+
+describe('Scheduled package coverage check', () => {
+  const workflow = readFileSync(new URL('../.github/workflows/package-coverage.yml', import.meta.url), 'utf8');
+
+  it('runs the guard on a schedule once verified serving is deployed', () => {
+    assert.match(workflow, /^\s+schedule:\s*\n\s+- cron: '[^']+'/m);
+    assert.match(workflow, /if: vars\.RELEASE_ENABLED == 'true' \|\| github\.event_name == 'workflow_dispatch'/);
+    const step = workflow.slice(workflow.indexOf('- name: Verify package coverage'));
+    assert.match(step, /^\s+shell: bash\s*$/m, 'pipefail is needed so tee keeps the exit status');
+    assert.match(step, /run: npm run -s verify-package-coverage 2>&1 \| tee coverage\.txt/);
+  });
+
+  it('opens or updates one issue when a scheduled check fails', () => {
+    const step = workflow.slice(workflow.indexOf('- name: Report failures in an issue'));
+    assert.match(step, /if: failure\(\) && github\.event_name == 'schedule'/);
+    assert.match(step, /gh issue list .*--state open/);
+    assert.match(step, /gh issue comment/);
+    assert.match(step, /gh issue create/);
+    assert.match(workflow, /issues: write/);
+  });
+});
