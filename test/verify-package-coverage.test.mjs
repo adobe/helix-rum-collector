@@ -10,12 +10,17 @@
  * governing permissions and limitations under the License.
  */
 import assert from 'assert';
-import { readFileSync } from 'fs';
+import {
+  mkdtempSync, readFileSync, rmSync, writeFileSync,
+} from 'fs';
+import { tmpdir } from 'os';
+import { join } from 'path';
 import { describe, it } from 'node:test';
 import { LEGACY_RELEASES } from '../src/legacy-releases.mjs';
 import {
   ALIAS_REQUESTS, HOSTS, coverageRequests, verifyCoverage,
 } from '../tools/verify-package-coverage.mjs';
+import { issueBody, refusedRequests, summarize } from '../tools/package-coverage-issue.mjs';
 
 // src/index.mjs registers a fetch listener on import, so read the constant from its source.
 const WEB_VITALS_SOURCE = readFileSync(new URL('../src/index.mjs', import.meta.url), 'utf8')
@@ -82,5 +87,53 @@ describe('Scheduled package coverage check', () => {
     assert.match(step, /gh issue comment/);
     assert.match(step, /gh issue create/);
     assert.match(workflow, /issues: write/);
+    // Only a new or changed set of refused requests is reported while the issue is open.
+    assert.match(step, /marker=\$\(node tools\/package-coverage-issue\.mjs --marker coverage\.txt\)/);
+    assert.match(step, /grep -qF -- "\$marker"/);
+  });
+
+  const output = [
+    '2 of 6 package requests would not be served:',
+    '  502 https://rum.hlx.page/.rum/@adobe/helix-rum-enhancer@^2/src/plugins/a11y.js  Release file unavailable: 404',
+    '  404 https://rum.hlx3.page/.rum/@adobe/helix-rum-js@^1/src/index.js  Unknown release',
+    'Release the libraries and run the backfills before deploying (docs/PACKAGE-SERVING.md).',
+  ].join('\n');
+
+  it('reports the refused requests, identified by a stable marker', (t) => {
+    const dir = mkdtempSync(join(tmpdir(), 'coverage-issue-'));
+    t.after(() => rmSync(dir, { recursive: true, force: true }));
+    const file = join(dir, 'coverage.txt');
+    writeFileSync(file, output);
+    assert.deepEqual(refusedRequests(output), [
+      '404 https://rum.hlx3.page/.rum/@adobe/helix-rum-js@^1/src/index.js',
+      '502 https://rum.hlx.page/.rum/@adobe/helix-rum-enhancer@^2/src/plugins/a11y.js',
+    ]);
+    const { marker } = summarize(file);
+    assert.match(marker, /^<!-- package-coverage: [0-9a-f]{16} -->$/);
+    const body = issueBody(file, 'https://run/1');
+    assert(body.startsWith(`${marker}\n`));
+    assert(body.includes('These 2 requests'));
+    assert(body.includes('https://run/1'));
+
+    // Same refused set in another order, with different error text: same marker.
+    const lines = output.split('\n');
+    writeFileSync(file, [lines[0], lines[2].replace('Unknown release', 'x'), lines[1]].join('\n'));
+    assert.equal(summarize(file).marker, marker);
+
+    // A different set: a new marker, so it is reported.
+    writeFileSync(file, lines.slice(0, 2).join('\n'));
+    assert.notEqual(summarize(file).marker, marker);
+  });
+
+  it('still reports when the guard produced no results', (t) => {
+    const dir = mkdtempSync(join(tmpdir(), 'coverage-issue-'));
+    t.after(() => rmSync(dir, { recursive: true, force: true }));
+    const missing = join(dir, 'coverage.txt');
+    const body = issueBody(missing, 'https://run/2');
+    assert(body.includes('did not report its results'));
+    assert(body.includes('(none)'));
+    writeFileSync(missing, 'npm ERR! something broke\n');
+    assert.equal(summarize(missing).marker, summarize(join(dir, 'absent.txt')).marker);
+    assert(issueBody(missing, 'https://run/2').includes('npm ERR! something broke'));
   });
 });

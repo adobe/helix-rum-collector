@@ -40,16 +40,18 @@ jobs:
           GH_TOKEN: ${{ github.token }}
           RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
         run: |
+          # The marker identifies the set of refused requests: report a new or changed
+          # failure once, not on every run while the issue is open.
           title='Served RUM package files would fail verification'
-          {
-            printf 'The scheduled package coverage check failed: %s\n\n' "$RUN_URL"
-            printf 'These requests have real traffic and would now be refused (no fallback):\n\n```\n'
-            tail -n 200 coverage.txt
-            printf '```\n\nSee docs/PACKAGE-SERVING.md.\n'
-          } > issue.md
+          marker=$(node tools/package-coverage-issue.mjs --marker coverage.txt)
+          node tools/package-coverage-issue.mjs coverage.txt "$RUN_URL" > issue.md
           existing=$(gh issue list --repo "$GITHUB_REPOSITORY" --state open --search "\"$title\" in:title" --json number --jq '.[0].number // empty')
-          if [[ -n "$existing" ]]; then
-            gh issue comment "$existing" --repo "$GITHUB_REPOSITORY" --body-file issue.md
-          else
+          if [[ -z "$existing" ]]; then
             gh issue create --repo "$GITHUB_REPOSITORY" --title "$title" --body-file issue.md
+          elif gh issue view "$existing" --repo "$GITHUB_REPOSITORY" --json body,comments \
+              --jq '[.body] + [.comments[].body] | map(select(contains("<!-- package-coverage:"))) | last // ""' \
+              | grep -qF -- "$marker"; then
+            echo "Unchanged since the last report on #$existing"
+          else
+            gh issue comment "$existing" --repo "$GITHUB_REPOSITORY" --body-file issue.md
           fi
