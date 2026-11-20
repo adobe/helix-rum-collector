@@ -181,16 +181,14 @@ BACKENDS.forEach((env) => {
       assert.strictEqual(response.headers.get('x-frame-options'), 'DENY');
     });
 
-    it('web vitals module is being served', async function test() {
+    it('other web vitals files are not served', async function test() {
       if (!process.env.TEST_INTEGRATION) {
         this.skip();
       }
       const response = await fetch(`https://${domain}/.rum/web-vitals@2.1.3/dist/web-vitals.base.js`, {
         method: 'GET',
       });
-      assert.strictEqual(response.status, 200);
-      // eslint-disable-next-line no-unused-expressions
-      assert.match(response.headers.get('content-type'), /^text\/javascript/);
+      assert.strictEqual(response.status, 404);
       assert.strictEqual(response.headers.get('x-frame-options'), 'DENY');
     });
 
@@ -205,6 +203,8 @@ BACKENDS.forEach((env) => {
       // eslint-disable-next-line no-unused-expressions
       assert.match(response.headers.get('content-type'), /^text\/javascript/);
       assert.strictEqual(response.headers.get('x-frame-options'), 'DENY');
+      assert.strictEqual(response.headers.get('x-rum-trace'), `hlx-${env.provider}`);
+      assert.match(response.headers.get('x-rum-integrity'), /^sha384-/);
     });
 
     it('rum js module is being served without redirect', async function test() {
@@ -222,10 +222,8 @@ BACKENDS.forEach((env) => {
       // eslint-disable-next-line no-unused-expressions
       assert.match(response.headers.get('content-type'), /^text\/javascript/);
       assert.strictEqual(response.headers.get('x-frame-options'), 'DENY');
-      assert(
-        response.headers.get('x-rum-trace').startsWith('be-'),
-        'This request cannot be served by the helix backend, so should use the package registries',
-      );
+      assert.strictEqual(response.headers.get('x-rum-trace'), `hlx-${env.provider}`);
+      assert.strictEqual(response.headers.get('x-rum-release'), '1.9.0');
     });
 
     it('rum js module is served with compression', async function test() {
@@ -257,7 +255,7 @@ BACKENDS.forEach((env) => {
       assert.strictEqual(respRange.headers.get('x-frame-options'), 'DENY');
       assert.strictEqual(respRange.headers.get('x-rum-trace'), `hlx-${env.provider}`);
 
-      const respSpecific = await fetch(`https://${domain}/.rum/@adobe/helix-rum-enhancer@2.33.0/src/index.js`);
+      const respSpecific = await fetch(`https://${domain}/.rum/@adobe/helix-rum-enhancer@2.34.2/src/index.js`);
       assert.strictEqual(respSpecific.status, 200);
       const ccHeaderSp = respSpecific.headers.get('cache-control').split(',');
       const maHeader = ccHeaderSp.find((header) => header.trim().startsWith('max-age='));
@@ -272,13 +270,13 @@ BACKENDS.forEach((env) => {
       }
 
       const startTime = Date.now();
-      const respRange = await fetch(`https://${domain}/.rum/@adobe/helix-rum-js@~2.11.4/dist/rum-standalone.js`);
+      const respRange = await fetch(`https://${domain}/.rum/@adobe/helix-rum-js@~2.17.0/dist/rum-standalone.js`);
       assert.strictEqual(respRange.status, 200);
       assert.strictEqual(`hlx-${env.provider}`, respRange.headers.get('x-rum-trace'));
       assert(Date.now() - startTime < 2000, 'Response took too long');
 
       const startTime2 = Date.now();
-      const respSpecific = await fetch(`https://${domain}/.rum/@adobe/helix-rum-js@2.11.4/dist/rum-standalone.js`);
+      const respSpecific = await fetch(`https://${domain}/.rum/@adobe/helix-rum-js@2.17.0/dist/rum-standalone.js`);
       assert.strictEqual(respSpecific.status, 200);
       assert.strictEqual(`hlx-${env.provider}`, respSpecific.headers.get('x-rum-trace'));
       assert(Date.now() - startTime2 < 2000, 'Response took too long');
@@ -296,26 +294,21 @@ BACKENDS.forEach((env) => {
       assert(Date.now() - startTime < 2000, 'Response took too long');
 
       const startTime2 = Date.now();
-      const respSpecific = await fetch(`https://${domain}/.rum/@adobe/helix-rum-enhancer@2.34.3/src/index.js`);
+      const respSpecific = await fetch(`https://${domain}/.rum/@adobe/helix-rum-enhancer@2.34.2/src/index.js`);
       assert.strictEqual(respSpecific.status, 200);
       assert.strictEqual(`hlx-${env.provider}`, respSpecific.headers.get('x-rum-trace'));
       assert(Date.now() - startTime2 < 2000, 'Response took too long');
     });
 
-    it.skip('rum js module is being served with default replacements', async function test() {
+    it('releases without approved digests are not served', async function test() {
       if (!process.env.TEST_INTEGRATION) {
         this.skip();
       }
       const response = await fetch(`https://${domain}/.rum/@adobe/helix-rum-js@1.0.0/src/index.js`, {
         method: 'GET',
       });
-      assert.strictEqual(response.status, 200);
-      // eslint-disable-next-line no-unused-expressions
-      assert.match(response.headers.get('content-type'), /^text\/javascript/);
-      const text = await response.text();
-      assert.include(text, 'adobe-helix-rum-js-1.0.0');
-      assert.strictEqual(response.headers.get('x-frame-options'), 'DENY');
-      assert.strictEqual(response.headers.get('x-rum-trace'), 'hlx');
+      assert.strictEqual(response.status, 404);
+      assert.strictEqual(response.headers.get('x-error'), 'Not in an approved release');
     });
 
     it('RUM collection with webdriver ua field returns 201', async function test() {

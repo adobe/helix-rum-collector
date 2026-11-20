@@ -15,10 +15,8 @@
 import { ConsoleLogger } from './console-logger.mjs';
 import { GoogleLogger } from './google-logger.mjs';
 import { respondHelixPkgReg } from './hlxpkgreg.mjs';
-import { respondJsdelivr } from './jsdelivr.mjs';
 import { respondRobots } from './robots.mjs';
 import { S3Logger } from './s3-logger.mjs';
-import { respondUnpkg } from './unpkg.mjs';
 import { respondDNTStatus, respondDNTPolicy } from './dnt.mjs';
 
 const REGISTRY_TIMEOUT_MS = 5000;
@@ -115,94 +113,31 @@ export function respondCORS() {
   });
 }
 
-async function respondRegistry(regName, req, successTracker, timeout) {
-  return new Promise((resolve, reject) => {
-    function callRegistry() {
-      if (successTracker.success) {
-        reject(new Error('Already obtained'));
-        return;
-      }
-
-      try {
-        const respondFunc = regName === 'jsdelivr' ? respondJsdelivr : respondUnpkg;
-        respondFunc(req).then(
-          (resp) => {
-            if (resp.status >= 500) {
-              reject(new Error(`Error from registry: ${resp.status}`));
-              return;
-            }
-            // eslint-disable-next-line no-param-reassign
-            successTracker.success = true;
-            resolve(resp);
-          },
-        );
-      } catch (error) {
-        reject(error);
-      }
-    }
-
-    if (timeout) {
-      setTimeout(callRegistry, timeout);
-    } else {
-      callRegistry();
-    }
-  });
-}
-
-async function respondPackage(req, isHelix) {
-  let errmsg = '';
-  if (isHelix) {
-    // If Helix can serve the package, then always try that first
-    try {
-      const timeout = new Promise((_, reject) => {
-        setTimeout(() => {
-          reject(new Error('Timeout'));
-        }, REGISTRY_TIMEOUT_MS);
-      });
-
-      const resp = await Promise.race([
-        respondHelixPkgReg(req),
-        timeout,
-      ]);
-
-      if (resp.status === 200) {
-        return resp;
-      } else {
-        console.log('Helix package registry response: ', resp);
-        errmsg = `Helix package registry response: ${resp.status} ${resp.statusText}`;
-      }
-    } catch (e) {
-      console.error('Error from Helix package registry: ', e);
-      errmsg = `Error from Helix package registry: ${e.message}`;
-    }
-    console.log('Falling back to jsdelivr/unpkg');
-  }
-
-  // We're going to serve from a non-Helix package registry
-  const useJsdelivr = Math.random() < 0.5; // 50% chance to use jsdelivr
-  const jsdDelay = useJsdelivr ? undefined : REGISTRY_TIMEOUT_MS;
-  const unpkgDelay = useJsdelivr ? REGISTRY_TIMEOUT_MS : undefined;
-
-  // This shared object between the promises is used to track
-  // if one of the requests has succeeded, to avoid unneccessary requests.
-  const successTracker = {};
+/**
+ * Serves a RUM package file, verified against its approved release digest. There is no
+ * fallback to a public CDN: a file that can't be verified is not served.
+ */
+async function respondPackage(req) {
+  let timer;
   try {
-    const resp = await Promise.any([
-      respondRegistry('jsdelivr', req, successTracker, jsdDelay),
-      respondRegistry('unpkg', req, successTracker, unpkgDelay),
-    ]);
-    resp.headers.set('x-error', errmsg);
-    return resp;
-  } catch (error) {
-    return new Response(error.errors, {
-      status: 500,
-      headers: {
-        'Content-Type': 'text/plain; charset=utf-8',
-        'X-Frame-Options': 'DENY',
-      },
+    const timeout = new Promise((_, reject) => {
+      timer = setTimeout(() => reject(new Error('Timeout')), REGISTRY_TIMEOUT_MS);
     });
+    return await Promise.race([respondHelixPkgReg(req), timeout]);
+  } catch (e) {
+    console.error('Error from Helix package registry: ', e);
+    return respondError(`Helix package registry: ${e.message}`, e.message === 'Timeout' ? 504 : 502, e);
+  } finally {
+    clearTimeout(timer);
   }
 }
+
+/**
+ * Enhancer releases before the bundled CWV plugin load web-vitals from this unversioned
+ * path. Serve the pinned copy that each enhancer release ships (and lists in its manifest).
+ */
+export const WEB_VITALS_PATH = '/.rum/web-vitals/dist/web-vitals.iife.js';
+export const WEB_VITALS_SOURCE = '/.rum/@adobe/helix-rum-enhancer@^2/src/vendor/web-vitals.iife.js';
 
 export async function main(req, ctx) {
   if (req.method === 'OPTIONS') {
@@ -253,13 +188,19 @@ export async function main(req, ctx) {
       if (isDirList) {
         return respondError('Directory listing is not allowed', 404, undefined);
       }
-      return respondPackage(req);
+      if (pathname !== WEB_VITALS_PATH) {
+        return respondError('Not Found', 404, undefined);
+      }
+      const source = new URL(req.url);
+      source.pathname = WEB_VITALS_SOURCE;
+      source.search = '';
+      return respondPackage({ url: source.href });
     }
     if (req.method === 'GET' && pathname.startsWith('/.rum/@adobe/helix-rum')) {
       if (isDirList) {
         return respondError('Directory listing is not allowed', 404, undefined);
       }
-      return respondPackage(req, true);
+      return respondPackage(req);
     }
     const body = req.method === 'GET'
       ? JSON.parse(new URL(req.url).searchParams.get('data'))

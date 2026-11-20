@@ -34,6 +34,12 @@ jobs:
         node-version: lts/*
     - name: Install
       run: npm ci
+    - name: Verify package coverage before deploying
+      # Package serving has no CDN fallback: stop the deploy if any request with real
+      # traffic would not be served verified from the live release branches.
+      run: npm run verify-package-coverage
+      env:
+        IAB_SPIDER_LIST: ${{ secrets.IAB_SPIDER_LIST }}
     - name: Semantic Release
       run: |
         : "${GITHUB_TOKEN:?GitHub Actions must supply its job token}"
