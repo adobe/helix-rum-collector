@@ -183,11 +183,14 @@ export async function respondHelixPkgReg(req) {
     readJson(exactBranch, 'release-manifest.json'),
     fetchBranch(exactBranch, file),
   ]);
-  const approved = manifest
+  const files = manifest
     && manifest.schema === 1 && manifest.package === name && manifest.version === version
-    ? manifest.files?.[file]
-    : LEGACY_RELEASES[name]?.[version]?.[file];
-  if (!approved) {
+    ? manifest.files
+    : LEGACY_RELEASES[name]?.[version];
+  // Own entries only: the path is client-chosen, so `constructor` or `__proto__` must not
+  // resolve to an Object.prototype member.
+  const approved = files && Object.hasOwn(files, file) ? files[file] : undefined;
+  if (typeof approved?.integrity !== 'string' || !Number.isInteger(approved?.size)) {
     await beresp.body?.cancel?.();
     return refuse(404, 'Not in an approved release', {
       pkgname, pkgver, version, file, manifest: Boolean(manifest),

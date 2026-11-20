@@ -43,7 +43,9 @@ function fakeAemLive(site, { plain = false, headers = {} } = {}) {
     requested.push(req.url);
     const url = new URL(req.url);
     const [branch] = url.hostname.split('--adobe.aem');
-    const content = site[branch]?.[url.pathname.slice(1)];
+    const files = Object.hasOwn(site, branch) ? site[branch] : {};
+    const path = url.pathname.slice(1);
+    const content = Object.hasOwn(files, path) ? files[path] : undefined;
     if (content === undefined) {
       return new Response('not found', { status: 404 });
     }
@@ -172,6 +174,44 @@ describe('Verified Helix package registry', () => {
     const resp = await respondHelixPkgReg(request('/.rum/@adobe/helix-rum-js@2.18.0/dist/extra.js'));
     assert.equal(resp.status, 404);
     assert.equal(resp.headers.get('x-error'), 'Not in an approved release');
+  });
+
+  it('refuses Object.prototype names without touching the origin', async () => {
+    const requested = fakeAemLive({
+      'release-2-18-0--helix-rum-js': {
+        'release-manifest.json': manifestFor('helix-rum-js', '2.18.0', { 'dist/micro.js': 'x' }),
+      },
+    });
+    for (const path of [
+      '/.rum/@adobe/helix-rum-js@2.10.5/constructor',
+      '/.rum/@adobe/helix-rum-js@2.10.5/toString',
+      '/.rum/@adobe/helix-rum-js@2.10.5/__proto__',
+      '/.rum/@adobe/helix-rum-js@2.10.5/hasOwnProperty',
+      '/.rum/@adobe/helix-rum-js@2.18.0/constructor',
+      '/.rum/@adobe/helix-rum-js@2.18.0/__proto__',
+    ]) {
+      requested.length = 0;
+      // eslint-disable-next-line no-await-in-loop
+      const resp = await respondHelixPkgReg(request(path));
+      assert.equal(resp.status, 404, path);
+      assert.equal(resp.headers.get('x-error'), 'Not in an approved release', path);
+      // Only the manifest lookup (and the parallel file fetch, cancelled unread) happen;
+      // nothing is verified or served.
+      assert(requested.every((u) => u.includes('release-2-')), path);
+    }
+  });
+
+  it('refuses a malformed manifest entry', async () => {
+    fakeAemLive({
+      'release-2-18-0--helix-rum-js': {
+        'release-manifest.json': JSON.stringify({
+          schema: 1, package: '@adobe/helix-rum-js', version: '2.18.0', files: { 'dist/micro.js': { integrity: 42 } },
+        }),
+        'dist/micro.js': 'x',
+      },
+    });
+    const resp = await respondHelixPkgReg(request('/.rum/@adobe/helix-rum-js@2.18.0/dist/micro.js'));
+    assert.equal(resp.status, 404);
   });
 
   it('refuses a manifest for another package or version', async () => {
