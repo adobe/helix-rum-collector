@@ -18,10 +18,10 @@ jobs:
     timeout-minutes: 30
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v7
+    - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       with:
         persist-credentials: false
-    - uses: actions/setup-node@v7
+    - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
       with:
         node-version: lts/*
     - name: Install
@@ -45,7 +45,7 @@ jobs:
         unzip -t bin/dist/helix3/helix-rum-collector.zip
         unzip -l bin/dist/helix3/helix-rum-collector.zip
     - name: Upload coverage to Codecov
-      uses: codecov/codecov-action@v7
+      uses: codecov/codecov-action@303a32d7a59b442fa8d48b6a1cc6825c09c847a5 # v7.1.1
       with:
         token: ${{ secrets.CODECOV_TOKEN }}
         files: lcov-junit.info
