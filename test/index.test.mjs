@@ -325,21 +325,47 @@ describe('Test index', () => {
     );
   }
 
-  it('responds to web-vitals', async () => {
-    const headers = new Map();
+  it('serves web-vitals from the pinned copy in the enhancer release', async () => {
+    const { createHash } = await import('crypto');
+    const js = 'var webVitals=function(){}();';
+    const approved = {
+      integrity: `sha384-${createHash('sha384').update(js).digest('base64')}`,
+      size: js.length,
+    };
+    const manifest = JSON.stringify({
+      schema: 1,
+      package: '@adobe/helix-rum-enhancer',
+      version: '2.53.0',
+      files: { 'src/vendor/web-vitals.iife.js': approved },
+    });
+    const site = {
+      'https://release-2-x--helix-rum-enhancer--adobe.aem.live/release-manifest.json': manifest,
+      'https://release-2-53-0--helix-rum-enhancer--adobe.aem.live/release-manifest.json': manifest,
+      'https://release-2-53-0--helix-rum-enhancer--adobe.aem.live/src/vendor/web-vitals.iife.js': js,
+    };
+    const storedFetch = global.fetch;
+    const requested = [];
+    global.fetch = async (req) => {
+      requested.push(req.url);
+      return site[req.url] ? new Response(site[req.url]) : new Response('', { status: 404 });
+    };
+    try {
+      const req = { headers: new Map(), method: 'GET' };
+      req.url = 'http://x.y/.rum/web-vitals/dist/web-vitals.iife.js?pkgreg=unpkg';
+      const resp = await methods.main(req);
+      assert.equal(200, resp.status);
+      assert.equal(await resp.text(), js);
+      assert.equal(resp.headers.get('x-rum-release'), '2.53.0');
+      assert(requested.every((u) => u.includes('.aem.live/')), requested.join());
 
-    const req = { headers };
-    req.method = 'GET';
-    req.url = 'http://x.y/.rum/web-vitals/dist/web-vitals.iife.js';
-
-    const resp = await methods.main(req);
-
-    assert.equal(200, resp.status);
-    assert(resp.ok);
-
-    const t = await resp.text();
-    assert(t.includes('webVitals'));
-  }); // .timeout(5000);
+      req.url = 'http://x.y/.rum/web-vitals/dist/web-vitals.iife.js.map';
+      assert.equal((await methods.main(req)).status, 404);
+      req.url = 'http://x.y/.rum/web-vitals@2.1.3/dist/web-vitals.base.js';
+      assert.equal((await methods.main(req)).status, 404);
+    } finally {
+      global.fetch = storedFetch;
+    }
+  });
 
   it('responds to web-vitals dir list', async () => {
     const headers = new Map();
@@ -382,107 +408,82 @@ describe('Test index', () => {
     assert.equal('Content-Type', resp.headers.get('access-control-allow-headers'));
   });
 
-  it('responds to helix-rum-js', async () => {
-    const headers = new Map();
-
-    const req = { headers };
-    req.method = 'GET';
+  it('refuses a package request without version and file', async () => {
+    const req = { headers: new Map(), method: 'GET' };
     req.url = 'http://x.y/.rum/@adobe/helix-rum-js';
-
     const resp = await methods.main(req);
-
-    assert.equal(200, resp.status);
-    assert(resp.ok);
-    assert(!resp.headers.has('server'));
-    assert(!resp.headers.has('cf-cache-status'));
-    assert(!resp.headers.has('cr-ray'));
-
-    const t = await resp.text();
-    assert(t.includes('export function sampleRUM'));
+    assert.equal(404, resp.status);
   });
 
-  it('serves helix-rum-enhancer from Helix backend', async () => {
+  it('serves helix-rum-enhancer from Helix backend, verified', async () => {
     const headers = new Map();
 
     const req = { headers };
     req.method = 'GET';
     req.url = 'http://x.y/.rum/@adobe/helix-rum-enhancer@2.34.2/src/index.js';
 
-    const startTime = Date.now();
     const resp = await methods.main(req);
 
     assert.equal(200, resp.status);
     assert(resp.ok);
     assert.equal('hlx', resp.headers.get('x-rum-trace'));
-    assert(Date.now() - startTime < 1000, 'Response took too long');
+    assert.equal('2.34.2', resp.headers.get('x-rum-release'));
 
     const t = await resp.text();
     assert(t.includes('function initEnhancer()'));
   });
 
-  it('reverts to jsdelivr/unpkg if helix backend times out', async () => {
+  it('answers 504 without any fallback if the Helix backend times out', async () => {
+    const { main } = await esmock('../src/index.mjs', {
+      '../src/hlxpkgreg.mjs': {
+        respondHelixPkgReg: () => new Promise(() => {}),
+      },
+    });
+    const storedFetch = global.fetch;
+    global.fetch = () => {
+      throw new Error('no other backend may be called');
+    };
+    try {
+      const req = { headers: new Map(), method: 'GET' };
+      req.url = 'http://x.y/.rum/@adobe/helix-rum-js@^1/src/index.js';
+      const resp = await main(req);
+      assert.equal(504, resp.status);
+    } finally {
+      global.fetch = storedFetch;
+    }
+  });
+
+  it('answers 502 without any fallback if the Helix backend fails', async () => {
     const { main } = await esmock('../src/index.mjs', {
       '../src/hlxpkgreg.mjs': {
         respondHelixPkgReg: async () => {
-          // sleep for 10 seconds
-          await new Promise(() => {
-            setTimeout(() => {}, 10000);
-          });
+          throw new Error('kaboom');
         },
       },
     });
-
-    const headers = new Map();
-    const req = { headers };
-    req.method = 'GET';
-    req.url = 'http://x.y/.rum/@adobe/helix-rum-js@^1/src/index.js';
-
+    const req = { headers: new Map(), method: 'GET' };
+    req.url = 'http://x.y/.rum/@adobe/helix-rum-js@^2/dist/micro.js';
     const resp = await main(req);
-    assert.equal(200, resp.status);
-    assert(resp.ok);
-    const backend = resp.headers.get('x-rum-trace');
-    assert(backend === 'be-j' || backend === 'be-u');
+    assert.equal(502, resp.status);
+    assert(resp.headers.get('X-Error').includes('kaboom'));
   });
 
-  it('serves helix-rum-enhancer with encoded wilcard from Helix backend', async () => {
+  it('serves helix-rum-enhancer with encoded wilcard from its exact release, verified', async () => {
     const headers = new Map();
 
     const req = { headers };
     req.method = 'GET';
     req.url = 'http://x.y/.rum/@adobe/helix-rum-enhancer@%5E2/src/index.js';
 
-    const startTime = Date.now();
     const resp = await methods.main(req);
 
     assert.equal(200, resp.status);
     assert(resp.ok);
     assert.equal('hlx', resp.headers.get('x-rum-trace'));
-    assert(Date.now() - startTime < 1000, 'Response took too long');
+    assert.match(resp.headers.get('x-rum-release'), /^2\.[0-9]+\.[0-9]+$/);
 
     const t = await resp.text();
     assert(t.includes('function initEnhancer()'));
-  });
-
-  it('serves older helix-rum-enhancer with wilcard from package registry', async () => {
-    const headers = new Map();
-
-    const req = { headers };
-    req.method = 'GET';
-    req.url = 'http://x.y/.rum/@adobe/helix-rum-enhancer@^1/src/index.js';
-
-    const startTime = Date.now();
-    const resp = await methods.main(req);
-
-    assert.equal(200, resp.status);
-    assert(resp.ok);
-    assert(
-      resp.headers.get('x-rum-trace').startsWith('be-'),
-      `Expected non-helix backend here ${resp.headers.get('x-rum-trace')}`,
-    );
-    assert(Date.now() - startTime < 1000, 'Response took too long');
-
-    const t = await resp.text();
-    assert(t.includes('new PerformanceObserver'));
   });
 
   it('responds to helix-rum-js dir list', async () => {
@@ -508,113 +509,6 @@ describe('Test index', () => {
 
     assert.equal(404, resp.status);
   }); // .timeout(5000);
-
-  it('Retry with another package registry', async () => {
-    const mockUnpkg = async () => ({ status: 500 });
-    const { main } = await esmock('../src/index.mjs', {
-      '../src/unpkg.mjs': {
-        respondUnpkg: mockUnpkg,
-      },
-    });
-    const headers = new Map();
-
-    const req = { headers };
-    req.method = 'GET';
-    req.url = 'http://x.y/.rum/web-vitals/dist/web-vitals.iife.js?pkgreg=unpkg';
-
-    const resp = await main(req);
-
-    assert.equal(200, resp.status);
-    assert(resp.ok);
-
-    const t = await resp.text();
-    assert(t.includes('webVitals'));
-  });
-
-  it('Retry with another package registry after exception', async () => {
-    const { main } = await esmock('../src/index.mjs', {
-      '../src/jsdelivr.mjs': {
-        respondJsdelivr: () => { throw new Error('boom'); },
-      },
-    });
-    const headers = new Map();
-
-    const req = { headers };
-    req.method = 'GET';
-    req.url = 'http://x.y/.rum/@adobe/helix-rum-js@^1?pkgreg=jsdelivr';
-
-    const resp = await main(req);
-
-    assert.equal(200, resp.status);
-    assert(resp.ok);
-
-    const t = await resp.text();
-    assert(t.includes('export function sampleRUM'));
-  });
-
-  it('Both package registries fail', async () => {
-    const { main } = await esmock('../src/index.mjs', {
-      '../src/unpkg.mjs': {
-        respondUnpkg: () => { throw new Error('bam'); },
-      },
-      '../src/jsdelivr.mjs': {
-        respondJsdelivr: () => { throw new Error('boom'); },
-      },
-    });
-
-    const req = {
-      url: 'http://x.y/.rum/@adobe/helix-rum-js@^1',
-      method: 'GET',
-    };
-    const resp = await main(req);
-    assert.equal(500, resp.status);
-    const t = await resp.text();
-    assert(t.includes('bam'));
-    assert(t.includes('boom'));
-  });
-
-  async function waitForTimeout(ms) {
-    return new Promise((resolve) => {
-      setTimeout(() => {
-        resolve();
-      }, ms);
-    });
-  }
-
-  it('No double request on success', async () => {
-    const called = [];
-    const { main } = await esmock('../src/index.mjs', {
-      '../src/hlxpkgreg.mjs': {
-        respondHelixPkgReg: async () => {
-          throw new Error('kaboom');
-        },
-      },
-      '../src/unpkg.mjs': {
-        respondUnpkg: async () => {
-          called.push('unpkg');
-          return new Response('unpkg', { status: 200 });
-        },
-      },
-      '../src/jsdelivr.mjs': {
-        respondJsdelivr: async () => {
-          called.push('jsdelivr');
-          return new Response('jsdelivr', { status: 200 });
-        },
-      },
-    });
-
-    const req = {
-      url: 'http://x.y/.rum/@adobe/helix-rum-js@^1',
-      method: 'GET',
-    };
-    const resp = await main(req);
-    assert.equal(200, resp.status);
-
-    // Wait for a little while so that the other thread will run
-    await waitForTimeout(6000);
-
-    assert.equal(called.length, 1, 'Should have called only one');
-  });
 
   it('verifies inputs', async () => {
     await verifyInput('{"id": null}', 'id field is required');

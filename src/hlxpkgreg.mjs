@@ -10,8 +10,14 @@
  * governing permissions and limitations under the License.
  */
 /* eslint-env serviceworker */
-import { cleanupResponse } from './cdnutils.mjs';
+import { cleanupHeaders } from './cdnutils.mjs';
+import { LEGACY_RELEASES } from './legacy-releases.mjs';
 import { BACKENDS } from './utils.mjs';
+
+// Versions whose branch name (non-alphanumerics replaced by '-') is unambiguous; the
+// release tooling only publishes these.
+const VERSION = /^[0-9]+\.[0-9]+\.[0-9]+(-[0-9A-Za-z]+(\.[0-9A-Za-z]+)*)?$/;
+const PACKAGES = ['helix-rum-js', 'helix-rum-enhancer'];
 
 // Note we don't check for the fact that an older version could potentially be returned
 // if a compatible version with a version that is not yet released is requested. For
@@ -20,7 +26,7 @@ import { BACKENDS } from './utils.mjs';
 // this function is that the version string input should be at least a released version.
 // We also don't handle version 0.x specially, as the supported packages all have versions
 // higher than 0.x
-function getReleaseVersion(verstr) {
+export function getReleaseVersion(verstr) {
   const trimmed = verstr.trim();
   const prefix = trimmed[0];
   const va = trimmed.split('.');
@@ -43,6 +49,7 @@ function getReleaseVersion(verstr) {
         return {
           ver: orgva.join('-'),
           cc: 'public, max-age=31536000, immutable',
+          exact: trimmed,
         };
       } else {
         return null;
@@ -60,30 +67,137 @@ function getBackendSuffix(url) {
   return '';
 }
 
+export function branchFor(version) {
+  return `release-${version.replace(/[^0-9A-Za-z]/g, '-')}`;
+}
+
+function base64(buffer) {
+  let binary = '';
+  new Uint8Array(buffer).forEach((b) => {
+    binary += String.fromCharCode(b);
+  });
+  return btoa(binary);
+}
+
+export async function sha384(bytes) {
+  return `sha384-${base64(await crypto.subtle.digest('SHA-384', bytes))}`;
+}
+
+/**
+ * aem.live sends gzip-encoded bodies even when the request doesn't ask for it. Depending on
+ * the platform, fetch() may or may not have decoded it already, so decide by the gzip magic
+ * number rather than the Content-Encoding header. JavaScript and JSON never start with it.
+ */
+export async function decodeBody(buffer) {
+  const bytes = new Uint8Array(buffer);
+  if (bytes.length > 2 && bytes[0] === 0x1f && bytes[1] === 0x8b) {
+    const stream = new Response(bytes).body.pipeThrough(new DecompressionStream('gzip'));
+    return new Uint8Array(await new Response(stream).arrayBuffer());
+  }
+  return bytes;
+}
+
+function refuse(status, message, details) {
+  if (details) {
+    console.error(JSON.stringify({
+      metric: 'rum-package-refused', status, message, ...details,
+    }));
+  }
+  return new Response(`error: ${message}`, {
+    status,
+    headers: {
+      'Content-Type': 'text/plain; charset=utf-8',
+      'Cache-Control': 'no-store',
+      'X-Frame-Options': 'DENY',
+      'x-error': message,
+    },
+  });
+}
+
+/**
+ * Serves a file of a RUM package from its release branch on aem.live, but only if its
+ * decoded bytes match the approved SHA-384 digest for that exact release:
+ *
+ * - an alias (^2, ~2.17) is resolved to the exact version it currently points to
+ *   (release-manifest.json, or package.json for older releases), and the file is served
+ *   from that version's write-once release-X-Y-Z branch;
+ * - the approved digests come from that exact branch's release-manifest.json or, for
+ *   releases that predate manifests, from LEGACY_RELEASES, built from verified npm tarballs;
+ * - anything unlisted, missing or mismatched is refused. There is no other source.
+ */
 export async function respondHelixPkgReg(req) {
   const url = new URL(req.url);
   const paths = decodeURI(url.pathname).split('/').slice(3);
 
   const [pkgname, pkgver] = paths[0].split('@');
-  if (pkgname !== 'helix-rum-js' && pkgname !== 'helix-rum-enhancer') {
-    return { status: 500, statusText: 'Unsupported package' };
+  if (!PACKAGES.includes(pkgname)) {
+    return refuse(404, 'Unsupported package');
   }
   if (!pkgver) {
-    return { status: 500, statusText: 'No version' };
+    return refuse(404, 'No version');
   }
-
   const relver = getReleaseVersion(pkgver);
   if (!relver) {
-    return { status: 500, statusText: 'Unsupported version' };
+    return refuse(404, 'Unsupported version');
   }
+  const file = paths.slice(1).join('/');
+  if (!file) {
+    return refuse(404, 'No file');
+  }
+
   const backend = getBackendSuffix(url);
-  const beurl = new URL(`https://release-${relver.ver}--${pkgname}--adobe.aem${backend}.live/${paths.slice(1).join('/')}`);
-  const bereq = new Request(beurl.href);
-  console.log('fetching', bereq.url);
-  const beresp = await fetch(bereq, {
-    backend: 'hlxpkgreg',
-  });
-  console.log('fetched', bereq.url, beresp.status, beresp.headers.get('ETag'), beresp.headers.get('Content-Length'));
+  const fetchBranch = (branch, path) => fetch(
+    new Request(`https://${branch}--${pkgname}--adobe.aem${backend}.live/${path}`),
+    { backend: 'hlxpkgreg' },
+  );
+  const readJson = async (branch, path) => {
+    const resp = await fetchBranch(branch, path);
+    if (resp.status !== 200) {
+      return null;
+    }
+    try {
+      return JSON.parse(new TextDecoder().decode(await decodeBody(await resp.arrayBuffer())));
+    } catch (e) {
+      return null;
+    }
+  };
+
+  let version = relver.exact;
+  if (!version) {
+    const alias = `release-${relver.ver}`;
+    const aliasManifest = await readJson(alias, 'release-manifest.json');
+    version = aliasManifest?.version ?? (await readJson(alias, 'package.json'))?.version;
+  }
+  if (typeof version !== 'string' || !VERSION.test(version)) {
+    return refuse(404, 'Unknown release', { pkgname, pkgver, version });
+  }
+
+  const exactBranch = branchFor(version);
+  const name = `@adobe/${pkgname}`;
+  const manifest = await readJson(exactBranch, 'release-manifest.json');
+  const approved = manifest
+    && manifest.schema === 1 && manifest.package === name && manifest.version === version
+    ? manifest.files?.[file]
+    : LEGACY_RELEASES[name]?.[version]?.[file];
+  if (!approved) {
+    return refuse(404, 'Not in an approved release', {
+      pkgname, pkgver, version, file, manifest: Boolean(manifest),
+    });
+  }
+
+  const beresp = await fetchBranch(exactBranch, file);
+  if (beresp.status !== 200) {
+    return refuse(502, `Release file unavailable: ${beresp.status}`, {
+      pkgname, version, file, status: beresp.status,
+    });
+  }
+  const bytes = await decodeBody(await beresp.arrayBuffer());
+  const integrity = await sha384(bytes);
+  if (integrity !== approved.integrity || bytes.length !== approved.size) {
+    return refuse(502, 'Integrity check failed', {
+      pkgname, pkgver, version, file, integrity, size: bytes.length, approved,
+    });
+  }
 
   const ccMap = new Map();
   ccMap.set('cache-control', relver.cc);
@@ -92,5 +206,12 @@ export async function respondHelixPkgReg(req) {
   ccMap.set('access-control-allow-headers', '*');
   ccMap.set('access-control-expose-headers', '*');
   ccMap.set('x-rum-trace', `hlx${backend}`); // Trace the backend used
-  return cleanupResponse(beresp, req, ccMap);
+  ccMap.set('x-rum-release', version);
+  ccMap.set('x-rum-integrity', integrity);
+  // The body was consumed above, so copy only the headers.
+  const { headers } = cleanupHeaders(new Response(null, { headers: beresp.headers }), ccMap);
+  // The body is served decoded; the CDN compresses it again (x-compress-hint).
+  headers.delete('content-encoding');
+  headers.delete('content-length');
+  return new Response(bytes, { status: 200, headers });
 }

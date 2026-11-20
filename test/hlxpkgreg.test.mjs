@@ -12,180 +12,222 @@
 /* eslint-env mocha */
 /* eslint-env serviceworker */
 import assert from 'assert';
-import { it, describe } from 'node:test';
-import { respondHelixPkgReg } from '../src/hlxpkgreg.mjs';
+import { createHash } from 'crypto';
+import { gzipSync } from 'zlib';
+import { afterEach, describe, it } from 'node:test';
+import {
+  branchFor, decodeBody, getReleaseVersion, respondHelixPkgReg,
+} from '../src/hlxpkgreg.mjs';
+import { LEGACY_RELEASES } from '../src/legacy-releases.mjs';
 
-describe('Test Helix Package Registry Handler', () => {
-  it('serves a package', async () => {
-    const req = {};
-    req.url = 'http://foo.bar.org/.rum/@adobe/helix-rum-js@2.11.4/dist/rum-standalone.js';
+const digest = (content) => ({
+  integrity: `sha384-${createHash('sha384').update(content).digest('base64')}`,
+  size: Buffer.byteLength(content),
+});
 
-    const resp = await respondHelixPkgReg(req);
-    const text = await resp.text();
-    assert.equal(200, resp.status);
-    assert.equal('hlx', resp.headers.get('x-rum-trace'));
-    assert(resp.headers.get('x-cache') === null, 'x-cache header should be removed');
-    assert(resp.headers.get('server') === null, 'server header should be removed');
-    assert(text.includes('function sampleRUM'), 'Contents should contain sampleRUM function');
-  });
+const manifestFor = (pkg, version, files) => JSON.stringify({
+  schema: 1,
+  package: `@adobe/${pkg}`,
+  version,
+  files: Object.fromEntries(Object.entries(files).map(([p, c]) => [p, digest(c)])),
+});
 
-  it('serves a package from fastly', async () => {
-    const req = {};
-    req.url = 'http://rum.hlx3.page/.rum/@adobe/helix-rum-js@2.11.4/dist/rum-standalone.js';
-
-    const resp = await respondHelixPkgReg(req);
-    const text = await resp.text();
-    assert.equal(200, resp.status);
-    assert.equal('hlx-fastly', resp.headers.get('x-rum-trace'));
-    assert(resp.headers.get('x-cache') === null, 'x-cache header should be removed');
-    assert(resp.headers.get('server') === null, 'server header should be removed');
-    assert(text.includes('function sampleRUM'), 'Contents should contain sampleRUM function');
-  });
-
-  it('serves a package from cloudflare', async () => {
-    const req = {};
-    req.url = 'http://rum.hlx-cloudflare.page/.rum/@adobe/helix-rum-js@2.11.4/dist/rum-standalone.js';
-
-    const resp = await respondHelixPkgReg(req);
-    const text = await resp.text();
-    assert.equal(200, resp.status);
-    assert.equal('hlx-cloudflare', resp.headers.get('x-rum-trace'));
-    assert(resp.headers.get('x-cache') === null, 'x-cache header should be removed');
-    assert(resp.headers.get('server') === null, 'server header should be removed');
-    assert(text.includes('function sampleRUM'), 'Contents should contain sampleRUM function');
-  });
-
-  async function testWildcarding(inurl, usedurl, cacheControl, message) {
-    const req = {
-      url: inurl,
-    };
-
-    const storedFetch = global.fetch;
-    try {
-      global.fetch = (v, opts) => {
-        assert.equal('hlxpkgreg', opts.backend);
-        if (v.url === usedurl) {
-          return {
-            status: 200,
-            headers: new Headers(),
-            url: v.url,
-          };
-        }
-        throw new Error(`${message}Unexpected URL: ${v.url} was expecting ${usedurl}`);
-      };
-
-      const resp = await respondHelixPkgReg(req);
-      assert.equal(200, resp.status);
-      assert.equal(cacheControl, resp.headers.get('cache-control'));
-    } finally {
-      global.fetch = storedFetch;
+/**
+ * A fake aem.live: `site['release-2-x--helix-rum-js']['dist/a.js'] = 'content'`.
+ * Records every requested URL. Bodies are gzip-encoded like aem.live's unless plain is set.
+ */
+function fakeAemLive(site, { plain = false, headers = {} } = {}) {
+  const requested = [];
+  global.fetch = async (req, opts) => {
+    assert.equal(opts.backend, 'hlxpkgreg');
+    requested.push(req.url);
+    const url = new URL(req.url);
+    const [branch] = url.hostname.split('--adobe.aem');
+    const content = site[branch]?.[url.pathname.slice(1)];
+    if (content === undefined) {
+      return new Response('not found', { status: 404 });
     }
-  }
+    return new Response(plain ? content : gzipSync(content), {
+      status: 200,
+      headers: {
+        'content-type': 'text/javascript; charset=utf-8',
+        server: 'noway',
+        'x-cache': 'HIT',
+        ...(plain ? {} : { 'content-encoding': 'gzip' }),
+        ...headers,
+      },
+    });
+  };
+  return requested;
+}
 
-  it('serves an exact package', async () => {
-    await testWildcarding(
-      'http://foo.bar.org/.rum/@adobe/helix-rum-js@2.11.4/dist/rum-standalone.js',
-      'https://release-2-11-4--helix-rum-js--adobe.aem.live/dist/rum-standalone.js',
-      'public, max-age=31536000, immutable',
-      'Exact version should be served. ',
-    );
+const request = (path, host = 'foo.bar.org') => ({ url: `http://${host}${path}` });
+
+describe('Verified Helix package registry', () => {
+  const storedFetch = global.fetch;
+  afterEach(() => {
+    global.fetch = storedFetch;
   });
 
-  it('serves an approximately equivalent package', async () => {
-    await testWildcarding(
-      'http://foo.bar.org/.rum/@adobe/helix-rum-js@~2.11.4/dist/rum-standalone.js',
-      'https://release-2-11-x--helix-rum-js--adobe.aem.live/dist/rum-standalone.js',
-      'public, max-age=3600',
-      'Approximately equivalent version with micro version wildcard should be served. ',
-    );
-
-    await testWildcarding(
-      'http://foo.bar.org/.rum/@adobe/helix-rum-js@~2.11/dist/rum-standalone.js',
-      'https://release-2-11-x--helix-rum-js--adobe.aem.live/dist/rum-standalone.js',
-      'public, max-age=3600',
-      'Approximately equivalent version with micro version wildcard should be served. ',
-    );
-
-    await testWildcarding(
-      'http://foo.bar.org/.rum/@adobe/helix-rum-js@~2/dist/rum-standalone.js',
-      'https://release-2-0-x--helix-rum-js--adobe.aem.live/dist/rum-standalone.js',
-      'public, max-age=3600',
-      'Approximately equivalent version with micro version wildcard should be served. ',
-    );
+  it('maps version specs to release branches', () => {
+    assert.deepEqual(getReleaseVersion('2.11.4'), { ver: '2-11-4', cc: 'public, max-age=31536000, immutable', exact: '2.11.4' });
+    assert.equal(getReleaseVersion('~2.11.4').ver, '2-11-x');
+    assert.equal(getReleaseVersion('~2.11').ver, '2-11-x');
+    assert.equal(getReleaseVersion('~2').ver, '2-0-x');
+    assert.equal(getReleaseVersion('^2.10.5').ver, '2-x');
+    assert.equal(getReleaseVersion('^1').ver, '1-x');
+    assert.equal(getReleaseVersion('^2').cc, 'public, max-age=3600');
+    assert.equal(getReleaseVersion('<2.10.5'), null);
+    assert.equal(branchFor('2.53.0'), 'release-2-53-0');
+    assert.equal(branchFor('2.4.0-rc.1'), 'release-2-4-0-rc-1');
   });
 
-  it('serves a compatible package', async () => {
-    await testWildcarding(
-      'http://foo.bar.org/.rum/@adobe/helix-rum-enhancer@^2.10.5/src/index.js',
-      'https://release-2-x--helix-rum-enhancer--adobe.aem.live/src/index.js',
-      'public, max-age=3600',
-      'Compatible version with minor version wildcard should be served. ',
-    );
-
-    await testWildcarding(
-      'http://foo.bar.org/.rum/@adobe/helix-rum-enhancer@^2.10/src/index.js',
-      'https://release-2-x--helix-rum-enhancer--adobe.aem.live/src/index.js',
-      'public, max-age=3600',
-      'Compatible version with minor version wildcard should be served. ',
-    );
-
-    await testWildcarding(
-      'http://foo.bar.org/.rum/@adobe/helix-rum-enhancer@%5E2/src/index.js',
-      'https://release-2-x--helix-rum-enhancer--adobe.aem.live/src/index.js',
-      'public, max-age=3600',
-      'Compatible version with minor version encoded wildcard should be served. ',
-    );
+  it('serves an exact release file that matches its manifest, decoded', async () => {
+    const js = '// helix-rum-js 2.18.0\nfunction sampleRUM() {}\n';
+    const requested = fakeAemLive({
+      'release-2-18-0--helix-rum-js': {
+        'release-manifest.json': manifestFor('helix-rum-js', '2.18.0', { 'dist/rum-standalone.js': js }),
+        'dist/rum-standalone.js': js,
+      },
+    });
+    const resp = await respondHelixPkgReg(request('/.rum/@adobe/helix-rum-js@2.18.0/dist/rum-standalone.js'));
+    assert.equal(resp.status, 200);
+    assert.equal(await resp.text(), js);
+    assert.equal(resp.headers.get('cache-control'), 'public, max-age=31536000, immutable');
+    assert.equal(resp.headers.get('x-rum-trace'), 'hlx');
+    assert.equal(resp.headers.get('x-rum-release'), '2.18.0');
+    assert.equal(resp.headers.get('x-rum-integrity'), digest(js).integrity);
+    assert.equal(resp.headers.get('content-encoding'), null);
+    assert.equal(resp.headers.get('server'), null);
+    assert.equal(resp.headers.get('x-cache'), null);
+    assert.deepEqual(requested, [
+      'https://release-2-18-0--helix-rum-js--adobe.aem.live/release-manifest.json',
+      'https://release-2-18-0--helix-rum-js--adobe.aem.live/dist/rum-standalone.js',
+    ]);
   });
 
-  it('version at all', async () => {
-    const req = {};
-    req.url = 'http://foo.bar.org/.rum/@adobe/helix-rum-js/dist/rum-standalone.js';
-    const resp = await respondHelixPkgReg(req);
-    assert(resp.status === 500, 'No version should return 500');
+  it('resolves an alias to its exact write-once branch', async () => {
+    const js = '// enhancer 2.53.0\n';
+    const manifest = manifestFor('helix-rum-enhancer', '2.53.0', { 'src/index.js': js });
+    const requested = fakeAemLive({
+      'release-2-x--helix-rum-enhancer': { 'release-manifest.json': manifest, 'src/index.js': 'alias copy, not used' },
+      'release-2-53-0--helix-rum-enhancer': { 'release-manifest.json': manifest, 'src/index.js': js },
+    });
+    const resp = await respondHelixPkgReg(request('/.rum/@adobe/helix-rum-enhancer@%5E2/src/index.js', 'rum.hlx3.page'));
+    assert.equal(resp.status, 200);
+    assert.equal(await resp.text(), js);
+    assert.equal(resp.headers.get('cache-control'), 'public, max-age=3600');
+    assert.equal(resp.headers.get('x-rum-trace'), 'hlx-fastly');
+    assert.equal(resp.headers.get('x-rum-release'), '2.53.0');
+    assert.deepEqual(requested, [
+      'https://release-2-x--helix-rum-enhancer--adobe.aem-fastly.live/release-manifest.json',
+      'https://release-2-53-0--helix-rum-enhancer--adobe.aem-fastly.live/release-manifest.json',
+      'https://release-2-53-0--helix-rum-enhancer--adobe.aem-fastly.live/src/index.js',
+    ]);
   });
 
-  it('unknown helix package', async () => {
-    const req = {};
-    req.url = 'http://foo.bar.org/.rum/@adobe/helix-rum-aaaarrr@2.10.5/src/index.js';
-    const resp = await respondHelixPkgReg(req);
-    assert(resp.status === 500, 'Unknown package should return 500');
-  });
-
-  it('unknown version selector', async () => {
-    const req = {};
-    req.url = 'http://foo.bar.org/.rum/@adobe/helix-rum-enhancer@<2.10.5/src/index.js';
-    const resp = await respondHelixPkgReg(req);
-    assert(resp.status === 500, 'Unknown package should return 500');
-  });
-
-  it('cleans up response', async () => {
-    const req = {};
-    req.url = 'http://foo.bar.org/.rum/@adobe/helix-rum-js@2.11.4/dist/rum-standalone.js';
-
-    const testHeaders = new Headers();
-    testHeaders.append('my-custom-header', 'hihi');
-    testHeaders.append('server', 'noway');
-
-    const storedFetch = global.fetch;
+  it('verifies releases without a manifest against the npm-derived legacy table', async () => {
+    const js = 'legacy bytes';
+    const legacy = LEGACY_RELEASES['@adobe/helix-rum-enhancer']['2.52.0'];
+    const original = legacy['src/plugins/a11y.js'];
+    legacy['src/plugins/a11y.js'] = digest(js);
     try {
-      global.fetch = (v, opts) => {
-        assert.equal('hlxpkgreg', opts.backend);
-        if (v.url === 'https://release-2-11-4--helix-rum-js--adobe.aem.live/dist/rum-standalone.js') {
-          return {
-            status: 200,
-            headers: testHeaders,
-            url: v.url,
-          };
-        }
-        return null;
-      };
-
-      const resp = await respondHelixPkgReg(req);
-      assert.equal(200, resp.status);
-      assert.equal('hihi', resp.headers.get('my-custom-header'));
-      assert(resp.headers.get('server') === null, 'Server header should be removed');
+      fakeAemLive({
+        'release-2-x--helix-rum-enhancer': { 'package.json': '{"version":"2.52.0"}' },
+        'release-2-52-0--helix-rum-enhancer': { 'src/plugins/a11y.js': js },
+      }, { plain: true });
+      const resp = await respondHelixPkgReg(request('/.rum/@adobe/helix-rum-enhancer@^2/src/plugins/a11y.js', 'rum.hlx-cloudflare.page'));
+      assert.equal(resp.status, 200);
+      assert.equal(await resp.text(), js);
+      assert.equal(resp.headers.get('x-rum-release'), '2.52.0');
+      assert.equal(resp.headers.get('x-rum-trace'), 'hlx-cloudflare');
     } finally {
-      global.fetch = storedFetch;
+      legacy['src/plugins/a11y.js'] = original;
     }
+  });
+
+  it('refuses a file whose bytes do not match the approved digest', async () => {
+    fakeAemLive({
+      'release-2-18-0--helix-rum-js': {
+        'release-manifest.json': manifestFor('helix-rum-js', '2.18.0', { 'dist/micro.js': 'approved' }),
+        'dist/micro.js': 'tampered',
+      },
+    });
+    const resp = await respondHelixPkgReg(request('/.rum/@adobe/helix-rum-js@2.18.0/dist/micro.js'));
+    assert.equal(resp.status, 502);
+    assert.equal(resp.headers.get('x-error'), 'Integrity check failed');
+    assert.equal(resp.headers.get('cache-control'), 'no-store');
+    assert(!(await resp.text()).includes('tampered'));
+  });
+
+  it('refuses a file that is not listed in the manifest', async () => {
+    fakeAemLive({
+      'release-2-18-0--helix-rum-js': {
+        'release-manifest.json': manifestFor('helix-rum-js', '2.18.0', { 'dist/micro.js': 'x' }),
+        'dist/extra.js': 'not approved',
+      },
+    });
+    const resp = await respondHelixPkgReg(request('/.rum/@adobe/helix-rum-js@2.18.0/dist/extra.js'));
+    assert.equal(resp.status, 404);
+    assert.equal(resp.headers.get('x-error'), 'Not in an approved release');
+  });
+
+  it('refuses a manifest for another package or version', async () => {
+    for (const manifest of [
+      manifestFor('helix-rum-enhancer', '2.18.0', { 'dist/micro.js': 'x' }),
+      manifestFor('helix-rum-js', '2.18.1', { 'dist/micro.js': 'x' }),
+    ]) {
+      fakeAemLive({ 'release-2-18-0--helix-rum-js': { 'release-manifest.json': manifest, 'dist/micro.js': 'x' } });
+      // eslint-disable-next-line no-await-in-loop
+      const resp = await respondHelixPkgReg(request('/.rum/@adobe/helix-rum-js@2.18.0/dist/micro.js'));
+      assert.equal(resp.status, 404);
+    }
+  });
+
+  it('refuses an unknown release, an unresolvable alias and a missing file', async () => {
+    fakeAemLive({
+      'release-3-x--helix-rum-js': { 'package.json': 'not json' },
+      'release-2-18-0--helix-rum-js': {
+        'release-manifest.json': manifestFor('helix-rum-js', '2.18.0', { 'dist/micro.js': 'x' }),
+      },
+    });
+    const cases = [
+      ['/.rum/@adobe/helix-rum-js@2.0.0/dist/micro.js', 404, 'Not in an approved release'],
+      ['/.rum/@adobe/helix-rum-js@^3/dist/micro.js', 404, 'Unknown release'],
+      ['/.rum/@adobe/helix-rum-js@~2.9/dist/micro.js', 404, 'Unknown release'],
+      ['/.rum/@adobe/helix-rum-js@2.10/dist/micro.js', 404, 'Unknown release'],
+      ['/.rum/@adobe/helix-rum-js@2.18.0/dist/micro.js', 502, 'Release file unavailable: 404'],
+      ['/.rum/@adobe/helix-rum-js@2.18.0', 404, 'No file'],
+      ['/.rum/@adobe/helix-rum-js/dist/micro.js', 404, 'No version'],
+      ['/.rum/@adobe/helix-rum-aaaarrr@2.10.5/src/index.js', 404, 'Unsupported package'],
+      ['/.rum/@adobe/helix-rum-enhancer@<2.10.5/src/index.js', 404, 'Unsupported version'],
+    ];
+    for (const [path, status, error] of cases) {
+      // eslint-disable-next-line no-await-in-loop
+      const resp = await respondHelixPkgReg(request(path));
+      assert.equal(resp.status, status, path);
+      assert.equal(resp.headers.get('x-error'), error, path);
+    }
+  });
+
+  it('decodes gzip by its magic number, whatever the headers say', async () => {
+    assert.equal(new TextDecoder().decode(await decodeBody(gzipSync('abc'))), 'abc');
+    assert.equal(new TextDecoder().decode(await decodeBody(new TextEncoder().encode('abc'))), 'abc');
+  });
+
+  it('has legacy digests for every version that still gets traffic', () => {
+    assert.deepEqual(Object.keys(LEGACY_RELEASES['@adobe/helix-rum-js']), ['1.9.0', '2.10.5', '2.14.0', '2.15.0', '2.17.0']);
+    assert.deepEqual(Object.keys(LEGACY_RELEASES['@adobe/helix-rum-enhancer']), ['1.23.1', '2.34.2', '2.45.1', '2.47.3', '2.51.0', '2.51.1', '2.52.0']);
+    const releases = Object.values(LEGACY_RELEASES).flatMap((versions) => Object.values(versions));
+    releases.forEach((files) => {
+      assert(Object.keys(files).length > 0);
+      Object.values(files).forEach(({ integrity, size }) => {
+        assert.match(integrity, /^sha384-[A-Za-z0-9+/]{64}$/);
+        assert(size > 0);
+      });
+    });
+    assert(LEGACY_RELEASES['@adobe/helix-rum-js']['2.10.5']['dist/rum-standalone.js']);
+    assert(LEGACY_RELEASES['@adobe/helix-rum-js']['1.9.0']['src/index.js']);
+    assert(LEGACY_RELEASES['@adobe/helix-rum-enhancer']['2.52.0']['src/plugins/a11y.js']);
   });
 });
