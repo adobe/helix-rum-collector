@@ -14,7 +14,8 @@
     "prelint": "node tools/spider-list.js",
     "lint": "./node_modules/.bin/eslint .",
     "test-release": "node --test .github/tests/*.test.mjs",
-    "semantic-release": "semantic-release"
+    "semantic-release": "semantic-release",
+    "verify-package-coverage": "node tools/spider-list.js && node tools/verify-package-coverage.mjs"
   },
   "wsk": {
     "target": [

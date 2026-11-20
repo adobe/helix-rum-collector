@@ -162,11 +162,16 @@ export async function respondHelixPkgReg(req) {
     }
   };
 
+  // At most two round trips to aem.live: the alias lookup (manifest and package.json in
+  // parallel), then the exact release's manifest and file (in parallel).
   let version = relver.exact;
   if (!version) {
     const alias = `release-${relver.ver}`;
-    const aliasManifest = await readJson(alias, 'release-manifest.json');
-    version = aliasManifest?.version ?? (await readJson(alias, 'package.json'))?.version;
+    const [aliasManifest, aliasPackage] = await Promise.all([
+      readJson(alias, 'release-manifest.json'),
+      readJson(alias, 'package.json'),
+    ]);
+    version = aliasManifest?.version ?? aliasPackage?.version;
   }
   if (typeof version !== 'string' || !VERSION.test(version)) {
     return refuse(404, 'Unknown release', { pkgname, pkgver, version });
@@ -174,18 +179,21 @@ export async function respondHelixPkgReg(req) {
 
   const exactBranch = branchFor(version);
   const name = `@adobe/${pkgname}`;
-  const manifest = await readJson(exactBranch, 'release-manifest.json');
+  const [manifest, beresp] = await Promise.all([
+    readJson(exactBranch, 'release-manifest.json'),
+    fetchBranch(exactBranch, file),
+  ]);
   const approved = manifest
     && manifest.schema === 1 && manifest.package === name && manifest.version === version
     ? manifest.files?.[file]
     : LEGACY_RELEASES[name]?.[version]?.[file];
   if (!approved) {
+    await beresp.body?.cancel?.();
     return refuse(404, 'Not in an approved release', {
       pkgname, pkgver, version, file, manifest: Boolean(manifest),
     });
   }
 
-  const beresp = await fetchBranch(exactBranch, file);
   if (beresp.status !== 200) {
     return refuse(502, `Release file unavailable: ${beresp.status}`, {
       pkgname, version, file, status: beresp.status,

@@ -100,9 +100,9 @@ describe('Verified Helix package registry', () => {
     assert.equal(resp.headers.get('content-encoding'), null);
     assert.equal(resp.headers.get('server'), null);
     assert.equal(resp.headers.get('x-cache'), null);
-    assert.deepEqual(requested, [
-      'https://release-2-18-0--helix-rum-js--adobe.aem.live/release-manifest.json',
+    assert.deepEqual(requested.sort(), [
       'https://release-2-18-0--helix-rum-js--adobe.aem.live/dist/rum-standalone.js',
+      'https://release-2-18-0--helix-rum-js--adobe.aem.live/release-manifest.json',
     ]);
   });
 
@@ -119,10 +119,12 @@ describe('Verified Helix package registry', () => {
     assert.equal(resp.headers.get('cache-control'), 'public, max-age=3600');
     assert.equal(resp.headers.get('x-rum-trace'), 'hlx-fastly');
     assert.equal(resp.headers.get('x-rum-release'), '2.53.0');
-    assert.deepEqual(requested, [
-      'https://release-2-x--helix-rum-enhancer--adobe.aem-fastly.live/release-manifest.json',
+    // The alias branch's own copy of the file is never requested.
+    assert.deepEqual(requested.sort(), [
       'https://release-2-53-0--helix-rum-enhancer--adobe.aem-fastly.live/release-manifest.json',
       'https://release-2-53-0--helix-rum-enhancer--adobe.aem-fastly.live/src/index.js',
+      'https://release-2-x--helix-rum-enhancer--adobe.aem-fastly.live/package.json',
+      'https://release-2-x--helix-rum-enhancer--adobe.aem-fastly.live/release-manifest.json',
     ]);
   });
 
